@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sor", "Sor\Sor.csproj", "{9229317B-AF8C-44EA-B1A3-90A861977229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SorDk", "SorDk\SorDk.csproj", "{564358BD-3222-4811-B680-33BAC7A532DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
