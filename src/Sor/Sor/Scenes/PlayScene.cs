@@ -13,6 +13,9 @@ namespace Sor.Scenes {
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerShip = playerEntity.AddComponent(new Ship());
             playerEntity.AddComponent<PlayerInputController>();
+            
+            var testEntity = CreateEntity("test1", new Vector2(320, 320));
+            var testShip = testEntity.AddComponent(new Ship());
 
             // add component to make Camera follow the player
             var followCamera = 

@@ -8,8 +8,8 @@ namespace Sor.Components.Units {
         public Ship me;
         private InputController controller;
 
-        public float turnPower = Mathf.PI / 8f;
-        public float thrustPower = 10f;
+        public float turnPower = Mathf.PI / 4f;
+        public float thrustPower = 4f;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
@@ -18,7 +18,7 @@ namespace Sor.Components.Units {
             controller = Entity.GetComponent<InputController>();
 
             maxAngular = turnPower * 2f;
-            angularDrag = turnPower / 4f;
+            angularDrag = turnPower * 2f;
             drag = new Vector2(thrustPower / 4f);
             maxVelocity = new Vector2(thrustPower * 20f);
         }
