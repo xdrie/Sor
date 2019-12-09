@@ -11,9 +11,9 @@ namespace Sor {
 
         private readonly GameContext gameContext;
 
-        public Point gameResolution = new Point(480, 270);
+        public Point gameResolution = new Point(960, 540);
 
-        public NGame() : base(960, 540, windowTitle: GAME_TITLE) {
+        public NGame() : base(1920, 1080, windowTitle: GAME_TITLE) {
             gameContext = new GameContext();
         }
 
@@ -21,13 +21,12 @@ namespace Sor {
             base.Initialize();
 
             Window.Title = GAME_TITLE;
-            Window.AllowUserResizing = false;
+            Window.AllowUserResizing = true;
 
             // Register context service
             Services.AddService(typeof(GameContext), gameContext);
 
             var resolutionPolicy = Scene.SceneResolutionPolicy.BestFit;
-
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates

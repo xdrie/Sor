@@ -7,9 +7,9 @@ using Sor.Components.UI;
 namespace Sor.Scenes {
     public class IntroScene : BaseGameScene {
 #if DEBUG
-        private const float intro_length = 1f;
+        private const float intro_length = 0f;
 #else
-        private const float intro_length = 2f;
+        private const float intro_length = 1f;
 #endif
 
         public override void Initialize() {
