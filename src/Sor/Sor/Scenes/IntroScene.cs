@@ -1,13 +1,11 @@
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.BitmapFonts;
 using Nez.Tweens;
 using Sor.Components.UI;
 
 namespace Sor.Scenes {
     public class IntroScene : BaseGameScene {
-        private GameContext gameContext;
 #if DEBUG
         private const float intro_length = 1f;
 #else
@@ -21,8 +19,7 @@ namespace Sor.Scenes {
             Core.Instance.IsMouseVisible = false;
 
             ClearColor = new Color(10);
-
-            gameContext = Core.Services.GetService<GameContext>();
+            
             gameContext.loadContent();
 
             var cover = CreateEntity("cover", resolution.ToVector2() / 2);

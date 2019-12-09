@@ -11,9 +11,12 @@ namespace Sor.Scenes {
         private readonly Color bgColor = new Color(40, 40, 40);
 
         protected Renderer mainRenderer;
+        protected GameContext gameContext;
 
         public override void Initialize() {
             base.Initialize();
+            
+            gameContext = Core.Services.GetService<GameContext>();
 
             // add a new renderer with renderOrder 0
             mainRenderer = AddRenderer(new RenderLayerRenderer(0, renderlayer_default, renderlayer_background));
