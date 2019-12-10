@@ -30,7 +30,7 @@ namespace Sor.Scenes {
 
         public override void Update() {
             base.Update();
-
+    
             if (Input.IsKeyPressed(Keys.E)) {
                 // tween
                 bookrowSpriteRenderer

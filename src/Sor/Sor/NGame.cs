@@ -21,7 +21,7 @@ namespace Sor {
             base.Initialize();
 
             Window.Title = GAME_TITLE;
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false;
 
             // Register context service
             Services.AddService(typeof(GameContext), gameContext);
