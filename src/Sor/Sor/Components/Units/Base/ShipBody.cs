@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Glint.Physics;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -29,6 +30,21 @@ namespace Sor.Components.Units {
             if (controller != null) {
                 movement();
             }
+        }
+
+        protected override Vector2 motion(Vector2 posDelta) {
+            var motion = base.motion(posDelta);
+            
+            var collisionResults = new List<CollisionResult>();
+            var hitbox = Entity.GetComponent<BoxCollider>();
+            if (hitbox.collidesWithAnyMultiple(motion, collisionResults)) {
+                foreach (var result in collisionResults) {
+                    // apply adjustment
+                    motion -= result.MinimumTranslationVector;
+                }
+            }
+            
+            return motion;
         }
 
         private void movement() {

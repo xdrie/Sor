@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Nez;
 using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Units;
@@ -16,6 +17,11 @@ namespace Sor.Scenes {
             
             var testEntity = CreateEntity("test1", new Vector2(320, 320));
             var testShip = testEntity.AddComponent(new Ship());
+
+            var blockNt = CreateEntity("block", new Vector2(140, 140));
+            var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
+
+            Core.DebugRenderEnabled = true;
 
             // add component to make Camera follow the player
             var followCamera = 
