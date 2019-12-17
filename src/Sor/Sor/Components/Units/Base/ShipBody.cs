@@ -5,22 +5,24 @@ using Nez;
 using Sor.Components.Input;
 
 namespace Sor.Components.Units {
-    public class ShipBody : KinematicBody {
+    public class ShipBody : KinBody {
         public Ship me;
         private InputController controller;
 
         public float turnPower = Mathf.PI / 4f;
         public float thrustPower = 4f;
+        private Mover mov;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
             
             me = Entity.GetComponent<Ship>();
             controller = Entity.GetComponent<InputController>();
+            mov = Entity.AddComponent<Mover>();
 
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
-            drag = new Vector2(thrustPower / 4f);
+            drag = new Vector2(thrustPower / 1f);
             maxVelocity = new Vector2(thrustPower * 20f);
         }
 
