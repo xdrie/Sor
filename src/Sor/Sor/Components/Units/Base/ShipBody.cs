@@ -43,6 +43,7 @@ namespace Sor.Components.Units {
                 foreach (var result in collisionResults) {
                     // apply adjustment
                     motion -= result.MinimumTranslationVector;
+                    velocity = Vector2.Zero;
                 }
             }
             

@@ -28,7 +28,7 @@ namespace Sor.Scenes {
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
 
-            Core.DebugRenderEnabled = true;
+            // Core.DebugRenderEnabled = true;
 
             // add component to make Camera follow the player
             var followCamera = 
