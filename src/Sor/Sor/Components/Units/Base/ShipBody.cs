@@ -42,7 +42,6 @@ namespace Sor.Components.Units {
             if (hitbox.collidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
                     // apply adjustment
-                    motion -= result.MinimumTranslationVector;
                     velocity /= 4;
                 }
             }
