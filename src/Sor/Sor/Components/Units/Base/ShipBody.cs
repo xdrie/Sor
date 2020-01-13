@@ -15,7 +15,7 @@ namespace Sor.Components.Units {
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
-            
+
             me = Entity.GetComponent<Ship>();
             controller = Entity.GetComponent<InputController>();
             mov = Entity.AddComponent<Mover>();
@@ -36,7 +36,7 @@ namespace Sor.Components.Units {
 
         protected override Vector2 motion(Vector2 posDelta) {
             var motion = base.motion(posDelta);
-            
+
             var collisionResults = new List<CollisionResult>();
             var hitbox = Entity.GetComponent<BoxCollider>();
             if (hitbox.collidesWithAnyMultiple(motion, collisionResults)) {
@@ -45,7 +45,7 @@ namespace Sor.Components.Units {
                     velocity /= 4;
                 }
             }
-            
+
             return motion;
         }
 
@@ -53,8 +53,16 @@ namespace Sor.Components.Units {
             var turnInput = controller.moveDirectionInput.Value.X;
             angularVelocity += turnInput * turnPower;
             var thrustInput = controller.moveDirectionInput.Value.Y;
-            var thrustVec = new Vector2(0, thrustInput * thrustPower);
-            velocity += thrustVec.rotate(angle);
+            if (thrustInput <= 0) {
+                var thrustVec = new Vector2(0, thrustInput * thrustPower);
+                velocity += thrustVec.rotate(angle);
+            }
+            else {
+                // thrust input is slowdown
+                float keepPor = 0.9f;
+                float fac = keepPor + (1 - keepPor) * (1 - thrustInput);
+                velocity *= fac;
+            }
         }
     }
 }
