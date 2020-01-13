@@ -41,8 +41,12 @@ namespace Sor.Components.Units {
             var hitbox = Entity.GetComponent<BoxCollider>();
             if (hitbox.collidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
-                    // apply adjustment
-                    velocity /= 4;
+                    // suck velocity when hitting a wall
+                    if (result.Collider.Tag == Constants.TAG_WALL_COLLIDER) {
+                        // apply adjustment
+                        velocity *= 0.8f;
+                        motion -= result.MinimumTranslationVector;
+                    }
                 }
             }
 
@@ -59,7 +63,7 @@ namespace Sor.Components.Units {
             }
             else {
                 // thrust input is slowdown
-                float keepPor = 0.9f;
+                float keepPor = 0.97f;
                 float fac = keepPor + (1 - keepPor) * (1 - thrustInput);
                 velocity *= fac;
             }
