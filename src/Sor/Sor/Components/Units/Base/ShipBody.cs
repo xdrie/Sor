@@ -39,7 +39,7 @@ namespace Sor.Components.Units {
 
             var collisionResults = new List<CollisionResult>();
             var hitbox = Entity.GetComponent<BoxCollider>();
-            if (hitbox.collidesWithAnyMultiple(motion, collisionResults)) {
+            if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
                     // suck velocity when hitting a wall
                     if (result.Collider.Tag == Constants.TAG_WALL_COLLIDER) {

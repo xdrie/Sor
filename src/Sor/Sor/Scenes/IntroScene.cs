@@ -22,9 +22,9 @@ namespace Sor.Scenes {
             
             gameContext.loadContent();
 
-            var cover = CreateEntity("cover", resolution.ToVector2() / 2);
+            var cover = CreateEntity("cover", Resolution.ToVector2() / 2);
             var logo = cover.AddComponent<LogoAnimation>();
-            var targetWidth = resolution.X * 0.7f;
+            var targetWidth = Resolution.X * 0.7f;
             
             var baseScale = new Vector2(4f);
             cover.SetLocalScale(baseScale);
@@ -51,7 +51,7 @@ namespace Sor.Scenes {
             
             var ui = CreateEntity("ui");
             
-            var versionText = new TextComponent(gameContext.assets.font, "run", new Vector2(resolution.X / 2f, 240),
+            var versionText = new TextComponent(gameContext.assets.font, "run", new Vector2(Resolution.X / 2f, 240),
                 Color.LightGray);
             ui.AddComponent(versionText);
             versionText.SetLocalOffset(new Vector2(-versionText.Width - 4f, 0));

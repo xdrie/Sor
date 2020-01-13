@@ -6,8 +6,11 @@
 
     <ItemGroup>
         <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.1" />
-        <PackageReference Include="XNez" Version="0.10.0.5" />
         <PackageReference Include="XNez.Glint" Version="0.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\lib\XNez\Nez.Portable\XNez.csproj" />
     </ItemGroup>
 
 </Project>

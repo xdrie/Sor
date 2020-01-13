@@ -1,0 +1,3 @@
+[submodule "lib/XNez"]
+	path = lib/XNez
+	url = https://git.iridiumion.xyz/xdrie/XNez.git
