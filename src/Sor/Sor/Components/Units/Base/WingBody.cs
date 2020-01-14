@@ -23,7 +23,7 @@ namespace Sor.Components.Units {
 
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
-            drag = new Vector2(thrustPower / 1f);
+            drag = new Vector2(thrustPower * 4f);
             maxVelocity = new Vector2(thrustPower * 20f);
         }
 
