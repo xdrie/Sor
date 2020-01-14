@@ -41,7 +41,7 @@ namespace Sor.Scenes {
                     logo.animator.TweenColorTo(Color.Transparent, 0.4f)
                         .SetEaseType(EaseType.CubicOut)
                         .SetDelay(intro_length)
-                        .SetCompletionHandler(_ => { loadGame(); }).Start();
+                        .SetCompletionHandler(async _ => { await loadGame(); }).Start();
                 })
                 .Start();
         }
@@ -57,8 +57,8 @@ namespace Sor.Scenes {
             versionText.SetLocalOffset(new Vector2(-versionText.Width - 4f, 0));
 
             // - loading logic
-//            await Task.Delay(1000);
-//            await GameBootstrapper.bootAsync(text => { versionText.Text = text; });
+            await Task.Delay(0); // await Task.Delay(1000);
+            // await GameBootstrapper.bootAsync(text => { versionText.Text = text; });
 
             // when finished
             transitionScene<MenuScene>(0.2f);
