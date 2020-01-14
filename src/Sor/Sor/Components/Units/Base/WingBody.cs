@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Glint.Physics;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Input;
@@ -12,6 +11,8 @@ namespace Sor.Components.Units {
         public float turnPower = Mathf.PI / 4f;
         public float thrustPower = 4f;
         private Mover mov;
+        
+        private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
@@ -41,10 +42,21 @@ namespace Sor.Components.Units {
             var hitbox = Entity.GetComponent<BoxCollider>();
             if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
-                    // suck velocity when hitting a wall
+                    // collision with a wall
                     if (result.Collider?.Tag == Constants.TAG_WALL_COLLIDER) {
-                        // apply adjustment
-                        // velocity *= 0.8f;
+                        // suck velocity from hitting the wall
+                        velocity *= VELOCITY_REDUCTION_EXP;
+                        motion -= result.MinimumTranslationVector;
+                    }
+                    // collision with another ship
+                    else if (result.Collider?.Tag == Constants.TAG_SHIP_COLLIDER) {
+                        var hitShip = result.Collider.Entity.GetComponent<WingBody>();
+                        // conserve momentum in the collision
+                        var netMomentum = momentum + hitShip.momentum;
+                        var totalMass = mass + hitShip.mass;
+                        var vf = netMomentum / totalMass;
+                        velocity = vf;
+                        hitShip.velocity = vf;
                         motion -= result.MinimumTranslationVector;
                     }
                 }
@@ -63,8 +75,7 @@ namespace Sor.Components.Units {
             }
             else {
                 // thrust input is slowdown
-                float keepPor = 0.97f;
-                float fac = keepPor + (1 - keepPor) * (1 - thrustInput);
+                float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 velocity *= fac;
             }
         }

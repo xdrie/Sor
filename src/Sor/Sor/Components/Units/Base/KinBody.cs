@@ -1,10 +1,10 @@
+using Glint.Physics;
 using Microsoft.Xna.Framework;
 using Nez;
 
 namespace Sor.Components.Units {
-    public class KinBody : Component, IUpdatable {
+    public class KinBody : PhysicsBody, IUpdatable {
         public Vector2 maxVelocity;
-        public Vector2 velocity;
         public Vector2 acceleration;
         public Vector2 drag;
         public Vector2 pos {
