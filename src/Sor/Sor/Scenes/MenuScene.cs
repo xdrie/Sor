@@ -20,11 +20,11 @@ namespace Sor.Scenes {
             // ui.AddComponent(titleTexSpr);
             
             var titleTexNt = CreateEntity("title", new Vector2(290f, 160f));
-            titleTexNt.AddComponent(new SpriteRenderer(Core.Content.Load<Texture2D>("UI/904")));
+            titleTexNt.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/904.png")));
             titleTexNt.SetLocalScale(4f);
             
             var playBtn = CreateEntity("play_button", new Vector2(800f, 120f));
-            bookrowSpriteRenderer = playBtn.AddComponent(new SpriteRenderer(Core.Content.Load<Texture2D>("UI/bookrow")));
+            bookrowSpriteRenderer = playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
             playBtn.SetLocalScale(4f);
         }
 

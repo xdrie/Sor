@@ -4,7 +4,7 @@ using Nez;
 
 namespace Sor.Components.UI {
     internal class LogoAnimation : GAnimatedSprite {
-        public LogoAnimation() : base(Core.Content.Load<Texture2D>("Img/khnpr"), 32, 32) { }
+        public LogoAnimation() : base(Core.Content.LoadTexture("Data/img/khnpr.png"), 32, 32) { }
 
         public override void Initialize() {
             base.Initialize();

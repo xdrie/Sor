@@ -7,7 +7,7 @@ namespace Sor.Components.Units {
         private WingBody body;
         private BoxCollider hitbox;
         
-        public Wing() : base(Core.Content.Load<Texture2D>("Sprites/ship"), 64, 64) { }
+        public Wing() : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) { }
 
         public override void Initialize() {
             base.Initialize();

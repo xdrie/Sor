@@ -9,14 +9,9 @@
     <ItemGroup>
       <ProjectReference Include="..\Sor\Sor.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <PackageReference Include="MonoGame.Content.Builder" Version="3.7.0.9" />
-    </ItemGroup>
 
     <ItemGroup>
-        <MonoGameContentReference Include="Content/Content.mgcb" />
-        <None Include="Raw/**/*" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
 </Project>

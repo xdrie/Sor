@@ -22,7 +22,7 @@ namespace Sor {
         }
 
         public void loadContent() {
-            assets.font = Core.Content.LoadBitmapFont("Raw/fonts/ua_squared.fnt");
+            assets.font = Core.Content.LoadBitmapFont("Data/fonts/ua_squared.fnt");
         }
     }
 }
