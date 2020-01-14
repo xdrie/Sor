@@ -7,6 +7,7 @@ namespace Sor.Game {
     public class MapLoader {
         private Scene scene;
         private readonly Entity mapEntity;
+        public const int WALL_BORDER = 4;
 
         public MapLoader(Scene scene, Entity mapEntity) {
             this.scene = scene;
@@ -24,20 +25,19 @@ namespace Sor.Game {
                 var corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
                 var corrDirection = tileDirection(corrTile);
                 var adjCollider = default(Rectangle);
-                var wallBorder = 1;
                 // adjust collider based on direction
                 switch (corrDirection) {
                     case Direction.Up: // left wall
-                        adjCollider = new Rectangle(collider.X, collider.Y - map.TileWidth + wallBorder, wallBorder, collider.Height + map.TileWidth - wallBorder);
+                        adjCollider = new Rectangle(collider.X, collider.Y - map.TileWidth + WALL_BORDER, WALL_BORDER, collider.Height + map.TileWidth - WALL_BORDER);
                         break;
                     case Direction.Right: // top wall
-                        adjCollider = new Rectangle(collider.X, collider.Y, collider.Width, wallBorder);
+                        adjCollider = new Rectangle(collider.X, collider.Y, collider.Width, WALL_BORDER);
                         break;
                     case Direction.Down: // right wall
-                        adjCollider = new Rectangle(collider.X + map.TileWidth - wallBorder, collider.Y - map.TileWidth + wallBorder, wallBorder, collider.Height + map.TileWidth - wallBorder);
+                        adjCollider = new Rectangle(collider.X + map.TileWidth - WALL_BORDER, collider.Y - map.TileWidth + WALL_BORDER, WALL_BORDER, collider.Height + map.TileWidth - WALL_BORDER);
                         break;
                     case Direction.Left: // down wall
-                        adjCollider = new Rectangle(collider.X - map.TileWidth + wallBorder, collider.Y + map.TileWidth - wallBorder, collider.Width + map.TileWidth - wallBorder + map.TileWidth - wallBorder, wallBorder);
+                        adjCollider = new Rectangle(collider.X - map.TileWidth + WALL_BORDER, collider.Y + map.TileWidth - WALL_BORDER, collider.Width + map.TileWidth - WALL_BORDER + map.TileWidth - WALL_BORDER, WALL_BORDER);
                         break;
                 }
                 

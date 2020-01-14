@@ -42,9 +42,9 @@ namespace Sor.Components.Units {
             if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
                     // suck velocity when hitting a wall
-                    if (result.Collider.Tag == Constants.TAG_WALL_COLLIDER) {
+                    if (result.Collider?.Tag == Constants.TAG_WALL_COLLIDER) {
                         // apply adjustment
-                        velocity *= 0.8f;
+                        // velocity *= 0.8f;
                         motion -= result.MinimumTranslationVector;
                     }
                 }

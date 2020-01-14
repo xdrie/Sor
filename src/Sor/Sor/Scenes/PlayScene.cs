@@ -20,7 +20,8 @@ namespace Sor.Scenes {
             var testEntity = CreateEntity("test1", new Vector2(320, 320));
             var testShip = testEntity.AddComponent(new Wing());
             testShip.AddComponent<LogicInputController>();
-            testShip.AddComponent<Mind>();
+            var testMind1 = testShip.AddComponent<Mind>();
+            testShip.AddComponent(new MindDisplay(testMind1));
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
