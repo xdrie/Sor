@@ -17,7 +17,7 @@ namespace Sor.Components.Units {
             animator.AddAnimation("block", new[] {sprites[5]});
 
             body = Entity.AddComponent(new WingBody {mass = 10f});
-            hitbox = Entity.AddComponent(new BoxCollider(-8, -12, 16, 24) {Tag = Constants.TAG_SHIP_COLLIDER});
+            hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.TAG_SHIP_COLLIDER});
         }
     }
 }
