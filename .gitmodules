@@ -1,3 +1,6 @@
 [submodule "lib/XNez"]
 	path = lib/XNez
 	url = https://git.iridiumion.xyz/xdrie/XNez.git
+[submodule "lib/Glint"]
+	path = lib/Glint
+	url = https://git.iridiumion.xyz/xdrie/Glint.git
