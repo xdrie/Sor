@@ -26,7 +26,7 @@ namespace Sor {
             // Register context service
             Services.AddService(typeof(GameContext), gameContext);
 
-            var resolutionPolicy = Scene.SceneResolutionPolicy.BestFit;
+            var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates
