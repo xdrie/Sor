@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Nez;
 
 namespace Sor.Components.Units {
-    public class Ship : GAnimatedSprite {
-        private ShipBody body;
+    public class Wing : GAnimatedSprite {
+        private WingBody body;
         private BoxCollider hitbox;
         
-        public Ship() : base(Core.Content.Load<Texture2D>("Sprites/ship"), 64, 64) { }
+        public Wing() : base(Core.Content.Load<Texture2D>("Sprites/ship"), 64, 64) { }
 
         public override void Initialize() {
             base.Initialize();
@@ -16,7 +16,7 @@ namespace Sor.Components.Units {
             animator.AddAnimation("ship2block", new[] {sprites[1], sprites[2], sprites[3], sprites[4]});
             animator.AddAnimation("block", new[] {sprites[5]});
 
-            body = Entity.AddComponent(new ShipBody());
+            body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-8, -12, 16, 24) {Tag = Constants.TAG_SHIP_COLLIDER});
         }
     }

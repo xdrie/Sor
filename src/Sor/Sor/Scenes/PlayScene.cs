@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Nez;
+using Sor.AI;
 using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Units;
@@ -13,11 +14,13 @@ namespace Sor.Scenes {
             ClearColor = gameContext.assets.bgColor;
 
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
-            var playerShip = playerEntity.AddComponent(new Ship());
+            var playerShip = playerEntity.AddComponent(new Wing());
             playerEntity.AddComponent<PlayerInputController>();
             
             var testEntity = CreateEntity("test1", new Vector2(320, 320));
-            var testShip = testEntity.AddComponent(new Ship());
+            var testShip = testEntity.AddComponent(new Wing());
+            testShip.AddComponent<LogicInputController>();
+            testShip.AddComponent<Mind>();
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));

@@ -5,8 +5,8 @@ using Nez;
 using Sor.Components.Input;
 
 namespace Sor.Components.Units {
-    public class ShipBody : KinBody {
-        public Ship me;
+    public class WingBody : KinBody {
+        public Wing me;
         private InputController controller;
 
         public float turnPower = Mathf.PI / 4f;
@@ -16,7 +16,7 @@ namespace Sor.Components.Units {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            me = Entity.GetComponent<Ship>();
+            me = Entity.GetComponent<Wing>();
             controller = Entity.GetComponent<InputController>();
             mov = Entity.AddComponent<Mover>();
 
