@@ -8,7 +8,7 @@ namespace Sor.Components.Units {
         public Wing me;
         private InputController controller;
 
-        public float turnPower = Mathf.PI / 4f;
+        public float turnPower = Mathf.PI * 0.32f;
         public float thrustPower = 4f;
         private Mover mov;
         
