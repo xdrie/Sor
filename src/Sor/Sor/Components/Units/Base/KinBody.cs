@@ -37,13 +37,13 @@ namespace Sor.Components.Units {
                 velocity.X -= drag.X * dt;
             }
             if (velocity.X < -drag.X * dt) {
-                velocity.X += -drag.X * dt;
+                velocity.X += drag.X * dt;
             }
             if (velocity.Y > drag.Y * dt) {
                 velocity.Y -= drag.Y * dt;
             }
             if (velocity.Y < -drag.Y * dt) {
-                velocity.Y += -drag.Y * dt;
+                velocity.Y += drag.Y * dt;
             }
             pos += motion(velocity * dt);
 
