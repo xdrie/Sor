@@ -4,3 +4,6 @@
 [submodule "lib/Glint"]
 	path = lib/Glint
 	url = https://git.iridiumion.xyz/xdrie/Glint.git
+[submodule "lib/LunchSimulator"]
+	path = lib/LunchSimulator
+	url = https://git.iridiumion.xyz/xdrie/LunchSimulator.git

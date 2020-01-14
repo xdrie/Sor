@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{99E18C3E-4A0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNez", "..\..\lib\XNez\Nez.Portable\XNez.csproj", "{82983CBF-B759-4873-A2EC-00F043A31EBB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glint.AI", "..\..\lib\Glint\src\Glint.AI\Glint.AI.csproj", "{2BB75C5A-05A3-429A-ACA2-830BBB62737B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunchtimeGears", "..\..\lib\LunchSimulator\src\Lunchtime\LunchtimeGears\LunchtimeGears.csproj", "{94C79255-CD22-4EE9-8335-B096B028A3CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,13 +28,13 @@ Global
 		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2BB75C5A-05A3-429A-ACA2-830BBB62737B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2BB75C5A-05A3-429A-ACA2-830BBB62737B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2BB75C5A-05A3-429A-ACA2-830BBB62737B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2BB75C5A-05A3-429A-ACA2-830BBB62737B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94C79255-CD22-4EE9-8335-B096B028A3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94C79255-CD22-4EE9-8335-B096B028A3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94C79255-CD22-4EE9-8335-B096B028A3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94C79255-CD22-4EE9-8335-B096B028A3CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{82983CBF-B759-4873-A2EC-00F043A31EBB} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
-		{2BB75C5A-05A3-429A-ACA2-830BBB62737B} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
+		{94C79255-CD22-4EE9-8335-B096B028A3CE} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
 	EndGlobalSection
 EndGlobal
