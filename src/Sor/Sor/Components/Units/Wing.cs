@@ -27,7 +27,8 @@ namespace Sor.Components.Units {
             // add pips
             var pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
-            pips.animator.Play("three");
+            
+            pips.animator.Play("3");
         }
     }
 }

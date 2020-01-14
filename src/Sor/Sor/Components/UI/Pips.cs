@@ -8,11 +8,11 @@ namespace Sor.Components.UI {
         public override void Initialize() {
             base.Initialize();
             
-            animator.AddAnimation("one", new[] {sprites[0]});
-            animator.AddAnimation("two", new[] {sprites[1]});
-            animator.AddAnimation("three", new[] {sprites[2]});
-            animator.AddAnimation("four", new[] {sprites[3]});
-            animator.AddAnimation("five", new[] {sprites[4]});
+            animator.AddAnimation("1", new[] {sprites[0]});
+            animator.AddAnimation("2", new[] {sprites[1]});
+            animator.AddAnimation("3", new[] {sprites[2]});
+            animator.AddAnimation("4", new[] {sprites[3]});
+            animator.AddAnimation("5", new[] {sprites[4]});
         }
     }
 }
