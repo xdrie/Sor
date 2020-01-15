@@ -2,7 +2,7 @@ using Glint.Sprites;
 using Nez;
 
 namespace Sor.Components.UI {
-    public class Pips : GAnimatedSprite {
+    public class Pips : GAnimatedSprite, IUpdatable {
         public Pips() : base(Core.Content.LoadTexture("Data/sprites/pips.png"), 16, 16) { }
 
         public override void Initialize() {

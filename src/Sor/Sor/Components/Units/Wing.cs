@@ -1,6 +1,5 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Sor.Components.UI;
 
@@ -27,8 +26,9 @@ namespace Sor.Components.Units {
             // add pips
             var pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
-            
-            pips.animator.Play("3");
+
+            var pipNumber = 1 + Random.NextInt(5);
+            pips.animator.Play(pipNumber.ToString());
         }
     }
 }
