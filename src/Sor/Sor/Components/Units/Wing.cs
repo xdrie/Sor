@@ -29,6 +29,7 @@ namespace Sor.Components.Units {
 
             var pipNumber = 1 + Random.NextInt(5);
             pips.animator.Play(pipNumber.ToString());
+            pips.colAnimator.Color = new Color(137, 202, 143);
         }
     }
 }
