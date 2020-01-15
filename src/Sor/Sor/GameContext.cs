@@ -17,6 +17,8 @@ namespace Sor {
                 new Color(0x2f2732),
             };
 
+            public Color success = new Color(137, 202, 143);
+
             public Color fgColor => palette[0];
             public Color bgColor => palette[4];
         }

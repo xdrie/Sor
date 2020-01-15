@@ -1,4 +1,5 @@
 using Glint.Sprites;
+using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
 using Nez.Textures;
@@ -36,9 +37,10 @@ namespace Sor.Components.UI {
             colAnimator.Play(animator.CurrentAnimationName);
         }
 
-        public void setPips(int number) {
+        public void setPips(int number, Color color) {
             var animName = number.ToString();
             animator.Play(animName);
+            colAnimator.Color = color;
             colAnimator.Play(animName);
         }
     }

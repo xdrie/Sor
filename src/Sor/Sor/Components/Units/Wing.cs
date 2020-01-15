@@ -28,8 +28,9 @@ namespace Sor.Components.Units {
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
 
             var pipNumber = 1 + Random.NextInt(5);
-            pips.animator.Play(pipNumber.ToString());
-            pips.colAnimator.Color = new Color(137, 202, 143);
+            // pips.animator.Play(pipNumber.ToString());
+            // pips.colAnimator.Color = ;
+            pips.setPips(pipNumber, Core.Services.GetService<GameContext>().assets.success);
         }
     }
 }
