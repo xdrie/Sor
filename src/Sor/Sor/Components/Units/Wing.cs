@@ -1,13 +1,14 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
         private WingBody body;
         private BoxCollider hitbox;
-        
+
         public Wing() : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) { }
 
         public override void Initialize() {
@@ -20,7 +21,7 @@ namespace Sor.Components.Units {
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
-            
+
             body = Entity.AddComponent(new WingBody {mass = 10f});
             hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.TAG_SHIP_COLLIDER});
             // add pips
@@ -31,6 +32,12 @@ namespace Sor.Components.Units {
             // pips.animator.Play(pipNumber.ToString());
             // pips.colAnimator.Color = ;
             pips.setPips(pipNumber, Core.Services.GetService<GameContext>().assets.success);
+
+            var ribbon = Entity.AddComponent(new TrailRibbon(40) {
+                StartColor = new Color(175, 158, 180, 255),
+                EndColor = new Color(175, 158, 180, 50),
+                RibbonRadius = 8
+            });
         }
     }
 }
