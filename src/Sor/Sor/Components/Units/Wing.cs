@@ -38,6 +38,7 @@ namespace Sor.Components.Units {
                 EndColor = new Color(175, 158, 180, 50),
                 RibbonRadius = 8
             });
+            ribbon.StopEmitting();
         }
     }
 }

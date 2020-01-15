@@ -17,6 +17,8 @@ namespace Sor.Components.Input {
             
             interactInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.E));
             interactInput.Nodes.Add(new VirtualButton.GamePadButton(gamepadIndex, Buttons.Y));
+            
+            boostInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.D1));
         }
     }
 }

@@ -9,9 +9,10 @@ namespace Sor.Components.Units {
         private InputController controller;
 
         public float turnPower = Mathf.PI * 0.32f;
-        public float thrustPower = 4f;
+        public float thrustPower = 2f;
+        public float boostFactor = 6.2f;
         private Mover mov;
-        
+
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public override void OnAddedToEntity() {
@@ -23,8 +24,8 @@ namespace Sor.Components.Units {
 
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
-            drag = new Vector2(thrustPower * 4f);
-            maxVelocity = new Vector2(thrustPower * 20f);
+            drag = new Vector2(16f);
+            maxVelocity = new Vector2(80f);
         }
 
         public override void Update() {
@@ -66,15 +67,40 @@ namespace Sor.Components.Units {
         }
 
         private void movement() {
+            // apply turn input
             var turnInput = controller.moveDirectionInput.Value.X;
             angularVelocity += turnInput * turnPower;
+            
+            // get thrust input
             var thrustInput = controller.moveDirectionInput.Value.Y;
-            if (thrustInput <= 0) {
-                var thrustVec = new Vector2(0, thrustInput * thrustPower);
-                velocity += thrustVec.rotate(angle);
+            var thrustVal = thrustPower;
+
+            // boost ribbon
+            var boostRibbon = Entity.GetComponent<TrailRibbon>();
+            if (controller.boostInput) {
+                thrustVal *= boostFactor;
+                maxVelocity = new Vector2(240f);
+            } else {
+                maxVelocity = new Vector2(80f);
             }
-            else {
-                // thrust input is slowdown
+
+            if (controller.boostInput.IsPressed) {
+                if (!boostRibbon.IsEmitting) {
+                    boostRibbon.StartEmitting();
+                }
+            }
+
+            if (controller.boostInput.IsReleased) {
+                if (boostRibbon.IsEmitting) {
+                    boostRibbon.StopEmitting();
+                }
+            }
+
+            // forward thrust
+            if (thrustInput <= 0) {
+                var thrustVec = new Vector2(0, thrustInput * thrustVal);
+                velocity += thrustVec.rotate(angle);
+            } else { // slowdown thrust
                 float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 velocity *= fac;
             }
