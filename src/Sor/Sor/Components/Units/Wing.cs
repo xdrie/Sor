@@ -1,13 +1,14 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
         private WingBody body;
         private BoxCollider hitbox;
+
+        public string name;
 
         public Wing() : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) { }
 
@@ -39,6 +40,10 @@ namespace Sor.Components.Units {
                 RibbonRadius = 8
             });
             ribbon.StopEmitting();
+
+            if (name == null && Entity.Name != null) {
+                name = Entity.Name;
+            }
         }
     }
 }

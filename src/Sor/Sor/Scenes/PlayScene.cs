@@ -17,7 +17,7 @@ namespace Sor.Scenes {
             var playerShip = playerEntity.AddComponent(new Wing());
             playerEntity.AddComponent<PlayerInputController>();
             
-            var testEntity = CreateEntity("test1", new Vector2(320, 320));
+            var testEntity = CreateEntity("duck-uno", new Vector2(320, 320));
             var testShip = testEntity.AddComponent(new Wing());
             testShip.AddComponent<LogicInputController>();
             testShip.AddComponent<Mind>();
