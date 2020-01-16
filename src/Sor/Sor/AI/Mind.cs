@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Input;
 using Sor.Components.Units;
@@ -16,7 +17,7 @@ namespace Sor.AI {
 
             controller = Entity.GetComponent<LogicInputController>();
             me = Entity.GetComponent<Wing>();
-            
+
             state = new MindState(this);
         }
 
@@ -30,10 +31,14 @@ namespace Sor.AI {
             controller.zero(); // reset the controller
         }
 
-        private void think() {
-        }
+        private void think() { }
 
         private void sense() {
+            // - vision
+            // boxcast in radius
+            var senseVec = new Vector2(MindConstants.SENSE_RANGE);
+            var sensorRect = new RectangleF(Entity.Position - senseVec / 2, Entity.Position + senseVec);
+            Physics.BoxcastBroadphase(sensorRect);
         }
     }
 }

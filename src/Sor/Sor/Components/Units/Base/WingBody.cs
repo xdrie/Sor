@@ -80,6 +80,7 @@ namespace Sor.Components.Units {
             if (controller.boostInput) {
                 thrustVal *= boostFactor;
                 maxVelocity = new Vector2(440f);
+                Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
             } else {
                 maxVelocity = new Vector2(80f);
             }

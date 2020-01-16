@@ -37,6 +37,7 @@ namespace Sor.Scenes {
             // add component to make Camera follow the player
             var followCamera = 
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
+            followCamera.AddComponent<CameraShake>();
         }
     }
 }
