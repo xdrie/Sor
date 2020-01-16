@@ -79,7 +79,7 @@ namespace Sor.Components.Units {
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
             if (controller.boostInput) {
                 thrustVal *= boostFactor;
-                maxVelocity = new Vector2(240f);
+                maxVelocity = new Vector2(440f);
             } else {
                 maxVelocity = new Vector2(80f);
             }

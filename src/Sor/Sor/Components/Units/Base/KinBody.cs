@@ -27,10 +27,15 @@ namespace Sor.Components.Units {
             float dt = Time.DeltaTime;
             
             velocity += acceleration * dt;
-            if (velocity.LengthSquared() > maxVelocity.LengthSquared()) {
+            var vls = velocity.LengthSquared();
+            var mvls = maxVelocity.LengthSquared();
+            if (vls > mvls) {
                 // convert to unit and rescale
-                velocity.Normalize();
-                velocity *= maxVelocity.Length();
+                var unitVel = Vector2Ext.Normalize(velocity);
+                var ratio = mvls / vls;
+                var reductionFac = Mathf.Pow(ratio, (1 / 12f));
+                // smoothly reduce to max velocity
+                velocity *= reductionFac;
             }
 
             if (velocity.X > drag.X * dt) {
