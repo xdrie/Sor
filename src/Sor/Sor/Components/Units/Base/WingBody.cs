@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Sor.Components.Input;
 
 namespace Sor.Components.Units {
@@ -77,6 +78,7 @@ namespace Sor.Components.Units {
 
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
+            // var trail = Entity.GetComponent<SpriteTrail>();
             if (controller.boostInput) {
                 thrustVal *= boostFactor;
                 maxVelocity = new Vector2(440f);
@@ -89,12 +91,14 @@ namespace Sor.Components.Units {
                 if (!boostRibbon.IsEmitting) {
                     boostRibbon.StartEmitting();
                 }
+                // trail.EnableSpriteTrail();
             }
 
             if (controller.boostInput.IsReleased) {
                 if (boostRibbon.IsEmitting) {
                     boostRibbon.StopEmitting();
                 }
+                // trail.DisableSpriteTrail();
             }
 
             // forward thrust

@@ -1,6 +1,7 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
@@ -40,6 +41,13 @@ namespace Sor.Components.Units {
                 RibbonRadius = 8
             });
             ribbon.StopEmitting();
+
+            // var trail = Entity.AddComponent(new SpriteTrail(animator) {
+            //     InitialColor = new Color(200, 200, 200),
+            //     MinDistanceBetweenInstances = 40,
+            //     MaxSpriteInstances = 10,
+            //     FadeDelay = 0.5f,
+            // });
 
             if (name == null && Entity.Name != null) {
                 name = Entity.Name;
