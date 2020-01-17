@@ -90,6 +90,7 @@ namespace Sor.Components.Units {
             if (controller.boostInput.IsPressed) {
                 if (!boostRibbon.IsEmitting) {
                     boostRibbon.StartEmitting();
+                    boostRibbon.Enabled = true;
                 }
                 // trail.EnableSpriteTrail();
             }

@@ -41,6 +41,7 @@ namespace Sor.Components.Units {
                 RibbonRadius = 8
             });
             ribbon.StopEmitting();
+            ribbon.Enabled = false;
 
             // var trail = Entity.AddComponent(new SpriteTrail(animator) {
             //     InitialColor = new Color(200, 200, 200),
