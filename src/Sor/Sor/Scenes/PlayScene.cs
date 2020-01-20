@@ -3,6 +3,7 @@ using Nez;
 using Sor.AI;
 using Sor.Components.Camera;
 using Sor.Components.Input;
+using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game;
 
@@ -16,6 +17,9 @@ namespace Sor.Scenes {
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerShip = playerEntity.AddComponent(new Wing());
             playerEntity.AddComponent<PlayerInputController>();
+
+            var cap = CreateEntity("cap0", new Vector2(160, 160));
+            cap.AddComponent<Capsule>();
             
             var testEntity = CreateEntity("duck-uno", new Vector2(320, 320));
             var testShip = testEntity.AddComponent(new Wing());
