@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -7,6 +8,9 @@ namespace Sor.Game {
     public class MapLoader {
         private Scene scene;
         private readonly Entity mapEntity;
+        private TmxLayer structure;
+        private TmxTileset worldTileset;
+        private TmxMap map;
         public const int WALL_BORDER = 4;
 
         public MapLoader(Scene scene, Entity mapEntity) {
@@ -15,8 +19,32 @@ namespace Sor.Game {
         }
 
         public void load(TmxMap map) {
-            var structure = map.GetLayer<TmxLayer>("structure");
-            // loop through colliders
+            this.map = map;
+            structure = map.GetLayer<TmxLayer>("structure");
+            worldTileset = map.Tilesets["world_tiles"];
+            adjustColliders();
+            analyzeRooms();
+        }
+
+        /// <summary>
+        /// Convert the tilemap into a better data structure
+        /// </summary>
+        private void analyzeRooms() {
+            for (int r = 0; r < structure.Height; r++) {
+                for (int c = 0; c < structure.Width; c++) {
+                    var tile = structure.Tiles[r * structure.Width + c];
+                    var tileType = (MindMap.TileKind) (tile.Gid - worldTileset.FirstGid);
+                    var tileDir = tileDirection(tile);
+                    var tileOri = analyzeTile(tileType, tileDir);
+                    // look for top-left corners
+                }
+            }
+        }
+
+        /// <summary>
+        /// Re-calculate the colliders to better match the tile sprites
+        /// </summary>
+        private void adjustColliders() {
             var colliders = structure.GetCollisionRectangles();
             var adjustedColliders = new List<Rectangle>();
             foreach (var collider in colliders) {
@@ -52,7 +80,7 @@ namespace Sor.Game {
             }
         }
 
-        public Direction tileDirection(TmxLayerTile tile) {
+        private Direction tileDirection(TmxLayerTile tile) {
             var dir = Direction.Up;
             if (tile.DiagonalFlip && tile.HorizontalFlip && !tile.VerticalFlip)
                 dir = Direction.Right;
@@ -64,6 +92,34 @@ namespace Sor.Game {
                 dir = Direction.Down;
 
             return dir;
+        }
+
+        private MindMap.TileOri analyzeTile(MindMap.TileKind tk, Direction dir) {
+            if (tk == MindMap.TileKind.Wall) {
+                switch (dir) {
+                    case Direction.Up:
+                        return MindMap.TileOri.Left;
+                    case Direction.Right:
+                        return MindMap.TileOri.Up;
+                    case Direction.Down:
+                        return MindMap.TileOri.Right;
+                    case Direction.Left:
+                        return MindMap.TileOri.Down;
+                }
+            } else if (tk == MindMap.TileKind.Corner) {
+                switch (dir) {
+                    case Direction.Up:
+                        return MindMap.TileOri.DownLeft;
+                    case Direction.Right:
+                        return MindMap.TileOri.UpLeft;
+                    case Direction.Down:
+                        return MindMap.TileOri.UpRight;
+                    case Direction.Left:
+                        return MindMap.TileOri.DownRight;
+                }
+            }
+
+            throw new FormatException("unrecognized tile");
         }
     }
 }
