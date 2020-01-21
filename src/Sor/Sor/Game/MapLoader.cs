@@ -33,6 +33,7 @@ namespace Sor.Game {
             for (int r = 0; r < structure.Height; r++) {
                 for (int c = 0; c < structure.Width; c++) {
                     var tile = structure.Tiles[r * structure.Width + c];
+                    if (tile == null) continue;
                     var tileType = (MindMap.TileKind) (tile.Gid - worldTileset.FirstGid);
                     var tileDir = tileDirection(tile);
                     var tileOri = analyzeTile(tileType, tileDir);
