@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Nez;
 
 namespace Sor.Game {
     /// <summary>
@@ -7,16 +8,22 @@ namespace Sor.Game {
     public class MindMap {
         public class Room {
             /// <summary>
-            /// top-left corner
+            /// ul-left corner
             /// </summary>
-            public Point tl;
+            public Point ul;
             
             /// <summary>
-            /// bottom-right corner
+            /// down-right corner
             /// </summary>
-            public Point br;
+            public Point dr;
 
             public Point center;
+
+            public Room(Point ul, Point dr) {
+                this.ul = ul;
+                this.dr = dr;
+                this.center = new Point((ul.X + dr.X) / 2, (ul.Y + dr.Y) / 2);
+            }
         }
 
         public enum TileKind {
