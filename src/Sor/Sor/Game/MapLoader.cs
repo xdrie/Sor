@@ -35,22 +35,43 @@ namespace Sor.Game {
                     var tile = structure.GetTile(c, r);
                     if (tile == null) continue;
 
-                    MindMap.TileOri ori(TmxLayerTile t) {
-                        return analyzeTile((MindMap.TileKind) (t.Gid - worldTileset.FirstGid), tileDirection(t));
+                    Map.TileOri ori(TmxLayerTile t) {
+                        return analyzeTile((Map.TileKind) (t.Gid - worldTileset.FirstGid), tileDirection(t));
                     }
 
                     var tileOri = ori(tile);
-                    if (tileOri == MindMap.TileOri.UpLeft) {
+                    if (tileOri == Map.TileOri.UpLeft) {
                         var topEdge = r;
                         var leftEdge = c;
+                        var scanFirst = default(Point);
+                        var scanOpen = 0;
+                        var openings = new List<Map.Door>();
+                        // line-scan setup
+                        void updateScan(TmxLayerTile t, Point p) {
+                            if (t != null) {
+                                if (scanOpen > 0) {
+                                    openings.Add(new Map.Door(scanFirst, p));
+                                    scanFirst = default;
+                                    scanOpen = 0;
+                                }
+                            } else {
+                                if (scanOpen == 0) {
+                                    // start the count
+                                    scanFirst = p;
+                                }
+
+                                scanOpen++;
+                            }
+                        }
                         // scan for an UpRight
                         var ulTile = tile;
                         var urTile = default(TmxLayerTile);
                         var rightEdge = -1;
                         for (int sx = leftEdge; sx < structure.Width; sx++) {
                             var scTile = structure.GetTile(sx, topEdge);
+                            updateScan(scTile, new Point(sx, topEdge));
                             if (scTile == null) continue;
-                            if (ori(scTile) == MindMap.TileOri.UpRight) {
+                            if (ori(scTile) == Map.TileOri.UpRight) {
                                 urTile = scTile;
                                 rightEdge = sx;
                                 break;
@@ -62,8 +83,9 @@ namespace Sor.Game {
                         var downEdge = -1;
                         for (int sy = topEdge; sy < structure.Height; sy++) {
                             var scTile = structure.GetTile(rightEdge, sy);
+                            updateScan(scTile, new Point(rightEdge, sy));
                             if (scTile == null) continue;
-                            if (ori(scTile) == MindMap.TileOri.DownRight) {
+                            if (ori(scTile) == Map.TileOri.DownRight) {
                                 drTile = scTile;
                                 downEdge = sy;
                                 break;
@@ -74,8 +96,9 @@ namespace Sor.Game {
                         var dlTile = default(TmxLayerTile);
                         for (int sx = rightEdge; sx >= 0; sx--) {
                             var scTile = structure.GetTile(sx, downEdge);
+                            updateScan(scTile, new Point(sx, downEdge));
                             if (scTile == null) continue;
-                            if (ori(scTile) == MindMap.TileOri.DownLeft) {
+                            if (ori(scTile) == Map.TileOri.DownLeft) {
                                 dlTile = scTile;
                                 break;
                             }
@@ -83,7 +106,8 @@ namespace Sor.Game {
 
                         if (dlTile == null) break;
                         // all 4 corners have been found, create a room
-                        var room = new MindMap.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
+                        var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
+                        room.doors = openings;
                     }
                 }
             }
@@ -148,29 +172,29 @@ namespace Sor.Game {
             return dir;
         }
 
-        private MindMap.TileOri analyzeTile(MindMap.TileKind tk, Direction dir) {
-            if (tk == MindMap.TileKind.Wall) {
+        private Map.TileOri analyzeTile(Map.TileKind tk, Direction dir) {
+            if (tk == Map.TileKind.Wall) {
                 switch (dir) {
                     case Direction.Up:
-                        return MindMap.TileOri.Left;
+                        return Map.TileOri.Left;
                     case Direction.Right:
-                        return MindMap.TileOri.Up;
+                        return Map.TileOri.Up;
                     case Direction.Down:
-                        return MindMap.TileOri.Right;
+                        return Map.TileOri.Right;
                     case Direction.Left:
-                        return MindMap.TileOri.Down;
+                        return Map.TileOri.Down;
                 }
             }
-            else if (tk == MindMap.TileKind.Corner) {
+            else if (tk == Map.TileKind.Corner) {
                 switch (dir) {
                     case Direction.Up:
-                        return MindMap.TileOri.DownLeft;
+                        return Map.TileOri.DownLeft;
                     case Direction.Right:
-                        return MindMap.TileOri.UpLeft;
+                        return Map.TileOri.UpLeft;
                     case Direction.Down:
-                        return MindMap.TileOri.UpRight;
+                        return Map.TileOri.UpRight;
                     case Direction.Left:
-                        return MindMap.TileOri.DownRight;
+                        return Map.TileOri.DownRight;
                 }
             }
 
