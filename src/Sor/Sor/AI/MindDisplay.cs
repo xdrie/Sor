@@ -7,7 +7,8 @@ using Sor.Components.Units;
 namespace Sor.AI {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Mind mind;
-        private Wing wing; 
+        private Wing wing;
+        private Color textCol = Microsoft.Xna.Framework.Color.WhiteSmoke;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
@@ -29,7 +30,7 @@ namespace Sor.AI {
             ind.AppendLine($"[mind] {wing.name}");
             ind.AppendLine($"seen wings: {mind.state.detectedWings.Count}");
             batcher.DrawString(Graphics.Instance.BitmapFont, ind, 
-                camera.ScreenToWorldPoint(new Vector2(20, 20)), Color.White);
+                camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
             
             batcher.DrawHollowRect(new Rectangle(mind.sensorRec.Location.ToPoint(), mind.sensorRec.Size.ToPoint()), Color.Green);
         }

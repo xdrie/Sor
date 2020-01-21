@@ -35,6 +35,20 @@ namespace Sor.Components.Units {
 
             if (controller != null) {
                 movement();
+                interaction();
+            }
+        }
+
+        private void interaction() {
+            if (controller.tetherInput.IsPressed) {
+                var capEnergy = 100;
+                var capSpeed = 40f;
+                // shoot out a capsule
+                var thrustVec = new Vector2(0, -capSpeed);
+                var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
+                var cap = capNt.AddComponent<Capsule>();
+                cap.firstAvailableAt = Time.TimeSinceSceneLoad + 2f;
+                var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
             }
         }
 
@@ -61,16 +75,19 @@ namespace Sor.Components.Units {
                         velocity = vf;
                         hitShip.velocity = vf;
                         motion -= result.MinimumTranslationVector;
-                    } else if (result.Collider?.Tag == Constants.TAG_THING_COLLIDER) {
+                    }
+                    else if (result.Collider?.Tag == Constants.TAG_THING_COLLIDER) {
                         var hitEntity = result.Collider.Entity;
                         if (hitEntity.HasComponent<Capsule>()) {
                             var capsule = hitEntity.GetComponent<Capsule>();
-                            // apply the capsule
-                            me.energy += capsule.energy;
-                            capsule.energy = 0;
-                            capsule.destroy(); // blow it up
+                            if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
+                                // apply the capsule
+                                me.energy += capsule.energy;
+                                capsule.energy = 0;
+                                capsule.destroy(); // blow it up
+                            }
                         }
-                    } 
+                    }
                 }
             }
 
@@ -81,7 +98,7 @@ namespace Sor.Components.Units {
             // apply turn input
             var turnInput = controller.moveDirectionInput.Value.X;
             angularVelocity += turnInput * turnPower;
-            
+
             // get thrust input
             var thrustInput = controller.moveDirectionInput.Value.Y;
             var thrustVal = thrustPower;
@@ -93,7 +110,8 @@ namespace Sor.Components.Units {
                 thrustVal *= boostFactor;
                 maxVelocity = new Vector2(440f);
                 Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
-            } else {
+            }
+            else {
                 maxVelocity = new Vector2(80f);
             }
 
@@ -102,6 +120,7 @@ namespace Sor.Components.Units {
                     boostRibbon.StartEmitting();
                     boostRibbon.Enabled = true;
                 }
+
                 // trail.EnableSpriteTrail();
             }
 
@@ -109,6 +128,7 @@ namespace Sor.Components.Units {
                 if (boostRibbon.IsEmitting) {
                     boostRibbon.StopEmitting();
                 }
+
                 // trail.DisableSpriteTrail();
             }
 
@@ -116,7 +136,8 @@ namespace Sor.Components.Units {
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal);
                 velocity += thrustVec.rotate(angle);
-            } else { // slowdown thrust
+            }
+            else { // slowdown thrust
                 float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 velocity *= fac;
             }

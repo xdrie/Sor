@@ -1,7 +1,6 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
@@ -16,6 +15,8 @@ namespace Sor.Components.Units {
 
         public override void Initialize() {
             base.Initialize();
+
+            energy = 10_000;
 
             animator.AddAnimation("ship", new[] {sprites[0]});
             animator.AddAnimation("ship2block", new[] {sprites[1], sprites[2], sprites[3], sprites[4]});

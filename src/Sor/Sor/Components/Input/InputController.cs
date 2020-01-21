@@ -6,5 +6,6 @@ namespace Sor.Components.Input {
         public VirtualJoystick moveDirectionInput = new VirtualJoystick(true);
         
         public VirtualButton boostInput = new VirtualButton();
+        public VirtualButton tetherInput = new VirtualButton();
     }
 }
