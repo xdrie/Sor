@@ -10,6 +10,7 @@ namespace Sor.Components.Units {
         private BoxCollider hitbox;
 
         public string name;
+        public int energy;
 
         public Wing() : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) { }
 

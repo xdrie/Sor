@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
 using Sor.Components.Input;
+using Sor.Components.Things;
 
 namespace Sor.Components.Units {
     public class WingBody : KinBody {
@@ -60,7 +61,16 @@ namespace Sor.Components.Units {
                         velocity = vf;
                         hitShip.velocity = vf;
                         motion -= result.MinimumTranslationVector;
-                    }
+                    } else if (result.Collider?.Tag == Constants.TAG_THING_COLLIDER) {
+                        var hitEntity = result.Collider.Entity;
+                        if (hitEntity.HasComponent<Capsule>()) {
+                            var capsule = hitEntity.GetComponent<Capsule>();
+                            // apply the capsule
+                            me.energy += capsule.energy;
+                            capsule.energy = 0;
+                            capsule.destroy(); // blow it up
+                        }
+                    } 
                 }
             }
 
