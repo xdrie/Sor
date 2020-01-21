@@ -35,7 +35,7 @@ namespace Sor.Scenes {
                 // tween
                 bookrowSpriteRenderer
                     .TweenColorTo(gameContext.assets.palette[2], 0.2f)
-                    .SetCompletionHandler(t => transitionScene<PlayScene>())
+                    .SetCompletionHandler(t => transitionScene(new PlayScene(), 0.5f))
                     .Start();
             }
         }
