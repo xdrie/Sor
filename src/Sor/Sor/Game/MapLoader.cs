@@ -140,8 +140,13 @@ namespace Sor.Game {
             foreach (var rect in rects) {
                 // TODO: since rect center is checked, it might be an opening and then the wall won't be detected
                 var rectCenter = new Vector2(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+                var rectLeft = new Vector2(rect.Left, rect.Top + rect.Height / 2);
                 var corrTilePos = map.WorldToTilePosition(rectCenter);
                 var corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
+                if (corrTile == null) { // if center isn't found, check left
+                    corrTilePos = map.WorldToTilePosition(rectLeft);
+                    corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
+                }
                 var corrDirection = tileDirection(corrTile);
                 var adjCollider = default(Rectangle);
                 // adjust collider based on direction
