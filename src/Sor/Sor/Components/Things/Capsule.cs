@@ -14,16 +14,16 @@ namespace Sor.Components.Things {
 
         public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
             animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});
-            
+
             animator.Play("default");
         }
 
         public override void Initialize() {
             base.Initialize();
-            
+
             Entity.AddComponent<CapsuleBody>();
-            Entity.AddComponent(new BoxCollider(-8, -12, 8, 24){Tag = Constants.COLLIDER_THING, IsTrigger = true});
-            Entity.AddComponent(new BoxCollider(-40, -40, 80, 80){Tag = Constants.TRIGGER_GRAVITY, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-8, -12, 8, 24) {Tag = Constants.COLLIDER_THING, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-40, -40, 80, 80) {Tag = Constants.TRIGGER_GRAVITY, IsTrigger = true});
         }
 
         public CapsuleBody launch(int energy, Vector2 launch) {
@@ -36,12 +36,12 @@ namespace Sor.Components.Things {
             var alpha = (int) Mathf.Sin(Time.DeltaTime / flashSpeed) * 155 + 100;
             animator.Color = new Color(animator.Color.R, animator.Color.G, animator.Color.B, alpha);
         }
-        
+
         public class CapsuleBody : KinBody {
             private float maxAngularFloat = Mathf.PI * 1.4f;
             private float maxLinearFloat = 40f;
             private float randomLinearFloat = 10f;
-            
+
             public override void Initialize() {
                 base.Initialize();
 
@@ -52,10 +52,13 @@ namespace Sor.Components.Things {
             }
         }
 
-        public void destroy() {
+        public void acquire() {
+            if (!acquired) {
+                var tw = spriteRenderer.TweenColorTo(Color.Black, 0.4f);
+                tw.SetCompletionHandler(t => { Entity.Destroy(); });
+                tw.Start();
+            }
             acquired = true;
-            // TODO: trigger some sort of more interesting animation
-            Entity.Destroy();
         }
     }
 }
