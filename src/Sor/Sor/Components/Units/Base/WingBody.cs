@@ -18,6 +18,7 @@ namespace Sor.Components.Units {
         public float laneFactor = 4f;
         public float topSpeed = 80f;
         public float stdDrag = 16f;
+        public float gravityFactor = 4000f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
@@ -65,7 +66,7 @@ namespace Sor.Components.Units {
                     var thrustVec = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
-                    cap.firstAvailableAt = Time.TimeSinceSceneLoad + 2f;
+                    cap.firstAvailableAt = Time.TotalTime + 4f;
                     cap.sender = me;
                     var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
                 }
@@ -170,6 +171,25 @@ namespace Sor.Components.Units {
                 // lanes multiply velocity
                 velocity *= laneFactor;
                 drag = Vector2.Zero;
+            }
+
+            if (other.Tag == Constants.TRIGGER_GRAVITY) {
+                var gravThing = other.Entity;
+                var succ = true;
+                if (gravThing.HasComponent<Capsule>()) {
+                    var cap = gravThing.GetComponent<Capsule>();
+                    if (Time.TotalTime < cap.firstAvailableAt) {
+                        succ = false;
+                    }
+                }
+                if (succ) {
+                    var thingBody = gravThing.GetComponent<KinBody>();
+                    var toMe = Entity.Position - gravThing.Position;
+                    var toMeDir = Vector2Ext.Normalize(toMe);
+                    var dist = toMe.Length();
+                    var gravForce = (gravityFactor * mass) / (dist * dist);
+                    thingBody.velocity += gravForce * toMeDir;
+                }
             }
         }
 

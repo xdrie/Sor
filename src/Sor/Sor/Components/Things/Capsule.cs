@@ -22,7 +22,8 @@ namespace Sor.Components.Things {
             base.Initialize();
             
             Entity.AddComponent<CapsuleBody>();
-            Entity.AddComponent(new BoxCollider(-4, -6, 4, 12){Tag = Constants.COLLIDER_THING, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-8, -12, 8, 24){Tag = Constants.COLLIDER_THING, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-40, -40, 80, 80){Tag = Constants.TRIGGER_GRAVITY, IsTrigger = true});
         }
 
         public CapsuleBody launch(int energy, Vector2 launch) {
