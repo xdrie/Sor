@@ -32,6 +32,13 @@ namespace Sor.Game {
         private void loadFeatures() {
             // look for colliders (they will be matched to tile groups)
             // different types of features are never adjacent, so checking ul tile will tell us the kind
+            var rects = features.GetCollisionRectangles();
+            foreach (var collider in rects) {
+                var boxCollider = new BoxCollider(collider);
+                boxCollider.IsTrigger = true;
+                boxCollider.Tag = Constants.COLLIDER_LANE;
+                mapEntity.AddComponent(boxCollider);
+            }
         }
 
         /// <summary>
@@ -128,33 +135,33 @@ namespace Sor.Game {
         /// Re-calculate the colliders to better match the tile sprites
         /// </summary>
         private void adjustColliders() {
-            var colliders = structure.GetCollisionRectangles();
+            var rects = structure.GetCollisionRectangles();
             var adjustedColliders = new List<Rectangle>();
-            foreach (var collider in colliders) {
-                var colliderCenter =
-                    new Vector2(collider.Left + collider.Width / 2, collider.Top + collider.Height / 2);
-                var corrTilePos = map.WorldToTilePosition(colliderCenter);
+            foreach (var rect in rects) {
+                // TODO: since rect center is checked, it might be an opening and then the wall won't be detected
+                var rectCenter = new Vector2(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2);
+                var corrTilePos = map.WorldToTilePosition(rectCenter);
                 var corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
                 var corrDirection = tileDirection(corrTile);
                 var adjCollider = default(Rectangle);
                 // adjust collider based on direction
                 switch (corrDirection) {
                     case Direction.Up: // left wall
-                        adjCollider = new Rectangle(collider.X, collider.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
-                            collider.Height + map.TileWidth - WALL_BORDER);
+                        adjCollider = new Rectangle(rect.X, rect.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
+                            rect.Height + map.TileWidth - WALL_BORDER);
                         break;
                     case Direction.Right: // top wall
-                        adjCollider = new Rectangle(collider.X, collider.Y, collider.Width, WALL_BORDER);
+                        adjCollider = new Rectangle(rect.X, rect.Y, rect.Width, WALL_BORDER);
                         break;
                     case Direction.Down: // right wall
-                        adjCollider = new Rectangle(collider.X + map.TileWidth - WALL_BORDER,
-                            collider.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
-                            collider.Height + map.TileWidth - WALL_BORDER);
+                        adjCollider = new Rectangle(rect.X + map.TileWidth - WALL_BORDER,
+                            rect.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
+                            rect.Height + map.TileWidth - WALL_BORDER);
                         break;
                     case Direction.Left: // down wall
-                        adjCollider = new Rectangle(collider.X - map.TileWidth + WALL_BORDER,
-                            collider.Y + map.TileWidth - WALL_BORDER,
-                            collider.Width + map.TileWidth - WALL_BORDER + map.TileWidth - WALL_BORDER, WALL_BORDER);
+                        adjCollider = new Rectangle(rect.X - map.TileWidth + WALL_BORDER,
+                            rect.Y + map.TileWidth - WALL_BORDER,
+                            rect.Width + map.TileWidth - WALL_BORDER + map.TileWidth - WALL_BORDER, WALL_BORDER);
                         break;
                 }
 
