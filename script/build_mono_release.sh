@@ -10,9 +10,13 @@ REVISION=$(git log --pretty=format:'%h' -n 1)
 ARCNAME="sor_mono-$REVISION"
 ARTIFACT="builds/$ARCNAME.7z"
 
-echo "running build..."
+echo "getting dependencies..."
+git submodule update --init --recursive # update submodules
+
 cd src/$PROJECT
+echo "running restore..."
 dotnet restore
+echo "running build..."
 msbuild $PROJECT.sln /p:Configuration=Release
 
 popd
