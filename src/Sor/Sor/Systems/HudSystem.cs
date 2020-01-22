@@ -13,7 +13,8 @@ namespace Sor.Systems {
         }
         
         public override void Process() {
-            energyIndicator.setValue(0.7f);
+            // TODO: use better-defined numbers
+            energyIndicator.setValue(player.energy / 10_000f);
         }
     }
 }

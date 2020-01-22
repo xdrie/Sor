@@ -41,14 +41,17 @@ namespace Sor.Components.Units {
 
         private void interaction() {
             if (controller.tetherInput.IsPressed) {
-                var capEnergy = 100;
+                var capEnergy = 400;
                 var capSpeed = 40f;
-                // shoot out a capsule
-                var thrustVec = new Vector2(0, -capSpeed);
-                var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
-                var cap = capNt.AddComponent<Capsule>();
-                cap.firstAvailableAt = Time.TimeSinceSceneLoad + 2f;
-                var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
+                if (me.energy > capEnergy) {
+                    me.energy -= capEnergy;
+                    // shoot out a capsule
+                    var thrustVec = new Vector2(0, -capSpeed);
+                    var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
+                    var cap = capNt.AddComponent<Capsule>();
+                    cap.firstAvailableAt = Time.TimeSinceSceneLoad + 2f;
+                    var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
+                }
             }
         }
 
