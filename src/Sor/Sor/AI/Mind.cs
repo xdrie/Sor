@@ -43,18 +43,18 @@ namespace Sor.AI {
             // - vision
             // boxcast in radius
             var sensorCollResults = Physics.BoxcastBroadphase(sensorRec).ToList();
-            state.detectedWings.Clear();
-            state.detectedThings.Clear();
+            state.seenWings.Clear();
+            state.seenThings.Clear();
             foreach (var sensorResult in sensorCollResults) {
                 if (sensorResult.Entity == null) continue;
                 var sensed = sensorResult.Entity;
                 if (sensorResult.Tag == Constants.COLLIDER_SHIP && sensed != Entity) {
-                    state.detectedWings.Add(sensed.GetComponent<Wing>());
+                    state.seenWings.Add(sensed.GetComponent<Wing>());
                 } else if (sensorResult.Tag == Constants.COLLIDER_THING) {
-                    state.detectedThings.Add(sensed.GetComponent<Thing>());
+                    state.seenThings.Add(sensed.GetComponent<Thing>());
                 }
             }
-            state.detectedWings = sensorCollResults
+            state.seenWings = sensorCollResults
                 .Where(x => x.Tag == Constants.COLLIDER_SHIP && x.Entity != null && x.Entity != Entity)
                 .Select(x => x.Entity.GetComponent<Wing>())
                 .ToList();

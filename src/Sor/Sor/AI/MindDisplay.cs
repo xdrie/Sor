@@ -28,7 +28,7 @@ namespace Sor.AI {
             // TODO: draw the info
             StringBuilder ind = new StringBuilder();
             ind.AppendLine($"[mind] {wing.name}");
-            ind.AppendLine($"seen wings: {mind.state.detectedWings.Count}");
+            ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
             batcher.DrawString(Graphics.Instance.BitmapFont, ind, 
                 camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
         }
