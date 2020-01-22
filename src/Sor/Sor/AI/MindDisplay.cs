@@ -28,7 +28,7 @@ namespace Sor.AI {
             // TODO: draw the info
             StringBuilder ind = new StringBuilder();
             ind.AppendLine($"[mind] {wing.name}");
-            ind.AppendLine($"seen wings: {mind.state.detectedWings.Count}");
+            ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
             batcher.DrawString(Graphics.Instance.BitmapFont, ind, 
                 camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
         }
@@ -37,7 +37,8 @@ namespace Sor.AI {
             base.DebugRender(batcher);
             
             // sensor rect
-            batcher.DrawHollowRect(new Rectangle(mind.sensorRec.Location.ToPoint(), mind.sensorRec.Size.ToPoint()), Color.Green);
+            batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
+                mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
         }
 
         public void Update() {

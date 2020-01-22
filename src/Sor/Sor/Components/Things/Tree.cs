@@ -14,7 +14,8 @@ namespace Sor.Components.Things {
         public float developmentSpeed = 2f; // development speed is a ratio
         public float growthTimer = 0;
         public float fruitTimer = 0f;
-        public float fruitRange = 10f;
+        public float fruitSpawnRange = 10f;
+        public float childRange = 40f;
         public float fruitValue = 800f;
 
         public Tree() : base(Core.Content.LoadTexture("Data/sprites/tree.png"), 64, 64) {
@@ -63,7 +64,7 @@ namespace Sor.Components.Things {
             var growFruit = Nez.Random.Chance(fruitsPerSec * Time.DeltaTime);
             if (fruits < maxFruits && Time.TotalTime > fruitTimer && growFruit) {
                 // spawn a fruit
-                var fruitOffset = Random.Range(new Vector2(-fruitRange), new Vector2(fruitRange));
+                var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
                 var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset);
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
@@ -82,7 +83,8 @@ namespace Sor.Components.Things {
             if (fruits > 0) {
                 var rmFruits = new HashSet<Capsule>();
                 foreach (var child in childFruits) {
-                    if (child.acquired) {
+                    var toChild = Entity.Position - child.Entity.Position;
+                    if (child.acquired || toChild.LengthSquared() > (childRange * childRange)) {
                         fruits--;
                         harvest++;
                         growthPoints++;

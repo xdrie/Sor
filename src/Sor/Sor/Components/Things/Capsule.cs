@@ -4,8 +4,7 @@ using Nez;
 using Sor.Components.Units;
 
 namespace Sor.Components.Things {
-    public class Capsule : GAnimatedSprite, IUpdatable {
-        private float flashSpeed = 10f;
+    public class Capsule : Thing {
         public double energy = 0;
         public bool acquired = false;
         public float firstAvailableAt = 0;
@@ -30,11 +29,6 @@ namespace Sor.Components.Things {
             var capBody = this.GetComponent<CapsuleBody>();
             capBody.velocity += launch;
             return capBody;
-        }
-
-        public void Update() {
-            var alpha = (int) Mathf.Sin(Time.DeltaTime / flashSpeed) * 155 + 100;
-            animator.Color = new Color(animator.Color.R, animator.Color.G, animator.Color.B, alpha);
         }
 
         public class CapsuleBody : KinBody {
