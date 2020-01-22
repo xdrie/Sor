@@ -7,11 +7,9 @@ namespace Sor.Components.Units {
         public Vector2 maxVelocity;
         public Vector2 acceleration;
         public Vector2 drag;
+        protected Mover mov;
 
-        public Vector2 pos {
-            get { return Transform.LocalPosition; }
-            set { Transform.LocalPosition = value; }
-        }
+        public Vector2 pos => Transform.LocalPosition;
 
         public float maxAngular;
         public float angularVelocity;
@@ -23,6 +21,11 @@ namespace Sor.Components.Units {
             set { Transform.LocalRotation = value; }
         }
 
+        public override void Initialize() {
+            base.Initialize();
+
+            mov = Entity.AddComponent<Mover>();
+        }
 
         public virtual void Update() {
             float dt = Time.DeltaTime;
@@ -55,7 +58,7 @@ namespace Sor.Components.Units {
                 velocity.Y += drag.Y * dt;
             }
 
-            pos += motion(velocity * dt);
+            applyMotion(velocity * dt);
 
             angularVelocity += angularAcceleration * dt;
             if (maxAngular > 0) {
@@ -79,8 +82,8 @@ namespace Sor.Components.Units {
             angle += angularVelocity * dt;
         }
 
-        protected virtual Vector2 motion(Vector2 posDelta) {
-            return posDelta;
+        protected virtual void applyMotion(Vector2 posDelta) {
+            mov.ApplyMovement(posDelta);
         }
     }
 }

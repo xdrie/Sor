@@ -13,7 +13,8 @@ namespace Sor.Components.Units {
         public float turnPower = Mathf.PI * 0.32f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
-        private Mover mov;
+
+        public float boostCooldown = 0f;
 
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
@@ -22,7 +23,6 @@ namespace Sor.Components.Units {
 
             me = Entity.GetComponent<Wing>();
             controller = Entity.GetComponent<InputController>();
-            mov = Entity.AddComponent<Mover>();
 
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
@@ -55,9 +55,8 @@ namespace Sor.Components.Units {
             }
         }
 
-        protected override Vector2 motion(Vector2 posDelta) {
-            var motion = base.motion(posDelta);
-
+        protected override void applyMotion(Vector2 posDelta) {
+            var motion = posDelta;
             var collisionResults = new List<CollisionResult>();
             var hitbox = Entity.GetComponent<BoxCollider>();
             if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
@@ -94,7 +93,10 @@ namespace Sor.Components.Units {
                 }
             }
 
-            return motion;
+            var moveCollisions = new List<CollisionResult>();
+            mov.AdvancedCalculateMovement(ref motion, moveCollisions);
+            // TODO: something interesting
+            mov.ApplyMovement(motion);
         }
 
         private void movement() {
@@ -109,12 +111,14 @@ namespace Sor.Components.Units {
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
             // var trail = Entity.GetComponent<SpriteTrail>();
-            if (controller.boostInput) {
+            if (controller.boostInput && Time.TotalTime > boostCooldown) {
                 thrustVal *= boostFactor;
                 maxVelocity = new Vector2(440f);
                 Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
-            }
-            else {
+            } else {
+                if (controller.boostInput.IsReleased) {
+                    boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
+                }
                 maxVelocity = new Vector2(80f);
             }
 
