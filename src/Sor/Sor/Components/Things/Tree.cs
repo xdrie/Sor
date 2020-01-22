@@ -10,8 +10,9 @@ namespace Sor.Components.Things {
         public int harvest = 0;
         public List<Capsule> childFruits = new List<Capsule>();
         public int maxFruits = 0;
-        public float ripeningTime = 4f;
-        public float developmentSpeed = 0.40f;
+        public float ripeningTime = 0.4f;
+        public float developmentSpeed = 2f; // development speed is a ratio
+        public float growthTimer = 0;
         public float fruitTimer = 0f;
         public float fruitRange = 10f;
 
@@ -36,6 +37,7 @@ namespace Sor.Components.Things {
 
         public void updateStage() {
             animator.Play(stage.ToString());
+            growthTimer = Time.TotalTime + 60f * (1f / developmentSpeed) * stage; // time until next growth
             switch (stage) {
                 case 7:
                     maxFruits = 1;
@@ -74,17 +76,26 @@ namespace Sor.Components.Things {
             }
 
             // update existing fruits
+            var growthPoints = 0;
             if (fruits > 0) {
                 var rmFruits = new HashSet<Capsule>();
                 foreach (var child in childFruits) {
                     if (child.acquired) {
                         fruits--;
                         harvest++;
+                        growthPoints++;
                         rmFruits.Add(child);
                     }
                 }
 
                 childFruits.RemoveAll(x => rmFruits.Contains(x));
+            }
+            
+            // update general tree growth
+            growthTimer -= developmentSpeed * growthPoints * 10f;
+            if (Time.TotalTime > growthTimer) {
+                stage++; // upgrade stage
+                updateStage();
             }
         }
     }
