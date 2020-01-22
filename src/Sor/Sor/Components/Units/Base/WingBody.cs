@@ -15,7 +15,9 @@ namespace Sor.Components.Units {
         public float turnPower = Mathf.PI * 0.32f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
+        public float laneFactor = 4f;
         public float topSpeed = 80f;
+        public float stdDrag = 16f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
@@ -40,7 +42,7 @@ namespace Sor.Components.Units {
             mass = 10f;
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
-            drag = new Vector2(16f);
+            drag = new Vector2(stdDrag);
             maxVelocity = new Vector2(topSpeed);
         }
 
@@ -162,10 +164,18 @@ namespace Sor.Components.Units {
                     }
                 }
             }
+
+            if (other.Tag == Constants.COLLIDER_LANE) {
+                // lanes multiply velocity
+                velocity *= laneFactor;
+                drag = Vector2.Zero;
+            }
         }
 
         public void OnTriggerExit(Collider other, Collider local) {
-            // ...
+            if (other.Tag == Constants.COLLIDER_LANE) {
+                drag = new Vector2(stdDrag);
+            }
         }
     }
 }
