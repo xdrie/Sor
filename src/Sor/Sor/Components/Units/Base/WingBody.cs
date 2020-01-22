@@ -63,12 +63,12 @@ namespace Sor.Components.Units {
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
-                    var thrustVec = new Vector2(0, -capSpeed);
+                    var capMotion = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 4f;
                     cap.sender = me;
-                    var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
+                    var capBody = cap.launch(capEnergy, capMotion.rotate(angle));
                 }
             }
         }
