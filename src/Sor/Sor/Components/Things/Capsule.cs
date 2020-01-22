@@ -8,6 +8,7 @@ namespace Sor.Components.Things {
         private float flashSpeed = 10f;
         public double energy = 0;
         public float firstAvailableAt = 0;
+        public Wing sender = null;
 
         public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
             animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});

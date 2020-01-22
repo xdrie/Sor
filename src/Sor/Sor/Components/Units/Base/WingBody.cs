@@ -59,6 +59,7 @@ namespace Sor.Components.Units {
                     var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TimeSinceSceneLoad + 2f;
+                    cap.sender = me;
                     var capBody = cap.launch(capEnergy, thrustVec.rotate(angle));
                 }
             }
