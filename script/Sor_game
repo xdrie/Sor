@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# little script to run Sor with Mono
+DIR="$(cd "$(dirname "$0")" && pwd)"
+mono $DIR/SorDk.exe

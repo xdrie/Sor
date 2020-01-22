@@ -21,11 +21,14 @@ msbuild $PROJECT.sln /p:Configuration=Release
 
 popd
 
+OUTPATH=$PROJECT_PATH/bin/Release/$FRAMEWORK
 echo "copying natives..."
-cp natives/* $PROJECT_PATH/bin/Release/$FRAMEWORK/
+cp natives/* $OUTPATH/
+cp script/${PROJECT}_game $OUTPATH/
+chmod +x $OUTPATH/${PROJECT}_game
 
 mkdir -p builds/
 echo "compressing to $ARTIFACT..."
-7z a $ARTIFACT $PROJECT_PATH/bin/Release/$FRAMEWORK/*
+7z a $ARTIFACT $OUTPATH/*
 
 echo "release built!"
