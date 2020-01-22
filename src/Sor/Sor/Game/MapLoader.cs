@@ -9,6 +9,7 @@ namespace Sor.Game {
         private Scene scene;
         private readonly Entity mapEntity;
         private TmxLayer structure;
+        private TmxLayer features;
         private TmxTileset worldTileset;
         private TmxMap map;
         public const int WALL_BORDER = 4;
@@ -21,9 +22,16 @@ namespace Sor.Game {
         public void load(TmxMap map) {
             this.map = map;
             structure = map.GetLayer<TmxLayer>("structure");
+            features = map.GetLayer<TmxLayer>("features");
             worldTileset = map.Tilesets["world_tiles"];
             adjustColliders();
             analyzeRooms();
+            loadFeatures();
+        }
+
+        private void loadFeatures() {
+            // look for colliders (they will be matched to tile groups)
+            // different types of features are never adjacent, so checking ul tile will tell us the kind
         }
 
         /// <summary>
@@ -36,7 +44,7 @@ namespace Sor.Game {
                     if (tile == null) continue;
 
                     Map.TileOri ori(TmxLayerTile t) {
-                        return analyzeTile((Map.TileKind) (t.Gid - worldTileset.FirstGid), tileDirection(t));
+                        return analyzeWallTile((Map.TileKind) (t.Gid - worldTileset.FirstGid), tileDirection(t));
                     }
 
                     var tileOri = ori(tile);
@@ -46,6 +54,7 @@ namespace Sor.Game {
                         var scanFirst = default(Point);
                         var scanOpen = 0;
                         var openings = new List<Map.Door>();
+
                         // line-scan setup
                         void updateScan(TmxLayerTile t, Point p) {
                             if (t != null) {
@@ -54,7 +63,8 @@ namespace Sor.Game {
                                     scanFirst = default;
                                     scanOpen = 0;
                                 }
-                            } else {
+                            }
+                            else {
                                 if (scanOpen == 0) {
                                     // start the count
                                     scanFirst = p;
@@ -63,6 +73,7 @@ namespace Sor.Game {
                                 scanOpen++;
                             }
                         }
+
                         // scan for an UpRight
                         var ulTile = tile;
                         var urTile = default(TmxLayerTile);
@@ -172,7 +183,7 @@ namespace Sor.Game {
             return dir;
         }
 
-        private Map.TileOri analyzeTile(Map.TileKind tk, Direction dir) {
+        private Map.TileOri analyzeWallTile(Map.TileKind tk, Direction dir) {
             if (tk == Map.TileKind.Wall) {
                 switch (dir) {
                     case Direction.Up:
