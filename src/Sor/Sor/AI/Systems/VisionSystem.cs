@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Things;
@@ -9,7 +10,7 @@ namespace Sor.AI.Systems {
         private Vector2 senseVec => new Vector2(MindConstants.SENSE_RANGE);
         public RectangleF sensorRec => new RectangleF(entity.Position - senseVec / 2, senseVec);
 
-        public VisionSystem(Mind mind, float refresh) : base(mind, refresh) { }
+        public VisionSystem(Mind mind, float refresh, CancellationToken cancelToken) : base(mind, refresh, cancelToken) { }
 
         protected override void process() {
             // boxcast in radius
@@ -26,11 +27,6 @@ namespace Sor.AI.Systems {
                     state.seenThings.Add(sensed.GetComponent<Thing>());
                 }
             }
-
-            state.seenWings = sensorCollResults
-                .Where(x => x.Tag == Constants.COLLIDER_SHIP && x.Entity != null && x.Entity != entity)
-                .Select(x => x.Entity.GetComponent<Wing>())
-                .ToList();
         }
     }
 }

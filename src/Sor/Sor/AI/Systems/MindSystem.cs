@@ -1,3 +1,4 @@
+using System.Threading;
 using Nez;
 
 namespace Sor.AI.Systems {
@@ -10,12 +11,14 @@ namespace Sor.AI.Systems {
         public float refresh;
         public float nextRefreshAt;
         protected Entity entity;
-        
-        public MindSystem(Mind mind, float refresh) {
+        protected CancellationToken cancelToken;
+
+        public MindSystem(Mind mind, float refresh, CancellationToken cancelToken) {
             this.mind = mind;
             state = mind.state;
             this.entity = mind.Entity;
             this.refresh = refresh;
+            this.cancelToken = cancelToken;
         }
 
         protected abstract void process();
