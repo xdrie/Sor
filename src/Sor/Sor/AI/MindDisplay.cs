@@ -8,7 +8,7 @@ namespace Sor.AI {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Mind mind;
         private Wing wing;
-        private Color textCol = Microsoft.Xna.Framework.Color.WhiteSmoke;
+        private Color textCol = Color.WhiteSmoke;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();

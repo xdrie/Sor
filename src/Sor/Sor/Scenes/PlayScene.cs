@@ -4,15 +4,28 @@ using Sor.AI;
 using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Things;
+using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Systems;
 
 namespace Sor.Scenes {
     public class PlayScene : BaseGameScene {
+        private const int renderlayer_backdrop = 65535;
+        private const int renderlayer_ui_overlay = 1 << 30;
+        
         public override void Initialize() {
             base.Initialize();
             
             ClearColor = gameContext.assets.bgColor;
+
+            // Hide cursor
+            Core.Instance.IsMouseVisible = false;
+
+            // add fixed renderer
+            var fixedRenderer =
+                AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
+            fixedRenderer.ShouldDebugRender = false;
 
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerShip = playerEntity.AddComponent(new Wing());
@@ -35,8 +48,15 @@ namespace Sor.Scenes {
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
+            
+            // hud
+            var hud = CreateEntity("hud", new Vector2(20, 20));
+            var energyIndicator = hud.AddComponent(new IndicatorBar(96, 12));
+            energyIndicator.spriteRenderer.Color = new Color(79, 196, 131);
+            energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
+            energyIndicator.backdropRenderer.Color = new Color(128, 142, 153);
 
-            // Core.DebugRenderEnabled = true;
+            var hudSystem = AddEntityProcessor(new HudSystem(playerShip, hud));
 
             // add component to make Camera follow the player
             var followCamera = 
