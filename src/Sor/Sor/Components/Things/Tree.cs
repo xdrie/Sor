@@ -15,6 +15,7 @@ namespace Sor.Components.Things {
         public float growthTimer = 0;
         public float fruitTimer = 0f;
         public float fruitRange = 10f;
+        public float fruitValue = 800f;
 
         public Tree() : base(Core.Content.LoadTexture("Data/sprites/tree.png"), 64, 64) {
             animator.AddAnimation("1", new[] {sprites[0]});
@@ -67,6 +68,7 @@ namespace Sor.Components.Things {
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
+                fruit.energy = Nez.Random.Range(fruitValue * 0.6f, fruitValue * 1.2f);
                 var capBody = fruit.GetComponent<Capsule.CapsuleBody>();
                 capBody.velocity = Vector2.Zero;
                 childFruits.Add(fruit);
