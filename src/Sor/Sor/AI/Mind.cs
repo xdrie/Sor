@@ -41,13 +41,13 @@ namespace Sor.AI {
 
         public async Task consciousnessAsync(CancellationToken tok) {
             while (!tok.IsCancellationRequested) {
-                sense(); // sense the world around
                 think(); // think based on information and make plans
                 await Task.Delay(consciousnessSleep, tok);
             }
         }
 
         public void Update() { // Sense-Think-Act AI
+            sense(); // sense the world around
             act(); // carry out decisions
         }
 
