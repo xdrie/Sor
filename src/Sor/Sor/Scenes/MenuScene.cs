@@ -14,23 +14,27 @@ namespace Sor.Scenes {
             ClearColor = gameContext.assets.bgColor;
 
             var ui = CreateEntity("ui");
-            
+
             // var titleText = new TextComponent(gameContext.assets.font, "SOR", new Vector2(40, 40),
             //     gameContext.assets.fgColor);
             // ui.AddComponent(titleTexSpr);
-            
+
             var titleTexNt = CreateEntity("title", new Vector2(290f, 160f));
             titleTexNt.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/904.png")));
             titleTexNt.SetLocalScale(4f);
-            
+
             var playBtn = CreateEntity("play_button", new Vector2(800f, 120f));
-            bookrowSpriteRenderer = playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
+            bookrowSpriteRenderer =
+                playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
             playBtn.SetLocalScale(4f);
+
+            var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
+                new Vector2(10, Resolution.Y - 20f), gameContext.assets.fgColor));
         }
 
         public override void Update() {
             base.Update();
-    
+
             if (Input.IsKeyPressed(Keys.E)) {
                 // tween
                 bookrowSpriteRenderer
