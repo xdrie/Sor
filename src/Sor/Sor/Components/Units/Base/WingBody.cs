@@ -160,6 +160,7 @@ namespace Sor.Components.Units {
                         // apply the capsule
                         me.core.energy += capsule.energy;
                         capsule.energy = 0;
+                        capsule.acquired = true;
                         capsule.destroy(); // blow it up
                     }
                 }

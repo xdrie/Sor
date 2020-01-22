@@ -7,6 +7,7 @@ namespace Sor.Components.Things {
     public class Capsule : GAnimatedSprite, IUpdatable {
         private float flashSpeed = 10f;
         public double energy = 0;
+        public bool acquired = false;
         public float firstAvailableAt = 0;
         public Wing sender = null;
 
@@ -50,6 +51,7 @@ namespace Sor.Components.Things {
         }
 
         public void destroy() {
+            acquired = true;
             // TODO: trigger some sort of more interesting animation
             Entity.Destroy();
         }
