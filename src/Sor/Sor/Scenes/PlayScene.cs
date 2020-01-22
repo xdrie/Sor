@@ -59,6 +59,7 @@ namespace Sor.Scenes {
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerShip, hud));
+            var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
 
             // add component to make Camera follow the player
             var followCamera = 

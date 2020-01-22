@@ -5,8 +5,8 @@ using Sor.Components.UI;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
-        private WingBody body;
-        private BoxCollider hitbox;
+        public WingBody body;
+        public BoxCollider hitbox;
 
         public string name;
         public int energy;
