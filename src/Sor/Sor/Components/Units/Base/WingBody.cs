@@ -18,7 +18,8 @@ namespace Sor.Components.Units {
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
-        private double boostDrain = 400;
+        public bool boosting = false;
+        private double boostDrain = 1000;
 
         public override void Initialize() {
             base.Initialize();
@@ -66,10 +67,11 @@ namespace Sor.Components.Units {
         protected override void applyMotion(Vector2 posDelta) {
             var motion = posDelta;
             var moveCollisions = new List<CollisionResult>();
-            mov.AdvancedCalculateMovement(ref motion, moveCollisions);
+            var calcMotion = motion; // a dummy motion
+            mov.AdvancedCalculateMovement(ref calcMotion, moveCollisions);
             foreach (var result in moveCollisions) {
                 // collision with a wall
-                if (result.Collider?.Tag == Constants.COLLIDER_WALL) {
+                if (!boosting && result.Collider?.Tag == Constants.COLLIDER_WALL) {
                     // suck velocity from hitting the wall
                     velocity *= VELOCITY_REDUCTION_EXP;
                     motion -= result.MinimumTranslationVector;
@@ -87,6 +89,7 @@ namespace Sor.Components.Units {
                 }
             }
 
+            // apply our manually adjusted motion
             mov.ApplyMovement(motion);
         }
 
@@ -101,39 +104,32 @@ namespace Sor.Components.Units {
 
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
-            // var trail = Entity.GetComponent<SpriteTrail>();
             if (controller.boostInput && Time.TotalTime > boostCooldown) {
                 var runDrain = boostDrain * Time.DeltaTime; // boosting drains energy
                 if (me.core.energy > runDrain) {
                     me.core.energy -= runDrain;
                     // boost the ship
+                    boosting = true;
                     thrustVal *= boostFactor; // multiply thrust power
                     maxVelocity = new Vector2(440f); // increase velocity cap
                     if (gameContext.config.maxVfx) {
                         Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
                     }
-
-                    if (controller.boostInput.IsPressed) {
-                        if (!boostRibbon.IsEmitting) {
-                            boostRibbon.StartEmitting();
-                            boostRibbon.Enabled = true;
-                        }
-
-                        // trail.EnableSpriteTrail();
+                    if (!boostRibbon.IsEmitting) {
+                        boostRibbon.StartEmitting();
+                        boostRibbon.Enabled = true;
                     }
                 }
             }
             else {
+                boosting = false;
+                maxVelocity = new Vector2(80f); // reset velocity cap
+                if (boostRibbon.IsEmitting) {
+                    boostRibbon.StopEmitting();
+                }
                 if (controller.boostInput.IsReleased) { // when boost stopped, set a cooldown
                     boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
-                    if (boostRibbon.IsEmitting) {
-                        boostRibbon.StopEmitting();
-                    }
-
-                    // trail.DisableSpriteTrail();
                 }
-
-                maxVelocity = new Vector2(80f); // reset velocity cap
             }
 
             // forward thrust
