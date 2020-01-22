@@ -29,8 +29,8 @@ namespace Sor.AI {
 
         public void Update() { // Sense-Think-Act
             sense(); // sense the world around
-            think(); // think about the information available
-            act(); // act on the information
+            think(); // think based on information and make plans
+            act(); // carry out decisions
         }
 
         private void act() {
