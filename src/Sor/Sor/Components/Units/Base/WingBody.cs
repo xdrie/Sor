@@ -57,33 +57,27 @@ namespace Sor.Components.Units {
 
         protected override void applyMotion(Vector2 posDelta) {
             var motion = posDelta;
-            var collisionResults = new List<CollisionResult>();
-            var hitbox = Entity.GetComponent<BoxCollider>();
-            if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
-                foreach (var result in collisionResults) {
-                    // collision with a wall
-                    if (result.Collider?.Tag == Constants.COLLIDER_WALL) {
-                        // suck velocity from hitting the wall
-                        velocity *= VELOCITY_REDUCTION_EXP;
-                        motion -= result.MinimumTranslationVector;
-                    }
-                    // collision with another ship
-                    else if (result.Collider?.Tag == Constants.COLLIDER_SHIP) {
-                        var hitShip = result.Collider.Entity.GetComponent<WingBody>();
-                        // conserve momentum in the collision
-                        var netMomentum = momentum + hitShip.momentum;
-                        var totalMass = mass + hitShip.mass;
-                        var vf = netMomentum / totalMass;
-                        velocity = vf;
-                        hitShip.velocity = vf;
-                        motion -= result.MinimumTranslationVector;
-                    }
-                }
-            }
-
             var moveCollisions = new List<CollisionResult>();
             mov.AdvancedCalculateMovement(ref motion, moveCollisions);
-            // TODO: something interesting
+            foreach (var result in moveCollisions) {
+                // collision with a wall
+                if (result.Collider?.Tag == Constants.COLLIDER_WALL) {
+                    // suck velocity from hitting the wall
+                    velocity *= VELOCITY_REDUCTION_EXP;
+                    motion -= result.MinimumTranslationVector;
+                }
+                // collision with another ship
+                else if (result.Collider?.Tag == Constants.COLLIDER_SHIP) {
+                    var hitShip = result.Collider.Entity.GetComponent<WingBody>();
+                    // conserve momentum in the collision
+                    var netMomentum = momentum + hitShip.momentum;
+                    var totalMass = mass + hitShip.mass;
+                    var vf = netMomentum / totalMass;
+                    velocity = vf;
+                    hitShip.velocity = vf;
+                    motion -= result.MinimumTranslationVector;
+                }
+            }
             mov.ApplyMovement(motion);
         }
 
