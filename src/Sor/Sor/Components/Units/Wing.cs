@@ -27,7 +27,7 @@ namespace Sor.Components.Units {
             base.OnAddedToEntity();
 
             body = Entity.AddComponent(new WingBody {mass = 10f});
-            hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.TAG_SHIP_COLLIDER});
+            hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.COLLIDER_SHIP});
             // add pips
             var pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);

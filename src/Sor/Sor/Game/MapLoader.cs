@@ -165,7 +165,7 @@ namespace Sor.Game {
             foreach (var coll in adjustedColliders) {
                 var boxCollider = new BoxCollider(coll);
                 mapEntity.AddComponent(boxCollider);
-                boxCollider.Tag = Constants.TAG_WALL_COLLIDER;
+                boxCollider.Tag = Constants.COLLIDER_WALL;
             }
         }
 

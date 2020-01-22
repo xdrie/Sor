@@ -6,7 +6,7 @@ using Sor.Components.Input;
 using Sor.Components.Things;
 
 namespace Sor.Components.Units {
-    public class WingBody : KinBody {
+    public class WingBody : KinBody, ITriggerListener {
         public Wing me;
         private InputController controller;
 
@@ -62,13 +62,13 @@ namespace Sor.Components.Units {
             if (hitbox.CollidesWithAnyMultiple(motion, collisionResults)) {
                 foreach (var result in collisionResults) {
                     // collision with a wall
-                    if (result.Collider?.Tag == Constants.TAG_WALL_COLLIDER) {
+                    if (result.Collider?.Tag == Constants.COLLIDER_WALL) {
                         // suck velocity from hitting the wall
                         velocity *= VELOCITY_REDUCTION_EXP;
                         motion -= result.MinimumTranslationVector;
                     }
                     // collision with another ship
-                    else if (result.Collider?.Tag == Constants.TAG_SHIP_COLLIDER) {
+                    else if (result.Collider?.Tag == Constants.COLLIDER_SHIP) {
                         var hitShip = result.Collider.Entity.GetComponent<WingBody>();
                         // conserve momentum in the collision
                         var netMomentum = momentum + hitShip.momentum;
@@ -77,18 +77,6 @@ namespace Sor.Components.Units {
                         velocity = vf;
                         hitShip.velocity = vf;
                         motion -= result.MinimumTranslationVector;
-                    }
-                    else if (result.Collider?.Tag == Constants.TAG_THING_COLLIDER) {
-                        var hitEntity = result.Collider.Entity;
-                        if (hitEntity.HasComponent<Capsule>()) {
-                            var capsule = hitEntity.GetComponent<Capsule>();
-                            if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
-                                // apply the capsule
-                                me.energy += capsule.energy;
-                                capsule.energy = 0;
-                                capsule.destroy(); // blow it up
-                            }
-                        }
                     }
                 }
             }
@@ -148,6 +136,25 @@ namespace Sor.Components.Units {
                 float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 velocity *= fac;
             }
+        }
+
+        public void OnTriggerEnter(Collider other, Collider local) {
+            if (other.Tag == Constants.COLLIDER_THING) {
+                var hitEntity = other.Entity;
+                if (hitEntity.HasComponent<Capsule>()) {
+                    var capsule = hitEntity.GetComponent<Capsule>();
+                    if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
+                        // apply the capsule
+                        me.energy += capsule.energy;
+                        capsule.energy = 0;
+                        capsule.destroy(); // blow it up
+                    }
+                }
+            }
+        }
+
+        public void OnTriggerExit(Collider other, Collider local) {
+            // ...
         }
     }
 }

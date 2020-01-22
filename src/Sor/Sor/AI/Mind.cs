@@ -42,7 +42,7 @@ namespace Sor.AI {
             // boxcast in radius
             var sensorCollResults = Physics.BoxcastBroadphase(sensorRec);
             state.detectedWings = sensorCollResults
-                .Where(x => x.Tag == Constants.TAG_SHIP_COLLIDER && x.Entity != null && x.Entity != Entity)
+                .Where(x => x.Tag == Constants.COLLIDER_SHIP && x.Entity != null && x.Entity != Entity)
                 .Select(x => x.Entity.GetComponent<Wing>())
                 .ToList();
         }
