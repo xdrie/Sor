@@ -12,7 +12,7 @@ namespace Sor.Components.Units {
 
         private GameContext gameContext;
 
-        public float turnPower = Mathf.PI * 0.32f;
+        public float turnPower = Mathf.PI * 0.72f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
         public float laneFactor = 4f;
@@ -41,7 +41,7 @@ namespace Sor.Components.Units {
 
         public void recalculateKinematics() {
             mass = 10f;
-            maxAngular = turnPower * 2f;
+            maxAngular = turnPower * 1.2f;
             angularDrag = turnPower * 2f;
             drag = new Vector2(stdDrag);
             maxVelocity = new Vector2(topSpeed);
