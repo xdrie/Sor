@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
+using Sor.Components.Things;
 
 namespace Sor.Game {
     public class MapLoader {
@@ -10,6 +11,7 @@ namespace Sor.Game {
         private readonly Entity mapEntity;
         private TmxLayer structure;
         private TmxLayer features;
+        private TmxObjectGroup nature;
         private TmxTileset worldTileset;
         private TmxMap map;
         public const int WALL_BORDER = 4;
@@ -23,10 +25,19 @@ namespace Sor.Game {
             this.map = map;
             structure = map.GetLayer<TmxLayer>("structure");
             features = map.GetLayer<TmxLayer>("features");
+            nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
             adjustColliders();
             analyzeRooms();
             loadFeatures();
+            loadNature();
+        }
+
+        private void loadNature() {
+            foreach (var th in nature.Objects) {
+                var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y));
+                nt.AddComponent(new Tree());
+            }
         }
 
         private void loadFeatures() {
