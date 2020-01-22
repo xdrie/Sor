@@ -1,9 +1,9 @@
 [submodule "lib/XNez"]
 	path = lib/XNez
-	url = https://git.iridiumion.xyz/xdrie/XNez.git
+	url = https://git.rie.icu/xdrie/XNez.git
 [submodule "lib/Glint"]
 	path = lib/Glint
-	url = https://git.iridiumion.xyz/xdrie/Glint.git
+	url = https://git.rie.icu/xdrie/Glint.git
 [submodule "lib/LunchSimulator"]
 	path = lib/LunchSimulator
-	url = https://git.iridiumion.xyz/xdrie/LunchSimulator.git
+	url = https://git.rie.icu/xdrie/LunchSimulator.git
