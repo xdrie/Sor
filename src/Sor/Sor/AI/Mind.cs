@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Nez;
+using Sor.AI.Systems;
 using Sor.Components.Input;
 using Sor.Components.Things;
 using Sor.Components.Units;
@@ -14,8 +15,7 @@ namespace Sor.AI {
         public LogicInputController controller;
         public Wing me;
         
-        private Vector2 senseVec => new Vector2(MindConstants.SENSE_RANGE);
-        public RectangleF sensorRec => new RectangleF(Entity.Position - senseVec / 2, senseVec);
+        public VisionSystem visionSystem;
 
         public override void Initialize() {
             base.Initialize();
@@ -24,6 +24,7 @@ namespace Sor.AI {
             me = Entity.GetComponent<Wing>();
 
             state = new MindState(this);
+            visionSystem = new VisionSystem(this, 0.2f);
         }
 
         public void Update() { // Sense-Think-Act
@@ -39,25 +40,7 @@ namespace Sor.AI {
         private void think() { }
 
         private void sense() {
-            // TODO: can vision have an update interval? unnecessary to do all this processing constantly
-            // - vision
-            // boxcast in radius
-            var sensorCollResults = Physics.BoxcastBroadphase(sensorRec).ToList();
-            state.seenWings.Clear();
-            state.seenThings.Clear();
-            foreach (var sensorResult in sensorCollResults) {
-                if (sensorResult.Entity == null) continue;
-                var sensed = sensorResult.Entity;
-                if (sensorResult.Tag == Constants.COLLIDER_SHIP && sensed != Entity) {
-                    state.seenWings.Add(sensed.GetComponent<Wing>());
-                } else if (sensorResult.Tag == Constants.COLLIDER_THING) {
-                    state.seenThings.Add(sensed.GetComponent<Thing>());
-                }
-            }
-            state.seenWings = sensorCollResults
-                .Where(x => x.Tag == Constants.COLLIDER_SHIP && x.Entity != null && x.Entity != Entity)
-                .Select(x => x.Entity.GetComponent<Wing>())
-                .ToList();
+            visionSystem.tick(); // vision
         }
     }
 }

@@ -37,7 +37,8 @@ namespace Sor.AI {
             base.DebugRender(batcher);
             
             // sensor rect
-            batcher.DrawHollowRect(new Rectangle(mind.sensorRec.Location.ToPoint(), mind.sensorRec.Size.ToPoint()), Color.Green);
+            batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
+                mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
         }
 
         public void Update() {
