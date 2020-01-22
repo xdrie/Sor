@@ -15,11 +15,12 @@ namespace Sor.Components.Units {
         public float turnPower = Mathf.PI * 0.32f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
+        public float topSpeed = 80f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
         public bool boosting = false;
-        private double boostDrain = 1000;
+        private double boostDrainKg = 100; // boost drain per kg
 
         public override void Initialize() {
             base.Initialize();
@@ -32,11 +33,15 @@ namespace Sor.Components.Units {
 
             me = Entity.GetComponent<Wing>();
             controller = Entity.GetComponent<InputController>();
+            recalculateKinematics();
+        }
 
+        public void recalculateKinematics() {
+            mass = 10f;
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
             drag = new Vector2(16f);
-            maxVelocity = new Vector2(80f);
+            maxVelocity = new Vector2(topSpeed);
         }
 
         public override void Update() {
@@ -106,7 +111,7 @@ namespace Sor.Components.Units {
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
             if (controller.boostInput && Time.TotalTime > boostCooldown) {
-                var runDrain = boostDrain * Time.DeltaTime; // boosting drains energy
+                var runDrain = boostDrainKg * mass * Time.DeltaTime; // boosting drains energy
                 if (me.core.energy > runDrain) {
                     me.core.energy -= runDrain;
                     // boost the ship
@@ -124,7 +129,7 @@ namespace Sor.Components.Units {
             }
             else {
                 boosting = false;
-                maxVelocity = new Vector2(80f); // reset velocity cap
+                maxVelocity = new Vector2(topSpeed); // reset velocity cap
                 if (boostRibbon.IsEmitting) {
                     boostRibbon.StopEmitting();
                 }

@@ -9,6 +9,7 @@ namespace Sor.Components.Units {
         public WingBody body;
         public BoxCollider hitbox;
         public EnergyCore core;
+        public Pips pips;
 
         public string name;
 
@@ -25,11 +26,11 @@ namespace Sor.Components.Units {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            body = Entity.AddComponent(new WingBody {mass = 10f});
+            body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.COLLIDER_SHIP});
             core = Entity.AddComponent(new EnergyCore(10_000d));
             // add pips
-            var pips = Entity.AddComponent<Pips>();
+            pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
 
             var pipNumber = 1 + Random.NextInt(5);

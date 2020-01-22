@@ -35,7 +35,7 @@ namespace Sor.Scenes {
             cap.AddComponent<Capsule>();
             
             var testEntity = CreateEntity("duck-uno", new Vector2(320, 320));
-            var testShip = testEntity.AddComponent(new Wing());
+            var testShip = testEntity.AddComponent(new Predator());
             testShip.AddComponent<LogicInputController>();
             testShip.AddComponent<Mind>();
             testShip.AddComponent<MindDisplay>();
