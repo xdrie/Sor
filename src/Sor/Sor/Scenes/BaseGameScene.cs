@@ -26,10 +26,14 @@ namespace Sor.Scenes {
         }
 
         protected void transitionScene<TScene>(float duration = 0.5f) where TScene : BaseGameScene, new() {
+            transitionScene(new TScene(), duration);
+        }
+
+        protected void transitionScene(BaseGameScene scene, float duration) {
             if (_active && !Core.Instance.InScreenTransition) {
                 _active = false;
 //                Debug.WriteLine($"scene transition to {typeof(TScene).FullName}");
-                Core.StartSceneTransition(new CrossFadeTransition(() => new TScene()) {
+                Core.StartSceneTransition(new CrossFadeTransition(() => scene) {
                     Duration = duration
                 });
             }

@@ -1,13 +1,17 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
+using Sor.Components.Things;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
-        private WingBody body;
-        private BoxCollider hitbox;
+        public WingBody body;
+        public BoxCollider hitbox;
+        public EnergyCore core;
+        public Pips pips;
+
+        public string name;
 
         public Wing() : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) { }
 
@@ -22,10 +26,11 @@ namespace Sor.Components.Units {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            body = Entity.AddComponent(new WingBody {mass = 10f});
-            hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.TAG_SHIP_COLLIDER});
+            body = Entity.AddComponent(new WingBody());
+            hitbox = Entity.AddComponent(new BoxCollider(-4, -6, 8, 12) {Tag = Constants.COLLIDER_SHIP});
+            core = Entity.AddComponent(new EnergyCore(10_000d));
             // add pips
-            var pips = Entity.AddComponent<Pips>();
+            pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
 
             var pipNumber = 1 + Random.NextInt(5);
@@ -39,6 +44,18 @@ namespace Sor.Components.Units {
                 RibbonRadius = 8
             });
             ribbon.StopEmitting();
+            ribbon.Enabled = false;
+
+            // var trail = Entity.AddComponent(new SpriteTrail(animator) {
+            //     InitialColor = new Color(200, 200, 200),
+            //     MinDistanceBetweenInstances = 40,
+            //     MaxSpriteInstances = 10,
+            //     FadeDelay = 0.5f,
+            // });
+
+            if (name == null && Entity.Name != null) {
+                name = Entity.Name;
+            }
         }
     }
 }

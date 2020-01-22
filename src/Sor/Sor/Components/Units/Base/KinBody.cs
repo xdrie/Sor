@@ -7,11 +7,10 @@ namespace Sor.Components.Units {
         public Vector2 maxVelocity;
         public Vector2 acceleration;
         public Vector2 drag;
-        public Vector2 pos {
-            get { return Transform.LocalPosition; }
-            set { Transform.LocalPosition = value; }
-        }
-        
+        protected Mover mov;
+
+        public Vector2 pos => Transform.LocalPosition;
+
         public float maxAngular;
         public float angularVelocity;
         public float angularAcceleration;
@@ -21,15 +20,20 @@ namespace Sor.Components.Units {
             get { return Transform.LocalRotation; }
             set { Transform.LocalRotation = value; }
         }
-        
-        
+
+        public override void Initialize() {
+            base.Initialize();
+
+            mov = Entity.AddComponent<Mover>();
+        }
+
         public virtual void Update() {
             float dt = Time.DeltaTime;
-            
+
             velocity += acceleration * dt;
             var vls = velocity.LengthSquared();
             var mvls = maxVelocity.LengthSquared();
-            if (vls > mvls) {
+            if (mvls > double.Epsilon && vls > mvls) {
                 // convert to unit and rescale
                 var unitVel = Vector2Ext.Normalize(velocity);
                 var ratio = mvls / vls;
@@ -41,36 +45,45 @@ namespace Sor.Components.Units {
             if (velocity.X > drag.X * dt) {
                 velocity.X -= drag.X * dt;
             }
+
             if (velocity.X < -drag.X * dt) {
                 velocity.X += drag.X * dt;
             }
+
             if (velocity.Y > drag.Y * dt) {
                 velocity.Y -= drag.Y * dt;
             }
+
             if (velocity.Y < -drag.Y * dt) {
                 velocity.Y += drag.Y * dt;
             }
-            pos += motion(velocity * dt);
+
+            applyMotion(velocity * dt);
 
             angularVelocity += angularAcceleration * dt;
-            if (angularVelocity > maxAngular) {
-                angularVelocity = maxAngular;
-            }
-            if (angularVelocity < -maxAngular) {
-                angularVelocity = -maxAngular;
+            if (maxAngular > 0) {
+                if (angularVelocity > maxAngular) {
+                    angularVelocity = maxAngular;
+                }
+
+                if (angularVelocity < -maxAngular) {
+                    angularVelocity = -maxAngular;
+                }
             }
 
             if (angularVelocity > angularDrag * dt) {
                 angularVelocity -= angularDrag * dt;
             }
+
             if (angularVelocity < -angularDrag * dt) {
                 angularVelocity += angularDrag * dt;
             }
+
             angle += angularVelocity * dt;
         }
 
-        protected virtual Vector2 motion(Vector2 posDelta) {
-            return posDelta;
+        protected virtual void applyMotion(Vector2 posDelta) {
+            mov.ApplyMovement(posDelta);
         }
     }
 }

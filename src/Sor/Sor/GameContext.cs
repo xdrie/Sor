@@ -5,6 +5,7 @@ using Nez.BitmapFonts;
 namespace Sor {
     public class GameContext {
         public Assets assets = new Assets();
+        public Config config = new Config();
 
         public class Assets {
             public BitmapFont font;
@@ -21,6 +22,10 @@ namespace Sor {
 
             public Color fgColor => palette[0];
             public Color bgColor => palette[4];
+        }
+
+        public class Config {
+            public bool maxVfx = true; // enable all visual effects
         }
 
         public void loadContent() {
