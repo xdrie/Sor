@@ -31,7 +31,12 @@ namespace Sor.AI {
             ind.AppendLine($"seen wings: {mind.state.detectedWings.Count}");
             batcher.DrawString(Graphics.Instance.BitmapFont, ind, 
                 camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
+        }
+
+        public override void DebugRender(Batcher batcher) {
+            base.DebugRender(batcher);
             
+            // sensor rect
             batcher.DrawHollowRect(new Rectangle(mind.sensorRec.Location.ToPoint(), mind.sensorRec.Size.ToPoint()), Color.Green);
         }
 
