@@ -10,17 +10,18 @@ REVISION=$(git log --pretty=format:'%h' -n 1)
 ARCNAME="sor_mono-$REVISION"
 ARTIFACT="builds/$ARCNAME.7z"
 
-echo "Running MSBuild..."
+echo "running build..."
 cd src/$PROJECT
+dotnet restore
 msbuild $PROJECT.sln /p:Configuration=Release
 
 popd
 
-echo "Copying natives..."
+echo "copying natives..."
 cp natives/* $PROJECT_PATH/bin/Release/$FRAMEWORK/
 
 mkdir -p builds/
-echo "Compressing to $ARTIFACT..."
+echo "compressing to $ARTIFACT..."
 7z a $ARTIFACT $PROJECT_PATH/bin/Release/$FRAMEWORK/*
 
-echo "Release built!"
+echo "release built!"
