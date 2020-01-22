@@ -10,6 +10,7 @@ namespace Sor.Components.Things {
         public bool acquired = false;
         public float firstAvailableAt = 0;
         public Wing sender = null;
+        public Tree creator = null;
 
         public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
             animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});

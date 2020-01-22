@@ -35,8 +35,14 @@ namespace Sor.Game {
 
         private void loadNature() {
             foreach (var th in nature.Objects) {
-                var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y));
-                nt.AddComponent(new Tree());
+                if (th.Type == "tree") {
+                    var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y));
+                    var treeStage = 1;
+                    if (th.Properties.TryGetValue("stage", out var stageProp)) {
+                        treeStage = int.Parse(stageProp);
+                    }
+                    nt.AddComponent(new Tree {stage = treeStage});
+                }
             }
         }
 

@@ -1,10 +1,20 @@
+using System.Collections.Generic;
 using Glint.Sprites;
+using Microsoft.Xna.Framework;
 using Nez;
 
 namespace Sor.Components.Things {
-    public class Tree : GAnimatedSprite {
+    public class Tree : GAnimatedSprite, IUpdatable {
         public int stage = 1;
-        
+        public int fruits = 0;
+        public int harvest = 0;
+        public List<Capsule> childFruits = new List<Capsule>();
+        public int maxFruits = 0;
+        public float ripeningTime = 4f;
+        public float developmentSpeed = 0.40f;
+        public float fruitTimer = 0f;
+        public float fruitRange = 10f;
+
         public Tree() : base(Core.Content.LoadTexture("Data/sprites/tree.png"), 64, 64) {
             animator.AddAnimation("1", new[] {sprites[0]});
             animator.AddAnimation("2", new[] {sprites[1]});
@@ -21,7 +31,61 @@ namespace Sor.Components.Things {
         public override void Initialize() {
             base.Initialize();
             
+            updateStage();
+        }
+
+        public void updateStage() {
             animator.Play(stage.ToString());
+            switch (stage) {
+                case 7:
+                    maxFruits = 1;
+                    break;
+                case 8:
+                    maxFruits = 2;
+                    break;
+                case 9:
+                    maxFruits = 3;
+                    break;
+                case 10:
+                    maxFruits = 5;
+                    break;
+                default:
+                    maxFruits = 0;
+                    break;
+            }
+        }
+
+        public void Update() {
+            var fruitsPerSec = developmentSpeed;
+            var growFruit = Nez.Random.Chance(fruitsPerSec * Time.DeltaTime);
+            if (fruits < maxFruits && Time.TotalTime > fruitTimer && growFruit) {
+                // spawn a fruit
+                var fruitOffset = Random.Range(new Vector2(-fruitRange), new Vector2(fruitRange));
+                var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset);
+                var fruit = capNt.AddComponent<Capsule>();
+                fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
+                fruit.creator = this;
+                var capBody = fruit.GetComponent<Capsule.CapsuleBody>();
+                capBody.velocity = Vector2.Zero;
+                childFruits.Add(fruit);
+                fruits++;
+                
+                fruitTimer = Time.TotalTime + developmentSpeed * 10f;
+            }
+
+            // update existing fruits
+            if (fruits > 0) {
+                var rmFruits = new HashSet<Capsule>();
+                foreach (var child in childFruits) {
+                    if (child.acquired) {
+                        fruits--;
+                        harvest++;
+                        rmFruits.Add(child);
+                    }
+                }
+
+                childFruits.RemoveAll(x => rmFruits.Contains(x));
+            }
         }
     }
 }
