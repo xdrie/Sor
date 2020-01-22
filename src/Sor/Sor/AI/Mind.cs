@@ -37,7 +37,6 @@ namespace Sor.AI {
 
             // start processing tasks
             consciousnessTask = consciousnessAsync(conciousnessCancel.Token);
-            consciousnessTask.Start();
         }
 
         public async Task consciousnessAsync(CancellationToken tok) {
