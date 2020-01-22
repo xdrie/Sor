@@ -51,8 +51,8 @@ namespace Sor.Components.Units {
             if (controller.tetherInput.IsPressed) {
                 var capEnergy = 400;
                 var capSpeed = 40f;
-                if (me.energy > capEnergy) {
-                    me.energy -= capEnergy;
+                if (me.core.energy > capEnergy) {
+                    me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var thrustVec = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
@@ -104,8 +104,8 @@ namespace Sor.Components.Units {
             // var trail = Entity.GetComponent<SpriteTrail>();
             if (controller.boostInput && Time.TotalTime > boostCooldown) {
                 var runDrain = boostDrain * Time.DeltaTime; // boosting drains energy
-                if (me.energy > runDrain) {
-                    me.energy -= runDrain;
+                if (me.core.energy > runDrain) {
+                    me.core.energy -= runDrain;
                     // boost the ship
                     thrustVal *= boostFactor; // multiply thrust power
                     maxVelocity = new Vector2(440f); // increase velocity cap
@@ -154,7 +154,7 @@ namespace Sor.Components.Units {
                     var capsule = hitEntity.GetComponent<Capsule>();
                     if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
                         // apply the capsule
-                        me.energy += capsule.energy;
+                        me.core.energy += capsule.energy;
                         capsule.energy = 0;
                         capsule.destroy(); // blow it up
                     }
