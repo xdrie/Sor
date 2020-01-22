@@ -10,13 +10,21 @@ namespace Sor.Components.Units {
         public Wing me;
         private InputController controller;
 
+        private GameContext gameContext;
+
         public float turnPower = Mathf.PI * 0.32f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
+        private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
+        private double boostDrain = 400;
 
-        private const float VELOCITY_REDUCTION_EXP = 0.98f;
+        public override void Initialize() {
+            base.Initialize();
+
+            gameContext = Core.Services.GetService<GameContext>();
+        }
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
@@ -78,6 +86,7 @@ namespace Sor.Components.Units {
                     motion -= result.MinimumTranslationVector;
                 }
             }
+
             mov.ApplyMovement(motion);
         }
 
@@ -94,31 +103,37 @@ namespace Sor.Components.Units {
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
             // var trail = Entity.GetComponent<SpriteTrail>();
             if (controller.boostInput && Time.TotalTime > boostCooldown) {
-                thrustVal *= boostFactor;
-                maxVelocity = new Vector2(440f);
-                Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
-            } else {
-                if (controller.boostInput.IsReleased) {
+                var runDrain = boostDrain * Time.DeltaTime; // boosting drains energy
+                if (me.energy > runDrain) {
+                    me.energy -= runDrain;
+                    // boost the ship
+                    thrustVal *= boostFactor; // multiply thrust power
+                    maxVelocity = new Vector2(440f); // increase velocity cap
+                    if (gameContext.config.maxVfx) {
+                        Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
+                    }
+
+                    if (controller.boostInput.IsPressed) {
+                        if (!boostRibbon.IsEmitting) {
+                            boostRibbon.StartEmitting();
+                            boostRibbon.Enabled = true;
+                        }
+
+                        // trail.EnableSpriteTrail();
+                    }
+                }
+            }
+            else {
+                if (controller.boostInput.IsReleased) { // when boost stopped, set a cooldown
                     boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
-                }
-                maxVelocity = new Vector2(80f);
-            }
+                    if (boostRibbon.IsEmitting) {
+                        boostRibbon.StopEmitting();
+                    }
 
-            if (controller.boostInput.IsPressed) {
-                if (!boostRibbon.IsEmitting) {
-                    boostRibbon.StartEmitting();
-                    boostRibbon.Enabled = true;
+                    // trail.DisableSpriteTrail();
                 }
 
-                // trail.EnableSpriteTrail();
-            }
-
-            if (controller.boostInput.IsReleased) {
-                if (boostRibbon.IsEmitting) {
-                    boostRibbon.StopEmitting();
-                }
-
-                // trail.DisableSpriteTrail();
+                maxVelocity = new Vector2(80f); // reset velocity cap
             }
 
             // forward thrust

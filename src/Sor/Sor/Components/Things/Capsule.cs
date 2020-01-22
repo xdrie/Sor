@@ -6,7 +6,7 @@ using Sor.Components.Units;
 namespace Sor.Components.Things {
     public class Capsule : GAnimatedSprite, IUpdatable {
         private float flashSpeed = 10f;
-        public int energy = 10;
+        public double energy = 0;
         public float firstAvailableAt = 0;
 
         public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
