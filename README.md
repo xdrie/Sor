@@ -12,6 +12,7 @@ the game supports running on both .net core and mono. after using build scripts,
 ./script/get_natives.sh # get native libraries
 ./script/build_mono_release.sh
 ```
+run `SorDk.exe` with mono or use the helper script `./Sor_game`
 
 ### native build
 ```sh
