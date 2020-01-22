@@ -49,12 +49,14 @@ namespace Sor.Scenes {
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
             
-            // hud
-            var hud = CreateEntity("hud", new Vector2(20, 20));
-            var energyIndicator = hud.AddComponent(new IndicatorBar(96, 12));
-            energyIndicator.spriteRenderer.Color = new Color(79, 196, 131);
+            // - hud
+            const int hudPadding = 8;
+            var statusBarSize = new Point(96, 12);
+            var hud = CreateEntity("hud", new Vector2(Resolution.X - statusBarSize.X - hudPadding, hudPadding));
+            var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
+            energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
-            energyIndicator.backdropRenderer.Color = new Color(128, 142, 153);
+            energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerShip, hud));
 

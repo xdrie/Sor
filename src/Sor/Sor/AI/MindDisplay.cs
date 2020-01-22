@@ -8,7 +8,7 @@ namespace Sor.AI {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Mind mind;
         private Wing wing;
-        private Color textCol = Color.WhiteSmoke;
+        private Color textCol = Core.Services.GetService<GameContext>().assets.fgColor;
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();

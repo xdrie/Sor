@@ -13,7 +13,7 @@ namespace Sor.Systems {
         }
         
         public override void Process() {
-            // throw new System.NotImplementedException();
+            energyIndicator.setValue(0.7f);
         }
     }
 }
