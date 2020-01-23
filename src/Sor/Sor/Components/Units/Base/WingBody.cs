@@ -158,7 +158,7 @@ namespace Sor.Components.Units {
                 var hitEntity = other.Entity;
                 if (hitEntity.HasComponent<Capsule>()) {
                     var capsule = hitEntity.GetComponent<Capsule>();
-                    if (Time.TotalTime > capsule.firstAvailableAt) {
+                    if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
                         // apply the capsule
                         var gotEnergy = capsule.energy;
                         me.core.energy += gotEnergy;
