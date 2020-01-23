@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Glint.Util;
 using Nez;
 using Sor.AI.Cogs;
 using Sor.AI.Signals;
@@ -27,22 +29,24 @@ namespace Sor.AI {
         public Mind() : this(null, true) { }
 
         public Mind(AvianSoul soul, bool control) {
-            if (soul == null) { // generate soul
-                soul = AvianSoul.generate();
+            this.soul = soul;
+            if (this.soul == null) { // generate soul
+                this.soul = AvianSoul.generate(this);
             }
+
             this.control = control;
         }
 
         public override void Initialize() {
             base.Initialize();
-            
+
             me = Entity.GetComponent<Wing>();
             state = new MindState(this);
 
             if (control) {
                 // input
                 controller = Entity.GetComponent<LogicInputController>();
-                
+
                 // mind systems
                 var cts = new CancellationTokenSource();
                 conciousnessCancel = cts;
@@ -57,7 +61,14 @@ namespace Sor.AI {
 
         public async Task consciousnessAsync(CancellationToken tok) {
             while (!tok.IsCancellationRequested) {
-                think(); // think based on information and make plans
+                try {
+                    think(); // think based on information and make plans
+                }
+                catch (Exception e) {
+                    // log exceptions in think
+                    Global.log.writeLine(e.ToString(), GlintLogger.LogLevel.Error);
+                }
+
                 await Task.Delay(consciousnessSleep, tok);
             }
         }
