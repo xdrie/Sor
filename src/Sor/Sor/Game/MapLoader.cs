@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
@@ -31,6 +32,7 @@ namespace Sor.Game {
             analyzeRooms();
             loadFeatures();
             loadNature();
+            Global.log.writeLine("loaded data from map", GlintLogger.LogLevel.Information);
         }
 
         private void loadNature() {
@@ -42,6 +44,7 @@ namespace Sor.Game {
                         treeStage = int.Parse(stageProp);
                     }
                     nt.AddComponent(new Tree {stage = treeStage});
+                    Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
                 }
             }
         }
@@ -143,6 +146,7 @@ namespace Sor.Game {
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
+                        Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})", GlintLogger.LogLevel.Trace);
                     }
                 }
             }

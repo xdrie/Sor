@@ -53,5 +53,9 @@ namespace Sor.AI.Cogs {
             p.v1 = 0;
             return p;
         }
+
+        public override string ToString() {
+            return $"[Personality A:{A}, S:{S}, v0:{v0}, v1:{v1}]";
+        }
     }
 }
