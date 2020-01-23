@@ -43,6 +43,7 @@ namespace Sor.AI {
                 ind.AppendLine($"[mind] {wing.name}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 ind.AppendLine($"opinion: {mind.state.getOpinion(player.mind)}");
+                ind.AppendLine($"prsntly: {mind.soul.ply}");
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
             }
