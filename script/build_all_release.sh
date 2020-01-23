@@ -1,9 +1,17 @@
 set -e
 
 ARGS=""
+PACK=0
 if [ -n "$1" ] && [ "$1" = "pack" ]; then
-    echo "setting PACK on"
+    echo "setting PACK=1"
+    PACK=1
     ARGS="${ARGS} pack"
+fi
+
+if [[ $PACK -eq 1 ]];
+then
+    echo "getting tools..."
+    ./script/get_tools.sh
 fi
 
 echo "building all (${ARGS})..."
