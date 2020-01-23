@@ -26,11 +26,12 @@ namespace Sor {
 
             Window.Title = GAME_TITLE;
             Window.AllowUserResizing = false;
-            // update logger
-            Global.log = new GlintLogger((GlintLogger.LogLevel) gameContext.config.logLevel);
-
+            
             // register context service
             Services.AddService(typeof(GameContext), gameContext);
+            
+            // update logger
+            Global.log.verbosity = (GlintLogger.LogLevel) gameContext.config.logLevel;
 
             // update rendering options
             var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;
