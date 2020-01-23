@@ -39,13 +39,31 @@ namespace Sor.AI {
             if (draw) {
                 // TODO: show information about whose mind, etc.
                 // draw mind info representation
+                var plOpinion = mind.state.getOpinion(player.mind);
+                
                 StringBuilder ind = new StringBuilder();
                 ind.AppendLine($"[mind] {wing.name}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
-                ind.AppendLine($"opinion: {mind.state.getOpinion(player.mind)}");
+                ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 ind.AppendLine($"prsntly: {mind.soul.ply}");
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
+            }
+        }
+
+        private string opinionTag(int opinion) {
+            if (opinion < MindConstants.OPINION_HATE) {
+                return "despise";
+            } else if (opinion <= MindConstants.OPINION_WARY) {
+                return "hate";
+            } else if (opinion <= MindConstants.OPINION_ALLY) {
+                return "wary";
+            } else if (opinion <= MindConstants.OPINION_FRIEND) {
+                return "ally";
+            } else if (opinion <= MindConstants.OPINION_KIN) {
+                return "friend";
+            } else {
+                return "kin";
             }
         }
 
