@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
@@ -31,6 +32,7 @@ namespace Sor.Game {
             analyzeRooms();
             loadFeatures();
             loadNature();
+            Global.log.writeLine("loaded data from map", GlintLogger.LogLevel.Information);
         }
 
         private void loadNature() {
