@@ -24,9 +24,12 @@ namespace Sor.AI {
         protected Task consciousnessTask;
         protected CancellationTokenSource conciousnessCancel;
 
-        public Mind() : this(true) { }
+        public Mind() : this(null, true) { }
 
-        public Mind(bool control) {
+        public Mind(AvianSoul soul, bool control) {
+            if (soul == null) { // generate soul
+                soul = AvianSoul.generate();
+            }
             this.control = control;
         }
 

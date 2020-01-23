@@ -1,16 +1,14 @@
-using LunchtimeGears.Cogs;
 using LunchtimeGears.Units;
 
 namespace Sor.AI.Cogs {
     public class AvianSoul : Sentient {
         public BirdPersonality ply;
         
-        public AvianSoul generate() {
+        public static AvianSoul generate() {
+            var soul = new AvianSoul();
             // create personality
-            ply = new BirdPersonality();
-            ply.generate();
-            
-            return this;
+            soul.ply = BirdPersonality.makeRandom();
+            return soul;
         }
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
+using Sor.AI.Cogs;
 using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Things;
@@ -13,10 +14,10 @@ namespace Sor.Scenes {
     public class PlayScene : BaseGameScene {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
-        
+
         public override void Initialize() {
             base.Initialize();
-            
+
             ClearColor = gameContext.assets.bgColor;
 
             // Hide cursor
@@ -29,12 +30,13 @@ namespace Sor.Scenes {
 
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerShip = playerEntity.AddComponent(new Wing());
-            playerShip.AddComponent(new Mind(false));
+            var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
+            playerShip.AddComponent(new Mind(playerSoul, false));
             playerEntity.AddComponent<PlayerInputController>();
 
             var cap = CreateEntity("cap0", new Vector2(160, 160));
             cap.AddComponent<Capsule>();
-            
+
             var testEntity = CreateEntity("duck-uno", new Vector2(-140, 320));
             var testShip = testEntity.AddComponent(new Predator());
             testShip.AddComponent<LogicInputController>();
@@ -49,7 +51,7 @@ namespace Sor.Scenes {
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
-            
+
             // - hud
             const int hudPadding = 8;
             var statusBarSize = new Point(96, 12);
@@ -63,7 +65,7 @@ namespace Sor.Scenes {
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
 
             // add component to make Camera follow the player
-            var followCamera = 
+            var followCamera =
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
             followCamera.AddComponent<CameraShake>();
         }
