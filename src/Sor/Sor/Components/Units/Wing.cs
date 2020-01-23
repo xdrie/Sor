@@ -32,6 +32,9 @@ namespace Sor.Components.Units {
             // add pips
             pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
+            
+            // set body properties
+            body.mass = 10f;
 
             var pipNumber = 1 + Random.NextInt(5);
             // pips.animator.Play(pipNumber.ToString());
