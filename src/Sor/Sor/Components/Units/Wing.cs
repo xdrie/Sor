@@ -45,7 +45,7 @@ namespace Sor.Components.Units {
             
             // pips setup
             var pipNumber = 1 + Random.NextInt(5);
-            pips.setPips(pipNumber, Core.Services.GetService<GameContext>().assets.success);
+            pips.setPips(pipNumber, Pips.green);
 
             var ribbon = Entity.AddComponent(new TrailRibbon(40) {
                 StartColor = new Color(175, 158, 180, 255),

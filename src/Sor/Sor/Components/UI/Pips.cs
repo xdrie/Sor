@@ -8,6 +8,12 @@ namespace Sor.Components.UI {
     public class Pips : GAnimatedSprite {
         public Pips() : base(Core.Content.LoadTexture("Data/sprites/pips.png"), 16, 16) { }
 
+        public static Color red => Color.Red;
+        public static Color orange => Color.Orange;
+        public static Color yellow => Color.Yellow;
+        public static Color blue => Color.Blue;
+        public static Color green => Core.Services.GetService<GameContext>().assets.success;
+
         public SpriteAnimator colAnimator;
 
         public override void Initialize() {
@@ -42,6 +48,16 @@ namespace Sor.Components.UI {
             animator.Play(animName);
             colAnimator.Color = color;
             colAnimator.Play(animName);
+        }
+
+        public void enable() {
+            Enabled = true;
+            spriteRenderer.Enabled = true;
+        }
+
+        public void disable() {
+            Enabled = false;
+            spriteRenderer.Enabled = false;
         }
     }
 }
