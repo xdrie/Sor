@@ -146,6 +146,7 @@ namespace Sor.Game {
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
+                        Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})", GlintLogger.LogLevel.Trace);
                     }
                 }
             }
