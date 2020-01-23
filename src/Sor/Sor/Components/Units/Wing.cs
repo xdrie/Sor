@@ -9,7 +9,6 @@ namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
         public WingBody body;
         public Mind mind;
-        public bool hasMind => mind != null;
         public BoxCollider hitbox;
         public EnergyCore core;
         public Pips pips;

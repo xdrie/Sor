@@ -1,4 +1,5 @@
 using System.Threading;
+using Sor.AI.Cogs.Interactions;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Systems {
@@ -23,7 +24,12 @@ namespace Sor.AI.Systems {
         private void processSignal(MindSignal result) {
             switch (result) {
                 case ItemSignals.CapsuleAcquiredSignal sig: {
-                    // TODO: run a feeding interaction
+                    var from = sig.cap.sender;
+                    if (from != null && from != mind.me) {
+                        // run a feeding interaction
+                        var interaction = new CapsuleFeeding();
+                        interaction.run(from.mind.soul, mind.soul);
+                    }
                     break;
                 }
             }

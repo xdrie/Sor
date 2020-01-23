@@ -29,6 +29,7 @@ namespace Sor.Scenes {
 
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerShip = playerEntity.AddComponent(new Wing());
+            playerShip.AddComponent(new Mind(false));
             playerEntity.AddComponent<PlayerInputController>();
 
             var cap = CreateEntity("cap0", new Vector2(160, 160));

@@ -163,7 +163,7 @@ namespace Sor.Components.Units {
                         capsule.energy = 0;
                         capsule.acquire(); // blow it up
                         // send signal to mind
-                        if (me.hasMind) {
+                        if (me.mind.control) {
                             me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule));
                         }
                     }

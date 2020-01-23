@@ -12,6 +12,7 @@ namespace Sor.AI {
     /// represents the consciousness of a Wing
     /// </summary>
     public class Mind : Component, IUpdatable {
+        public bool control; // whether the mind is in control
         public MindState state;
         public LogicInputController controller;
         public Wing me;
@@ -23,23 +24,32 @@ namespace Sor.AI {
         protected Task consciousnessTask;
         protected CancellationTokenSource conciousnessCancel;
 
+        public Mind() : this(true) { }
+
+        public Mind(bool control) {
+            this.control = control;
+        }
+
         public override void Initialize() {
             base.Initialize();
-
-            controller = Entity.GetComponent<LogicInputController>();
+            
             me = Entity.GetComponent<Wing>();
-
             state = new MindState(this);
-            
-            // mind systems
-            var cts = new CancellationTokenSource();
-            conciousnessCancel = cts;
-            visionSystem = new VisionSystem(this, 0.2f, cts.Token);
-            
-            thinkSystem = new ThinkSystem(this, 0.2f, cts.Token);
 
-            // start processing tasks
-            consciousnessTask = consciousnessAsync(conciousnessCancel.Token);
+            if (control) {
+                // input
+                controller = Entity.GetComponent<LogicInputController>();
+                
+                // mind systems
+                var cts = new CancellationTokenSource();
+                conciousnessCancel = cts;
+                visionSystem = new VisionSystem(this, 0.2f, cts.Token);
+
+                thinkSystem = new ThinkSystem(this, 0.2f, cts.Token);
+
+                // start processing tasks
+                consciousnessTask = consciousnessAsync(conciousnessCancel.Token);
+            }
         }
 
         public async Task consciousnessAsync(CancellationToken tok) {
@@ -50,15 +60,19 @@ namespace Sor.AI {
         }
 
         public void Update() { // Sense-Think-Act AI
-            sense(); // sense the world around
-            act(); // carry out decisions
+            if (control) {
+                sense(); // sense the world around
+                act(); // carry out decisions
+            }
         }
 
         public override void OnRemovedFromEntity() {
             base.OnRemovedFromEntity();
 
-            // stop processing tasks
-            conciousnessCancel.Cancel();
+            if (control) {
+                // stop processing tasks
+                conciousnessCancel.Cancel();
+            }
         }
 
         private void act() {
