@@ -10,9 +10,10 @@ namespace Sor.Components.Things {
         public float firstAvailableAt = 0;
         public const float lifetime = 20f;
         public float despawnAt = 0;
+        
+        public CapsuleBody body;
         public Wing sender = null;
         public Tree creator = null;
-        private CapsuleBody body;
 
         public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
             animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});
@@ -33,10 +34,9 @@ namespace Sor.Components.Things {
             UpdateInterval = 10;
         }
 
-        public CapsuleBody launch(int energy, Vector2 launch) {
-            var capBody = this.GetComponent<CapsuleBody>();
-            capBody.velocity += launch;
-            return capBody;
+        public void launch(int energy, Vector2 launch) {
+            this.energy = energy;
+            body.velocity += launch;
         }
 
         public class CapsuleBody : KinBody {
