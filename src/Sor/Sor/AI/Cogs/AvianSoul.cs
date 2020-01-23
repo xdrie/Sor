@@ -4,7 +4,12 @@ namespace Sor.AI.Cogs {
     public class AvianSoul : Sentient {
         public BirdPersonality ply;
         public BirdTraits traits;
+        public BirdEmotions emotions;
         public Mind mind;
+
+        public AvianSoul() {
+            emotions = new BirdEmotions();
+        }
         
         public static AvianSoul generate(Mind mind) {
             var soul = new AvianSoul();

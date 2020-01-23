@@ -3,7 +3,7 @@ namespace Sor.AI.Cogs {
         public const float falloff = 0.9f;
         
         // emotions: [fear, happy]
-        public float[] emotions = new[] {0f, 0f};
+        public float[] emotions = {0f, 0f};
 
         public float fear {
             get { return emotions[0]; }
