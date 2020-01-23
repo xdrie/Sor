@@ -2,8 +2,8 @@ using LunchtimeGears.Cogs;
 using LunchtimeGears.Cogs.Social;
 using LunchtimeGears.Units;
 
-namespace Sor.AI.Cogs {
-    public abstract class BirdInteraction : Interaction {
+namespace Sor.AI.Cogs.Interactions {
+    public abstract class BirdInteraction : Interaction<AvianSoul> {
         public struct Traits {
             public float
                 loyalty,
