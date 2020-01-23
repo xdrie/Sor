@@ -49,6 +49,7 @@ namespace Sor.AI.Systems {
                     var toWingDist = toWing.Length();
                     if (toWingDist <= NearbyBirdInteraction.nearRange) {
                         var interaction = new NearbyBirdInteraction(toWingDist);
+                        interaction.run(mind.soul, wing.mind.soul);
                     }
                 }
             }
