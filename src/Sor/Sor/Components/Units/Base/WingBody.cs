@@ -113,21 +113,20 @@ namespace Sor.Components.Units {
 
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
-            if (controller.boostInput && Time.TotalTime > boostCooldown) {
-                var runDrain = boostDrainKg * mass * Time.DeltaTime; // boosting drains energy
-                if (me.core.energy > runDrain) {
-                    me.core.energy -= runDrain;
-                    // boost the ship
-                    boosting = true;
-                    thrustVal *= boostFactor; // multiply thrust power
-                    maxVelocity = new Vector2(440f); // increase velocity cap
-                    if (gameContext.config.maxVfx) {
-                        Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
-                    }
-                    if (!boostRibbon.IsEmitting) {
-                        boostRibbon.StartEmitting();
-                        boostRibbon.Enabled = true;
-                    }
+            var boostDrain = boostDrainKg * mass * Time.DeltaTime; // boosting drains energy
+            if (controller.boostInput && me.core.energy > boostDrain && Time.TotalTime > boostCooldown) {
+                me.core.energy -= boostDrain;
+                // boost the ship
+                boosting = true;
+                thrustVal *= boostFactor; // multiply thrust power
+                maxVelocity = new Vector2(440f); // increase velocity cap
+                if (gameContext.config.maxVfx) {
+                    Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
+                }
+
+                if (!boostRibbon.IsEmitting) {
+                    boostRibbon.StartEmitting();
+                    boostRibbon.Enabled = true;
                 }
             }
             else {
@@ -136,6 +135,7 @@ namespace Sor.Components.Units {
                 if (boostRibbon.IsEmitting) {
                     boostRibbon.StopEmitting();
                 }
+
                 if (controller.boostInput.IsReleased) { // when boost stopped, set a cooldown
                     boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
                 }
@@ -181,6 +181,7 @@ namespace Sor.Components.Units {
                         succ = false;
                     }
                 }
+
                 if (succ) {
                     var thingBody = gravThing.GetComponent<KinBody>();
                     var toMe = Entity.Position - gravThing.Position;
