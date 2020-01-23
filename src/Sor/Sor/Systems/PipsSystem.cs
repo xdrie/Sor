@@ -52,7 +52,7 @@ namespace Sor.Systems {
                 blocks = opinion - 300;
                 col = Pips.green;
             }
-            return (blocks / 4, col);
+            return (blocks / 40, col);
         }
     }
 }
