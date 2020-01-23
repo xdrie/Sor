@@ -1,4 +1,6 @@
 
+![icon](media/icon.png)
+
 # Sor
 
 the mechanical bird game
