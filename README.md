@@ -30,6 +30,7 @@ run `SorDk.exe` with mono or use the helper script `./Sor_game`
 ```sh
 ./script/build_native_release.sh <runtime> # ex. linux-x64
 ```
+run `./SorDk` (Unix) or `SorDk.exe` (Win)
 
 ## license
 
