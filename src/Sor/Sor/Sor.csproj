@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\lib\Glint\src\Glint\Glint.csproj" />
+      <ProjectReference Include="..\..\..\lib\LunchSimulator\src\Lunchtime\LunchtimeGears\LunchtimeGears.csproj" />
       <ProjectReference Include="..\..\..\lib\XNez\Nez.Portable\XNez.csproj" />
     </ItemGroup>
 

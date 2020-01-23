@@ -1,3 +1,4 @@
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 
@@ -32,7 +33,7 @@ namespace Sor.Scenes {
         protected void transitionScene(BaseGameScene scene, float duration) {
             if (_active && !Core.Instance.InScreenTransition) {
                 _active = false;
-//                Debug.WriteLine($"scene transition to {typeof(TScene).FullName}");
+                Global.log.writeLine($"scene transition to {scene.GetType().FullName}", GlintLogger.LogLevel.Information);
                 Core.StartSceneTransition(new CrossFadeTransition(() => scene) {
                     Duration = duration
                 });

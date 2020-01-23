@@ -1,4 +1,5 @@
 using Glint.Config;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
@@ -36,6 +37,7 @@ namespace Sor {
             public int scaleMode = (int) ScaleMode.PixelPerfect;
             public int w = 960;
             public int h = 540;
+            public int logLevel = (int) GlintLogger.LogLevel.Information;
             
             public enum ScaleMode {
                 PixelPerfect,
@@ -51,6 +53,8 @@ namespace Sor {
                 scaleMode = pr.getInt("video.scaleMode", scaleMode);
                 framerate = pr.getInt("video.framerate", framerate);
                 maxVfx = pr.getBool("video.maxVfx", maxVfx);
+
+                logLevel = pr.getInt("platform.logLevel", logLevel);
             }
         }
 

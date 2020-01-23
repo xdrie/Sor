@@ -9,6 +9,7 @@ namespace SorDk {
             if (!File.Exists(conf)) {
                 File.WriteAllText(conf, @"
 # game config file
+
 [video]
 w=960
 h=540
@@ -16,6 +17,9 @@ fullscreen=false
 scaleMode=0
 framerate=60
 maxVfx=true
+
+[platform]
+logLevel=3
 ");
             }
             var confStr = File.ReadAllText(conf);
