@@ -1,11 +1,9 @@
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+using LunchtimeGears.Units;
 using Nez;
 using Sor.AI.Systems;
 using Sor.Components.Input;
-using Sor.Components.Things;
 using Sor.Components.Units;
 
 namespace Sor.AI {
@@ -17,6 +15,7 @@ namespace Sor.AI {
         public LogicInputController controller;
         public Wing me;
         public VisionSystem visionSystem;
+        public Avian soul;
 
         public int consciousnessSleep = 100;
         protected Task consciousnessTask;
