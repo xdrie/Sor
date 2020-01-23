@@ -35,6 +35,7 @@ namespace Sor.Components.Things {
             base.Initialize();
             
             updateStage();
+            UpdateInterval = 10;
         }
 
         public void updateStage() {
@@ -61,7 +62,7 @@ namespace Sor.Components.Things {
 
         public void Update() {
             var fruitsPerSec = developmentSpeed;
-            var growFruit = Nez.Random.Chance(fruitsPerSec * Time.DeltaTime);
+            var growFruit = Nez.Random.Chance(fruitsPerSec * Time.DeltaTime * UpdateInterval);
             if (fruits < maxFruits && Time.TotalTime > fruitTimer && growFruit) {
                 // spawn a fruit
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
@@ -70,8 +71,7 @@ namespace Sor.Components.Things {
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
                 fruit.energy = Nez.Random.Range(fruitValue * 0.6f, fruitValue * 1.2f);
-                var capBody = fruit.GetComponent<Capsule.CapsuleBody>();
-                capBody.velocity = Vector2.Zero;
+                fruit.body.velocity = Vector2.Zero;
                 childFruits.Add(fruit);
                 fruits++;
                 
@@ -83,8 +83,8 @@ namespace Sor.Components.Things {
             if (fruits > 0) {
                 var rmFruits = new HashSet<Capsule>();
                 foreach (var child in childFruits) {
-                    var toChild = Entity.Position - child.Entity.Position;
-                    if (child.acquired || toChild.LengthSquared() > (childRange * childRange)) {
+                    var toChild = Entity.Position - child.Entity?.Position;
+                    if (child.acquired || !toChild.HasValue || toChild.Value.LengthSquared() > childRange * childRange) {
                         fruits--;
                         harvest++;
                         growthPoints++;

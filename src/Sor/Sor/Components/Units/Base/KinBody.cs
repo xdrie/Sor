@@ -28,7 +28,7 @@ namespace Sor.Components.Units {
         }
 
         public virtual void Update() {
-            float dt = Time.DeltaTime;
+            float dt = Time.DeltaTime * UpdateInterval;
 
             velocity += acceleration * dt;
             var vls = velocity.LengthSquared();

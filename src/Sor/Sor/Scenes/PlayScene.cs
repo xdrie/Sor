@@ -43,7 +43,7 @@ namespace Sor.Scenes {
             var testShip = testEntity.AddComponent(new Predator());
             testShip.AddComponent<LogicInputController>();
             testShip.AddComponent<Mind>();
-            testShip.AddComponent(new MindDisplay(playerWing));
+            testShip.AddComponent(new MindDisplay(playerWing, true));
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));

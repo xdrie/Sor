@@ -4,18 +4,19 @@ using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
+using Sor.Game;
 using Sor.Scenes;
 
 namespace Sor {
     public class NGame : GlintCore {
         public const string GAME_TITLE = "Sor";
-        public const string GAME_VERSION = "0.5.5.12300-dev";
+        public const string GAME_VERSION = "0.5.6.12304-dev";
 
         private readonly GameContext gameContext;
 
         public Point gameResolution = new Point(960, 540);
 
-        public NGame(GameContext.Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
+        public NGame(Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
             isFullScreen: config.fullscreen) {
             gameContext = new GameContext(config);
             Global.log.writeLine("game instantiated", GlintLogger.LogLevel.Information);
@@ -26,20 +27,24 @@ namespace Sor {
 
             Window.Title = GAME_TITLE;
             Window.AllowUserResizing = false;
-            // update logger
-            Global.log = new GlintLogger((GlintLogger.LogLevel) gameContext.config.logLevel);
-
+            
             // register context service
             Services.AddService(typeof(GameContext), gameContext);
+            
+            // update logger
+            Global.log.verbosity = (GlintLogger.LogLevel) gameContext.config.logLevel;
+            if (gameContext.config.logFile != null) {
+                Global.log.sinks.Add(new GlintLogger.FileSink(gameContext.config.logFile));
+            }
 
             // update rendering options
             var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;
-            if (gameContext.config.scaleMode == (int) GameContext.Config.ScaleMode.Stretch) {
+            if (gameContext.config.scaleMode == (int) Config.ScaleMode.Stretch) {
                 resolutionPolicy = Scene.SceneResolutionPolicy.BestFit;
                 Window.AllowUserResizing = true;
                 Global.log.writeLine("stretch scaling enabled", GlintLogger.LogLevel.Warning);
             }
-            Core.DefaultSamplerState = SamplerState.PointClamp;
+            DefaultSamplerState = SamplerState.PointClamp;
 
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 

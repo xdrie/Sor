@@ -8,6 +8,7 @@ using Sor.Components.Units;
 namespace Sor.AI {
     public class MindState {
         public Mind mind;
+
         public MindState(Mind mind) {
             this.mind = mind;
         }
@@ -29,8 +30,11 @@ namespace Sor.AI {
             var opi = getOpinion(they);
             var res = opi + val;
             opinion[they] = res;
-            Global.log.writeLine($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})",
-                GlintLogger.LogLevel.Trace);
+            if (mind.debug) {
+                Global.log.writeLine($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})",
+                    GlintLogger.LogLevel.Trace);
+            }
+
             return res;
         }
     }

@@ -4,10 +4,14 @@ using Nez;
 using Sor.Components.Units;
 
 namespace Sor.Components.Things {
-    public class Capsule : Thing {
+    public class Capsule : Thing, IUpdatable {
         public double energy = 0;
         public bool acquired = false;
         public float firstAvailableAt = 0;
+        public const float lifetime = 20f;
+        public float despawnAt = 0;
+        
+        public CapsuleBody body;
         public Wing sender = null;
         public Tree creator = null;
 
@@ -20,15 +24,19 @@ namespace Sor.Components.Things {
         public override void Initialize() {
             base.Initialize();
 
-            Entity.AddComponent<CapsuleBody>();
+            despawnAt = Time.TotalTime + lifetime;
+
+            body = Entity.AddComponent<CapsuleBody>();
             Entity.AddComponent(new BoxCollider(-8, -12, 8, 24) {Tag = Constants.COLLIDER_THING, IsTrigger = true});
             Entity.AddComponent(new BoxCollider(-40, -40, 80, 80) {Tag = Constants.TRIGGER_GRAVITY, IsTrigger = true});
+            
+            // use slow updates
+            UpdateInterval = 10;
         }
 
-        public CapsuleBody launch(int energy, Vector2 launch) {
-            var capBody = this.GetComponent<CapsuleBody>();
-            capBody.velocity += launch;
-            return capBody;
+        public void launch(int energy, Vector2 launch) {
+            this.energy = energy;
+            body.velocity += launch;
         }
 
         public class CapsuleBody : KinBody {
@@ -54,6 +62,13 @@ namespace Sor.Components.Things {
                 tw.Start();
             }
             acquired = true;
+        }
+
+        public void Update() {
+            if (Time.TotalTime > despawnAt) {
+                Enabled = false;
+                Entity.Destroy();
+            }
         }
     }
 }

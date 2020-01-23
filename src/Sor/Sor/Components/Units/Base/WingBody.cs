@@ -66,10 +66,9 @@ namespace Sor.Components.Units {
                     var capMotion = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity("pod", Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
-                    cap.energy = capEnergy; // add energy to the capsule
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
-                    var capBody = cap.launch(capEnergy, capMotion.rotate(angle));
+                    cap.launch(capEnergy, capMotion.rotate(angle));
                 }
             }
         }

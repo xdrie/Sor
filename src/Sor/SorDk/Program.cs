@@ -1,11 +1,12 @@
 ﻿using System.IO;
 using Sor;
+using Sor.Game;
 
 namespace SorDk {
     class Program {
         public const string conf = "game.conf";
         static void Main(string[] args) {
-            var config = new GameContext.Config();
+            var config = new Config();
             if (!File.Exists(conf)) {
                 File.WriteAllText(conf, @"
 # game config file
