@@ -22,5 +22,9 @@ namespace Sor.AI.Cogs {
         public void calculateTraits() {
             traits = new BirdTraits(ply);
         }
+
+        public void tick() {
+            emotions.tick();
+        }
     }
 }

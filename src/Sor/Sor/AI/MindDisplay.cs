@@ -46,6 +46,7 @@ namespace Sor.AI {
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 ind.AppendLine($"prsntly: {mind.soul.ply}");
+                ind.AppendLine($"emo: H:{mind.soul.emotions.happy}, F:{mind.soul.emotions.fear}");
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
             }
