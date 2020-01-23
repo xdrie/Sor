@@ -27,7 +27,7 @@ namespace Sor.AI.Systems {
                     var from = sig.cap.sender;
                     if (from != null && from != mind.me) {
                         // run a feeding interaction
-                        var interaction = new CapsuleFeeding();
+                        var interaction = new CapsuleFeeding(sig);
                         interaction.run(from.mind.soul, mind.soul);
                     }
                     break;

@@ -28,10 +28,11 @@ namespace Sor.AI {
 
         public Mind() : this(null, true) { }
 
-        public Mind(AvianSoul soul, bool control) {
-            this.soul = soul;
-            if (this.soul == null) { // generate soul
-                this.soul = AvianSoul.generate(this);
+        public Mind(AvianSoul inSoul, bool control) {
+            soul = inSoul;
+            if (soul == null) { // generate soul
+                soul = AvianSoul.generate(this);
+                Global.log.writeLine($"generated soul {soul.ply}", GlintLogger.LogLevel.Trace);
             }
 
             this.control = control;

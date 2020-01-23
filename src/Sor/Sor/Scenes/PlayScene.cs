@@ -67,6 +67,7 @@ namespace Sor.Scenes {
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerShip, hud));
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
+            var pipsSystem = AddEntityProcessor(new PipsSystem(playerShip));
 
             // add component to make Camera follow the player
             var followCamera =

@@ -13,6 +13,7 @@ namespace Sor.Systems {
         }
 
         public override void Process() {
+            // update energy indicator
             if (player.core != null) {
                 energyIndicator.setValue(Mathf.Clamp((float) player.core.ratio, 0, 1));
             }
