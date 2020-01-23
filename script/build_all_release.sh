@@ -1,3 +1,5 @@
+set -e
+
 ./script/build.sh
 ./script/get_natives.sh
 ./script/build_mono_release.sh
