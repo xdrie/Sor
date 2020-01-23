@@ -1,7 +1,7 @@
 set -e
 
 ARGS=""
-if [ $2 = "pack" ]; then
+if [ -n "$1" ] && [ "$1" = "pack" ]; then
     echo "setting PACK on"
     ARGS="${ARGS} pack"
 fi

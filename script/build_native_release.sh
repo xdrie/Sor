@@ -9,7 +9,7 @@ export CppCompilerAndLinker=clang
 FRAMEWORK=netcoreapp3.0
 TARGET=$1
 PACK=0
-if [ $2 = "pack" ]; then
+if [ -n "$2" ] && [ "$2" = "pack" ]; then
     echo "setting PACK=1"
     PACK=1
     PROPS="$PROPS /p:PackBinary=1"
