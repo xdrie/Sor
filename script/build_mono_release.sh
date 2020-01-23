@@ -6,7 +6,7 @@ PROJECT=Sor
 FRAMEWORK=net472
 PROJECT_PATH=./src/$PROJECT/${PROJECT}Dk
 
-REVISION=$(git log --pretty=format:'%h' -n 1)
+REVISION=$(git rev-parse --short HEAD)
 ARCNAME="sor_mono-$REVISION"
 ARTIFACT="builds/$ARCNAME.7z"
 

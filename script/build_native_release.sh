@@ -28,7 +28,7 @@ STRIP_BINARY=0
 UPX_COMPRESS=0
 
 # outputs
-REVISION=$(git log --pretty=format:'%h' -n 1)
+REVISION=$(git rev-parse --short HEAD)
 ARCNAME="${PROJECT}_$TARGET-$REVISION"
 ARTIFACT="builds/$ARCNAME.$ARCTYPE"
 
