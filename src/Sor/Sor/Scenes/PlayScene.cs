@@ -30,9 +30,9 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
 
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
-            var playerShip = playerEntity.AddComponent(new Wing());
+            var playerWing = playerEntity.AddComponent(new Wing());
             var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            var playerMind = playerShip.AddComponent(new Mind(playerSoul, false));
+            var playerMind = playerWing.AddComponent(new Mind(playerSoul, false));
             playerSoul.mind = playerMind; // associate mind with soul
             playerEntity.AddComponent<PlayerInputController>();
 
@@ -43,7 +43,7 @@ namespace Sor.Scenes {
             var testShip = testEntity.AddComponent(new Predator());
             testShip.AddComponent<LogicInputController>();
             testShip.AddComponent<Mind>();
-            testShip.AddComponent<MindDisplay>();
+            testShip.AddComponent(new MindDisplay(playerWing));
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
@@ -65,9 +65,9 @@ namespace Sor.Scenes {
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
-            var hudSystem = AddEntityProcessor(new HudSystem(playerShip, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(playerShip));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
 
             // add component to make Camera follow the player
             var followCamera =

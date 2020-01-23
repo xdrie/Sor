@@ -6,9 +6,14 @@ using Sor.Components.Units;
 
 namespace Sor.AI {
     public class MindDisplay : RenderableComponent, IUpdatable {
+        private Wing player;
         private Mind mind;
         private Wing wing;
         private Color textCol = Core.Services.GetService<GameContext>().assets.fgColor;
+
+        public MindDisplay(Wing player) {
+            this.player = player;
+        }
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
@@ -29,6 +34,7 @@ namespace Sor.AI {
             StringBuilder ind = new StringBuilder();
             ind.AppendLine($"[mind] {wing.name}");
             ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
+            ind.AppendLine($"opinion: {mind.state.getOpinion(player.mind)}");
             batcher.DrawString(Graphics.Instance.BitmapFont, ind, 
                 camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
         }
