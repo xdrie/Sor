@@ -1,8 +1,9 @@
 using Glint.AI.Misc;
 using LunchtimeGears.Calc;
+using LunchtimeGears.Cogs;
 
 namespace Sor.AI.Cogs {
-    public struct BirdPersonality {
+    public class BirdPersonality : Personality {
         public float A; // anxiety
         public float S; // extraversion
 
@@ -14,18 +15,7 @@ namespace Sor.AI.Cogs {
         public float v1;
 
         public float[] disposition => new[] {v0, v1};
-
-        // -- calculation
-        // normalize personality component from [-1,1] to [0,1]
-
-        // inverse normalize from [0,1] to [-1,1]
-        public float inm(float v) => (v * 2) - 1;
-
-        public float[] vec => Mathf.normVec(new[] {A, S});
-
-        public float mult(float[] weights) {
-            return Mathf.dot(vec, weights);
-        }
+        public override float[] vec => Mathf.normVec(new[] {A, S});
 
         public static BirdPersonality makeRandom() {
             var p = new BirdPersonality();
