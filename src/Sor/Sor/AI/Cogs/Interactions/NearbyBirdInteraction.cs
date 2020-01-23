@@ -25,6 +25,7 @@ namespace Sor.AI.Cogs.Interactions {
             if (currentOp > MindConstants.OPINION_ALLY) {
                 opDel = Math.Abs(opDel);
             } else {
+                // TODO: take anxiety better into account
                 me.emotions.fear = 1; // overwrite fear
             }
             
