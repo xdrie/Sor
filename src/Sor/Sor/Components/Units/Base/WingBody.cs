@@ -64,9 +64,9 @@ namespace Sor.Components.Units {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
-                    var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
+                    var capNt = Entity.Scene.CreateEntity("pod", Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
-                    cap.firstAvailableAt = Time.TotalTime + 4f;
+                    cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
                     var capBody = cap.launch(capEnergy, capMotion.rotate(angle));
                 }
@@ -157,7 +157,7 @@ namespace Sor.Components.Units {
                 var hitEntity = other.Entity;
                 if (hitEntity.HasComponent<Capsule>()) {
                     var capsule = hitEntity.GetComponent<Capsule>();
-                    if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
+                    if (Time.TotalTime > capsule.firstAvailableAt) {
                         // apply the capsule
                         me.core.energy += capsule.energy;
                         capsule.energy = 0;
