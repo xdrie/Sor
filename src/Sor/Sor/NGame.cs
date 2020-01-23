@@ -33,6 +33,9 @@ namespace Sor {
             
             // update logger
             Global.log.verbosity = (GlintLogger.LogLevel) gameContext.config.logLevel;
+            if (gameContext.config.logFile != null) {
+                Global.log.sinks.Add(new GlintLogger.FileSink(gameContext.config.logFile));
+            }
 
             // update rendering options
             var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;

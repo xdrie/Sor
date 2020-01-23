@@ -10,6 +10,7 @@ namespace Sor.Game {
         public int w = 960;
         public int h = 540;
         public int logLevel = (int) GlintLogger.LogLevel.Information;
+        public string logFile = null;
 
         public enum ScaleMode {
             PixelPerfect,
@@ -27,6 +28,7 @@ namespace Sor.Game {
             maxVfx = pr.getBool("video.maxVfx", maxVfx);
 
             logLevel = pr.getInt("platform.logLevel", logLevel);
+            logFile = pr.getStr("platform.logFile", logFile);
         }
     }
 }
