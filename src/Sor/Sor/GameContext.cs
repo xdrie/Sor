@@ -24,7 +24,11 @@ namespace Sor {
                 new Color(0x2f2732),
             };
 
-            public Color success = new Color(137, 202, 143);
+            public Color colGreen = new Color(137, 202, 143);
+            public Color colBlue = new Color(98, 161, 179);
+            public Color colYellow = new Color(190, 175, 91);
+            public Color colOrange = new Color(189, 133, 91);
+            public Color colRed = new Color(189, 91, 91);
 
             public Color fgColor => palette[0];
             public Color bgColor => palette[4];
@@ -38,7 +42,7 @@ namespace Sor {
             public int w = 960;
             public int h = 540;
             public int logLevel = (int) GlintLogger.LogLevel.Information;
-            
+
             public enum ScaleMode {
                 PixelPerfect,
                 Stretch

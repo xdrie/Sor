@@ -8,11 +8,11 @@ namespace Sor.Components.UI {
     public class Pips : GAnimatedSprite {
         public Pips() : base(Core.Content.LoadTexture("Data/sprites/pips.png"), 16, 16) { }
 
-        public static Color red => Color.Red;
-        public static Color orange => Color.Orange;
-        public static Color yellow => Color.Yellow;
-        public static Color blue => Color.Blue;
-        public static Color green => Core.Services.GetService<GameContext>().assets.success;
+        public static Color red => Core.Services.GetService<GameContext>().assets.colRed;
+        public static Color orange => Core.Services.GetService<GameContext>().assets.colOrange;
+        public static Color yellow => Core.Services.GetService<GameContext>().assets.colYellow;
+        public static Color blue => Core.Services.GetService<GameContext>().assets.colBlue;
+        public static Color green => Core.Services.GetService<GameContext>().assets.colGreen;
 
         public SpriteAnimator colAnimator;
 
