@@ -12,7 +12,7 @@ namespace Sor.Components.Units {
 
         private GameContext gameContext;
 
-        public float turnPower = Mathf.PI * 0.32f;
+        public float turnPower = Mathf.PI * 0.72f;
         public float thrustPower = 2f;
         public float boostFactor = 6.2f;
         public float laneFactor = 4f;
@@ -41,7 +41,7 @@ namespace Sor.Components.Units {
 
         public void recalculateKinematics() {
             mass = 10f;
-            maxAngular = turnPower * 2f;
+            maxAngular = turnPower * 1.2f;
             angularDrag = turnPower * 2f;
             drag = new Vector2(stdDrag);
             maxVelocity = new Vector2(topSpeed);
@@ -64,9 +64,9 @@ namespace Sor.Components.Units {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
-                    var capNt = Entity.Scene.CreateEntity(null, Entity.Position);
+                    var capNt = Entity.Scene.CreateEntity("pod", Entity.Position);
                     var cap = capNt.AddComponent<Capsule>();
-                    cap.firstAvailableAt = Time.TotalTime + 4f;
+                    cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
                     var capBody = cap.launch(capEnergy, capMotion.rotate(angle));
                 }
@@ -113,21 +113,20 @@ namespace Sor.Components.Units {
 
             // boost ribbon
             var boostRibbon = Entity.GetComponent<TrailRibbon>();
-            if (controller.boostInput && Time.TotalTime > boostCooldown) {
-                var runDrain = boostDrainKg * mass * Time.DeltaTime; // boosting drains energy
-                if (me.core.energy > runDrain) {
-                    me.core.energy -= runDrain;
-                    // boost the ship
-                    boosting = true;
-                    thrustVal *= boostFactor; // multiply thrust power
-                    maxVelocity = new Vector2(440f); // increase velocity cap
-                    if (gameContext.config.maxVfx) {
-                        Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
-                    }
-                    if (!boostRibbon.IsEmitting) {
-                        boostRibbon.StartEmitting();
-                        boostRibbon.Enabled = true;
-                    }
+            var boostDrain = boostDrainKg * mass * Time.DeltaTime; // boosting drains energy
+            if (controller.boostInput && me.core.energy > boostDrain && Time.TotalTime > boostCooldown) {
+                me.core.energy -= boostDrain;
+                // boost the ship
+                boosting = true;
+                thrustVal *= boostFactor; // multiply thrust power
+                maxVelocity = new Vector2(440f); // increase velocity cap
+                if (gameContext.config.maxVfx) {
+                    Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
+                }
+
+                if (!boostRibbon.IsEmitting) {
+                    boostRibbon.StartEmitting();
+                    boostRibbon.Enabled = true;
                 }
             }
             else {
@@ -136,6 +135,7 @@ namespace Sor.Components.Units {
                 if (boostRibbon.IsEmitting) {
                     boostRibbon.StopEmitting();
                 }
+
                 if (controller.boostInput.IsReleased) { // when boost stopped, set a cooldown
                     boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
                 }
@@ -157,7 +157,7 @@ namespace Sor.Components.Units {
                 var hitEntity = other.Entity;
                 if (hitEntity.HasComponent<Capsule>()) {
                     var capsule = hitEntity.GetComponent<Capsule>();
-                    if (Time.TimeSinceSceneLoad > capsule.firstAvailableAt) {
+                    if (Time.TotalTime > capsule.firstAvailableAt) {
                         // apply the capsule
                         me.core.energy += capsule.energy;
                         capsule.energy = 0;
@@ -181,6 +181,7 @@ namespace Sor.Components.Units {
                         succ = false;
                     }
                 }
+
                 if (succ) {
                     var thingBody = gravThing.GetComponent<KinBody>();
                     var toMe = Entity.Position - gravThing.Position;

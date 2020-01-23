@@ -1,3 +1,4 @@
+using Glint.Config;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
@@ -5,7 +6,11 @@ using Nez.BitmapFonts;
 namespace Sor {
     public class GameContext {
         public Assets assets = new Assets();
-        public Config config = new Config();
+        public Config config;
+
+        public GameContext(Config config) {
+            this.config = config;
+        }
 
         public class Assets {
             public BitmapFont font;
@@ -26,6 +31,27 @@ namespace Sor {
 
         public class Config {
             public bool maxVfx = true; // enable all visual effects
+            public bool fullscreen = false;
+            public int framerate = 60;
+            public int scaleMode = (int) ScaleMode.PixelPerfect;
+            public int w = 960;
+            public int h = 540;
+            
+            public enum ScaleMode {
+                PixelPerfect,
+                Stretch
+            };
+
+            public void read(string cf) {
+                ConfigParser pr = new ConfigParser();
+                pr.parse(cf);
+                w = pr.getInt("video.w", w);
+                h = pr.getInt("video.h", h);
+                fullscreen = pr.getBool("video.fullscreen", fullscreen);
+                scaleMode = pr.getInt("video.scaleMode", scaleMode);
+                framerate = pr.getInt("video.framerate", framerate);
+                maxVfx = pr.getBool("video.maxVfx", maxVfx);
+            }
         }
 
         public void loadContent() {

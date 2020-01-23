@@ -13,8 +13,9 @@ namespace Sor {
 
         public Point gameResolution = new Point(960, 540);
 
-        public NGame() : base(1920, 1080, windowTitle: GAME_TITLE) {
-            gameContext = new GameContext();
+        public NGame(GameContext.Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
+            isFullScreen: config.fullscreen) {
+            gameContext = new GameContext(config);
         }
 
         protected override void Initialize() {
@@ -27,12 +28,17 @@ namespace Sor {
             Services.AddService(typeof(GameContext), gameContext);
 
             var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;
+            if (gameContext.config.scaleMode == (int) GameContext.Config.ScaleMode.Stretch) {
+                resolutionPolicy = Scene.SceneResolutionPolicy.BestFit;
+                Window.AllowUserResizing = true;
+            }
+
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates
             IsFixedTimeStep = true;
             TargetElapsedTime =
-                TimeSpan.FromSeconds(1f / 60f); // optional custom framerate
+                TimeSpan.FromSeconds(1d / gameContext.config.framerate); // optional custom framerate
 
             Scene = new IntroScene();
         }

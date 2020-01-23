@@ -27,6 +27,8 @@ namespace Sor.Scenes {
             bookrowSpriteRenderer =
                 playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
             playBtn.SetLocalScale(4f);
+            var pressToPlayText = ui.AddComponent(new TextComponent(gameContext.assets.font, "press [E]",
+                new Vector2(720, 140f), gameContext.assets.fgColor));
 
             var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
                 new Vector2(10, Resolution.Y - 20f), gameContext.assets.fgColor));

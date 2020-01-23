@@ -29,8 +29,8 @@ UPX_COMPRESS=0
 
 # outputs
 REVISION=$(git log --pretty=format:'%h' -n 1)
-ARCNAME="$PROJECT_$TARGET-$REVISION"
-ARTIFACT="builds/$PROJECT-$ARCNAME.$ARCTYPE"
+ARCNAME="${PROJECT}_$TARGET-$REVISION"
+ARTIFACT="builds/$ARCNAME.$ARCTYPE"
 
 echo "release builder script [target $TARGET/$FRAMEWORK]"
 echo "ART: $ARTIFACT"
@@ -59,6 +59,9 @@ then
     echo "compressing binary with UPX..."
     upx --lzma $BINARY
 fi
+
+# check the binary
+ls -la $BINARY
 
 popd
 
