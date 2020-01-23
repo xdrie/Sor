@@ -32,6 +32,7 @@ namespace Sor.Scenes {
             var playerEntity = CreateEntity("player", new Vector2(200, 200));
             var playerWing = playerEntity.AddComponent(new Wing());
             var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
+            playerSoul.calculateTraits();
             var playerMind = playerWing.AddComponent(new Mind(playerSoul, false));
             playerSoul.mind = playerMind; // associate mind with soul
             playerEntity.AddComponent<PlayerInputController>();

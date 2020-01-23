@@ -33,6 +33,7 @@ namespace Sor.AI {
             soul = inSoul;
             if (soul == null) { // generate soul
                 soul = AvianSoul.generate(this);
+                soul.calculateTraits();
                 Global.log.writeLine($"generated soul {soul.ply}", GlintLogger.LogLevel.Trace);
             }
 
