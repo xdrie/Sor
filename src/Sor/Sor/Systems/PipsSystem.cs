@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Nez;
+using Sor.AI;
 using Sor.Components.UI;
 using Sor.Components.Units;
 
@@ -7,7 +8,7 @@ namespace Sor.Systems {
     public class PipsSystem : EntityProcessingSystem {
         private Wing player;
 
-        public PipsSystem(Wing player) : base(new Matcher().All(typeof(Wing))) {
+        public PipsSystem(Wing player) : base(new Matcher().All(typeof(Mind))) {
             this.player = player;
         }
 
