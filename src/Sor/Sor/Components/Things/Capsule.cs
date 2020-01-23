@@ -29,7 +29,7 @@ namespace Sor.Components.Things {
             Entity.AddComponent(new BoxCollider(-40, -40, 80, 80) {Tag = Constants.TRIGGER_GRAVITY, IsTrigger = true});
             
             // use slow updates
-            // Entity.UpdateInterval = 10;
+            UpdateInterval = 10;
         }
 
         public CapsuleBody launch(int energy, Vector2 launch) {
