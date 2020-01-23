@@ -7,14 +7,18 @@ echo "================================"
 echo ""
 echo ""
 
-SLN=src/Sor/Sor.sln
+GAME=Sor
+SRCDIR=src/${GAME}
+SLN=${SRCDIR}/${GAME}.sln
+PROJ=${SRCDIR}/${GAME}Dk/${GAME}Dk.csproj
+FRAMEWORK=netcoreapp3.0
 
 echo "getting submodules..."
 git submodule update --init --recursive
 
 # make sure we're in the right start
 echo "finding project..."
-ls $SLN
+ls $PROJ
 
 echo "restoring packages..."
 dotnet restore $SLN
@@ -31,5 +35,4 @@ popd # go back
 
 # build project
 echo "building project..."
-dotnet build $SLN
-
+dotnet build -f $FRAMEWORK $PROJ
