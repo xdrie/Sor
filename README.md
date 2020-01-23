@@ -24,12 +24,13 @@ git submodule update --init --recursive # update submodules
 ./script/get_natives.sh # get native libraries
 ./script/build_mono_release.sh
 ```
-run `SorDk.exe` with mono or use the helper script `./Sor_game`
+run `SorDk.exe` with mono or use the helper script `./Sor_game`. mono builds are cross-platform and will run on any system that has mono and compatible native libraries, which are bundled for windows, macos, and linux.
 
 ### native build
 ```sh
 ./script/build_native_release.sh <runtime> # ex. linux-x64
 ```
+run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
 ## license
 
