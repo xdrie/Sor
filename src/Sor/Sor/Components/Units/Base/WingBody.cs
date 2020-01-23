@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
+using Sor.AI.Signals;
 using Sor.Components.Input;
 using Sor.Components.Things;
 
@@ -161,6 +162,10 @@ namespace Sor.Components.Units {
                         me.core.energy += capsule.energy;
                         capsule.energy = 0;
                         capsule.acquire(); // blow it up
+                        // send signal to mind
+                        if (me.hasMind) {
+                            me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule));
+                        }
                     }
                 }
             }

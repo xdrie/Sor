@@ -1,12 +1,15 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
+using Sor.AI;
 using Sor.Components.Things;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite {
         public WingBody body;
+        public Mind mind;
+        public bool hasMind => mind != null;
         public BoxCollider hitbox;
         public EnergyCore core;
         public Pips pips;
@@ -35,10 +38,14 @@ namespace Sor.Components.Units {
             
             // set body properties
             body.mass = 10f;
-
+            
+            // load mind if available
+            if (Entity.HasComponent<Mind>()) {
+                mind = Entity.GetComponent<Mind>();
+            }
+            
+            // pips setup
             var pipNumber = 1 + Random.NextInt(5);
-            // pips.animator.Play(pipNumber.ToString());
-            // pips.colAnimator.Color = ;
             pips.setPips(pipNumber, Core.Services.GetService<GameContext>().assets.success);
 
             var ribbon = Entity.AddComponent(new TrailRibbon(40) {

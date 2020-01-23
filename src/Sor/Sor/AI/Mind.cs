@@ -1,8 +1,10 @@
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using LunchtimeGears.Units;
 using Nez;
 using Sor.AI.Cogs;
+using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
 using Sor.Components.Units;
@@ -17,6 +19,8 @@ namespace Sor.AI {
         public Wing me;
         public VisionSystem visionSystem;
         public AvianSoul soul;
+
+        public int maxSignalsPerThink = 40;
 
         public int consciousnessSleep = 100;
         protected Task consciousnessTask;
@@ -62,10 +66,28 @@ namespace Sor.AI {
             controller.zero(); // reset the controller
         }
 
-        private void think() { }
+        private void think() {
+            // look at signals
+            var processedSignals = 0;
+            while (state.signalQueue.TryDequeue(out var signal)) {
+                // process the signal
+                processSignal(signal);
+
+                processedSignals++;
+                if (processedSignals > maxSignalsPerThink) break;
+            }
+        }
+
+        private void processSignal(MindSignal result) {
+            throw new System.NotImplementedException();
+        }
 
         private void sense() {
             visionSystem.tick(); // vision
+        }
+
+        public void signal(MindSignal signal) {
+            state.signalQueue.Enqueue(signal);
         }
     }
 }
