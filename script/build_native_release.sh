@@ -30,7 +30,7 @@ UPX_COMPRESS=0
 # outputs
 REVISION=$(git log --pretty=format:'%h' -n 1)
 ARCNAME="${PROJECT}_$TARGET-$REVISION"
-ARTIFACT="builds/$PROJECT-$ARCNAME.$ARCTYPE"
+ARTIFACT="builds/$ARCNAME.$ARCTYPE"
 
 echo "release builder script [target $TARGET/$FRAMEWORK]"
 echo "ART: $ARTIFACT"
