@@ -8,6 +8,7 @@ echo ""
 echo ""
 
 SLN=src/Sor/Sor.sln
+FRAMEWORK=netcoreapp3.0
 
 echo "getting submodules..."
 git submodule update --init --recursive
@@ -31,5 +32,4 @@ popd # go back
 
 # build project
 echo "building project..."
-dotnet build $SLN
-
+dotnet build -f $FRAMEWORK $SLN
