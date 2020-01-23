@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tweens;
@@ -57,6 +58,7 @@ namespace Sor.Scenes {
             versionText.SetLocalOffset(new Vector2(-versionText.Width - 4f, 0));
 
             // - loading logic
+            Global.log.writeLine($"loading game resources", GlintLogger.LogLevel.Information);
             await Task.Delay(0); // await Task.Delay(1000);
             // await GameBootstrapper.bootAsync(text => { versionText.Text = text; });
 

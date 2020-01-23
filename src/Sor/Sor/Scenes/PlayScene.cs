@@ -1,3 +1,4 @@
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -52,6 +53,8 @@ namespace Sor.Scenes {
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
+            
+            Global.log.writeLine("play scene created", GlintLogger.LogLevel.Information);
 
             // - hud
             const int hudPadding = 8;

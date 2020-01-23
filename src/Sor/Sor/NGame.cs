@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using Glint;
+using Glint.Util;
 using Nez;
 using Sor.Scenes;
 
@@ -16,6 +17,7 @@ namespace Sor {
         public NGame(GameContext.Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
             isFullScreen: config.fullscreen) {
             gameContext = new GameContext(config);
+            Global.log.writeLine("game instantiated", GlintLogger.LogLevel.Information);
         }
 
         protected override void Initialize() {
@@ -23,14 +25,17 @@ namespace Sor {
 
             Window.Title = GAME_TITLE;
             Window.AllowUserResizing = false;
+            // update logger
+            Global.log = new GlintLogger((GlintLogger.LogLevel) gameContext.config.logLevel);
 
-            // Register context service
+            // register context service
             Services.AddService(typeof(GameContext), gameContext);
 
             var resolutionPolicy = Scene.SceneResolutionPolicy.ShowAllPixelPerfect;
             if (gameContext.config.scaleMode == (int) GameContext.Config.ScaleMode.Stretch) {
                 resolutionPolicy = Scene.SceneResolutionPolicy.BestFit;
                 Window.AllowUserResizing = true;
+                Global.log.writeLine("stretch scaling enabled", GlintLogger.LogLevel.Warning);
             }
 
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
@@ -40,6 +45,7 @@ namespace Sor {
             TargetElapsedTime =
                 TimeSpan.FromSeconds(1d / gameContext.config.framerate); // optional custom framerate
 
+            Global.log.writeLine("graphics settings applied", GlintLogger.LogLevel.Information);
             Scene = new IntroScene();
         }
     }
