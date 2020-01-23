@@ -48,6 +48,7 @@ namespace Sor.Components.Things {
 
         public void acquire() {
             if (!acquired) {
+                energy = 0;
                 var tw = spriteRenderer.TweenColorTo(Color.Black, 0.4f);
                 tw.SetCompletionHandler(t => { Entity.Destroy(); });
                 tw.Start();

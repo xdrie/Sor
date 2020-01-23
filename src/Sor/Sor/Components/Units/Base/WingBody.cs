@@ -159,12 +159,12 @@ namespace Sor.Components.Units {
                     var capsule = hitEntity.GetComponent<Capsule>();
                     if (Time.TotalTime > capsule.firstAvailableAt) {
                         // apply the capsule
-                        me.core.energy += capsule.energy;
-                        capsule.energy = 0;
+                        var gotEnergy = capsule.energy;
+                        me.core.energy += gotEnergy;
                         capsule.acquire(); // blow it up
                         // send signal to mind
                         if (me.mind.control) {
-                            me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule));
+                            me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
                         }
                     }
                 }
