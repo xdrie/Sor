@@ -5,6 +5,7 @@ using Sor.AI.Signals;
 namespace Sor.AI.Cogs.Interactions {
     public class CapsuleFeeding : BirdInteraction {
         private ItemSignals.CapsuleAcquiredSignal sig;
+        private const int maxBonus = 40;
 
         public CapsuleFeeding(ItemSignals.CapsuleAcquiredSignal sig) {
             this.sig = sig;
@@ -18,8 +19,8 @@ namespace Sor.AI.Cogs.Interactions {
             
             // TODO: actually look at traits
             // for now, blindly increase our opinion
-            var baseBonus = (int) (sig.energy / 400f) * 100;
-            baseBonus = IntMath.clamp(baseBonus, 0, 100);
+            var baseBonus = (int) (sig.energy / 400f) * maxBonus;
+            baseBonus = IntMath.clamp(baseBonus, 0, maxBonus);
             var giverOpi = recpt.mind.state.addOpinion(giver.mind, baseBonus);
         }
     }
