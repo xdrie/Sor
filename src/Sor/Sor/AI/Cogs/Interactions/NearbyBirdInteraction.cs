@@ -18,10 +18,9 @@ namespace Sor.AI.Cogs.Interactions {
             // if opinion is negative, then there is cause for fear
             // if opinion is positive, then i feel secure
             // if my anxiety is high, i will react more strongly to both
-
             
-            var maxDel = -4;
-            var opDel = maxDel * me.traits.fear;
+            var maxDel = 4;
+            var opDel = -maxDel * (me.traits.fear + 1);
             var currentOp = me.mind.state.getOpinion(them.mind);
             if (currentOp > MindConstants.OPINION_ALLY) {
                 opDel = Math.Abs(opDel);
