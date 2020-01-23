@@ -14,4 +14,10 @@
         <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Icon.ico" />
+        <EmbeddedResource Include="Icon.bmp" />
+        <EmbeddedResource Include="Icon.png" />
+    </ItemGroup>
+
 </Project>
