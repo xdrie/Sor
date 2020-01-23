@@ -5,6 +5,13 @@
         <TargetFrameworks>netcoreapp3.0;net472</TargetFrameworks>
         <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(PackBinary)' == '1'">
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishReadyToRun>true</PublishReadyToRun>
+        <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
+<!--        <PublishSingleFile>true</PublishSingleFile>-->
+    </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Sor\Sor.csproj" />
