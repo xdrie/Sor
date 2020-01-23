@@ -24,6 +24,8 @@ namespace Sor.AI.Cogs.Interactions {
             var currentOp = me.mind.state.getOpinion(them.mind);
             if (currentOp > MindConstants.OPINION_ALLY) {
                 opDel = Math.Abs(opDel);
+            } else {
+                me.emotions.fear = 1; // overwrite fear
             }
             
             opDel = Gmathf.clamp(opDel, -maxDel, maxDel);
