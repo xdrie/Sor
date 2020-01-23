@@ -3,11 +3,11 @@ using LunchtimeGears.Calc;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Cogs.Interactions {
-    public class CapsuleFeeding : BirdInteraction {
+    public class CapsuleFeedingInteraction : BirdInteraction {
         private ItemSignals.CapsuleAcquiredSignal sig;
         private const int maxBonus = 40;
 
-        public CapsuleFeeding(ItemSignals.CapsuleAcquiredSignal sig) {
+        public CapsuleFeedingInteraction(ItemSignals.CapsuleAcquiredSignal sig) {
             this.sig = sig;
         }
         
