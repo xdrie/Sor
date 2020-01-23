@@ -44,6 +44,7 @@ namespace Sor.Game {
                         treeStage = int.Parse(stageProp);
                     }
                     nt.AddComponent(new Tree {stage = treeStage});
+                    Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
                 }
             }
         }
