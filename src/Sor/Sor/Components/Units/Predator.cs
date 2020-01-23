@@ -10,7 +10,7 @@ namespace Sor.Components.Units {
             
             body.turnPower = Mathf.PI * 0.22f;
             body.thrustPower = 1f;
-            body.mass = 60f;
+            body.mass = 80f;
             body.recalculateKinematics();
         }
     }

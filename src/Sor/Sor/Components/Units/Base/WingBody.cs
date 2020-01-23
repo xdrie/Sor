@@ -40,7 +40,6 @@ namespace Sor.Components.Units {
         }
 
         public void recalculateKinematics() {
-            mass = 10f;
             maxAngular = turnPower * 2f;
             angularDrag = turnPower * 2f;
             drag = new Vector2(stdDrag);
