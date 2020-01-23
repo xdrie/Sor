@@ -7,6 +7,18 @@ the mechanical bird game
 
 the game supports running on both .net core and mono. after using build scripts, archives are placed in `builds/`
 
+### dependencies
+
+- [.NET Core 3.1](https://dotnet.microsoft.com/download)
+- [Mono](https://www.mono-project.com/download/stable/) (only for Mono build)
+- XNG (XNez + Glint) (git)
+- Lunch Simulator (git)
+
+pull the source submodules first
+```sh
+git submodule update --init --recursive # update submodules
+```
+
 ### mono build
 ```sh
 ./script/get_natives.sh # get native libraries
