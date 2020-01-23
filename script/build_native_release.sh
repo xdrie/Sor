@@ -28,7 +28,10 @@ STRIP_BINARY=0
 UPX_COMPRESS=0
 
 # outputs
-REVISION=$(git rev-parse --short HEAD)
+REVISION=$(git tag -l --points-at HEAD)
+if [ -z "${REVISION}" ]; then
+    REVISION=$(git rev-parse --short HEAD)
+fi
 ARCNAME="${PROJECT}_$TARGET-$REVISION"
 ARTIFACT="builds/$ARCNAME.$ARCTYPE"
 
