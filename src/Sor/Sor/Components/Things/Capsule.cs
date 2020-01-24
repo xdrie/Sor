@@ -1,11 +1,11 @@
-using Glint.Sprites;
+using LunchtimeGears.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Units;
 
 namespace Sor.Components.Things {
     public class Capsule : Thing, IUpdatable {
-        public double energy = 0;
+        public float energy = 0;
         public bool acquired = false;
         public float firstAvailableAt = 0;
         public const float lifetime = 20f;
@@ -34,8 +34,8 @@ namespace Sor.Components.Things {
             UpdateInterval = 10;
         }
 
-        public void launch(int energy, Vector2 launch) {
-            this.energy = energy;
+        public void launch(float launchEnergy, Vector2 launch) {
+            energy = launchEnergy;
             body.velocity += launch;
         }
 
@@ -48,9 +48,9 @@ namespace Sor.Components.Things {
                 base.Initialize();
 
                 maxAngular = maxAngularFloat;
-                angularVelocity = Nez.Random.Range(-1f, 1f) * maxAngularFloat;
+                angularVelocity = Random.Range(-1f, 1f) * maxAngularFloat;
                 maxVelocity = new Vector2(maxLinearFloat);
-                velocity = Nez.Random.Range(new Vector2(-randomLinearFloat), new Vector2(randomLinearFloat));
+                velocity = Random.Range(new Vector2(-randomLinearFloat), new Vector2(randomLinearFloat));
             }
         }
 
@@ -65,6 +65,10 @@ namespace Sor.Components.Things {
         }
 
         public void Update() {
+            // update animation speed based on energy
+            var animSpeed = Mathf.Clamp(energy / 400f, 0.5f, 2f);
+            animator.Speed = animSpeed;
+            // check despawn
             if (Time.TotalTime > despawnAt) {
                 Enabled = false;
                 Entity.Destroy();

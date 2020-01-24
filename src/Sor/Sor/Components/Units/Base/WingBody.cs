@@ -58,7 +58,7 @@ namespace Sor.Components.Units {
 
         private void interaction() {
             if (controller.tetherInput.IsPressed) {
-                var capEnergy = 400;
+                var capEnergy = Constants.CAPSULE_SIZE;
                 var capSpeed = 40f;
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;

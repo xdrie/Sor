@@ -38,9 +38,6 @@ namespace Sor.Scenes {
             playerSoul.mind = playerMind; // associate mind with soul
             playerEntity.AddComponent<PlayerInputController>();
 
-            var cap = CreateEntity("cap0", new Vector2(160, 160));
-            cap.AddComponent<Capsule>();
-
             var testEntity = CreateEntity("duck-uno", new Vector2(-140, 320));
             var testShip = testEntity.AddComponent(new Predator());
             testShip.AddComponent<LogicInputController>();

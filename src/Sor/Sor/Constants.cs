@@ -9,5 +9,6 @@ namespace Sor {
         
         // - Game mechanics
         public const float BOOST_COOLDOWN = 1f;
+        public const float CAPSULE_SIZE = 400;
     }
 }
