@@ -7,7 +7,8 @@ using Sor.Util;
 namespace Sor.Game {
     public class PlayStatePersistable : IPersistable {
         private PlayScene play;
-
+        
+        public bool loaded = false;
         public const int version = 2;
         
         // default values
@@ -18,6 +19,7 @@ namespace Sor.Game {
         }
 
         public void Recover(IPersistableReader reader) {
+            loaded = true;
             Global.log.writeLine($"{nameof(PlayStatePersistable)}::recover called", GlintLogger.LogLevel.Information);
             var readVersion = reader.ReadInt();
             if (version != readVersion) {

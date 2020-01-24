@@ -42,7 +42,8 @@ namespace Sor.Scenes.Helpers {
             var loader = new MapLoader(play, mapEntity);
             loader.load(mapAsset);
 
-            Global.log.writeLine("fresh play scene created", GlintLogger.LogLevel.Information);
+            var status = pers.loaded ? "recreated" : "freshly created";
+            Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
         }
 
         public void createPlayer(Vector2 pos) {
