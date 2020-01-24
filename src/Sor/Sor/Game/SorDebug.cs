@@ -7,7 +7,7 @@ namespace Sor.Game {
         public static PlayScene play;
 
         [Command("g_energy", "adds energy to the player")]
-        public static void Energy(double val) {
+        public static void Energy(float val) {
             play.playerWing.core.energy += val;
         }
     }
