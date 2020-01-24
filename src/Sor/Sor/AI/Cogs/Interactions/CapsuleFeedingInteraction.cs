@@ -38,6 +38,10 @@ namespace Sor.AI.Cogs.Interactions {
             // if receptive, add a bonus
             var opScl = PerMath.twoSegment(opDel, recptTraits.receptiveness, 0f, 1.4f, true);
             opDel = IntMath.clamp((int) (opDel * opScl), 0, maxBonus);
+            
+            // food makes me happy!
+            me.emotions.happy = 1f;
+            
             var giverOpi = me.mind.state.addOpinion(giver.mind, opDel);
         }
     }

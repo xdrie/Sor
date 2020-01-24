@@ -1,5 +1,6 @@
 using Glint.Util;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Nez;
 using Sor.AI;
 using Sor.AI.Cogs;
@@ -74,6 +75,15 @@ namespace Sor.Scenes {
             var followCamera =
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
             followCamera.AddComponent<CameraShake>();
+        }
+
+        public override void Update() {
+            base.Update();
+            
+            if (Input.IsKeyPressed(Keys.Escape)) {
+                // end this scene
+                transitionScene<MenuScene>(0.1f);
+            }
         }
     }
 }

@@ -20,6 +20,9 @@ namespace Sor.AI.Systems {
                 if (processedSignals > maxSignalsPerThink) break;
             }
             
+            // update soul systems
+            mind.soul.tick();
+            
             // look at mind information
             thinkVisual();
         }

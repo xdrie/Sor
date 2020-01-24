@@ -8,9 +8,9 @@
     
     <PropertyGroup Condition="'$(PackBinary)' == '1'">
         <PublishTrimmed>true</PublishTrimmed>
-        <PublishReadyToRun>true</PublishReadyToRun>
+<!--        <PublishReadyToRun>true</PublishReadyToRun>-->
         <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
-<!--        <PublishSingleFile>true</PublishSingleFile>-->
+        <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,12 +19,17 @@
 
     <ItemGroup>
         <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
+        <EmbeddedResource Include="Res/**/*" />
     </ItemGroup>
 
     <ItemGroup>
         <EmbeddedResource Include="Icon.ico" />
         <EmbeddedResource Include="Icon.bmp" />
         <EmbeddedResource Include="Icon.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Res" />
     </ItemGroup>
 
 </Project>

@@ -44,6 +44,11 @@ namespace Sor.Scenes {
                     .SetCompletionHandler(t => transitionScene(new PlayScene(), 0.5f))
                     .Start();
             }
+            
+            if (Input.IsKeyPressed(Keys.Escape)) {
+                // end this scene
+                Core.Exit();
+            }
         }
     }
 }

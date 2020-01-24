@@ -20,10 +20,13 @@ namespace Sor.AI.Cogs.Interactions {
             // if my anxiety is high, i will react more strongly to both
             
             var maxDel = 4;
-            var opDel = -maxDel * (me.traits.fear + 1);
+            var opDel = -maxDel * (me.traits.wary + 1);
             var currentOp = me.mind.state.getOpinion(them.mind);
             if (currentOp > MindConstants.OPINION_ALLY) {
                 opDel = Math.Abs(opDel);
+            } else {
+                // TODO: take anxiety better into account
+                me.emotions.fear = 1; // overwrite fear
             }
             
             opDel = Gmathf.clamp(opDel, -maxDel, maxDel);
