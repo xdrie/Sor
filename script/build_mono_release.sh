@@ -5,6 +5,7 @@ pushd .
 PROJECT=Sor
 FRAMEWORK=net472
 PROJECT_PATH=./src/$PROJECT/${PROJECT}Dk
+NATIVES_PATH=$(pwd)/natives
 
 REVISION=$(git tag -l --points-at HEAD)
 if [ -z "${REVISION}" ]; then
@@ -23,7 +24,7 @@ popd
 
 OUTPATH=$PROJECT_PATH/bin/Release/$FRAMEWORK
 echo "copying natives..."
-cp natives/* $OUTPATH/
+cp $NATIVES_PATH/* $OUTPATH/
 cp script/${PROJECT}_game $OUTPATH/
 chmod +x $OUTPATH/${PROJECT}_game
 

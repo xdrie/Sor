@@ -35,6 +35,7 @@ UPX_COMPRESS=0
 WARP_BIN=$(pwd)/builds/warp-packer
 WARP_COMPRESS=1
 WARP_ARCH=$TARGET
+NATIVES_PATH=$(pwd)/natives
 
 # correct architecture names for warp
 if [[ $TARGET == win* ]];
@@ -68,7 +69,8 @@ echo "copying to staging directory..."
 STAGING=${PUBLISH}_staging
 
 # set binary to full path of output executable
-BINARY="./$PROJECT_DIR/$STAGING/$BINARY"
+A_BINARY="./$PROJECT_DIR/$STAGING/$BINARY"
+echo "target: [$A_BINARY]"
 
 if [[ $PACK -eq 1 ]];
 then
@@ -76,7 +78,10 @@ then
     then
         mkdir -p ${STAGING}
         echo "running WARP tool..."
-        $WARP_BIN --arch $WARP_ARCH --input_dir $PUBLISH --exec $BIN_NAME --output "$STAGING/$BIN_NAME"
+        $WARP_BIN --arch $WARP_ARCH --input_dir $PUBLISH --exec $BINARY --output "$STAGING/$BINARY"
+
+        echo "copying natives..."
+        cp $NATIVES_PATH/* $STAGING/
     else
         cp -r ${PUBLISH} ${STAGING}
     fi
@@ -106,7 +111,7 @@ popd # return to build root
 
 # check the binary
 echo "checking output bin:"
-ls -lah $BINARY
+ls -lah $A_BINARY
 
 mkdir -p builds/
 echo "compressing to $ARTIFACT..."
