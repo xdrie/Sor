@@ -7,11 +7,13 @@ FRAMEWORK=net472
 PROJECT_PATH=./src/$PROJECT/${PROJECT}Dk
 NATIVES_PATH=$(pwd)/natives
 
+PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/NGame.cs | cut -d \" -f2)
 REVISION=$(git tag -l --points-at HEAD)
+GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
-    REVISION=$(git rev-parse --short HEAD)
+    REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="sor_mono-$REVISION"
+ARCNAME="${PROJECT}_$TARGET-v$REVISION"
 ARTIFACT="builds/$ARCNAME.7z"
 
 cd src/$PROJECT
