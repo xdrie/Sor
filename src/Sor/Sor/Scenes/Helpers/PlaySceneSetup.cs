@@ -42,8 +42,9 @@ namespace Sor.Scenes.Helpers {
 
             if (!pers.loaded) {
                 // fresh
-                createWing("duck-uno", new Vector2(-140, 320));
-                createWing("frend-duck", new Vector2(-140, 20),
+                var uno = createWing("duck-uno", new Vector2(-140, 320));
+                uno.selectClass(Wing.WingClass.Predator);
+                var frend = createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
             }
 

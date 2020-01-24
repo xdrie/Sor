@@ -14,6 +14,7 @@ namespace Sor.Components.Units {
         public Pips pips;
 
         public string name;
+        public WingClass wingClass = WingClass.Wing;
 
         public Wing(Mind mind) : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) {
             this.mind = mind;
@@ -33,7 +34,7 @@ namespace Sor.Components.Units {
             // add pips
             pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
-            
+
             // set body properties
             body.mass = 10f;
 
@@ -58,6 +59,43 @@ namespace Sor.Components.Units {
 
             if (name == null && Entity.Name != null) {
                 name = Entity.Name;
+            }
+        }
+
+        public enum WingClass {
+            Wing,
+            Predator,
+            Beak
+        }
+
+        public void selectClass(WingClass wingClass) {
+            this.wingClass = wingClass;
+            switch (wingClass) {
+                case WingClass.Wing:
+                    // TODO: set defaults
+                    break;
+                case WingClass.Predator: {
+                    var scale = 2f;
+                    Transform.SetLocalScale(2f);
+                    pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
+
+                    body.turnPower = Mathf.PI * 0.22f;
+                    body.thrustPower = 1f;
+                    body.mass = 80f;
+                    body.recalculateKinematics();
+                    break;
+                }
+                case WingClass.Beak: {
+                    var scale = 0.5f;
+                    Transform.SetLocalScale(scale);
+                    pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
+
+                    body.turnPower = Mathf.PI * 0.96f;
+                    body.thrustPower = 3.5f;
+                    body.mass = 4f;
+                    body.recalculateKinematics();
+                    break;
+                }
             }
         }
     }
