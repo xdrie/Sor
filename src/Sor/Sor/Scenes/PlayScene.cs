@@ -38,11 +38,18 @@ namespace Sor.Scenes {
             playerSoul.mind = playerMind; // associate mind with soul
             playerEntity.AddComponent<PlayerInputController>();
 
-            var testEntity = CreateEntity("duck-uno", new Vector2(-140, 320));
-            var duckUno = testEntity.AddComponent(new Predator());
+            var duckUnoNt = CreateEntity("duck-uno", new Vector2(-140, 320));
+            var duckUno = duckUnoNt.AddComponent(new Predator());
             duckUno.AddComponent<LogicInputController>();
             duckUno.AddComponent<Mind>();
             duckUno.AddComponent(new MindDisplay(playerWing, true));
+
+            var duckDosNt = CreateEntity("duck-dos", new Vector2(-140, -100));
+            var duckDos = duckDosNt.AddComponent(new Wing());
+            var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
+            duckDosSoul.calculateTraits();
+            var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
+            duckDosSoul.mind = duckDosMind; // associate mind with soul
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
