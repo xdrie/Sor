@@ -16,16 +16,20 @@ namespace Sor.Scenes {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
+        public bool showingHelp;
+        public const float showHelpTime = 4f;
+
         public Entity playerEntity;
         public Wing playerWing;
+        private Entity helpNt;
 
         public override void Initialize() {
             base.Initialize();
-            
+
 #if DEBUG
             SorDebug.play = this;
 #endif
-            
+
             var setup = new PlaySceneSetup(this);
             setup.createScene();
 
@@ -48,6 +52,27 @@ namespace Sor.Scenes {
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
+            helpNt = CreateEntity("help");
+            var helpDisplay1 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
+[IJKL]
+[SHIFT]
+[2]
+",
+                new Vector2(140, 140), gameContext.assets.fgColor));
+            var helpDisplay2 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
+move
+boost
+capsule
+",
+                new Vector2(280, 140), gameContext.assets.fgColor));
+            helpDisplay1.RenderLayer = renderlayer_ui_overlay;
+            helpDisplay2.RenderLayer = renderlayer_ui_overlay;
+            helpNt.SetLocalScale(2f);
+            showingHelp = true;
+            helpDisplay1.TweenColorTo(Color.Transparent).SetDelay(showHelpTime)
+                .SetCompletionHandler(_ => showingHelp = false).Start();
+            helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
+
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
             var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
@@ -66,6 +91,15 @@ namespace Sor.Scenes {
                 saveGame();
                 // end this scene
                 transitionScene<MenuScene>(0.1f);
+            }
+
+            if (!showingHelp) {
+                if (Input.IsKeyDown(Keys.Tab)) {
+                    helpNt.Enabled = true;
+                    helpNt.GetComponents<TextComponent>().ForEach(x => x.Color = gameContext.assets.fgColor);
+                } else {
+                    helpNt.Enabled = false;
+                }
             }
 
             if (InputUtils.IsControlDown()) {
@@ -103,7 +137,7 @@ namespace Sor.Scenes {
 
         public override void Unload() {
             base.Unload();
-            
+
 #if DEBUG
             SorDebug.play = null;
 #endif

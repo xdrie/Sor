@@ -37,7 +37,7 @@ namespace Sor.Game {
                 Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})",
                     GlintLogger.LogLevel.Error);
             }
-            
+
             // load game time
             Time.TotalTime = rd.ReadFloat() + timeAdvance;
 
@@ -60,22 +60,24 @@ namespace Sor.Game {
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
             }
-            
+
             // load world things
             var thingCount = rd.ReadInt();
             for (var i = 0; i < thingCount; i++) {
                 var thingHelper = new ThingHelper(this);
                 // load and inflate thing
                 var thing = thingHelper.loadThing(rd);
-                // tag entity as thing
-                thing.Entity.SetTag(Constants.ENTITY_THING);
+                if (thing != null) { // thing might not be loadedF
+                    // tag entity as thing
+                    thing.Entity.SetTag(Constants.ENTITY_THING);
+                }
             }
         }
 
         public void Persist(IPersistableWriter wr) {
             Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", GlintLogger.LogLevel.Information);
             wr.Write(version); // save file version
-            
+
             // save game time
             wr.Write(Time.TotalTime);
 
@@ -93,7 +95,7 @@ namespace Sor.Game {
                 wr.writeWingMeta(wing);
                 wr.writeBody(wing.body);
             }
-            
+
             // save world things
             var thingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_THING).ToList();
             wr.Write(thingsToSave.Count);
@@ -104,10 +106,12 @@ namespace Sor.Game {
                 if (thingNt.HasComponent<Tree>()) {
                     treeList.Add(thingNt.GetComponent<Tree>());
                 }
+
                 if (thingNt.HasComponent<Capsule>()) {
                     capList.Add(thingNt.GetComponent<Capsule>());
                 }
             }
+
             var saveThingList = new List<Thing>();
             saveThingList.AddRange(treeList);
             saveThingList.AddRange(capList);

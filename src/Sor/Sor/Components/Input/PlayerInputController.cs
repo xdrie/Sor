@@ -10,6 +10,8 @@ namespace Sor.Components.Input {
             //     Keys.A, Keys.D, Keys.W, Keys.S));
             moveDirectionInput.Nodes.Add(new VirtualJoystick.KeyboardKeys(VirtualInput.OverlapBehavior.CancelOut,
                 Keys.Left, Keys.Right, Keys.Up, Keys.Down));
+            moveDirectionInput.Nodes.Add(new VirtualJoystick.KeyboardKeys(VirtualInput.OverlapBehavior.CancelOut,
+                Keys.J, Keys.L, Keys.I, Keys.K));
             moveDirectionInput.Nodes.Add(new VirtualJoystick.GamePadLeftStick());
             var gamepadIndex = 0;
             Nez.Input.GamePads[gamepadIndex].IsLeftStickVerticalInverted = true;

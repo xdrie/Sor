@@ -62,11 +62,9 @@ namespace Sor.Game {
                     res = null;
                     break;
                 case ThingKind.Capsule: {
-                    // don't load acquired capsules
-                    var acquired = rd.ReadBool();
-                    if (acquired) return null;
                     var nt = pers.play.CreateEntity("cap");
                     var cap = nt.AddComponent(new Capsule());
+                    cap.acquired = rd.ReadBool();
                     // read body
                     var bodyData = rd.readBodyData();
                     bodyData.copyTo(cap.body);
@@ -82,6 +80,11 @@ namespace Sor.Game {
                     var treeBark = rd.ReadString();
                     if (!string.IsNullOrWhiteSpace(treeBark)) {
                         cap.creator = pers.trees.Find(x => x.bark == treeBark);
+                    }
+                    
+                    // if acquired then throw away
+                    if (cap.acquired) {
+                        cap = null; // ick
                     }
 
                     res = cap;
