@@ -33,7 +33,7 @@ fi
 STRIP_BINARY=0
 UPX_COMPRESS=0
 WARP_BIN=$(pwd)/builds/warp-packer
-WARP_COMPRESS=0
+WARP_COMPRESS=1
 
 # outputs
 REVISION=$(git tag -l --points-at HEAD)
