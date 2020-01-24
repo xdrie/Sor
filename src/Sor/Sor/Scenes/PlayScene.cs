@@ -44,7 +44,7 @@ namespace Sor.Scenes {
             duckUno.AddComponent<Mind>();
             duckUno.AddComponent(new MindDisplay(playerWing, true));
 
-            var duckDosNt = CreateEntity("duck-dos", new Vector2(-140, -100));
+            var duckDosNt = CreateEntity("duck-dos", new Vector2(-140, 20));
             var duckDos = duckDosNt.AddComponent(new Wing());
             var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
             duckDosSoul.calculateTraits();
