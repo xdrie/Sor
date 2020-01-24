@@ -11,7 +11,7 @@ using Sor.Scenes;
 namespace Sor {
     public class NGame : GlintCore {
         public const string GAME_TITLE = "Sor";
-        public const string GAME_VERSION = "0.5.11.12327-dev";
+        public const string GAME_VERSION = "0.5.12.12331-dev";
 
         private readonly GameContext gameContext;
 

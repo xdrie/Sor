@@ -10,20 +10,16 @@ using Sor.Game;
 namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {
         private PlayScene play;
+        private PlayStatePersistable pers;
 
-        public PlaySceneSetup(PlayScene play) {
+        public PlaySceneSetup(PlayScene play, PlayStatePersistable pers) {
             this.play = play;
+            this.pers = pers;
         }
         
         public void createFreshGame() {
-            play.playerEntity = play.CreateEntity("player", new Vector2(200, 200)).SetTag(Constants.ENTITY_WING);
-            play.playerWing = play.playerEntity.AddComponent(new Wing());
-            var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            playerSoul.calculateTraits();
-            var playerMind = play.playerWing.AddComponent(new Mind(playerSoul, false));
-            playerSoul.mind = playerMind; // associate mind with soul
-            play.playerEntity.AddComponent<PlayerInputController>();
-
+            createPlayer(pers.playerPosition);
+            
             var duckUnoNt = play.CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
             var duckUno = duckUnoNt.AddComponent(new Predator());
             duckUno.AddComponent<LogicInputController>();
@@ -47,6 +43,16 @@ namespace Sor.Scenes.Helpers {
             loader.load(mapAsset);
 
             Global.log.writeLine("fresh play scene created", GlintLogger.LogLevel.Information);
+        }
+
+        public void createPlayer(Vector2 pos) {
+            play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.ENTITY_WING);
+            play.playerWing = play.playerEntity.AddComponent(new Wing());
+            var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
+            playerSoul.calculateTraits();
+            var playerMind = play.playerWing.AddComponent(new Mind(playerSoul, false));
+            playerSoul.mind = playerMind; // associate mind with soul
+            play.playerEntity.AddComponent<PlayerInputController>();
         }
     }
 }

@@ -24,9 +24,8 @@ namespace Sor.Scenes {
         public override void Initialize() {
             base.Initialize();
 
-            loadGame();
-            
-            var setup = new PlaySceneSetup(this);
+            var pers = loadGame();
+            var setup = new PlaySceneSetup(this, pers);
             setup.createFreshGame();
 
             ClearColor = gameContext.assets.bgColor;
@@ -101,10 +100,11 @@ namespace Sor.Scenes {
             }
         }
 
-        public void loadGame() {
+        public PlayStatePersistable loadGame() {
             var store = gameContext.data.getStore();
-            var persistable = new PlayStatePersistable(this);
-            store.Load(GameData.TEST_SAVE, persistable);
+            var pers = new PlayStatePersistable(this);
+            store.Load(GameData.TEST_SAVE, pers);
+            return pers;
         }
 
         public void saveGame() {
