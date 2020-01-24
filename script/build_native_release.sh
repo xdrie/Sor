@@ -33,6 +33,7 @@ fi
 STRIP_BINARY=0
 UPX_COMPRESS=0
 WARP_BIN=$(pwd)/builds/warp-packer
+WARP_COMPRESS=0
 
 # outputs
 REVISION=$(git tag -l --points-at HEAD)
@@ -60,9 +61,14 @@ BINARY="./$PROJECT_DIR/$STAGING/$BINARY"
 
 if [[ $PACK -eq 1 ]];
 then
-    mkdir -p ${STAGING}
-    echo "running WARP tool..."
-    $WARP_BIN --arch $TARGET --input_dir $PUBLISH --exec $BIN_NAME --output "$STAGING/$BIN_NAME"
+    if [[ $WARP_COMPRESS -eq 1 ]];
+    then
+        mkdir -p ${STAGING}
+        echo "running WARP tool..."
+        $WARP_BIN --arch $TARGET --input_dir $PUBLISH --exec $BIN_NAME --output "$STAGING/$BIN_NAME"
+    else
+        cp -r ${PUBLISH} ${STAGING}
+    fi
 else
     cp -r ${PUBLISH} ${STAGING}
 

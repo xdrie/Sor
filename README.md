@@ -35,7 +35,7 @@ run `SorDk.exe` with mono or use the helper script `./Sor_game`. mono builds are
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
 #### pack
-a packer can optionally be used to clean up and minify output bundles. use `./scripts/get_tools.sh` to fetch tools, then pass the `pack` argument to the native build script.
+a packer can optionally be used to clean up and minify output bundles. use `./scripts/get_tools.sh` to fetch tools, then pass the `pack` argument to the native build script. set `WARP_COMPRESS=1` before the command to optimize with warp.
 
 ## license
 
