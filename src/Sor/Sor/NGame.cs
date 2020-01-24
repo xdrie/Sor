@@ -51,7 +51,9 @@ namespace Sor {
                 Global.log.writeLine("stretch scaling enabled", GlintLogger.LogLevel.Warning);
             }
             DefaultSamplerState = SamplerState.PointClamp;
+#if DEBUG
             DebugConsole.RenderScale = gameContext.config.scale;
+#endif
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates
