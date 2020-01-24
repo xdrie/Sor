@@ -1,4 +1,5 @@
 using Nez.Persistence.Binary;
+using Sor.AI.Cogs;
 using Sor.Components.Units;
 
 namespace Sor.Util {
@@ -17,14 +18,27 @@ namespace Sor.Util {
             body.angularVelocity = r.ReadFloat();
         }
 
-        public static void writeWing(this IPersistableWriter w, Wing wing) {
-            w.writeFromBody(wing.body);
-            w.Write(wing.core.energy);
+        public class WingData {
+            public string name;
+            public double energy;
+            public BirdPersonality ply;
+
+            public WingData(Wing wing) {
+                name = wing.name;
+                energy = wing.core.energy;
+                ply = wing.mind.soul.ply;
+            }
         }
 
-        public static void readToWing(this IPersistableReader r, Wing wing) {
-            r.readToBody(wing.body);
-            wing.core.energy = r.ReadFloat();
+        public static void writeWing(this IPersistableWriter w, Wing wing) {
+            var wd = new WingData(wing);
+            w.Write(wd.name);
+            w.Write(wd.energy);
+            w.Write(wd.ply);
+        }
+
+        public static void readWingData(this IPersistableReader r) {
+            
         }
     }
 }

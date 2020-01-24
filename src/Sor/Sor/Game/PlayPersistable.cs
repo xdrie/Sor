@@ -4,11 +4,13 @@ using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
 using Sor.Components.Units;
 using Sor.Scenes;
+using Sor.Scenes.Helpers;
 using Sor.Util;
 
 namespace Sor.Game {
     public class PlayPersistable : IPersistable {
         private PlayScene play;
+        private PlaySceneSetup setup;
         
         public bool loaded = false;
         public const int version = 2;
@@ -16,8 +18,9 @@ namespace Sor.Game {
         // default values
         public Vector2 playerPosition = new Vector2(200, 200);
 
-        public PlayPersistable(PlayScene play) {
-            this.play = play;
+        public PlayPersistable(PlaySceneSetup setup) {
+            this.play = setup.play;
+            this.setup = setup;
         }
 
         public void Recover(IPersistableReader rd) {
@@ -31,6 +34,7 @@ namespace Sor.Game {
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
+                var blankWing = setup.createWing("_blank", Vector2.Zero);
                 // TODO: figure out how the fuck to load a wing
             }
         }

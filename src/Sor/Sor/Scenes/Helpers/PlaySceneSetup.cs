@@ -9,8 +9,8 @@ using Sor.Game;
 
 namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {
-        private GameContext gameContext;
-        private PlayScene play;
+        public GameContext gameContext;
+        public PlayScene play;
         private PlayPersistable pers;
 
         public PlaySceneSetup(PlayScene play) {
@@ -20,7 +20,7 @@ namespace Sor.Scenes.Helpers {
         
         public PlayPersistable loadGame() {
             var store = gameContext.data.getStore();
-            var pers = new PlayPersistable(play);
+            var pers = new PlayPersistable(this);
             store.Load(GameData.TEST_SAVE, pers);
             return pers;
         }
@@ -42,8 +42,8 @@ namespace Sor.Scenes.Helpers {
 
             if (!pers.loaded) {
                 // fresh
-                createWing("duck-uno", new Vector2(-140, 320), new Predator());
-                createWing("duck-dos", new Vector2(-140, 20), new Wing(), BirdPersonality.makeNeutral());
+                createWing("duck-uno", new Vector2(-140, 320));
+                createWing("duck-dos", new Vector2(-140, 20), BirdPersonality.makeNeutral());
             }
 
             var status = pers.loaded ? "recreated" : "freshly created";
@@ -59,10 +59,10 @@ namespace Sor.Scenes.Helpers {
             play.playerEntity.AddComponent<PlayerInputController>();
         }
 
-        public Wing createWing(string name, Vector2 pos, Wing wing, BirdPersonality ply = null) {
+        public Wing createWing(string name, Vector2 pos, BirdPersonality ply = null) {
             var duckNt = play.CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
             duckNt.AddComponent<LogicInputController>();
-            var duck = duckNt.AddComponent(wing);
+            var duck = duckNt.AddComponent(new Wing());
             var duckSoul = new AvianSoul(ply);
             duckSoul.calc();
             var duckMind = duckNt.AddComponent(new Mind(duckSoul, false));

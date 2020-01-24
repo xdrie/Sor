@@ -101,7 +101,7 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            store.Save(GameData.TEST_SAVE, new PlayPersistable(this));
+            store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
     }
 }
