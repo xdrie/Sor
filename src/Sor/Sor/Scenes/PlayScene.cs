@@ -39,10 +39,10 @@ namespace Sor.Scenes {
             playerEntity.AddComponent<PlayerInputController>();
 
             var testEntity = CreateEntity("duck-uno", new Vector2(-140, 320));
-            var testShip = testEntity.AddComponent(new Predator());
-            testShip.AddComponent<LogicInputController>();
-            testShip.AddComponent<Mind>();
-            testShip.AddComponent(new MindDisplay(playerWing, true));
+            var duckUno = testEntity.AddComponent(new Predator());
+            duckUno.AddComponent<LogicInputController>();
+            duckUno.AddComponent<Mind>();
+            duckUno.AddComponent(new MindDisplay(playerWing, true));
 
             var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
