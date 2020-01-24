@@ -41,6 +41,7 @@ namespace Sor.Game {
                 }
                 case Tree tree: {
                     // TODO: too lazy to store fruit refs
+                    wr.Write(tree.Transform.Position);
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
                     wr.Write(tree.bark);
@@ -87,6 +88,7 @@ namespace Sor.Game {
                     var nt = pers.play.CreateEntity("tree");
                     var tree = nt.AddComponent(new Tree());
                     // load tree
+                    tree.Entity.Position = rd.ReadVec2();
                     tree.stage = rd.ReadInt();
                     tree.harvest = rd.ReadInt();
                     tree.bark = rd.ReadString();

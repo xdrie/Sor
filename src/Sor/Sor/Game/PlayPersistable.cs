@@ -20,8 +20,8 @@ namespace Sor.Game {
         public const int version = 3;
 
         // helper values
-        public List<Wing> wings;
-        public List<Tree> trees;
+        public List<Wing> wings = new List<Wing>();
+        public List<Tree> trees = new List<Tree>();
 
         public PlayPersistable(PlaySceneSetup setup) {
             this.play = setup.play;
@@ -66,6 +66,8 @@ namespace Sor.Game {
                 var thingHelper = new ThingHelper(this);
                 // load and inflate thing
                 var thing = thingHelper.loadThing(rd);
+                // tag entity as thing
+                thing.Entity.SetTag(Constants.ENTITY_THING);
             }
         }
 
