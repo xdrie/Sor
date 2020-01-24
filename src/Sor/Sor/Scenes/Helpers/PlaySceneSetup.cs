@@ -43,7 +43,7 @@ namespace Sor.Scenes.Helpers {
             if (!pers.loaded) {
                 // fresh
                 var uno = createWing("duck-uno", new Vector2(-140, 320));
-                uno.selectClass(Wing.WingClass.Predator);
+                uno.changeClass(Wing.WingClass.Predator);
                 var frend = createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
             }
@@ -58,7 +58,7 @@ namespace Sor.Scenes.Helpers {
             playerSoul.calc();
             play.playerWing = play.playerEntity.AddComponent(new Wing(new Mind(playerSoul, false)));
             play.playerEntity.AddComponent<PlayerInputController>();
-            play.playerWing.selectClass(Wing.WingClass.Beak);
+            play.playerWing.changeClass(Wing.WingClass.Beak);
         }
 
         public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {

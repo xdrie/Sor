@@ -68,7 +68,7 @@ namespace Sor.Components.Units {
             Beak
         }
 
-        public void selectClass(WingClass wingClass) {
+        public void changeClass(WingClass wingClass) {
             this.wingClass = wingClass;
             switch (wingClass) {
                 case WingClass.Wing:
