@@ -68,7 +68,7 @@ namespace Sor.Scenes {
                 transitionScene<MenuScene>(0.1f);
             }
 
-            if (Input.IsKeyDown(Keys.LeftControl)) {
+            if (InputUtils.IsControlDown()) {
                 Core.Instance.IsMouseVisible = true;
             } else {
                 Core.Instance.IsMouseVisible = false;
