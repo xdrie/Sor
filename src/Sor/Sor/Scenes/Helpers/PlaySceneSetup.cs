@@ -42,17 +42,8 @@ namespace Sor.Scenes.Helpers {
 
             if (!pers.loaded) {
                 // fresh
-                var duckUnoNt = play.CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
-                var duckUno = duckUnoNt.AddComponent(new Predator());
-                duckUno.AddComponent<LogicInputController>();
-                duckUno.AddComponent<Mind>();
-                duckUno.AddComponent(new MindDisplay(play.playerWing, true));
-
-                var duckDosNt = play.CreateEntity("duck-dos", new Vector2(-140, 20)).SetTag(Constants.ENTITY_WING);
-                var duckDos = duckDosNt.AddComponent(new Wing());
-                var duckDosSoul = new AvianSoul(BirdPersonality.makeNeutral());
-                duckDosSoul.calc();
-                var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
+                createWing("duck-uno", new Vector2(-140, 320), new Predator());
+                createWing("duck-dos", new Vector2(-140, 20), new Wing(), BirdPersonality.makeNeutral());
             }
 
             var status = pers.loaded ? "recreated" : "freshly created";
@@ -66,6 +57,16 @@ namespace Sor.Scenes.Helpers {
             playerSoul.calc();
             var playerMind = play.playerWing.AddComponent(new Mind(playerSoul, false));
             play.playerEntity.AddComponent<PlayerInputController>();
+        }
+
+        public Wing createWing(string name, Vector2 pos, Wing wing, BirdPersonality ply = null) {
+            var duckNt = play.CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
+            duckNt.AddComponent<LogicInputController>();
+            var duck = duckNt.AddComponent(wing);
+            var duckSoul = new AvianSoul(ply);
+            duckSoul.calc();
+            var duckMind = duckNt.AddComponent(new Mind(duckSoul, false));
+            return duck;
         }
     }
 }
