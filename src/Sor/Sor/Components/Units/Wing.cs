@@ -81,6 +81,7 @@ namespace Sor.Components.Units {
 
                     body.turnPower = Mathf.PI * 0.22f;
                     body.thrustPower = 1f;
+                    body.boostTopSpeed = 200f;
                     body.mass = 80f;
                     body.recalculateKinematics();
                     break;
@@ -92,6 +93,7 @@ namespace Sor.Components.Units {
 
                     body.turnPower = Mathf.PI * 0.96f;
                     body.thrustPower = 3.5f;
+                    body.boostTopSpeed = 640f;
                     body.mass = 4f;
                     body.recalculateKinematics();
                     break;
