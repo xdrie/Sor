@@ -18,6 +18,7 @@ namespace Sor.Game {
 
         public bool loaded = false;
         public const int version = 3;
+        public const float timeAdvance = 30f; // time to advance when loading
 
         // helper values
         public List<Wing> wings = new List<Wing>();
@@ -38,7 +39,7 @@ namespace Sor.Game {
             }
             
             // load game time
-            Time.TotalTime = rd.ReadFloat();
+            Time.TotalTime = rd.ReadFloat() + timeAdvance;
 
             // read player
             var playerWd = rd.readWingMeta();
