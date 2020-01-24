@@ -76,7 +76,7 @@ then
     then
         mkdir -p ${STAGING}
         echo "running WARP tool..."
-        $WARP_BIN --arch $TARGET --input_dir $PUBLISH --exec $BIN_NAME --output "$STAGING/$BIN_NAME"
+        $WARP_BIN --arch $WARP_ARCH --input_dir $PUBLISH --exec $BIN_NAME --output "$STAGING/$BIN_NAME"
     else
         cp -r ${PUBLISH} ${STAGING}
     fi
