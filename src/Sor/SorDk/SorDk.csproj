@@ -19,6 +19,7 @@
 
     <ItemGroup>
         <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
+        <Content Include="Res\banner.txt" />
         <EmbeddedResource Include="Res/**/*" />
     </ItemGroup>
 
@@ -26,10 +27,6 @@
         <EmbeddedResource Include="Icon.ico" />
         <EmbeddedResource Include="Icon.bmp" />
         <EmbeddedResource Include="Icon.png" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Res" />
     </ItemGroup>
 
 </Project>
