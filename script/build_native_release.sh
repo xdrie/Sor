@@ -34,6 +34,17 @@ STRIP_BINARY=0
 UPX_COMPRESS=0
 WARP_BIN=$(pwd)/builds/warp-packer
 WARP_COMPRESS=1
+WARP_ARCH=$TARGET
+
+# correct architecture names for warp
+if [[ $TARGET == win* ]];
+then
+    WARP_ARCH=windows-x64
+fi
+if [[ $TARGET == osx* ]];
+then
+    WARP_ARCH=macos-x64
+fi
 
 # outputs
 REVISION=$(git tag -l --points-at HEAD)
