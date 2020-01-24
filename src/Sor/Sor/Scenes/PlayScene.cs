@@ -3,10 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using Sor.AI;
-using Sor.AI.Cogs;
 using Sor.Components.Camera;
 using Sor.Components.Input;
-using Sor.Components.Things;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
@@ -23,6 +21,10 @@ namespace Sor.Scenes {
 
         public override void Initialize() {
             base.Initialize();
+            
+#if DEBUG
+            SorDebug.play = this;
+#endif
             
             var setup = new PlaySceneSetup(this);
             setup.createScene();
@@ -97,6 +99,14 @@ namespace Sor.Scenes {
                     nearest?.AddComponent(new MindDisplay(playerWing, true));
                 }
             }
+        }
+
+        public override void Unload() {
+            base.Unload();
+            
+#if DEBUG
+            SorDebug.play = null;
+#endif
         }
 
         public void saveGame() {
