@@ -7,6 +7,7 @@ namespace Sor {
     public class GameContext {
         public Assets assets = new Assets();
         public Config config;
+        public GameData data = new GameData();
 
         public GameContext(Config config) {
             this.config = config;

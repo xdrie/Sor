@@ -22,6 +22,8 @@ namespace Sor.Scenes {
         public override void Initialize() {
             base.Initialize();
 
+            loadGame();
+
             ClearColor = gameContext.assets.bgColor;
 
             // Hide cursor
@@ -87,6 +89,8 @@ namespace Sor.Scenes {
             base.Update();
 
             if (Input.IsKeyPressed(Keys.Escape)) {
+                // save the game
+                saveGame();
                 // end this scene
                 transitionScene<MenuScene>(0.1f);
             }
@@ -122,6 +126,17 @@ namespace Sor.Scenes {
                     nearest?.AddComponent(new MindDisplay(playerWing, true));
                 }
             }
+        }
+
+        public void loadGame() {
+            var store = gameContext.data.getStore();
+            var persistable = new PlayStatePersistable(this);
+            store.Load(GameData.TEST_SAVE, persistable);
+        }
+
+        public void saveGame() {
+            var store = gameContext.data.getStore();
+            store.Save(GameData.TEST_SAVE, new PlayStatePersistable(this));
         }
     }
 }
