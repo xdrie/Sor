@@ -48,11 +48,13 @@ then
 fi
 
 # outputs
+PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/NGame.cs | cut -d \" -f2)
 REVISION=$(git tag -l --points-at HEAD)
+GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
-    REVISION=$(git rev-parse --short HEAD)
+    REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="${PROJECT}_$TARGET-$REVISION"
+ARCNAME="${PROJECT}_$TARGET-v$REVISION"
 ARTIFACT="builds/$ARCNAME.$ARCTYPE"
 
 echo "release builder script [target $TARGET/$FRAMEWORK]"
