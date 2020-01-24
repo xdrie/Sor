@@ -5,12 +5,19 @@
         <TargetFrameworks>netcoreapp3.0;net472</TargetFrameworks>
         <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition="'$(PackBinary)' == '1'">
+        <!-- pack config -->
         <PublishTrimmed>true</PublishTrimmed>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(NativePack)' == '1'">
+        <!-- native pack -->
         <PublishReadyToRun>true</PublishReadyToRun>
         <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
-<!--        <PublishSingleFile>true</PublishSingleFile>-->
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PackBinary)' == '1' AND '$(NativePack)' != '1'">
+        <!-- cross pack -->
+        <PublishSingleFile>true</PublishSingleFile>
     </PropertyGroup>
 
     <ItemGroup>
