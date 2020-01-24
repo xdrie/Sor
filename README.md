@@ -19,11 +19,11 @@ the game supports running on both .net core and mono. after using build scripts,
 pull the source submodules first
 ```sh
 git submodule update --init --recursive # update submodules
+./script/get_natives.sh # get native libraries
 ```
 
 ### mono build
 ```sh
-./script/get_natives.sh # get native libraries
 ./script/build_mono_release.sh
 ```
 run `SorDk.exe` with mono or use the helper script `./Sor_game`. mono builds are cross-platform and will run on any system that has mono and compatible native libraries, which are bundled for windows, macos, and linux.
@@ -35,7 +35,7 @@ run `SorDk.exe` with mono or use the helper script `./Sor_game`. mono builds are
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
 #### pack
-a packer can optionally be used to clean up and minify output bundles. use `./scripts/get_tools.sh` to fetch tools, then pass the `pack` argument to the native build script. set `WARP_COMPRESS=1` before the command to optimize with warp.
+a packer can optionally be used to clean up and minify output bundles. use `./scripts/get_tools.sh` to fetch tools, then pass the `pack` argument to the native build script. set `WARP_COMPRESS=1` before the command to optimize with warp. when using warp build, make sure natives are bundled because it seems to be iffy with native libraries.
 
 ## license
 
