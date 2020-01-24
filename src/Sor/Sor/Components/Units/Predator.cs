@@ -1,4 +1,5 @@
 using Nez;
+using Sor.AI;
 
 namespace Sor.Components.Units {
     public class Predator : Wing {
@@ -13,5 +14,7 @@ namespace Sor.Components.Units {
             body.mass = 80f;
             body.recalculateKinematics();
         }
+
+        public Predator(Mind mind) : base(mind) { }
     }
 }

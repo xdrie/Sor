@@ -23,10 +23,12 @@ namespace Sor.Systems {
                     // update pips relative to player
                     wing.pips.enable();
                     // get opinion of player
-                    var playerOpinion = wing.mind.state.getOpinion(player.mind);
-                    (var pipCount, var pipColor) = calculatePips(playerOpinion);
-                    if (pipCount > 5) pipCount = 5;
-                    wing.pips.setPips(pipCount, pipColor);
+                    if (wing.mind != null) {
+                        var playerOpinion = wing.mind.state.getOpinion(player.mind);
+                        (var pipCount, var pipColor) = calculatePips(playerOpinion);
+                        if (pipCount > 5) pipCount = 5;
+                        wing.pips.setPips(pipCount, pipColor);
+                    }
                 } else {
                     wing.pips.disable();
                 }
@@ -52,6 +54,7 @@ namespace Sor.Systems {
                 blocks = opinion - MindConstants.OPINION_FRIEND;
                 col = Pips.green;
             }
+
             return (1 + (blocks / 40), col);
         }
     }

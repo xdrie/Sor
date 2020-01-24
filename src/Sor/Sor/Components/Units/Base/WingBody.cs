@@ -58,7 +58,7 @@ namespace Sor.Components.Units {
 
         private void interaction() {
             if (controller.tetherInput.IsPressed) {
-                var capEnergy = 400;
+                var capEnergy = Constants.CAPSULE_SIZE;
                 var capSpeed = 40f;
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;
@@ -191,7 +191,8 @@ namespace Sor.Components.Units {
                     var toMe = Entity.Position - gravThing.Position;
                     var toMeDir = Vector2Ext.Normalize(toMe);
                     var dist = toMe.Length();
-                    var gravForce = (gravityFactor * mass) / (dist * dist);
+                    var velInfluence = Mathf.Clamp(velocity.Length(), 1f, 10f);
+                    var gravForce = (gravityFactor * mass * velInfluence) / (dist * dist);
                     thingBody.velocity += gravForce * toMeDir;
                 }
             }

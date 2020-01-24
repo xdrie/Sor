@@ -40,7 +40,7 @@ namespace Sor.AI {
                 // TODO: show information about whose mind, etc.
                 // draw mind info representation
                 var plOpinion = mind.state.getOpinion(player.mind);
-                
+
                 StringBuilder ind = new StringBuilder();
                 ind.AppendLine($"[mind] {wing.name}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
@@ -53,18 +53,20 @@ namespace Sor.AI {
         }
 
         private string opinionTag(int opinion) {
-            if (opinion < MindConstants.OPINION_HATE) {
+            if (opinion <= MindConstants.OPINION_DESPISE) {
                 return "despise";
-            } else if (opinion <= MindConstants.OPINION_WARY) {
+            } else if (opinion <= MindConstants.OPINION_HATE && opinion > MindConstants.OPINION_DESPISE) {
                 return "hate";
-            } else if (opinion <= MindConstants.OPINION_ALLY) {
-                return "wary";
-            } else if (opinion <= MindConstants.OPINION_FRIEND) {
+            } else if (opinion > MindConstants.OPINION_HATE && opinion < MindConstants.OPINION_ALLY) {
+                return "wary"; // in the middle: wary
+            } else if (opinion >= MindConstants.OPINION_ALLY && opinion < MindConstants.OPINION_FRIEND) {
                 return "ally";
-            } else if (opinion <= MindConstants.OPINION_KIN) {
+            } else if (opinion >= MindConstants.OPINION_FRIEND && opinion < MindConstants.OPINION_KIN) {
                 return "friend";
-            } else {
+            } else if (opinion >= MindConstants.OPINION_KIN) {
                 return "kin";
+            } else {
+                return "wat";
             }
         }
 

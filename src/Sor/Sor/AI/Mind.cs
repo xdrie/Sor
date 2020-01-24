@@ -33,9 +33,11 @@ namespace Sor.AI {
             soul = inSoul;
             if (soul == null) { // generate soul
                 soul = AvianSoul.generate(this);
-                soul.calculateTraits();
+                soul.calc();
                 Global.log.writeLine($"generated soul {soul.ply}", GlintLogger.LogLevel.Trace);
             }
+
+            soul.mind = this;
 
             this.control = control;
         }
@@ -45,6 +47,10 @@ namespace Sor.AI {
 
             me = Entity.GetComponent<Wing>();
             state = new MindState(this);
+        }
+
+        public override void OnAddedToEntity() {
+            base.OnAddedToEntity();
 
             if (control) {
                 // input
@@ -93,7 +99,9 @@ namespace Sor.AI {
         }
 
         private void act() {
-            controller.zero(); // reset the controller
+            if (control) {
+                controller.zero(); // reset the controller
+            }
         }
 
         private void think() {

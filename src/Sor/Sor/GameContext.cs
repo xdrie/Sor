@@ -7,9 +7,11 @@ namespace Sor {
     public class GameContext {
         public Assets assets = new Assets();
         public Config config;
+        public GameData data;
 
         public GameContext(Config config) {
             this.config = config;
+            this.data = new GameData(this);
         }
 
         public class Assets {

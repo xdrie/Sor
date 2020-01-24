@@ -6,9 +6,14 @@ namespace Sor.AI.Cogs {
         public BirdTraits traits;
         public BirdEmotions emotions;
         public Mind mind;
+        public bool calced = false;
 
         public AvianSoul() {
             emotions = new BirdEmotions();
+        }
+
+        public AvianSoul(BirdPersonality ply) : this() {
+            this.ply = ply;
         }
         
         public static AvianSoul generate(Mind mind) {
@@ -19,8 +24,9 @@ namespace Sor.AI.Cogs {
             return soul;
         }
 
-        public void calculateTraits() {
+        public void calc() {
             traits = new BirdTraits(ply);
+            calced = true;
         }
 
         public void tick() {

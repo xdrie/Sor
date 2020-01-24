@@ -4,19 +4,25 @@ using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
+using Nez.Console;
 using Sor.Game;
 using Sor.Scenes;
 
 namespace Sor {
     public class NGame : GlintCore {
         public const string GAME_TITLE = "Sor";
-        public const string GAME_VERSION = "0.5.10.12322-dev";
+        public const string GAME_VERSION = "0.5.12.12336-dev";
 
         private readonly GameContext gameContext;
 
         public Point gameResolution = new Point(960, 540);
 
-        public NGame(Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
+        public NGame(Config config) : base(config.w, config.h,
+            #if DEBUG
+            windowTitle: $"{GAME_TITLE} [debug]",
+            #else
+            windowTitle: GAME_TITLE,
+            #endif
             isFullScreen: config.fullscreen) {
             gameContext = new GameContext(config);
             Global.log.writeLine("game instantiated", GlintLogger.LogLevel.Information);
@@ -27,7 +33,7 @@ namespace Sor {
 
             Window.Title = GAME_TITLE;
             Window.AllowUserResizing = false;
-            
+
             // register context service
             Services.AddService(typeof(GameContext), gameContext);
             
@@ -45,7 +51,9 @@ namespace Sor {
                 Global.log.writeLine("stretch scaling enabled", GlintLogger.LogLevel.Warning);
             }
             DefaultSamplerState = SamplerState.PointClamp;
-
+#if DEBUG
+            DebugConsole.RenderScale = gameContext.config.scale;
+#endif
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates
