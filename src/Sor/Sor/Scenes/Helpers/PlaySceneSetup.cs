@@ -11,16 +11,16 @@ namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {
         private GameContext gameContext;
         private PlayScene play;
-        private PlayStatePersistable pers;
+        private PlayPersistable pers;
 
         public PlaySceneSetup(PlayScene play) {
             this.play = play;
             gameContext = Core.Services.GetService<GameContext>();
         }
         
-        public PlayStatePersistable loadGame() {
+        public PlayPersistable loadGame() {
             var store = gameContext.data.getStore();
-            var pers = new PlayStatePersistable(play);
+            var pers = new PlayPersistable(play);
             store.Load(GameData.TEST_SAVE, pers);
             return pers;
         }
