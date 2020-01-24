@@ -23,6 +23,8 @@ namespace Sor.Util {
             public double energy;
             public BirdPersonality ply;
 
+            public WingData() { }
+
             public WingData(Wing wing) {
                 name = wing.name;
                 energy = wing.core.energy;
@@ -30,15 +32,19 @@ namespace Sor.Util {
             }
         }
 
-        public static void writeWing(this IPersistableWriter w, Wing wing) {
+        public static void writeWingMeta(this IPersistableWriter w, Wing wing) {
             var wd = new WingData(wing);
             w.Write(wd.name);
             w.Write(wd.energy);
             w.Write(wd.ply);
         }
 
-        public static void readWingData(this IPersistableReader r) {
-            
+        public static WingData readWingMeta(this IPersistableReader r) {
+            var wd = new WingData();
+            wd.name = r.ReadString();
+            wd.energy = r.ReadDouble();
+            wd.ply = r.ReadPersonality();
+            return wd;
         }
     }
 }

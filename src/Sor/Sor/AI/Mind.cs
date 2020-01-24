@@ -47,6 +47,10 @@ namespace Sor.AI {
 
             me = Entity.GetComponent<Wing>();
             state = new MindState(this);
+        }
+
+        public override void OnAddedToEntity() {
+            base.OnAddedToEntity();
 
             if (control) {
                 // input
@@ -95,7 +99,9 @@ namespace Sor.AI {
         }
 
         private void act() {
-            controller.zero(); // reset the controller
+            if (control) {
+                controller.zero(); // reset the controller
+            }
         }
 
         private void think() {

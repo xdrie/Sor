@@ -2,6 +2,7 @@ using System.Linq;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
+using Sor.AI.Cogs;
 using Sor.Components.Units;
 using Sor.Scenes;
 using Sor.Scenes.Helpers;
@@ -30,12 +31,20 @@ namespace Sor.Game {
             if (version != readVersion) {
                 Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})", GlintLogger.LogLevel.Error);
             }
+            
+            // read player
+            var playerWd = rd.readWingMeta();
+            play.playerWing.name = playerWd.name;
+            play.playerWing.core.energy = playerWd.energy;
+            play.playerWing.mind.soul.ply = playerWd.ply;
+            rd.readToBody(play.playerWing.body);
 
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
-                var blankWing = setup.createWing("_blank", Vector2.Zero);
-                // TODO: figure out how the fuck to load a wing
+                var wd = rd.readWingMeta();
+                var wing = setup.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
+                rd.readToBody(wing.body);
             }
         }
 
@@ -44,14 +53,16 @@ namespace Sor.Game {
             wr.Write(version); // save file version
             
             // save player
-            wr.writeWing(play.playerWing);
+            wr.writeWingMeta(play.playerWing);
+            wr.writeFromBody(play.playerWing.body);
             
             // save all other wings
             var wingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_WING).ToList();
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {
                 var wing = wingNt.GetComponent<Wing>();
-                wr.writeWing(wing);
+                wr.writeWingMeta(wing);
+                wr.writeFromBody(wing.body);
             }
         }
     }
