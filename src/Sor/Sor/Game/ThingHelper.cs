@@ -1,4 +1,5 @@
 using Glint.Util;
+using Nez;
 using Nez.Persistence.Binary;
 using Sor.Components.Things;
 using Sor.Util;
@@ -53,11 +54,13 @@ namespace Sor.Game {
 
         public Thing loadThing(IPersistableReader rd) {
             var kind = (ThingKind) rd.ReadInt();
+            var res = default(Thing);
             switch (kind) {
                 case ThingKind.Unknown:
                     // unrecognized thing
                     Global.log.writeLine("unrecognized thing kind", GlintLogger.LogLevel.Error);
-                    return null;
+                    res = null;
+                    break;
                 case ThingKind.Capsule: {
                     // don't load acquired capsules
                     var acquired = rd.ReadBool();
@@ -81,7 +84,8 @@ namespace Sor.Game {
                         cap.creator = pers.trees.Find(x => x.bark == treeBark);
                     }
 
-                    return cap;
+                    res = cap;
+                    break;
                 }
 
                 case ThingKind.Tree: {
@@ -95,11 +99,15 @@ namespace Sor.Game {
 
                     tree.updateStage();
                     pers.trees.Add(tree); // add tree to working list
-                    return tree;
+                    res = tree;
+                    break;
                 }
             }
 
-            return null; // something bad :(
+            if (res != null) {
+                Global.log.writeLine($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}", GlintLogger.LogLevel.Trace);
+            }
+            return res; // yee
         }
     }
 }
