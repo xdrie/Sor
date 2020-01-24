@@ -1,21 +1,47 @@
+using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
 using Sor.AI.Cogs;
 using Sor.Components.Units;
 
 namespace Sor.Util {
     public static class SorPersistableExt {
-        public static void writeFromBody(this IPersistableWriter w, KinBody body) {
-            w.Write(body.Transform.LocalPosition);
-            w.Write(body.velocity);
-            w.Write(body.angle);
-            w.Write(body.angularVelocity);
+        public class BodyData {
+            public Vector2 pos;
+            public Vector2 velocity;
+            public float angle;
+            public float angularVelocity;
+
+            public BodyData() {}
+            public BodyData(KinBody body) {
+                this.pos = body.Transform.LocalPosition;
+                this.velocity = body.velocity;
+                this.angle = body.angle;
+                this.angularVelocity = body.angularVelocity;
+            }
+
+            public void copyTo(KinBody body) {
+                body.Transform.LocalPosition = pos;
+                body.velocity = velocity;
+                body.angle = angle;
+                body.angularVelocity = angularVelocity;
+            }
+        }
+        
+        public static void writeBody(this IPersistableWriter w, KinBody body) {
+            var bodyData = new BodyData(body);
+            w.Write(bodyData.pos);
+            w.Write(bodyData.velocity);
+            w.Write(bodyData.angle);
+            w.Write(bodyData.angularVelocity);
         }
 
-        public static void readToBody(this IPersistableReader r, KinBody body) {
-            body.Transform.LocalPosition = r.ReadVec2();
-            body.velocity = r.ReadVec2();
-            body.angle = r.ReadFloat();
-            body.angularVelocity = r.ReadFloat();
+        public static BodyData readBodyData(this IPersistableReader r) {
+            var bodyData = new BodyData();
+            bodyData.pos = r.ReadVec2();
+            bodyData.velocity = r.ReadVec2();
+            bodyData.angle = r.ReadFloat();
+            bodyData.angularVelocity = r.ReadFloat();
+            return bodyData;
         }
 
         public class WingData {

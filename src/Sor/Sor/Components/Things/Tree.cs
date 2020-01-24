@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Nez;
 
 namespace Sor.Components.Things {
-    public class Tree : GAnimatedSprite, IUpdatable {
+    public class Tree : Thing, IUpdatable {
         public int stage = 1;
         public int fruits = 0;
         public int harvest = 0;
@@ -66,7 +66,8 @@ namespace Sor.Components.Things {
             if (fruits < maxFruits && Time.TotalTime > fruitTimer && growFruit) {
                 // spawn a fruit
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
-                var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset);
+                var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset)
+                    .SetTag(Constants.ENTITY_THING);
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
