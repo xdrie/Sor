@@ -46,7 +46,7 @@ namespace Sor.Game {
                 var wd = rd.readWingMeta();
                 var wing = setup.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
                 rd.readToBody(wing.body);
-                wing.changeClass(wing.wingClass);
+                wing.changeClass(wd.wingClass);
             }
         }
 
