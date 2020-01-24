@@ -1,23 +1,27 @@
+using System;
 using System.Collections.Generic;
-using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
+using Random = Nez.Random;
 
 namespace Sor.Components.Things {
     public class Tree : Thing, IUpdatable {
         public int stage = 1;
-        public int fruits = 0;
         public int harvest = 0;
+        public string bark = Guid.NewGuid().ToString("B");
+
+        public int fruits = 0;
         public List<Capsule> childFruits = new List<Capsule>();
         public int maxFruits = 0;
-        public float ripeningTime = 0.4f;
-        public float developmentSpeed = 2f; // development speed is a ratio
         public float growthTimer = 0;
         public float fruitTimer = 0f;
-        public float fruitSpawnRange = 10f;
-        public float childRange = 40f;
-        public float fruitValue = 800f;
-
+        
+        public const float ripeningTime = 0.4f;
+        public const float developmentSpeed = 2f; // development speed is a ratio
+        public const float fruitSpawnRange = 10f;
+        public const float childRange = 40f;
+        public const float fruitValue = 800f;
+        
         public Tree() : base(Core.Content.LoadTexture("Data/sprites/tree.png"), 64, 64) {
             animator.AddAnimation("1", new[] {sprites[0]});
             animator.AddAnimation("2", new[] {sprites[1]});
@@ -62,7 +66,7 @@ namespace Sor.Components.Things {
 
         public void Update() {
             var fruitsPerSec = developmentSpeed;
-            var growFruit = Nez.Random.Chance(fruitsPerSec * Time.DeltaTime * UpdateInterval);
+            var growFruit = Random.Chance(fruitsPerSec * Time.DeltaTime * UpdateInterval);
             if (fruits < maxFruits && Time.TotalTime > fruitTimer && growFruit) {
                 // spawn a fruit
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
@@ -71,7 +75,7 @@ namespace Sor.Components.Things {
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
-                fruit.energy = Nez.Random.Range(fruitValue * 0.6f, fruitValue * 1.2f);
+                fruit.energy = Random.Range(fruitValue * 0.6f, fruitValue * 1.2f);
                 fruit.body.velocity = Vector2.Zero;
                 childFruits.Add(fruit);
                 fruits++;

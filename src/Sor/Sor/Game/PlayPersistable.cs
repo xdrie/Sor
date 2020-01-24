@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using Glint.Util;
 using Microsoft.Xna.Framework;
+using Nez;
 using Nez.Persistence.Binary;
 using Sor.AI.Cogs;
 using Sor.Components.Things;
@@ -17,8 +19,9 @@ namespace Sor.Game {
         public bool loaded = false;
         public const int version = 3;
 
-        // default values
-        public Vector2 playerPosition = new Vector2(200, 200);
+        // helper values
+        public List<Wing> wings;
+        public List<Tree> trees;
 
         public PlayPersistable(PlaySceneSetup setup) {
             this.play = setup.play;
@@ -33,6 +36,9 @@ namespace Sor.Game {
                 Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})",
                     GlintLogger.LogLevel.Error);
             }
+            
+            // load game time
+            Time.TotalTime = rd.ReadFloat();
 
             // read player
             var playerWd = rd.readWingMeta();
@@ -41,6 +47,7 @@ namespace Sor.Game {
             play.playerWing.mind.soul.ply = playerWd.ply;
             var bodyData = rd.readBodyData();
             bodyData.copyTo(play.playerWing.body);
+            wings.Add(play.playerWing);
 
             // load all wings
             var wingCount = rd.ReadInt();
@@ -50,12 +57,18 @@ namespace Sor.Game {
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
+                wings.Add(wing);
             }
+            
+            // load world things
         }
 
         public void Persist(IPersistableWriter wr) {
             Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", GlintLogger.LogLevel.Information);
             wr.Write(version); // save file version
+            
+            // save game time
+            wr.Write(Time.TotalTime);
 
             // save player
             wr.writeWingMeta(play.playerWing);
@@ -75,10 +88,24 @@ namespace Sor.Game {
             // save world things
             var thingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_THING).ToList();
             wr.Write(thingsToSave.Count);
+            // sort so trees are before capsules
+            var treeList = new List<Thing>();
+            var capList = new List<Thing>();
             foreach (var thingNt in thingsToSave) {
-                var thing = thingNt.GetComponent<Thing>();
-                var kind = ThingHelper.classify(thing);
-                wr.saveThing(thing);
+                if (thingNt.HasComponent<Tree>()) {
+                    treeList.Add(thingNt.GetComponent<Tree>());
+                }
+                if (thingNt.HasComponent<Capsule>()) {
+                    capList.Add(thingNt.GetComponent<Capsule>());
+                }
+            }
+            var saveThingList = new List<Thing>();
+            saveThingList.AddRange(treeList);
+            saveThingList.AddRange(capList);
+            var thingHelper = new ThingHelper(this);
+            foreach (var thing in saveThingList) {
+                var kind = thingHelper.classify(thing);
+                thingHelper.saveThing(wr, thing);
             }
         }
     }
