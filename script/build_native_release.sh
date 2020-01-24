@@ -95,7 +95,7 @@ popd # return to build root
 
 # check the binary
 echo "checking output bin:"
-ls -la $BINARY
+ls -lah $BINARY
 
 mkdir -p builds/
 echo "compressing to $ARTIFACT..."
