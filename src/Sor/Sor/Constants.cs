@@ -3,6 +3,7 @@ namespace Sor {
         // - Tags
         // entities
         public const int ENTITY_WING = 0x2888884;
+        public const int ENTITY_THING = 0x9973824;
         // colliders
         public const int COLLIDER_SHIP = 0x2342340;
         public const int COLLIDER_WALL = 0x2398448;

@@ -5,16 +5,16 @@ using Sor.Components.Units;
 
 namespace Sor.Components.Things {
     public class Capsule : Thing, IUpdatable {
-        public float energy = 0;
         public bool acquired = false;
+        public float energy = 0;
         public float firstAvailableAt = 0;
-        public const float lifetime = 20f;
         public float despawnAt = 0;
 
         public CapsuleBody body;
         public Wing sender = null;
         public Tree creator = null;
 
+        public const float lifetime = 20f;
         private const float tweenDur = 0.4f;
         private static Color fadeColor = new Color(100, 100, 200, 100);
         private static Color defColor = Color.White;

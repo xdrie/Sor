@@ -15,9 +15,10 @@ namespace Sor.Components.Units {
 
         public float turnPower = Mathf.PI * 0.72f;
         public float thrustPower = 2f;
-        public float boostFactor = 6.2f;
         public float laneFactor = 4f;
         public float topSpeed = 80f;
+        public float boostFactor = 6.2f;
+        public float boostTopSpeed = 400f;
         public float stdDrag = 16f;
         public float gravityFactor = 4000f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
@@ -64,7 +65,8 @@ namespace Sor.Components.Units {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
-                    var capNt = Entity.Scene.CreateEntity("pod", Entity.Position);
+                    var capNt = Entity.Scene.CreateEntity("pod", Entity.Position)
+                        .SetTag(Constants.ENTITY_THING);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
@@ -119,7 +121,7 @@ namespace Sor.Components.Units {
                 // boost the ship
                 boosting = true;
                 thrustVal *= boostFactor; // multiply thrust power
-                maxVelocity = new Vector2(440f); // increase velocity cap
+                maxVelocity = new Vector2(boostTopSpeed); // increase velocity cap
                 if (gameContext.config.maxVfx) {
                     Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
                 }

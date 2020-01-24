@@ -34,17 +34,22 @@ namespace Sor.Scenes.Helpers {
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
-            var loader = new MapLoader(play, mapEntity);
-            loader.load(mapAsset);
+            var mapLoader = new MapLoader(play, mapEntity);
 
             // load the game from data
             pers = loadGame();
 
             if (!pers.loaded) {
                 // fresh
-                createWing("duck-uno", new Vector2(-140, 320));
-                createWing("frend-duck", new Vector2(-140, 20),
+                var uno = createWing("duck-uno", new Vector2(-140, 320));
+                uno.changeClass(Wing.WingClass.Predator);
+                var frend = createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
+                
+                mapLoader.load(mapAsset, createObjects: true);
+            } else {
+                // resuming from saved state
+                mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated
             }
 
             var status = pers.loaded ? "recreated" : "freshly created";

@@ -22,7 +22,7 @@ namespace Sor.Game {
             this.mapEntity = mapEntity;
         }
 
-        public void load(TmxMap map) {
+        public void load(TmxMap map, bool createObjects) {
             this.map = map;
             structure = map.GetLayer<TmxLayer>("structure");
             features = map.GetLayer<TmxLayer>("features");
@@ -31,18 +31,23 @@ namespace Sor.Game {
             adjustColliders();
             analyzeRooms();
             loadFeatures();
-            loadNature();
+            if (createObjects) {
+                loadNature();
+            }
+
             Global.log.writeLine("loaded data from map", GlintLogger.LogLevel.Information);
         }
 
         private void loadNature() {
             foreach (var th in nature.Objects) {
                 if (th.Type == "tree") {
-                    var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y));
+                    var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y))
+                        .SetTag(Constants.ENTITY_THING);
                     var treeStage = 1;
                     if (th.Properties.TryGetValue("stage", out var stageProp)) {
                         treeStage = int.Parse(stageProp);
                     }
+
                     nt.AddComponent(new Tree {stage = treeStage});
                     Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
                 }
@@ -90,8 +95,7 @@ namespace Sor.Game {
                                     scanFirst = default;
                                     scanOpen = 0;
                                 }
-                            }
-                            else {
+                            } else {
                                 if (scanOpen == 0) {
                                     // start the count
                                     scanFirst = p;
@@ -146,7 +150,8 @@ namespace Sor.Game {
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
-                        Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})", GlintLogger.LogLevel.Trace);
+                        Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})",
+                            GlintLogger.LogLevel.Trace);
                     }
                 }
             }
@@ -168,6 +173,7 @@ namespace Sor.Game {
                     corrTilePos = map.WorldToTilePosition(rectLeft);
                     corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
                 }
+
                 var corrDirection = tileDirection(corrTile);
                 var adjCollider = default(Rectangle);
                 // adjust collider based on direction
@@ -228,8 +234,7 @@ namespace Sor.Game {
                     case Direction.Left:
                         return Map.TileOri.Down;
                 }
-            }
-            else if (tk == Map.TileKind.Corner) {
+            } else if (tk == Map.TileKind.Corner) {
                 switch (dir) {
                     case Direction.Up:
                         return Map.TileOri.DownLeft;
