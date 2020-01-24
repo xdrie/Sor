@@ -50,10 +50,9 @@ namespace Sor.Scenes.Helpers {
 
                 var duckDosNt = play.CreateEntity("duck-dos", new Vector2(-140, 20)).SetTag(Constants.ENTITY_WING);
                 var duckDos = duckDosNt.AddComponent(new Wing());
-                var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-                duckDosSoul.calculateTraits();
+                var duckDosSoul = new AvianSoul(BirdPersonality.makeNeutral());
+                duckDosSoul.calc();
                 var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
-                duckDosSoul.mind = duckDosMind; // associate mind with soul
             }
 
             var status = pers.loaded ? "recreated" : "freshly created";
@@ -63,10 +62,9 @@ namespace Sor.Scenes.Helpers {
         public void createPlayer(Vector2 pos) {
             play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.ENTITY_WING);
             play.playerWing = play.playerEntity.AddComponent(new Wing());
-            var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            playerSoul.calculateTraits();
+            var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
+            playerSoul.calc();
             var playerMind = play.playerWing.AddComponent(new Mind(playerSoul, false));
-            playerSoul.mind = playerMind; // associate mind with soul
             play.playerEntity.AddComponent<PlayerInputController>();
         }
     }
