@@ -12,6 +12,7 @@ namespace Sor.Game {
         public float scale = 1.0f;
         public int logLevel = (int) GlintLogger.LogLevel.Information;
         public string logFile = null;
+        public bool clearSaves = false;
 
         public enum ScaleMode {
             PixelPerfect,
@@ -31,6 +32,8 @@ namespace Sor.Game {
 
             logLevel = pr.getInt("platform.logLevel", logLevel);
             logFile = pr.getStr("platform.logFile", logFile);
+
+            clearSaves = pr.getBool("debug.clearSaves", clearSaves);
         }
     }
 }
