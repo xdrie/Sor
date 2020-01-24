@@ -58,7 +58,6 @@ namespace Sor.Scenes.Helpers {
             playerSoul.calc();
             play.playerWing = play.playerEntity.AddComponent(new Wing(new Mind(playerSoul, false)));
             play.playerEntity.AddComponent<PlayerInputController>();
-            play.playerWing.changeClass(Wing.WingClass.Beak);
         }
 
         public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {

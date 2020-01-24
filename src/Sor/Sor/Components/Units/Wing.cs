@@ -63,13 +63,14 @@ namespace Sor.Components.Units {
         }
 
         public enum WingClass {
-            Wing,
-            Predator,
-            Beak
+            Wing = 0,
+            Predator = 1,
+            Beak = 2,
         }
 
         public void changeClass(WingClass wingClass) {
             this.wingClass = wingClass;
+            // TODO: make this properly revert all changes, including transform positions and scales
             switch (wingClass) {
                 case WingClass.Wing:
                     // TODO: set defaults
