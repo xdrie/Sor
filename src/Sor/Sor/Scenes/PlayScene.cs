@@ -101,13 +101,12 @@ namespace Sor.Scenes {
                 // find the nearest non-player bird and inspect
                 var nearest = default(Wing);
                 var nearestDist = double.MaxValue;
-                var currentlyInspected = default(Entity);
                 foreach (var birdNt in FindEntitiesWithTag(Constants.ENTITY_WING)) {
                     var wing = birdNt.GetComponent<Wing>();
                     if (birdNt.HasComponent<PlayerInputController>())
                         continue;
                     if (birdNt.HasComponent<MindDisplay>()) {
-                        currentlyInspected = birdNt;
+                        birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
                     }
 
                     var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
@@ -120,7 +119,6 @@ namespace Sor.Scenes {
 
                 if (nearest != null) {
                     Global.log.writeLine($"selected mind_inspect on {nearest.name}", GlintLogger.LogLevel.Information);
-                    currentlyInspected?.RemoveComponent<MindDisplay>();
                     nearest?.AddComponent(new MindDisplay(playerWing, true));
                 }
             }
