@@ -10,6 +10,7 @@ using Sor.Components.Things;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Scenes.Helpers;
 using Sor.Systems;
 
 namespace Sor.Scenes {
@@ -24,7 +25,9 @@ namespace Sor.Scenes {
             base.Initialize();
 
             loadGame();
-            createFreshGame();
+            
+            var setup = new PlaySceneSetup(this);
+            setup.createFreshGame();
 
             ClearColor = gameContext.assets.bgColor;
 
@@ -53,40 +56,6 @@ namespace Sor.Scenes {
             var followCamera =
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
             followCamera.AddComponent<CameraShake>();
-        }
-
-        public void createFreshGame() {
-            playerEntity = CreateEntity("player", new Vector2(200, 200)).SetTag(Constants.ENTITY_WING);
-            playerWing = playerEntity.AddComponent(new Wing());
-            var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            playerSoul.calculateTraits();
-            var playerMind = playerWing.AddComponent(new Mind(playerSoul, false));
-            playerSoul.mind = playerMind; // associate mind with soul
-            playerEntity.AddComponent<PlayerInputController>();
-
-            var duckUnoNt = CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
-            var duckUno = duckUnoNt.AddComponent(new Predator());
-            duckUno.AddComponent<LogicInputController>();
-            duckUno.AddComponent<Mind>();
-            duckUno.AddComponent(new MindDisplay(playerWing, true));
-
-            var duckDosNt = CreateEntity("duck-dos", new Vector2(-140, 20)).SetTag(Constants.ENTITY_WING);
-            var duckDos = duckDosNt.AddComponent(new Wing());
-            var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            duckDosSoul.calculateTraits();
-            var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
-            duckDosSoul.mind = duckDosMind; // associate mind with soul
-
-            var blockNt = CreateEntity("block", new Vector2(140, 140));
-            var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
-
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
-            var mapEntity = CreateEntity("map");
-            var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
-            var loader = new MapLoader(this, mapEntity);
-            loader.load(mapAsset);
-
-            Global.log.writeLine("fresh play scene created", GlintLogger.LogLevel.Information);
         }
 
         public override void Update() {
