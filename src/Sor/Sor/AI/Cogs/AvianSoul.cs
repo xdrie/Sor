@@ -25,8 +25,8 @@ namespace Sor.AI.Cogs {
         }
 
         public void calc() {
-            calced = true;
             traits = new BirdTraits(ply);
+            calced = true;
         }
 
         public void tick() {

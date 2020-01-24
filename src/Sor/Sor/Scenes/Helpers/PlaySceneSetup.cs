@@ -17,14 +17,14 @@ namespace Sor.Scenes.Helpers {
             this.play = play;
             gameContext = Core.Services.GetService<GameContext>();
         }
-        
+
         public PlayPersistable loadGame() {
             var store = gameContext.data.getStore();
             var pers = new PlayPersistable(this);
             store.Load(GameData.TEST_SAVE, pers);
             return pers;
         }
-        
+
         public void createScene() {
             createPlayer(new Vector2(200, 200));
 
@@ -43,7 +43,8 @@ namespace Sor.Scenes.Helpers {
             if (!pers.loaded) {
                 // fresh
                 createWing("duck-uno", new Vector2(-140, 320));
-                createWing("duck-dos", new Vector2(-140, 20), new AvianSoul(BirdPersonality.makeNeutral()));
+                createWing("frend-duck", new Vector2(-140, 20),
+                    new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
             }
 
             var status = pers.loaded ? "recreated" : "freshly created";
@@ -63,6 +64,7 @@ namespace Sor.Scenes.Helpers {
             if (soul != null) {
                 if (!soul.calced) soul.calc();
             }
+
             var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
             duckNt.AddComponent<LogicInputController>();
             return duck;
