@@ -32,7 +32,7 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            var playerEntity = CreateEntity("player", new Vector2(200, 200));
+            var playerEntity = CreateEntity("player", new Vector2(200, 200)).SetTag(Constants.ENTITY_WING);
             playerWing = playerEntity.AddComponent(new Wing());
             var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
             playerSoul.calculateTraits();
@@ -53,7 +53,7 @@ namespace Sor.Scenes {
             var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
             duckDosSoul.mind = duckDosMind; // associate mind with soul
 
-            var blockNt = CreateEntity("block", new Vector2(140, 140)).SetTag(Constants.ENTITY_WING);
+            var blockNt = CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
 
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
