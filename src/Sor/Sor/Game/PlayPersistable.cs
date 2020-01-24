@@ -39,12 +39,15 @@ namespace Sor.Game {
             Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", GlintLogger.LogLevel.Information);
             wr.Write(version); // save file version
             
-            // save all wings
+            // save player
+            wr.writeWing(play.playerWing);
+            
+            // save all other wings
             var wingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_WING).ToList();
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {
                 var wing = wingNt.GetComponent<Wing>();
-                wr.writeFromBody(wing.body);
+                wr.writeWing(wing);
             }
         }
     }

@@ -16,5 +16,15 @@ namespace Sor.Util {
             body.angle = r.ReadFloat();
             body.angularVelocity = r.ReadFloat();
         }
+
+        public static void writeWing(this IPersistableWriter w, Wing wing) {
+            w.writeFromBody(wing.body);
+            w.Write(wing.core.energy);
+        }
+
+        public static void readToWing(this IPersistableReader r, Wing wing) {
+            r.readToBody(wing.body);
+            wing.core.energy = r.ReadFloat();
+        }
     }
 }

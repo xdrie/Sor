@@ -27,19 +27,6 @@ namespace Sor.Scenes.Helpers {
         
         public void createScene() {
             createPlayer(new Vector2(200, 200));
-            
-            var duckUnoNt = play.CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
-            var duckUno = duckUnoNt.AddComponent(new Predator());
-            duckUno.AddComponent<LogicInputController>();
-            duckUno.AddComponent<Mind>();
-            duckUno.AddComponent(new MindDisplay(play.playerWing, true));
-
-            var duckDosNt = play.CreateEntity("duck-dos", new Vector2(-140, 20)).SetTag(Constants.ENTITY_WING);
-            var duckDos = duckDosNt.AddComponent(new Wing());
-            var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
-            duckDosSoul.calculateTraits();
-            var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
-            duckDosSoul.mind = duckDosMind; // associate mind with soul
 
             var blockNt = play.CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
@@ -50,8 +37,24 @@ namespace Sor.Scenes.Helpers {
             var loader = new MapLoader(play, mapEntity);
             loader.load(mapAsset);
 
-            // now load the game from data
+            // load the game from data
             pers = loadGame();
+
+            if (!pers.loaded) {
+                // fresh
+                var duckUnoNt = play.CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
+                var duckUno = duckUnoNt.AddComponent(new Predator());
+                duckUno.AddComponent<LogicInputController>();
+                duckUno.AddComponent<Mind>();
+                duckUno.AddComponent(new MindDisplay(play.playerWing, true));
+
+                var duckDosNt = play.CreateEntity("duck-dos", new Vector2(-140, 20)).SetTag(Constants.ENTITY_WING);
+                var duckDos = duckDosNt.AddComponent(new Wing());
+                var duckDosSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
+                duckDosSoul.calculateTraits();
+                var duckDosMind = duckDosNt.AddComponent(new Mind(duckDosSoul, false));
+                duckDosSoul.mind = duckDosMind; // associate mind with soul
+            }
 
             var status = pers.loaded ? "recreated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
