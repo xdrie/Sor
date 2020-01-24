@@ -1,6 +1,7 @@
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
+using Sor.Components.Units;
 using Sor.Scenes;
 using Sor.Util;
 
@@ -26,7 +27,7 @@ namespace Sor.Game {
                 Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})", GlintLogger.LogLevel.Error);
             }
 
-            playerPosition = reader.ReadVec2();
+            reader.readToBody(play.playerWing.body);
         }
 
         public void Persist(IPersistableWriter writer) {
@@ -34,7 +35,7 @@ namespace Sor.Game {
             writer.Write(version); // save file version
             
             // save player
-            writer.Write(play.playerEntity.Position);
+            writer.writeFromBody(play.playerWing.body);
         }
     }
 }

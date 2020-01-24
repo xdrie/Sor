@@ -9,16 +9,24 @@ using Sor.Game;
 
 namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {
+        private GameContext gameContext;
         private PlayScene play;
         private PlayStatePersistable pers;
 
-        public PlaySceneSetup(PlayScene play, PlayStatePersistable pers) {
+        public PlaySceneSetup(PlayScene play) {
             this.play = play;
-            this.pers = pers;
+            gameContext = Core.Services.GetService<GameContext>();
         }
         
-        public void createFreshGame() {
-            createPlayer(pers.playerPosition);
+        public PlayStatePersistable loadGame() {
+            var store = gameContext.data.getStore();
+            var pers = new PlayStatePersistable(play);
+            store.Load(GameData.TEST_SAVE, pers);
+            return pers;
+        }
+        
+        public void createScene() {
+            createPlayer(new Vector2(200, 200));
             
             var duckUnoNt = play.CreateEntity("duck-uno", new Vector2(-140, 320)).SetTag(Constants.ENTITY_WING);
             var duckUno = duckUnoNt.AddComponent(new Predator());
@@ -41,6 +49,9 @@ namespace Sor.Scenes.Helpers {
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var loader = new MapLoader(play, mapEntity);
             loader.load(mapAsset);
+
+            // now load the game from data
+            pers = loadGame();
 
             var status = pers.loaded ? "recreated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);

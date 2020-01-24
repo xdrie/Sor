@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
 
 namespace Sor.Util {
-    public static class PersistableExtensions {
+    public static class PersistableExt {
         public static void Write(this IPersistableWriter w, Vector2 vec2) {
             w.Write(vec2.X);
             w.Write(vec2.Y);

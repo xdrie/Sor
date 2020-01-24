@@ -23,11 +23,7 @@ namespace Sor.Components.Units {
             animator.AddAnimation("ship", new[] {sprites[0]});
             animator.AddAnimation("ship2block", new[] {sprites[1], sprites[2], sprites[3], sprites[4]});
             animator.AddAnimation("block", new[] {sprites[5]});
-        }
-
-        public override void OnAddedToEntity() {
-            base.OnAddedToEntity();
-
+            
             body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-6, -10, 12, 18) {Tag = Constants.COLLIDER_SHIP});
             core = Entity.AddComponent(new EnergyCore(10_000d));
@@ -37,12 +33,7 @@ namespace Sor.Components.Units {
             
             // set body properties
             body.mass = 10f;
-            
-            // load mind if available
-            if (Entity.HasComponent<Mind>()) {
-                mind = Entity.GetComponent<Mind>();
-            }
-            
+
             // pips setup
             var pipNumber = 1 + Random.NextInt(5);
             pips.setPips(pipNumber, Pips.green);
@@ -64,6 +55,15 @@ namespace Sor.Components.Units {
 
             if (name == null && Entity.Name != null) {
                 name = Entity.Name;
+            }
+        }
+
+        public override void OnAddedToEntity() {
+            base.OnAddedToEntity();
+            
+            // load mind if available
+            if (Entity.HasComponent<Mind>()) {
+                mind = Entity.GetComponent<Mind>();
             }
         }
     }
