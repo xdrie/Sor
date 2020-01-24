@@ -17,12 +17,14 @@ namespace Sor.Scenes {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
+        public Entity playerEntity;
         public Wing playerWing;
 
         public override void Initialize() {
             base.Initialize();
 
             loadGame();
+            createFreshGame();
 
             ClearColor = gameContext.assets.bgColor;
 
@@ -34,7 +36,27 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            var playerEntity = CreateEntity("player", new Vector2(200, 200)).SetTag(Constants.ENTITY_WING);
+            // - hud
+            const int hudPadding = 8;
+            var statusBarSize = new Point(96, 12);
+            var hud = CreateEntity("hud", new Vector2(Resolution.X - statusBarSize.X - hudPadding, hudPadding));
+            var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
+            energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
+            energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
+            energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
+
+            var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
+            var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
+            var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
+
+            // add component to make Camera follow the player
+            var followCamera =
+                Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
+            followCamera.AddComponent<CameraShake>();
+        }
+
+        public void createFreshGame() {
+            playerEntity = CreateEntity("player", new Vector2(200, 200)).SetTag(Constants.ENTITY_WING);
             playerWing = playerEntity.AddComponent(new Wing());
             var playerSoul = new AvianSoul {ply = BirdPersonality.makeNeutral()};
             playerSoul.calculateTraits();
@@ -64,25 +86,7 @@ namespace Sor.Scenes {
             var loader = new MapLoader(this, mapEntity);
             loader.load(mapAsset);
 
-            Global.log.writeLine("play scene created", GlintLogger.LogLevel.Information);
-
-            // - hud
-            const int hudPadding = 8;
-            var statusBarSize = new Point(96, 12);
-            var hud = CreateEntity("hud", new Vector2(Resolution.X - statusBarSize.X - hudPadding, hudPadding));
-            var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
-            energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
-            energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
-            energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
-
-            var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
-            var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
-
-            // add component to make Camera follow the player
-            var followCamera =
-                Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
-            followCamera.AddComponent<CameraShake>();
+            Global.log.writeLine("fresh play scene created", GlintLogger.LogLevel.Information);
         }
 
         public override void Update() {
