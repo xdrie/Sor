@@ -20,6 +20,7 @@ namespace Sor.Util {
 
         public class WingData {
             public string name;
+            public Wing.WingClass wingClass;
             public double energy;
             public BirdPersonality ply;
 
@@ -27,6 +28,7 @@ namespace Sor.Util {
 
             public WingData(Wing wing) {
                 name = wing.name;
+                wingClass = wing.wingClass;
                 energy = wing.core.energy;
                 ply = wing.mind.soul.ply;
             }
@@ -35,6 +37,7 @@ namespace Sor.Util {
         public static void writeWingMeta(this IPersistableWriter w, Wing wing) {
             var wd = new WingData(wing);
             w.Write(wd.name);
+            w.Write((int) wd.wingClass);
             w.Write(wd.energy);
             w.Write(wd.ply);
         }
@@ -42,6 +45,7 @@ namespace Sor.Util {
         public static WingData readWingMeta(this IPersistableReader r) {
             var wd = new WingData();
             wd.name = r.ReadString();
+            wd.wingClass = (Wing.WingClass) r.ReadInt();
             wd.energy = r.ReadDouble();
             wd.ply = r.ReadPersonality();
             return wd;

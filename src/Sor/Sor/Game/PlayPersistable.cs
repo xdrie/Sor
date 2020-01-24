@@ -14,7 +14,7 @@ namespace Sor.Game {
         private PlaySceneSetup setup;
 
         public bool loaded = false;
-        public const int version = 2;
+        public const int version = 3;
 
         // default values
         public Vector2 playerPosition = new Vector2(200, 200);
