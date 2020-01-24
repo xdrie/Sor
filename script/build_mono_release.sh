@@ -13,7 +13,7 @@ GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
     REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="${PROJECT}_$TARGET-v$REVISION"
+ARCNAME="sor_mono-v$REVISION"
 ARTIFACT="builds/$ARCNAME.7z"
 
 cd src/$PROJECT
