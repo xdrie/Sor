@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Console;
 using Nez.Sprites;
 
 namespace Sor.Scenes {
@@ -37,18 +37,24 @@ namespace Sor.Scenes {
         public override void Update() {
             base.Update();
 
-            if (Input.IsKeyPressed(Keys.E)) {
-                // tween
-                bookrowSpriteRenderer
-                    .TweenColorTo(gameContext.assets.palette[2], 0.2f)
-                    .SetCompletionHandler(t => transitionScene(new PlayScene(), 0.5f))
-                    .Start();
+#if DEBUG
+            if (!DebugConsole.Instance.IsOpen) {
+#endif
+                if (Input.IsKeyPressed(Keys.E)) {
+                    // tween
+                    bookrowSpriteRenderer
+                        .TweenColorTo(gameContext.assets.palette[2], 0.2f)
+                        .SetCompletionHandler(t => transitionScene(new PlayScene(), 0.5f))
+                        .Start();
+                }
+
+                if (Input.IsKeyPressed(Keys.Escape)) {
+                    // end this scene
+                    Core.Exit();
+                }
+#if DEBUG
             }
-            
-            if (Input.IsKeyPressed(Keys.Escape)) {
-                // end this scene
-                Core.Exit();
-            }
+#endif
         }
     }
 }
