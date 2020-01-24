@@ -44,7 +44,7 @@ namespace Sor.Game {
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
                     wr.Write(tree.bark);
-                    
+
                     break;
                 }
             }
@@ -57,11 +57,12 @@ namespace Sor.Game {
                     // unrecognized thing
                     Global.log.writeLine("unrecognized thing kind", GlintLogger.LogLevel.Error);
                     return null;
-                case ThingKind.Capsule:
+                case ThingKind.Capsule: {
                     // don't load acquired capsules
                     var acquired = rd.ReadBool();
                     if (acquired) return null;
-                    var cap = new Capsule();
+                    var nt = pers.play.CreateEntity("cap");
+                    var cap = nt.AddComponent(new Capsule());
                     // read body
                     var bodyData = rd.readBodyData();
                     bodyData.copyTo(cap.body);
@@ -80,15 +81,20 @@ namespace Sor.Game {
                     }
 
                     return cap;
-                case ThingKind.Tree:
-                    var tree = new Tree();
+                }
+
+                case ThingKind.Tree: {
+                    var nt = pers.play.CreateEntity("tree");
+                    var tree = nt.AddComponent(new Tree());
                     // load tree
                     tree.stage = rd.ReadInt();
                     tree.harvest = rd.ReadInt();
                     tree.bark = rd.ReadString();
-                    
+
                     tree.updateStage();
-                    break;
+                    pers.trees.Add(tree); // add tree to working list
+                    return tree;
+                }
             }
 
             return null; // something bad :(

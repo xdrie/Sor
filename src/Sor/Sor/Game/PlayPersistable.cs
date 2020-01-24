@@ -61,6 +61,12 @@ namespace Sor.Game {
             }
             
             // load world things
+            var thingCount = rd.ReadInt();
+            for (var i = 0; i < thingCount; i++) {
+                var thingHelper = new ThingHelper(this);
+                // load and inflate thing
+                var thing = thingHelper.loadThing(rd);
+            }
         }
 
         public void Persist(IPersistableWriter wr) {
