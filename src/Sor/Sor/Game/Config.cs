@@ -9,6 +9,7 @@ namespace Sor.Game {
         public int scaleMode = (int) ScaleMode.PixelPerfect;
         public int w = 960;
         public int h = 540;
+        public float scale = 1.0f;
         public int logLevel = (int) GlintLogger.LogLevel.Information;
         public string logFile = null;
 
@@ -22,6 +23,7 @@ namespace Sor.Game {
             pr.parse(cf);
             w = pr.getInt("video.w", w);
             h = pr.getInt("video.h", h);
+            scale = pr.getFloat("video.scale", scale);
             fullscreen = pr.getBool("video.fullscreen", fullscreen);
             scaleMode = pr.getInt("video.scaleMode", scaleMode);
             framerate = pr.getInt("video.framerate", framerate);

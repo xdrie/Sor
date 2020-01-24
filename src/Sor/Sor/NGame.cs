@@ -4,6 +4,7 @@ using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
+using Nez.Console;
 using Sor.Game;
 using Sor.Scenes;
 
@@ -27,7 +28,7 @@ namespace Sor {
 
             Window.Title = GAME_TITLE;
             Window.AllowUserResizing = false;
-            
+
             // register context service
             Services.AddService(typeof(GameContext), gameContext);
             
@@ -45,7 +46,7 @@ namespace Sor {
                 Global.log.writeLine("stretch scaling enabled", GlintLogger.LogLevel.Warning);
             }
             DefaultSamplerState = SamplerState.PointClamp;
-
+            DebugConsole.RenderScale = gameContext.config.scale;
             Scene.SetDefaultDesignResolution(gameResolution.X, gameResolution.Y, resolutionPolicy);
 
             // Fixed timestep for physics updates
