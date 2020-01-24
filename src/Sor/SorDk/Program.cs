@@ -12,6 +12,7 @@ namespace SorDk {
             var banner = Assembly.GetExecutingAssembly().GetManifestResourceStream("SorDk.Res.banner.txt");
             using (var sr = new StreamReader(banner)) {
                 Console.WriteLine(sr.ReadToEnd());
+                Console.WriteLine(NGame.GAME_VERSION);
             }
             var config = new Config();
 #if DEBUG
