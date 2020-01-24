@@ -35,8 +35,8 @@ namespace Sor.Game {
                     wr.Write(cap.energy);
                     wr.Write(cap.firstAvailableAt);
                     wr.Write(cap.despawnAt);
-                    wr.Write(cap.sender?.name);
-                    wr.Write(cap.creator?.bark);
+                    wr.Write(cap.sender?.name ?? string.Empty);
+                    wr.Write(cap.creator?.bark ?? string.Empty);
                     break;
                 }
                 case Tree tree: {
@@ -71,12 +71,12 @@ namespace Sor.Game {
                     cap.firstAvailableAt = rd.ReadFloat();
                     cap.despawnAt = rd.ReadFloat();
                     var senderName = rd.ReadString();
-                    if (senderName != null) {
+                    if (!string.IsNullOrWhiteSpace(senderName)) {
                         cap.sender = pers.wings.Find(x => x.name == senderName);
                     }
 
                     var treeBark = rd.ReadString();
-                    if (treeBark != null) {
+                    if (!string.IsNullOrWhiteSpace(treeBark)) {
                         cap.creator = pers.trees.Find(x => x.bark == treeBark);
                     }
 
