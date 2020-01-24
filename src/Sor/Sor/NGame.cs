@@ -17,7 +17,12 @@ namespace Sor {
 
         public Point gameResolution = new Point(960, 540);
 
-        public NGame(Config config) : base(config.w, config.h, windowTitle: GAME_TITLE,
+        public NGame(Config config) : base(config.w, config.h,
+            #if DEBUG
+            windowTitle: $"{GAME_TITLE} [debug]",
+            #else
+            windowTitle: GAME_TITLE,
+            #endif
             isFullScreen: config.fullscreen) {
             gameContext = new GameContext(config);
             Global.log.writeLine("game instantiated", GlintLogger.LogLevel.Information);

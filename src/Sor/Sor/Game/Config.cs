@@ -13,6 +13,7 @@ namespace Sor.Game {
         public int logLevel = (int) GlintLogger.LogLevel.Information;
         public string logFile = null;
         public bool clearSaves = false;
+        public bool cheats = false;
 
         public enum ScaleMode {
             PixelPerfect,
@@ -33,7 +34,10 @@ namespace Sor.Game {
             logLevel = pr.getInt("platform.logLevel", logLevel);
             logFile = pr.getStr("platform.logFile", logFile);
 
+#if DEBUG // only load debug config in debug builds
             clearSaves = pr.getBool("debug.clearSaves", clearSaves);
+            cheats = pr.getBool("debug.cheats", cheats);
+#endif
         }
     }
 }
