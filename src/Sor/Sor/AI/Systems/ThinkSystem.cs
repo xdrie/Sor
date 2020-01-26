@@ -1,11 +1,12 @@
 using System.Threading;
+using LunchtimeGears.AI.Utility;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
         public int maxSignalsPerThink = 40;
-        
+
         public ThinkSystem(Mind mind, float refresh, CancellationToken cancelToken) :
             base(mind, refresh, cancelToken) { }
 
@@ -19,12 +20,40 @@ namespace Sor.AI.Systems {
                 processedSignals++;
                 if (processedSignals > maxSignalsPerThink) break;
             }
-            
+
             // update soul systems
             mind.soul.tick();
-            
+
             // look at mind information
             thinkVisual();
+
+            // figure out plans
+            makePlans();
+        }
+
+        class HungerAppraisal : Appraisal<Mind> {
+            public HungerAppraisal(Mind context) : base(context) { }
+
+            public override int score() {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        class FoodAvailabilityAppraisal : Appraisal<Mind> {
+            public FoodAvailabilityAppraisal(Mind context) : base(context) { }
+
+            public override int score() {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        private void makePlans() {
+            // create utility planner
+            var reasoner = new Reasoner<Mind>();
+            var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 100);
+            eatConsideration.addAppraisal(new HungerAppraisal(mind));
+            eatConsideration.addAppraisal(new FoodAvailabilityAppraisal(mind));
+            reasoner.addConsideration(eatConsideration);
         }
 
         private void processSignal(MindSignal result) {
@@ -36,11 +65,12 @@ namespace Sor.AI.Systems {
                         var interaction = new CapsuleFeedingInteraction(sig);
                         interaction.run(mind.soul, from.mind.soul);
                     }
+
                     break;
                 }
             }
         }
-        
+
         /// <summary>
         /// Think about visual data available to me.
         /// </summary>
