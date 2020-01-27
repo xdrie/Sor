@@ -64,7 +64,7 @@ namespace Sor.AI {
                 thinkSystem = new ThinkSystem(this, 0.2f, cts.Token);
 
                 // start processing tasks
-                consciousnessTask = consciousnessAsync(conciousnessCancel.Token);
+                consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
             }
         }
 
