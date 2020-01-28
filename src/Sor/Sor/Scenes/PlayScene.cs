@@ -81,6 +81,8 @@ capsule
             var followCamera =
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
             followCamera.AddComponent<CameraShake>();
+
+            AddPostProcessor(new ScanlinesPostProcessor(0));
         }
 
         public override void Update() {
