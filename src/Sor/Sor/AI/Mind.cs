@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Glint.Util;
+using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
 using Sor.AI.Signals;
@@ -102,8 +103,22 @@ namespace Sor.AI {
             if (control) {
                 controller.zero(); // reset the controller
             }
-            
+
             // figure out how to move to target
+            var toTarget = state.target - me.body.pos;
+            var targetAngle = Mathf.Atan2(toTarget.Y, toTarget.X);
+            var myAngle = me.body.angle + (Mathf.PI / 2);
+            var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
+
+            if (turnTo > 0) {
+                controller.moveDirectionLogical.LogicValue = new Vector2(-1, 0);
+            } else if (turnTo < 0) {
+                controller.moveDirectionLogical.LogicValue = new Vector2(1, 0);
+            }
+
+            if (Math.Abs(turnTo) < 0.1f) {
+                me.body.angularVelocity = 0f;
+            }
         }
 
         private void think() {

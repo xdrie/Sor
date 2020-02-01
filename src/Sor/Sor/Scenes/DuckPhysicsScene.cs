@@ -10,6 +10,7 @@ using Sor.Systems;
 
 namespace Sor.Scenes {
     public class DuckPhysicsScene : BaseGameScene {
+        private Entity physicistDuck;
         private const int renderlayer_ui_overlay = 1 << 30;
 
         public override void Initialize() {
@@ -26,10 +27,10 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
             
             // set up scene things
-            var duckNt = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.ENTITY_WING);
-            var duckWing = duckNt.AddComponent(new Wing(new Mind(null, true)));
-            duckNt.AddComponent<LogicInputController>();
-            duckNt.AddComponent(new MindDisplay(null, true));
+            physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.ENTITY_WING);
+            var duckWing = physicistDuck.AddComponent(new Wing(new Mind(null, true)));
+            physicistDuck.AddComponent<LogicInputController>();
+            physicistDuck.AddComponent(new MindDisplay(null, true));
             
             var playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.ENTITY_WING);
             var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
@@ -38,7 +39,7 @@ namespace Sor.Scenes {
             playerNt.AddComponent<PlayerInputController>();
 
             // set pos to current pos
-            duckWing.mind.state.target = duckNt.Position;
+            duckWing.mind.state.target = physicistDuck.Position;
 
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
             
@@ -58,8 +59,7 @@ namespace Sor.Scenes {
 
             if (Input.LeftMouseButtonPressed) {
                 // set duck target to mouse pos
-                var duckNt = FindEntity("physical");
-                var wing = duckNt.GetComponent<Wing>();
+                var wing = physicistDuck.GetComponent<Wing>();
                 var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
                 wing.mind.state.target = mouseWp;
             }
