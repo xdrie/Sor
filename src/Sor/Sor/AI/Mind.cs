@@ -152,7 +152,7 @@ namespace Sor.AI {
                     // state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");
                     // state.board[nameof(dcD)] = new MindState.BoardItem($"{dcD:n2}");
                     // state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}");
-                    // state.board[nameof(dCritBs)] = new MindState.BoardItem($"{dCritBs:n2}");
+                    // state.board[nameof(dCritBs)] = new Mi11ndState.BoardItem($"{dCritBs:n2}");
                 }
 
                 if (tp1 > 0) {
