@@ -27,18 +27,20 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            // set up scene things
-            physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.ENTITY_WING);
-            var duckWing = physicistDuck.AddComponent(new Wing(new Mind(null, true)));
-            physicistDuck.AddComponent<LogicInputController>();
-            physicistDuck.AddComponent(new MindDisplay(null, true));
-            duckWing.core.energy = 1000f;
-
             playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.ENTITY_WING);
             var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
             playerSoul.calc();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
             playerNt.AddComponent<PlayerInputController>();
+            
+            // set up scene things
+            physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.ENTITY_WING);
+            var physicistSoul = new AvianSoul(new BirdPersonality{A = 0.8f, S = -0.4f});
+            physicistSoul.calc();
+            var duckWing = physicistDuck.AddComponent(new Wing(new Mind(physicistSoul, true)));
+            physicistDuck.AddComponent<LogicInputController>();
+            physicistDuck.AddComponent(new MindDisplay(playerWing, true));
+            duckWing.core.energy = 1000f;
 
             // set pos to current pos
             duckWing.mind.state.target = physicistDuck.Position;
@@ -64,8 +66,6 @@ namespace Sor.Scenes {
                 // set duck target to mouse pos
                 var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
                 wing.mind.state.target = mouseWp;
-            } else {
-                wing.mind.state.target = playerNt.Position;
             }
         }
     }

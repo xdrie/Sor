@@ -1,8 +1,10 @@
+using System.Linq;
 using System.Threading;
 using LunchtimeGears.AI.Utility;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
 using Sor.AI.Signals;
+using Sor.Components.Things;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
@@ -37,7 +39,12 @@ namespace Sor.AI.Systems {
             var reasoner = new Reasoner<Mind>();
 
             var eatConsideration = new ThresholdConsideration<Mind>(() => {
-                // TODO: eat action
+                // eat action
+                // target the nearest bean
+                var tgtBean = state.seenThings.FirstOrDefault(x => x is Capsule);
+                if (tgtBean != null) {
+                    state.target = tgtBean.Entity.Position;
+                }
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.HungerAppraisal(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailabilityAppraisal(mind)); //0-1
@@ -52,6 +59,19 @@ namespace Sor.AI.Systems {
             exploreConsideration.scale = 1 / 2f;
             reasoner.addConsideration(exploreConsideration);
 
+            var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
+                // defend action
+                var tgtWing = state.seenWings.FirstOrDefault(
+                    x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
+                if (tgtWing != null) {
+                    state.target = tgtWing.body.pos;
+                }
+            }, 0.8f, "defend");
+            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreatAppraisal(mind));
+            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightableAppraisal(mind));
+            defendConsideration.scale = 1 / 2f;
+            reasoner.addConsideration(defendConsideration);
+
             var resultTable = reasoner.execute();
             if (mind.state.lastPlanTable == null) {
                 state.lastPlanTable = resultTable;
@@ -62,6 +82,8 @@ namespace Sor.AI.Systems {
             }
 
             var chosen = reasoner.choose(resultTable);
+            // run action
+            chosen.action();
         }
 
         private void processSignal(MindSignal result) {
