@@ -140,13 +140,13 @@ namespace Sor.AI {
                 // var dcD = dGiv - dCrit; // the decel distance
                 // phase 1-3 t
                 var tp1 = (vT - v0) / (aTh - aD);
-                var tp1Bs = (vTBs - v0) / (aBs - aD);
+                // var tp1Bs = (vTBs - v0) / (aBs - aD);
                 // var tp2 = (dGiv - dCrit) / vT;
                 // var tp3 = vT / (aD + aF);
                 // update board
                 lock (state.board) {
                     state.board[nameof(tp1)] = new MindState.BoardItem($"{tp1:n2}");
-                    state.board[nameof(tp1Bs)] = new MindState.BoardItem($"{tp1Bs:n2}");
+                    // state.board[nameof(tp1Bs)] = new MindState.BoardItem($"{tp1Bs:n2}");
                     // state.board[nameof(tp2)] = new MindState.BoardItem($"{tp2:n2}");
                     // state.board[nameof(tp3)] = new MindState.BoardItem($"{tp3:n2}");
                     // state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");
