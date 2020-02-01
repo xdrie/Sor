@@ -9,7 +9,7 @@ namespace Sor.Systems {
             // TODO: why does this exist??
             var me = entity.GetComponent<Wing>();
             // leak energy???
-            me.core.energy *= 0.9999f;
+            me.core.energy *= 0.999f;
         }
     }
 }

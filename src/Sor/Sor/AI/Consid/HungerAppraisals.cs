@@ -1,7 +1,7 @@
-using System;
 using System.Linq;
 using Glint.AI.Misc;
 using LunchtimeGears.AI.Utility;
+using Nez;
 using Sor.Components.Things;
 
 namespace Sor.AI.Consid {
@@ -14,8 +14,8 @@ namespace Sor.AI.Consid {
                 // let E be energy percentage (energy / max energy), clamp01
                 // y = (1 - E)^2
                 var energyCore = context.Entity.GetComponent<EnergyCore>();
-                var energyPercentage = Gmathf.clamp01(energyCore.ratio);
-                return energyPercentage * energyPercentage;
+                var invEnergyPerc = 1 - Gmathf.clamp01(energyCore.ratio);
+                return Gmathf.sqrt(invEnergyPerc * invEnergyPerc);
             }
         }
 

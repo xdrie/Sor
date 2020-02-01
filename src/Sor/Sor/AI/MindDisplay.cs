@@ -45,20 +45,23 @@ namespace Sor.AI {
 
                 // draw basic mind state
                 ind.AppendLine($"[mind] {wing.name}");
-                ind.AppendLine($"energy: {wing.core.ratio}");
+                ind.AppendLine($"energy: {wing.core.ratio:n2}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 ind.AppendLine($"prsntly: {mind.soul.ply}");
                 ind.AppendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
 
                 // draw plan table
-                lock (mind.state.lastPlanTable) {
-                    foreach (var consid in mind.state.lastPlanTable) {
-                        ind.Append($"({consid.Key.tag}: {consid.Value}) ");
+                // TODO: draw arrow in front of chosen
+                if (mind.state.lastPlanTable != null) {
+                    lock (mind.state.lastPlanTable) {
+                        foreach (var consid in mind.state.lastPlanTable) {
+                            ind.Append($"({consid.Key.tag}: {consid.Value:n2}) ");
+                        }
                     }
-                }
 
-                ind.AppendLine();
+                    ind.AppendLine();
+                }
 
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);

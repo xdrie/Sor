@@ -35,15 +35,15 @@ namespace Sor.AI.Systems {
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
-            
+
             var eatConsideration = new ThresholdConsideration<Mind>(() => {
                 // TODO: eat action
-            }, 0.85f, "eat");
+            }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.HungerAppraisal(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailabilityAppraisal(mind)); //0-1
             eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
-            
+
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
             }, "explore");
@@ -53,8 +53,12 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(exploreConsideration);
 
             var resultTable = reasoner.execute();
-            lock (mind.state.lastPlanTable) {
+            if (mind.state.lastPlanTable == null) {
                 state.lastPlanTable = resultTable;
+            } else {
+                lock (mind.state.lastPlanTable) {
+                    state.lastPlanTable = resultTable;
+                }
             }
 
             var chosen = reasoner.choose(resultTable);
