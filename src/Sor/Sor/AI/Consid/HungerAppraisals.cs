@@ -5,7 +5,7 @@ using LunchtimeGears.AI.Utility;
 using Sor.Components.Things;
 
 namespace Sor.AI.Consid {
-    public static class HungerConsiderations {
+    public static class HungerAppraisals {
         public class HungerAppraisal : Appraisal<Mind> {
             public HungerAppraisal(Mind context) : base(context) { }
 

@@ -35,10 +35,22 @@ namespace Sor.AI.Systems {
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
-            var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 1.7f);
-            eatConsideration.addAppraisal(new HungerConsiderations.HungerAppraisal(mind));
-            eatConsideration.addAppraisal(new HungerConsiderations.FoodAvailabilityAppraisal(mind));
+            
+            var eatConsideration = new ThresholdConsideration<Mind>(() => {
+                // TODO: eat action
+            }, 0.85f, "eat");
+            eatConsideration.addAppraisal(new HungerAppraisals.HungerAppraisal(mind)); // 0-1
+            eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailabilityAppraisal(mind)); //0-1
+            eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
+            
+            var exploreConsideration = new SumConsideration<Mind>(() => {
+                // explore action
+            }, "explore");
+            exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendencyAppraisal(mind));
+            exploreConsideration.addAppraisal(new ExploreAppraisals.UnexploredAppraisal(mind));
+            exploreConsideration.scale = 1 / 2f;
+            reasoner.addConsideration(exploreConsideration);
         }
 
         private void processSignal(MindSignal result) {
