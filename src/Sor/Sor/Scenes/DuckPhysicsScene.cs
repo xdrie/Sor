@@ -2,6 +2,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using Sor.AI;
+using Sor.AI.Cogs;
+using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Units;
 using Sor.Systems;
@@ -9,9 +11,6 @@ using Sor.Systems;
 namespace Sor.Scenes {
     public class DuckPhysicsScene : BaseGameScene {
         private const int renderlayer_ui_overlay = 1 << 30;
-
-        public Entity playerEntity;
-        public Wing playerWing;
 
         public override void Initialize() {
             base.Initialize();
@@ -27,11 +26,26 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
             
             // set up scene things
-            var duckNt = CreateEntity("physical", new Vector2(300f, 200f));
-            duckNt.AddComponent(new Wing(new Mind(null, true)));
+            var duckNt = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.ENTITY_WING);
+            var duckWing = duckNt.AddComponent(new Wing(new Mind(null, true)));
             duckNt.AddComponent<LogicInputController>();
+            duckNt.AddComponent(new MindDisplay(null, true));
+            
+            var playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.ENTITY_WING);
+            var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
+            playerSoul.calc();
+            var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
+            playerNt.AddComponent<PlayerInputController>();
+
+            // set pos to current pos
+            duckWing.mind.state.target = duckNt.Position;
 
             var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
+            
+            // add component to make Camera follow the player
+            var followCamera =
+                Camera.Entity.AddComponent(new LockedCamera(playerNt, Camera, LockedCamera.LockMode.Position));
+            followCamera.AddComponent<CameraShake>();
         }
 
         public override void Update() {
@@ -44,6 +58,10 @@ namespace Sor.Scenes {
 
             if (Input.LeftMouseButtonPressed) {
                 // set duck target to mouse pos
+                var duckNt = FindEntity("physical");
+                var wing = duckNt.GetComponent<Wing>();
+                var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
+                wing.mind.state.target = mouseWp;
             }
         }
     }

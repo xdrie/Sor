@@ -102,6 +102,8 @@ namespace Sor.AI {
             if (control) {
                 controller.zero(); // reset the controller
             }
+            
+            // figure out how to move to target
         }
 
         private void think() {
