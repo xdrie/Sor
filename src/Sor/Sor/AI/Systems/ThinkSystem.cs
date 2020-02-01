@@ -53,7 +53,10 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(exploreConsideration);
 
             var resultTable = reasoner.execute();
-            state.lastPlanTable = resultTable;
+            lock (mind.state.lastPlanTable) {
+                state.lastPlanTable = resultTable;
+            }
+
             var chosen = reasoner.choose(resultTable);
         }
 
