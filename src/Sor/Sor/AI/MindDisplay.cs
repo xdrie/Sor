@@ -55,12 +55,18 @@ namespace Sor.AI {
                 // TODO: draw arrow in front of chosen
                 if (mind.state.lastPlanTable != null) {
                     lock (mind.state.lastPlanTable) {
-                        foreach (var consid in mind.state.lastPlanTable) {
-                            ind.Append($"({consid.Key.tag}: {consid.Value:n2}) ");
+                        var first = false;
+                        foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                            if (!first) {
+                                ind.Append("> ");
+                                first = true;
+                            } else {
+                                ind.Append("  ");
+                            }
+
+                            ind.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
                         }
                     }
-
-                    ind.AppendLine();
                 }
 
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
