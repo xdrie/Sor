@@ -51,6 +51,10 @@ namespace Sor.AI.Systems {
             exploreConsideration.addAppraisal(new ExploreAppraisals.UnexploredAppraisal(mind));
             exploreConsideration.scale = 1 / 2f;
             reasoner.addConsideration(exploreConsideration);
+
+            var resultTable = reasoner.execute();
+            state.lastPlanTable = resultTable;
+            var chosen = reasoner.choose(resultTable);
         }
 
         private void processSignal(MindSignal result) {
