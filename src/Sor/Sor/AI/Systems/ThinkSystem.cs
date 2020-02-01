@@ -35,7 +35,7 @@ namespace Sor.AI.Systems {
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
-            var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 100);
+            var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 1.7f);
             eatConsideration.addAppraisal(new HungerConsiderations.HungerAppraisal(mind));
             eatConsideration.addAppraisal(new HungerConsiderations.FoodAvailabilityAppraisal(mind));
             reasoner.addConsideration(eatConsideration);
