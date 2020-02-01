@@ -14,13 +14,13 @@ namespace Sor.Components.Units {
         private GameContext gameContext;
 
         public float turnPower = Mathf.PI * 0.72f;
-        public float thrustPower = 2f;
+        public float thrustPower = 120f;
         public float laneFactor = 4f;
         public float topSpeed = 80f;
         public float boostFactor = 6.2f;
         public float boostTopSpeed = 400f;
         public float stdDrag = 16f;
-        public float flapDrag = 30f;
+        public float flapDrag = 80f;
         public float gravityFactor = 4000f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
@@ -147,7 +147,7 @@ namespace Sor.Components.Units {
             drag = new Vector2(stdDrag);
             // forward thrust
             if (thrustInput <= 0) {
-                var thrustVec = new Vector2(0, thrustInput * thrustVal);
+                var thrustVec = new Vector2(0, thrustInput * thrustVal * Time.DeltaTime);
                 velocity += thrustVec.rotate(angle);
             }
             else { // slowdown thrust
