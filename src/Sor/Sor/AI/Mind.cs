@@ -106,19 +106,47 @@ namespace Sor.AI {
 
             // figure out how to move to target
             var toTarget = state.target - me.body.pos;
-            var targetAngle = Mathf.Atan2(toTarget.Y, toTarget.X);
-            var myAngle = me.body.angle + (Mathf.PI / 2);
+            var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
+            var myAngle = -me.body.angle + (Mathf.PI / 2);
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
 
-            if (turnTo > 0) {
-                controller.moveDirectionLogical.LogicValue = new Vector2(-1, 0);
-            } else if (turnTo < 0) {
-                controller.moveDirectionLogical.LogicValue = new Vector2(1, 0);
+            var moveX = 0;
+            var moveY = 0;
+
+            if (Math.Abs(turnTo) < 0.05f * Mathf.PI) {
+                me.body.angularVelocity *= 0.9f;
+                // me.body.angle = -targetAngle + (Mathf.PI / 2);
+
+                // we are facing, now move toward them
+                var dGiv = toTarget.Length();
+                var v0 = me.body.velocity.Length();
+                var vT = me.body.maxVelocity.Length();
+                var aTh = me.body.thrustPower;
+                var aD = me.body.drag.Length();
+                var aF = me.body.flapDrag;
+                // d-star
+                var dCrit = v0 * ((vT - v0) / (aTh - aD))
+                            + (((vT - v0) * (vT - v0)) / (2 * (aTh - aD)))
+                            + (vT * vT) / (aD + aF)
+                            + 0.5 * ((vT * vT) / (-(aD - aF)));
+                // phase 1 t
+                var tp1 = (vT - v0) / (aTh - aD);
+                var tp2 = (dGiv - dCrit) / vT;
+                var tp3 = vT / (aD - aF);
+                lock (state.board) {
+                    state.board[nameof(tp1)] = new MindState.BoardItem($"{tp1:n2}");
+                    state.board[nameof(tp2)] = new MindState.BoardItem($"{tp2:n2}");
+                    state.board[nameof(tp3)] = new MindState.BoardItem($"{tp3:n2}");
+                }
+            } else {
+                if (turnTo > 0) {
+                    moveX = -1;
+                } else if (turnTo < 0) {
+                    moveX = 1;
+                }
             }
 
-            if (Math.Abs(turnTo) < 0.1f) {
-                me.body.angularVelocity = 0f;
-            }
+            controller.moveDirectionLogical.LogicValue = new Vector2(moveX, moveY);
         }
 
         private void think() {

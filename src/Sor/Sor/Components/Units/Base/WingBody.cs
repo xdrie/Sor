@@ -20,6 +20,7 @@ namespace Sor.Components.Units {
         public float boostFactor = 6.2f;
         public float boostTopSpeed = 400f;
         public float stdDrag = 16f;
+        public float flapDrag = 30f;
         public float gravityFactor = 4000f;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
@@ -143,14 +144,17 @@ namespace Sor.Components.Units {
                 }
             }
 
+            drag = new Vector2(stdDrag);
             // forward thrust
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal);
                 velocity += thrustVec.rotate(angle);
             }
             else { // slowdown thrust
-                float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
-                velocity *= fac;
+                // float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
+                // velocity *= fac;
+                // var invVelocity = -velocity;
+                drag = new Vector2(flapDrag);
             }
         }
 

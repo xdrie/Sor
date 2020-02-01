@@ -19,6 +19,19 @@ namespace Sor.AI {
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Vector2 target;
+        public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
+
+        public struct BoardItem {
+            public string v;
+            public Color col;
+
+            public BoardItem(string v, Color col) {
+                this.v = v;
+                this.col = col;
+            }
+
+            public BoardItem(string v) : this(v, Color.White) { }
+        }
 
         public int getOpinion(Mind mind) {
             if (opinion.TryGetValue(mind, out var val)) {

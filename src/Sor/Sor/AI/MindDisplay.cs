@@ -51,6 +51,14 @@ namespace Sor.AI {
                 ind.AppendLine($"prsntly: {mind.soul.ply}");
                 ind.AppendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
                 ind.AppendLine($"target: ({mind.state.target.X:n3}, {mind.state.target.Y:n3})");
+
+                // draw board
+                lock (mind.state.board) {
+                    foreach (var kv in mind.state.board) {
+                        ind.AppendLine($"{kv.Key}: {kv.Value.v}");
+                    }
+                }
+
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
             }
