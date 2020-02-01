@@ -1,13 +1,14 @@
 using System;
+using System.Linq;
 using Glint.AI.Misc;
 using LunchtimeGears.AI.Utility;
 using Sor.Components.Things;
 
 namespace Sor.AI.Consid {
-    public class HungerConsiderations {
+    public static class HungerConsiderations {
         public class HungerAppraisal : Appraisal<Mind> {
             public HungerAppraisal(Mind context) : base(context) { }
-            
+
             public override float score() {
                 // hunger score is based on the necessity of more energy.
                 // let E be energy percentage (energy / max energy), clamp01
@@ -23,7 +24,10 @@ namespace Sor.AI.Consid {
             public FoodAvailabilityAppraisal(Mind context) : base(context) { }
 
             public override float score() {
-                throw new NotImplementedException();
+                // availability is based on nearby, known food items
+                // TODO: look around the map for trees, ranked by level
+                // for now, it is based on the existence of fruits nearby
+                return context.state.seenThings.Any(x => x is Capsule) ? 1 : 0;
             }
         }
     }
