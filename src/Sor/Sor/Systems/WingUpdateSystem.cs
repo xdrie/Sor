@@ -6,9 +6,10 @@ namespace Sor.Systems {
         public WingUpdateSystem() : base(new Matcher().All(typeof(WingBody))) { }
 
         public override void Process(Entity entity) {
-            // TODO: why does this exist??
+            // misc wing updates
             var me = entity.GetComponent<Wing>();
-            // leak energy???
+            // TODO: hunger based on wing mass
+            // calculate metabolic rate of bird
             me.core.energy *= 0.999f;
         }
     }
