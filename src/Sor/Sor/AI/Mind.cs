@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Glint.Util;
+using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
 using Sor.AI.Signals;
@@ -102,6 +103,72 @@ namespace Sor.AI {
             if (control) {
                 controller.zero(); // reset the controller
             }
+
+            // figure out how to move to target
+            var toTarget = state.target - me.body.pos;
+            var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
+            var myAngle = -me.body.angle + (Mathf.PI / 2);
+            var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
+
+            var moveX = 0;
+            var moveY = 0;
+
+            if (Math.Abs(turnTo) < 0.05f * Mathf.PI) {
+                me.body.angularVelocity *= 0.9f;
+                // me.body.angle = -targetAngle + (Mathf.PI / 2);
+
+                var sinPi4 = 0.707106781187; // sin(pi/4)
+                // we are facing, now move toward them
+                var dGiv = toTarget.Length();
+                var v0 = me.body.velocity.Length();
+                var vT = me.body.topSpeed / sinPi4;
+                var vTBs = me.body.boostTopSpeed / sinPi4;
+                var aTh = me.body.thrustPower / sinPi4;
+                var aBs = (me.body.thrustPower / sinPi4) * me.body.boostFactor;
+                var aD = me.body.stdDrag / sinPi4;
+                var aF = me.body.flapDrag / sinPi4;
+                // d-star
+                var dCrit = v0 * ((vT - v0) / (aTh - aD))
+                            + (((vT - v0) * (vT - v0)) / (2 * (aTh - aD)))
+                            + (vT * vT) / (aD + aF)
+                            + 0.5 * ((vT * vT) / (-(aD - aF)));
+                
+                // var dCritBs = v0 * ((vTBs - v0) / (aBs - aD))
+                //             + (((vTBs - v0) * (vTBs - v0)) / (2 * (aBs - aD)))
+                //             + (vTBs * vTBs) / (aD + aF)
+                //             + 0.5 * ((vTBs * vTBs) / (-(aD - aF)));
+                // var dcD = dGiv - dCrit; // the decel distance
+                // phase 1-3 t
+                var tp1 = (vT - v0) / (aTh - aD);
+                // var tp1Bs = (vTBs - v0) / (aBs - aD);
+                // var tp2 = (dGiv - dCrit) / vT;
+                // var tp3 = vT / (aD + aF);
+                // update board
+                lock (state.board) {
+                    state.board[nameof(tp1)] = new MindState.BoardItem($"{tp1:n2}");
+                    // state.board[nameof(tp1Bs)] = new MindState.BoardItem($"{tp1Bs:n2}");
+                    // state.board[nameof(tp2)] = new MindState.BoardItem($"{tp2:n2}");
+                    // state.board[nameof(tp3)] = new MindState.BoardItem($"{tp3:n2}");
+                    // state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");
+                    // state.board[nameof(dcD)] = new MindState.BoardItem($"{dcD:n2}");
+                    // state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}");
+                    // state.board[nameof(dCritBs)] = new Mi11ndState.BoardItem($"{dCritBs:n2}");
+                }
+
+                if (tp1 > 0) {
+                    moveY = -1;
+                } else {
+                    moveY = 1;
+                }
+            } else {
+                if (turnTo > 0) {
+                    moveX = -1;
+                } else if (turnTo < 0) {
+                    moveX = 1;
+                }
+            }
+
+            controller.moveDirectionLogical.LogicValue = new Vector2(moveX, moveY);
         }
 
         private void think() {
