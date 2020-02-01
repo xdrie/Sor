@@ -1,6 +1,7 @@
 using System.Threading;
 using LunchtimeGears.AI.Utility;
 using Sor.AI.Cogs.Interactions;
+using Sor.AI.Consid;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Systems {
@@ -31,28 +32,12 @@ namespace Sor.AI.Systems {
             makePlans();
         }
 
-        class HungerAppraisal : Appraisal<Mind> {
-            public HungerAppraisal(Mind context) : base(context) { }
-
-            public override int score() {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        class FoodAvailabilityAppraisal : Appraisal<Mind> {
-            public FoodAvailabilityAppraisal(Mind context) : base(context) { }
-
-            public override int score() {
-                throw new System.NotImplementedException();
-            }
-        }
-
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
             var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 100);
-            eatConsideration.addAppraisal(new HungerAppraisal(mind));
-            eatConsideration.addAppraisal(new FoodAvailabilityAppraisal(mind));
+            eatConsideration.addAppraisal(new HungerConsiderations.HungerAppraisal(mind));
+            eatConsideration.addAppraisal(new HungerConsiderations.FoodAvailabilityAppraisal(mind));
             reasoner.addConsideration(eatConsideration);
         }
 
