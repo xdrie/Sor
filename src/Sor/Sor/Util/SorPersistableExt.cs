@@ -47,7 +47,7 @@ namespace Sor.Util {
         public class WingData {
             public string name;
             public Wing.WingClass wingClass;
-            public double energy;
+            public float energy;
             public BirdPersonality ply;
 
             public WingData() { }
@@ -72,7 +72,7 @@ namespace Sor.Util {
             var wd = new WingData();
             wd.name = r.ReadString();
             wd.wingClass = (Wing.WingClass) r.ReadInt();
-            wd.energy = r.ReadDouble();
+            wd.energy = r.ReadFloat();
             wd.ply = r.ReadPersonality();
             return wd;
         }

@@ -5,14 +5,14 @@ namespace Sor.Components.Things {
     /// Represents energy storage
     /// </summary>
     public class EnergyCore : Component {
-        public double energy;
-        public double designMax;
+        public float energy;
+        public float designMax;
 
-        public EnergyCore(double capacity) {
+        public EnergyCore(float capacity) {
             energy = capacity;
             designMax = capacity;
         }
         
-        public double ratio => energy / designMax;
+        public float ratio => energy / designMax;
     }
 }

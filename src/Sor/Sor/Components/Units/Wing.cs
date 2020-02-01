@@ -30,7 +30,7 @@ namespace Sor.Components.Units {
             Entity.AddComponent(mind); // add mind component
             body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-6, -10, 12, 18) {Tag = Constants.COLLIDER_SHIP});
-            core = Entity.AddComponent(new EnergyCore(10_000d));
+            core = Entity.AddComponent(new EnergyCore(10_000));
             // add pips
             pips = Entity.AddComponent<Pips>();
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);

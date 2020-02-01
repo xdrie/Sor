@@ -45,6 +45,7 @@ namespace Sor.AI {
 
                 // draw basic mind state
                 ind.AppendLine($"[mind] {wing.name}");
+                ind.AppendLine($"energy: {wing.core.ratio}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 ind.AppendLine($"prsntly: {mind.soul.ply}");

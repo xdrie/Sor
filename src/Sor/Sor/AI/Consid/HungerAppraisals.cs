@@ -14,8 +14,7 @@ namespace Sor.AI.Consid {
                 // let E be energy percentage (energy / max energy), clamp01
                 // y = (1 - E)^2
                 var energyCore = context.Entity.GetComponent<EnergyCore>();
-                var energyPercentage = (float) (energyCore.energy / energyCore.designMax);
-                energyPercentage = Gmathf.clamp01(energyPercentage);
+                var energyPercentage = Gmathf.clamp01(energyCore.ratio);
                 return energyPercentage * energyPercentage;
             }
         }
