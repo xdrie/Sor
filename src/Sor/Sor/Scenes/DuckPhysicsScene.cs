@@ -43,7 +43,7 @@ namespace Sor.Scenes {
             // set pos to current pos
             duckWing.mind.state.target = physicistDuck.Position;
 
-            var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
+            var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
 
             // add component to make Camera follow the player
             var followCamera =

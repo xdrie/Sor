@@ -68,6 +68,9 @@ namespace Sor.AI {
 
                             ind.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
                         }
+                    }
+                }
+
                 ind.AppendLine($"tgt: ({mind.state.target.X:n3}, {mind.state.target.Y:n3})");
 
                 ind.AppendLine();
