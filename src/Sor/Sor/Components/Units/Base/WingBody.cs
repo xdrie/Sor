@@ -26,7 +26,7 @@ namespace Sor.Components.Units {
 
         public float boostCooldown = 0f;
         public bool boosting = false;
-        private double boostDrainKg = 100; // boost drain per kg
+        private float boostDrainKg = 100; // boost drain per kg
 
         public override void Initialize() {
             base.Initialize();

@@ -40,7 +40,10 @@ namespace Sor.AI {
                 // draw mind info representation
 
                 StringBuilder ind = new StringBuilder();
+
+                // draw basic mind state
                 ind.AppendLine($"[mind] {wing.name}");
+                ind.AppendLine($"energy: {wing.core.ratio:n2}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 if (player != null) {
                     var plOpinion = mind.state.getOpinion(player.mind);
@@ -49,6 +52,25 @@ namespace Sor.AI {
 
                 ind.AppendLine($"ply: {mind.soul.ply}");
                 ind.AppendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
+
+                // draw plan table
+                // TODO: draw arrow in front of chosen
+                if (mind.state.lastPlanTable != null) {
+                    lock (mind.state.lastPlanTable) {
+                        var first = false;
+                        foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                            if (!first) {
+                                ind.Append("> ");
+                                first = true;
+                            } else {
+                                ind.Append("  ");
+                            }
+
+                            ind.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                        }
+                    }
+                }
+
                 ind.AppendLine($"tgt: ({mind.state.target.X:n3}, {mind.state.target.Y:n3})");
 
                 ind.AppendLine();

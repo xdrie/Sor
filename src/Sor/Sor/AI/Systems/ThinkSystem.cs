@@ -1,7 +1,10 @@
+using System.Linq;
 using System.Threading;
 using LunchtimeGears.AI.Utility;
 using Sor.AI.Cogs.Interactions;
+using Sor.AI.Consid;
 using Sor.AI.Signals;
+using Sor.Components.Things;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
@@ -31,29 +34,56 @@ namespace Sor.AI.Systems {
             makePlans();
         }
 
-        class HungerAppraisal : Appraisal<Mind> {
-            public HungerAppraisal(Mind context) : base(context) { }
-
-            public override int score() {
-                throw new System.NotImplementedException();
-            }
-        }
-
-        class FoodAvailabilityAppraisal : Appraisal<Mind> {
-            public FoodAvailabilityAppraisal(Mind context) : base(context) { }
-
-            public override int score() {
-                throw new System.NotImplementedException();
-            }
-        }
-
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
-            var eatConsideration = new ThresholdConsideration<Mind>(() => { }, 100);
-            eatConsideration.addAppraisal(new HungerAppraisal(mind));
-            eatConsideration.addAppraisal(new FoodAvailabilityAppraisal(mind));
+
+            var eatConsideration = new ThresholdConsideration<Mind>(() => {
+                // eat action
+                // target the nearest bean
+                var tgtBean = state.seenThings.FirstOrDefault(x => x is Capsule);
+                if (tgtBean != null) {
+                    state.target = tgtBean.Entity.Position;
+                }
+            }, 0.6f, "eat");
+            eatConsideration.addAppraisal(new HungerAppraisals.HungerAppraisal(mind)); // 0-1
+            eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailabilityAppraisal(mind)); //0-1
+            eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
+
+            var exploreConsideration = new SumConsideration<Mind>(() => {
+                // explore action
+            }, "explore");
+            exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendencyAppraisal(mind));
+            exploreConsideration.addAppraisal(new ExploreAppraisals.UnexploredAppraisal(mind));
+            exploreConsideration.scale = 1 / 2f;
+            reasoner.addConsideration(exploreConsideration);
+
+            var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
+                // defend action
+                var tgtWing = state.seenWings.FirstOrDefault(
+                    x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
+                if (tgtWing != null) {
+                    state.target = tgtWing.body.pos;
+                }
+            }, 0.8f, "defend");
+            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreatAppraisal(mind));
+            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightableAppraisal(mind));
+            defendConsideration.scale = 1 / 2f;
+            reasoner.addConsideration(defendConsideration);
+
+            var resultTable = reasoner.execute();
+            if (mind.state.lastPlanTable == null) {
+                state.lastPlanTable = resultTable;
+            } else {
+                lock (mind.state.lastPlanTable) {
+                    state.lastPlanTable = resultTable;
+                }
+            }
+
+            var chosen = reasoner.choose(resultTable);
+            // run action
+            chosen.action();
         }
 
         private void processSignal(MindSignal result) {
