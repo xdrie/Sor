@@ -81,7 +81,7 @@ namespace Sor.Components.Units {
                     pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
 
                     body.turnPower = Mathf.PI * 0.22f;
-                    body.thrustPower = 1f;
+                    body.thrustPower = 50f;
                     body.boostTopSpeed = 200f;
                     body.mass = 80f;
                     body.recalculateKinematics();
@@ -93,7 +93,7 @@ namespace Sor.Components.Units {
                     pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
 
                     body.turnPower = Mathf.PI * 0.96f;
-                    body.thrustPower = 3.5f;
+                    body.thrustPower = 210f;
                     body.boostTopSpeed = 640f;
                     body.mass = 4f;
                     body.recalculateKinematics();
