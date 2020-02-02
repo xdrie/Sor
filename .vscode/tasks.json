@@ -9,7 +9,7 @@
             "type": "shell",
             "args": [
                 "build",
-                "src/Sor/Sor/Sor.csproj",
+                "src/Sor/SorDk/SorDk.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
