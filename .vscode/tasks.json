@@ -10,6 +10,8 @@
             "args": [
                 "build",
                 "src/Sor/SorDk/SorDk.csproj",
+                "-f",
+                "netcoreapp3.0",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
