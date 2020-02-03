@@ -74,7 +74,7 @@ capsule
             helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
-            var wingInteractions = AddEntityProcessor(new WingInteractionSystem());
+            var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
             var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
 
             // add component to make Camera follow the player

@@ -46,6 +46,10 @@ namespace Sor.Scenes.Helpers {
                 var frend = createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
                 
+                var tres = createWing("duck-tres", new Vector2(200, 380));
+                var cuatro = createWing("duck-4", new Vector2(0, -100));
+                var cinco = createWing("duck-5", new Vector2(400, 100));
+                
                 mapLoader.load(mapAsset, createObjects: true);
             } else {
                 // resuming from saved state

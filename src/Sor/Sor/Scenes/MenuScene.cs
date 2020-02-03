@@ -48,6 +48,14 @@ namespace Sor.Scenes {
                         .Start();
                 }
 
+                #if DEBUG
+                // debug scenes
+                if (Input.IsKeyPressed(Keys.D1)) {
+                    // duck physics
+                    transitionScene<DuckPhysicsScene>();
+                }
+                #endif
+
                 if (Input.IsKeyPressed(Keys.Escape)) {
                     // end this scene
                     Core.Exit();

@@ -3,6 +3,7 @@ builds/
 natives/
 
 .vscode/
+.ionide/
 
 # Created by https://www.gitignore.io/api/csharp,visualstudio,jetbrains+all,visualstudiocode
 

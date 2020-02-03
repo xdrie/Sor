@@ -37,16 +37,50 @@ namespace Sor.AI {
 
         public override void Render(Batcher batcher, Camera camera) {
             if (draw) {
-                // TODO: show information about whose mind, etc.
                 // draw mind info representation
-                var plOpinion = mind.state.getOpinion(player.mind);
 
                 StringBuilder ind = new StringBuilder();
+
+                // draw basic mind state
                 ind.AppendLine($"[mind] {wing.name}");
+                ind.AppendLine($"energy: {wing.core.ratio:n2}");
                 ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
-                ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
-                ind.AppendLine($"prsntly: {mind.soul.ply}");
+                if (player != null) {
+                    var plOpinion = mind.state.getOpinion(player.mind);
+                    ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
+                }
+
+                ind.AppendLine($"ply: {mind.soul.ply}");
                 ind.AppendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
+
+                // draw plan table
+                // TODO: draw arrow in front of chosen
+                if (mind.state.lastPlanTable != null) {
+                    lock (mind.state.lastPlanTable) {
+                        var first = false;
+                        foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                            if (!first) {
+                                ind.Append("> ");
+                                first = true;
+                            } else {
+                                ind.Append("  ");
+                            }
+
+                            ind.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                        }
+                    }
+                }
+
+                ind.AppendLine($"tgt: ({mind.state.target.X:n3}, {mind.state.target.Y:n3})");
+
+                ind.AppendLine();
+                // draw board
+                lock (mind.state.board) {
+                    foreach (var kv in mind.state.board) {
+                        ind.AppendLine($"  {kv.Key}: {kv.Value.v}");
+                    }
+                }
+
                 batcher.DrawString(Graphics.Instance.BitmapFont, ind,
                     camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
             }
