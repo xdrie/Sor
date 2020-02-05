@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Iri.XGOAP" Version="1.0.0" />
+        <PackageReference Include="Iri.XGOAP" Version="1.0.1" />
         <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.1" />
     </ItemGroup>
 
