@@ -3,8 +3,8 @@ using LunchtimeGears.AI.Utility;
 
 namespace Sor.AI.Consid {
     public static class DefendAppraisals {
-        public class NearbyThreatAppraisal : Appraisal<Mind> {
-            public NearbyThreatAppraisal(Mind context) : base(context) { }
+        public class NearbyThreat : Appraisal<Mind> {
+            public NearbyThreat(Mind context) : base(context) { }
 
             public override float score() {
                 return context.state.seenWings.Any(
@@ -14,10 +14,11 @@ namespace Sor.AI.Consid {
             }
         }
 
-        public class ThreatFightableAppraisal : Appraisal<Mind> {
-            public ThreatFightableAppraisal(Mind context) : base(context) { }
+        public class ThreatFightable : Appraisal<Mind> {
+            public ThreatFightable(Mind context) : base(context) { }
 
             public override float score() {
+                // TODO: determine how fightable the threats are
                 return 0.7f; // all threats are fightable now
             }
         }

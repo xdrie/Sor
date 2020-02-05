@@ -46,31 +46,42 @@ namespace Sor.AI.Systems {
                     state.target = tgtBean.Entity.Position;
                 }
             }, 0.6f, "eat");
-            eatConsideration.addAppraisal(new HungerAppraisals.HungerAppraisal(mind)); // 0-1
-            eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailabilityAppraisal(mind)); //0-1
+            eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
+            eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
             eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
+                // TODO: actually use map knowledge to explore
             }, "explore");
-            exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendencyAppraisal(mind));
-            exploreConsideration.addAppraisal(new ExploreAppraisals.UnexploredAppraisal(mind));
+            exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
+            exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
             exploreConsideration.scale = 1 / 2f;
             reasoner.addConsideration(exploreConsideration);
 
             var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
                 // defend action
+                // TODO: figure out the most "threatening" wing, delegate to goal planner
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
                 if (tgtWing != null) {
                     state.target = tgtWing.body.pos;
                 }
             }, 0.8f, "defend");
-            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreatAppraisal(mind));
-            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightableAppraisal(mind));
+            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
+            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
+            
+            var socialAppraisal = new SumConsideration<Mind>(() => {
+                // socialize
+                // TODO: attempt to feed a duck
+            }, "social");
+            socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
+            socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
+            socialAppraisal.scale = 1 / 2f;
+            reasoner.addConsideration(socialAppraisal);
 
             var resultTable = reasoner.execute();
             if (mind.state.lastPlanTable == null) {

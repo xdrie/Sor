@@ -7,6 +7,7 @@ namespace Sor.AI.Cogs {
     public static class PerMath {
         /// <summary>
         ///     Given v, take (min * v) and add ((max-min) * d)
+        ///     Result is then clamped to [min, max]
         ///     Useful for scaling a value between a min and max value
         /// </summary>
         /// <param name="v"></param>
@@ -20,6 +21,15 @@ namespace Sor.AI.Cogs {
             var r = s1 + b * d;
             if (clamp) r = Gmathf.clamp(r, min, max);
             return r;
+        }
+
+        /// <summary>
+        /// rescale from [-1,1] to [0,1]
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static float map11to01(float v) {
+            return Gmathf.map01(v, 0f, 1f);
         }
     }
 }

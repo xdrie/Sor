@@ -6,8 +6,8 @@ using Sor.Components.Things;
 
 namespace Sor.AI.Consid {
     public static class HungerAppraisals {
-        public class HungerAppraisal : Appraisal<Mind> {
-            public HungerAppraisal(Mind context) : base(context) { }
+        public class Hunger : Appraisal<Mind> {
+            public Hunger(Mind context) : base(context) { }
 
             public override float score() {
                 // hunger score is based on the necessity of more energy.
@@ -19,8 +19,8 @@ namespace Sor.AI.Consid {
             }
         }
 
-        public class FoodAvailabilityAppraisal : Appraisal<Mind> {
-            public FoodAvailabilityAppraisal(Mind context) : base(context) { }
+        public class FoodAvailability : Appraisal<Mind> {
+            public FoodAvailability(Mind context) : base(context) { }
 
             public override float score() {
                 // availability is based on nearby, known food items

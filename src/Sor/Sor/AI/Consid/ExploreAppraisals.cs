@@ -1,19 +1,20 @@
 using LunchtimeGears.AI.Utility;
+using Sor.AI.Cogs;
 
 namespace Sor.AI.Consid {
     public static class ExploreAppraisals {
-        public class ExplorationTendencyAppraisal : Appraisal<Mind> {
-            public ExplorationTendencyAppraisal(Mind context) : base(context) { }
+        public class ExplorationTendency : Appraisal<Mind> {
+            public ExplorationTendency(Mind context) : base(context) { }
 
             public override float score() {
-                return 0.8f;
+                return PerMath.map11to01(context.soul.traits.wary);
             }
         }
 
-        public class UnexploredAppraisal : Appraisal<Mind> {
-            public UnexploredAppraisal(Mind context) : base(context) { }
+        public class Unexplored : Appraisal<Mind> {
+            public Unexplored(Mind context) : base(context) { }
             public override float score() {
-                return 0.8f;
+                return 0.6f;
             }
         }
     }
