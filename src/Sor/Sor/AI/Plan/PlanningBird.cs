@@ -2,11 +2,11 @@ using Activ.GOAP;
 
 namespace Sor.AI.Plan {
     public class PlanningBird : Agent, Clonable<PlanningBird> {
-        public bool isHungry;
+        public bool isHungry = false;
         Option[] opt; // Caching reduces array alloc overheads
 
         public Option[] Options()
-            => opt = opt ?? new Option[] {eatFood};
+            => opt ??= new Option[] {eatFood};
 
         public PlanningBird Allocate() => new PlanningBird();
 

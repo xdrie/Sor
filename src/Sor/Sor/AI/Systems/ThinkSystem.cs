@@ -54,7 +54,10 @@ namespace Sor.AI.Systems {
                     state.target = tgtBean.Entity.Position;
                 }
 
+                planModel.isHungry = true;
+
                 var next = planSolver.Next(planModel, new Goal<PlanningBird>(x=>!x.isHungry, null));
+                // TODO: interpret action plan
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
