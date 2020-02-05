@@ -29,7 +29,7 @@ namespace Sor.AI.Cogs {
         /// <param name="v"></param>
         /// <returns></returns>
         public static float map11to01(float v) {
-            return Gmathf.map01(v, 0f, 1f);
+            return Gmathf.map01(v, -1f, 1f);
         }
     }
 }
