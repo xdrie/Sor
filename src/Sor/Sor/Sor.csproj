@@ -5,12 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Iri.XGOAP" Version="1.0.0" />
         <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\lib\Glint\src\Glint\Glint.csproj" />
-      <ProjectReference Include="..\..\..\lib\iri.xgoap\Iri.XGOAP\Iri.XGOAP.csproj" />
       <ProjectReference Include="..\..\..\lib\LunchSimulator\src\Lunchtime\LunchtimeGears\LunchtimeGears.csproj" />
       <ProjectReference Include="..\..\..\lib\XNez\Nez.Persistence\Nez.Persistence.csproj" />
       <ProjectReference Include="..\..\..\lib\XNez\Nez.Portable\XNez.csproj" />
