@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Glint.Config;
 using Sor;
 using Sor.Game;
 
@@ -14,20 +15,17 @@ namespace SorDk {
                 Console.WriteLine(sr.ReadToEnd());
                 Console.WriteLine(NGame.GAME_VERSION);
             }
-            var config = new Config();
+            
+            // load configuration
 #if DEBUG
             var defaultConf = Assembly.GetExecutingAssembly().GetManifestResourceStream("SorDk.Res.game.dbg.conf");
 #else
             var defaultConf = Assembly.GetExecutingAssembly().GetManifestResourceStream("SorDk.Res.game.conf");
 #endif
-            if (!File.Exists(conf)) {
-                using (var sr = new StreamReader(defaultConf)) {
-                    File.WriteAllText(conf, sr.ReadToEnd());
-                }
-            }
-
+            var configHelper = new ConfigHelper<Config>();
+            configHelper.ensureDefaultConfig(conf, defaultConf);
             var confStr = File.ReadAllText(conf);
-            config.read(confStr); // load and parse config
+            var config = configHelper.load(confStr, args); // load and parse config
             using (var game = new NGame(config)) {
                 game.Run();
             }

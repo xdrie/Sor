@@ -2,7 +2,7 @@ using Glint.Config;
 using Glint.Util;
 
 namespace Sor.Game {
-    public class Config {
+    public class Config : ConfigBase {
         public bool maxVfx = true; // enable all visual effects
         public bool fullscreen = false;
         public int framerate = 60;
@@ -20,9 +20,7 @@ namespace Sor.Game {
             Stretch
         };
 
-        public void read(string cf) {
-            ConfigParser pr = new ConfigParser();
-            pr.parse(cf);
+        public override void load() {
             w = pr.getInt("video.w", w);
             h = pr.getInt("video.h", h);
             scale = pr.getFloat("video.scale", scale);
