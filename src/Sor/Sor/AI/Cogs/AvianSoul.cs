@@ -1,4 +1,4 @@
-using LunchtimeGears.Units;
+using LunchLib.Cogs;
 
 namespace Sor.AI.Cogs {
     public class AvianSoul : Sentient {

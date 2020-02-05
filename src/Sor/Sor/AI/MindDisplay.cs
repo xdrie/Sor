@@ -2,6 +2,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.BitmapFonts;
 using Sor.Components.Units;
 
 namespace Sor.AI {

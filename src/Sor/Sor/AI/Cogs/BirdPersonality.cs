@@ -1,6 +1,6 @@
 using Glint.AI.Misc;
-using LunchtimeGears.Calc;
-using LunchtimeGears.Cogs;
+using LunchLib.Calc;
+using LunchLib.Cogs;
 
 namespace Sor.AI.Cogs {
     public class BirdPersonality : Personality {

@@ -1,4 +1,4 @@
-using LunchtimeGears.Cogs;
+using LunchLib.Cogs;
 
 namespace Sor.AI.Cogs {
     public class BirdTraits {

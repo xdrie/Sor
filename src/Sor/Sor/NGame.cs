@@ -5,6 +5,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
 using Nez.Console;
+using Nez.UI;
 using Sor.Game;
 using Sor.Scenes;
 

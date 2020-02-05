@@ -1,5 +1,4 @@
 using Glint.Sprites;
-using Microsoft.Xna.Framework.Graphics;
 using Nez;
 
 namespace Sor.Components.UI {

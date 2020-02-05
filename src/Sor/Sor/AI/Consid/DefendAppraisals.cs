@@ -1,5 +1,5 @@
 using System.Linq;
-using LunchtimeGears.AI.Utility;
+using LunchLib.AI.Utility;
 
 namespace Sor.AI.Consid {
     public static class DefendAppraisals {

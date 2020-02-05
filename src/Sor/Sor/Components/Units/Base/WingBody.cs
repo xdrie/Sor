@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Sprites;
 using Sor.AI.Signals;
 using Sor.Components.Input;
 using Sor.Components.Things;
