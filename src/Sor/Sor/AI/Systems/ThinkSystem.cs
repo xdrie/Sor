@@ -1,17 +1,24 @@
 using System.Linq;
 using System.Threading;
+using Activ.GOAP;
 using LunchtimeGears.AI.Utility;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
+using Sor.AI.Plan;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
         public int maxSignalsPerThink = 40;
+        public PlanningBird planModel;
+        public Solver<PlanningBird> planSolver;
 
         public ThinkSystem(Mind mind, float refresh, CancellationToken cancelToken) :
-            base(mind, refresh, cancelToken) { }
+            base(mind, refresh, cancelToken) {
+            planModel = new PlanningBird();
+            planSolver = new Solver<PlanningBird>();
+        }
 
         protected override void process() {
             // look at signals
@@ -45,6 +52,8 @@ namespace Sor.AI.Systems {
                 if (tgtBean != null) {
                     state.target = tgtBean.Entity.Position;
                 }
+
+                var next = planSolver.Next(planModel, goal: (x => !x.isHungry, null));
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
@@ -73,7 +82,7 @@ namespace Sor.AI.Systems {
             defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
-            
+
             var socialAppraisal = new SumConsideration<Mind>(() => {
                 // socialize
                 // TODO: attempt to feed a duck
