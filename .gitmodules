@@ -7,6 +7,3 @@
 [submodule "lib/LunchSimulator"]
 	path = lib/LunchSimulator
 	url = https://git.rie.icu/xdrie/LunchSimulator.git
-[submodule "lib/iri.xgoap"]
-	path = lib/iri.xgoap
-	url = https://git.rie.icu/xdrie/iri.xgoap.git
