@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Text;
+using Glint.AI.Misc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
@@ -82,6 +83,13 @@ namespace Sor.AI {
                             if (target is EntityTargetSource ets) {
                                 ind.Append($" {ets.nt.Name}");
                             }
+
+                            // draw indicator
+                            var indSize = 4f;
+                            var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
+                            batcher.DrawHollowRect(
+                                new RectangleF(targetLoc.X - indSize, targetLoc.Y - indSize, indSize * 2, indSize * 2),
+                                trackCol, 1f);
 
                             ind.AppendLine();
                         }
