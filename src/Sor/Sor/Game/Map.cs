@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Nez;
 
 namespace Sor.Game {
     /// <summary>
@@ -31,10 +32,12 @@ namespace Sor.Game {
         public class Door {
             public Point start;
             public Point end;
+            public Direction dir;
 
-            public Door(Point start, Point end) {
+            public Door(Point start, Point end, Direction dir) {
                 this.start = start;
                 this.end = end;
+                this.dir = dir;
             }
         }
 

@@ -4,6 +4,8 @@ using Sor.Game;
 
 namespace Sor.AI.Nav {
     public class RoomGraph : IWeightedGraph<Map.Room> {
+        public List<Map.Room> rooms;
+        
         public IEnumerable<Map.Room> GetNeighbors(Map.Room node) {
             throw new System.NotImplementedException();
         }

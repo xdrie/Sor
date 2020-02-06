@@ -16,8 +16,10 @@ namespace Sor.Game {
         private TmxObjectGroup nature;
         private TmxTileset worldTileset;
         private TmxMap map;
-        public const int WALL_BORDER = 4;
         public MapRepr mapRepr;
+        
+        public const int WALL_BORDER = 4;
+        public const int ROOM_LINK_DIST = 40;
 
         public MapLoader(Scene scene, Entity mapEntity) {
             this.scene = scene;
@@ -78,6 +80,8 @@ namespace Sor.Game {
         /// Convert the tilemap into a better data structure
         /// </summary>
         private void analyzeRooms() {
+            mapRepr.roomGraph.rooms = new List<Map.Room>();
+            // pass 1 - find all rooms
             for (int r = 0; r < structure.Height; r++) {
                 for (int c = 0; c < structure.Width; c++) {
                     var tile = structure.GetTile(c, r);
@@ -96,10 +100,10 @@ namespace Sor.Game {
                         var openings = new List<Map.Door>();
 
                         // line-scan setup
-                        void updateScan(TmxLayerTile t, Point p) {
+                        void updateScan(TmxLayerTile t, Point p, Direction dir) {
                             if (t != null) {
                                 if (scanOpen > 0) {
-                                    openings.Add(new Map.Door(scanFirst, p));
+                                    openings.Add(new Map.Door(scanFirst, p, dir));
                                     scanFirst = default;
                                     scanOpen = 0;
                                 }
@@ -117,9 +121,9 @@ namespace Sor.Game {
                         var ulTile = tile;
                         var urTile = default(TmxLayerTile);
                         var rightEdge = -1;
-                        for (int sx = leftEdge; sx < structure.Width; sx++) {
+                        for (int sx = leftEdge; sx < structure.Width; sx++) { // pass left-to-right along top
                             var scTile = structure.GetTile(sx, topEdge);
-                            updateScan(scTile, new Point(sx, topEdge));
+                            updateScan(scTile, new Point(sx, topEdge), Direction.Up);
                             if (scTile == null) continue;
                             if (ori(scTile) == Map.TileOri.UpRight) {
                                 urTile = scTile;
@@ -131,9 +135,9 @@ namespace Sor.Game {
                         if (urTile == null) break;
                         var drTile = default(TmxLayerTile);
                         var downEdge = -1;
-                        for (int sy = topEdge; sy < structure.Height; sy++) {
+                        for (int sy = topEdge; sy < structure.Height; sy++) { // pass top-to-bottom along right
                             var scTile = structure.GetTile(rightEdge, sy);
-                            updateScan(scTile, new Point(rightEdge, sy));
+                            updateScan(scTile, new Point(rightEdge, sy), Direction.Right);
                             if (scTile == null) continue;
                             if (ori(scTile) == Map.TileOri.DownRight) {
                                 drTile = scTile;
@@ -144,9 +148,9 @@ namespace Sor.Game {
 
                         if (drTile == null) break;
                         var dlTile = default(TmxLayerTile);
-                        for (int sx = rightEdge; sx >= 0; sx--) {
+                        for (int sx = rightEdge; sx >= 0; sx--) { // pass right-to left along down
                             var scTile = structure.GetTile(sx, downEdge);
-                            updateScan(scTile, new Point(sx, downEdge));
+                            updateScan(scTile, new Point(sx, downEdge), Direction.Down);
                             if (scTile == null) continue;
                             if (ori(scTile) == Map.TileOri.DownLeft) {
                                 dlTile = scTile;
@@ -155,14 +159,27 @@ namespace Sor.Game {
                         }
 
                         if (dlTile == null) break;
+                        
+                        // finally, check the left side
+                        for (int sy = downEdge; sy >= 0; sy--) { // pass down-to-top along left
+                            var scTile = structure.GetTile(leftEdge, sy);
+                            updateScan(scTile, new Point(leftEdge, sy), Direction.Left);
+                            if (scTile == null) continue;
+                            if (ori(scTile) == Map.TileOri.UpLeft) { // we found her again
+                                break;
+                            }
+                        }
+                        
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
+                        mapRepr.roomGraph.rooms.Add(room);
                         Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})",
                             GlintLogger.LogLevel.Trace);
                     }
                 }
             }
+            // pass 2 - determine room links
         }
 
         /// <summary>
