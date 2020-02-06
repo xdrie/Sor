@@ -51,7 +51,7 @@ namespace Sor.AI.Model {
             var toFrom = pos - from;
             toFrom.Normalize();
             toFrom *= approachDist;
-            return pos + toFrom;
+            return pos - toFrom;
         }
 
         public abstract Vector2 getPosition();
