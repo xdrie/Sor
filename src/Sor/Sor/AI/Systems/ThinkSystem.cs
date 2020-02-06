@@ -3,6 +3,7 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using Nez;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
 using Sor.AI.Model;
@@ -58,11 +59,14 @@ namespace Sor.AI.Systems {
                     var path = next.Path();
                     foreach (var node in path) {
                         // handle planning based on the node
+                        var timePerBean = 5f;
+                        var beanTimeAcc = Time.TotalTime;
                         if ((string) node.action == nameof(HungryBird.eatBean)) { // plan eating the nearest bean
                             // TODO: add the bean to the target entity queue
                             var bean = seenBeans[0];
                             seenBeans.Remove(bean);
-                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity));
+                            beanTimeAcc += timePerBean;
+                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity, beanTimeAcc));
                         } else if ((string) node.action == nameof(HungryBird.visitTree)) {
                             // plan to visit the nearest tree
                             // TODO: how is this done?
