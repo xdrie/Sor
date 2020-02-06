@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
 using Sor.Components.Things;
+using Sor.AI.Nav;
 
 namespace Sor.Game {
     public class MapLoader {
@@ -16,6 +17,7 @@ namespace Sor.Game {
         private TmxTileset worldTileset;
         private TmxMap map;
         public const int WALL_BORDER = 4;
+        public MapRepr mapRepr;
 
         public MapLoader(Scene scene, Entity mapEntity) {
             this.scene = scene;
@@ -24,12 +26,18 @@ namespace Sor.Game {
 
         public void load(TmxMap map, bool createObjects) {
             this.map = map;
+            // structural recreation
             structure = map.GetLayer<TmxLayer>("structure");
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
             adjustColliders();
+
+            // analysis
+            mapRepr = new MapRepr();
             analyzeRooms();
+
+            // load entities
             loadFeatures();
             if (createObjects) {
                 loadNature();
