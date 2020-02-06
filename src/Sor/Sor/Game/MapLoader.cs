@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -17,7 +18,7 @@ namespace Sor.Game {
         private TmxTileset worldTileset;
         private TmxMap map;
         public MapRepr mapRepr;
-        
+
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
@@ -159,7 +160,7 @@ namespace Sor.Game {
                         }
 
                         if (dlTile == null) break;
-                        
+
                         // finally, check the left side
                         for (int sy = downEdge; sy >= 0; sy--) { // pass down-to-top along left
                             var scTile = structure.GetTile(leftEdge, sy);
@@ -169,17 +170,69 @@ namespace Sor.Game {
                                 break;
                             }
                         }
-                        
+
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
+                        foreach (var door in openings) { // set local room of all doors
+                            door.roomLocal = room;
+                        }
+
                         mapRepr.roomGraph.rooms.Add(room);
                         Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})",
                             GlintLogger.LogLevel.Trace);
                     }
                 }
             }
+
             // pass 2 - determine room links
+            foreach (var room in mapRepr.roomGraph.rooms) {
+                foreach (var door in room.doors) {
+                    var dx = 0;
+                    var dy = 0;
+                    switch (door.dir) {
+                        case Direction.Up:
+                            dy = -1;
+                            break;
+                        case Direction.Right:
+                            dx = 1;
+                            break;
+                        case Direction.Down:
+                            dy = 1;
+                            break;
+                        case Direction.Left:
+                            dx = -1;
+                            break;
+                    }
+
+                    // now scan in direction
+                    var distScanned = 0;
+                    // set initial pos
+                    var ix = door.start.X;
+                    var iy = door.start.Y;
+                    // set scan pos
+                    var sx = ix;
+                    var sy = iy;
+                    while (distScanned < ROOM_LINK_DIST) {
+                        // update scan vars
+                        distScanned = Math.Abs(ix - dx) + Math.Abs(iy - dy);
+                        sx += dx;
+                        sy += dy;
+
+                        // check if we're inside another room
+                        var sPt = new Point(sx, sy);
+                        // TODO: optimize this
+                        // check if we're in any other room
+                        var inRoom = mapRepr.roomGraph.rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        if (inRoom != null) {
+                            // set up the connection
+                            door.roomOther = inRoom;
+                            room.links.Add(inRoom);
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

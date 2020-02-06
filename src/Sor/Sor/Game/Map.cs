@@ -12,7 +12,7 @@ namespace Sor.Game {
             /// ul-left corner
             /// </summary>
             public Point ul;
-            
+
             /// <summary>
             /// down-right corner
             /// </summary>
@@ -21,11 +21,16 @@ namespace Sor.Game {
             public Point center;
 
             public List<Door> doors = new List<Door>();
+            public List<Room> links = new List<Room>();
 
             public Room(Point ul, Point dr) {
                 this.ul = ul;
                 this.dr = dr;
                 this.center = new Point((ul.X + dr.X) / 2, (ul.Y + dr.Y) / 2);
+            }
+
+            public bool inRoom(Point p) {
+                return p.X >= ul.X && p.X <= dr.X && p.Y >= ul.Y && p.Y <= dr.Y;
             }
         }
 
@@ -33,6 +38,9 @@ namespace Sor.Game {
             public Point start;
             public Point end;
             public Direction dir;
+
+            public Room roomLocal; // the room this door belongs to
+            public Room roomOther; // the other room this door connects to
 
             public Door(Point start, Point end, Direction dir) {
                 this.start = start;
