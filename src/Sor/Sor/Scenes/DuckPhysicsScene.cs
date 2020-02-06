@@ -43,7 +43,7 @@ namespace Sor.Scenes {
             duckWing.core.energy = 1000f;
 
             // set pos to current pos
-            duckWing.mind.state.target = physicistDuck.Position;
+            duckWing.mind.state.targetQueue.Enqueue(playerWing.Entity);
 
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
 
@@ -62,11 +62,6 @@ namespace Sor.Scenes {
             }
 
             var wing = physicistDuck.GetComponent<Wing>();
-            if (Input.LeftMouseButtonDown) {
-                // set duck target to mouse pos
-                var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                wing.mind.state.target = mouseWp;
-            }
         }
     }
 }

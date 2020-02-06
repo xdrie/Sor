@@ -72,7 +72,12 @@ namespace Sor.AI {
                     }
                 }
 
-                ind.AppendLine($"tgt: ({mind.state.target.X:n3}, {mind.state.target.Y:n3})");
+                lock (mind.state.targetQueue) {
+                    if (mind.state.targetQueue.Count > 0) {
+                        var targetLoc = mind.state.targetQueue.Peek().Position;
+                        ind.AppendLine($"tgt: ({targetLoc.X:n3}, {targetLoc.Y:n3})");
+                    }
+                }
 
                 ind.AppendLine();
                 // draw board

@@ -103,9 +103,21 @@ namespace Sor.AI {
             if (control) {
                 controller.zero(); // reset the controller
             }
+            
+            // move to target
+            var targetPosition = default(Vector2);
+            lock (state.targetQueue) {
+                if (state.targetQueue.Count > 0) {
+                    // TODO: handle removing things from the queue
+                    targetPosition = state.targetQueue.Peek().Position;
+                }
+            }
+            pilotToPosition(targetPosition);
+        }
 
+        private void pilotToPosition(Vector2 goal) {
             // figure out how to move to target
-            var toTarget = state.target - me.body.pos;
+            var toTarget = goal - me.body.pos;
             var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
             var myAngle = -me.body.angle + (Mathf.PI / 2);
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);

@@ -89,7 +89,10 @@ namespace Sor.AI.Systems {
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
                 if (tgtWing != null) {
-                    state.target = tgtWing.body.pos;
+                    lock (state.targetQueue) {
+                        state.targetQueue.Clear(); // reset targets
+                        state.targetQueue.Enqueue(tgtWing.Entity);
+                    }
                 }
             }, 0.8f, "defend");
             defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
