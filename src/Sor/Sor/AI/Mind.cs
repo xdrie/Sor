@@ -119,15 +119,15 @@ namespace Sor.AI {
                     }
 
                     // check closeness
-                    bool closeEnough = (nextTarget.getPosition() - me.body.pos).LengthSquared() <
-                                       MindConstants.NEARBY_POSITION_SQ;
+                    bool closeEnough = (nextTarget.approachPosition(me.body.pos) - me.body.pos).LengthSquared() <
+                                       MindConstants.AT_POSITION_SQ;
                     // check closeness
                     if (closeEnough) {
                         state.targetQueue.Dequeue();
                         continue;
                     }
 
-                    targetPosition = state.targetQueue.Peek().getPosition();
+                    targetPosition = state.targetQueue.Peek().approachPosition(me.body.pos);
                     break;
                 }
             }

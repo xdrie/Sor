@@ -69,7 +69,7 @@ namespace Sor.AI.Systems {
                             var bean = seenBeans[0];
                             seenBeans.Remove(bean);
                             beanTimeAcc += timePerBean;
-                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity, beanTimeAcc));
+                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity, Approach.Direct, beanTimeAcc));
                         } else if ((string) node.action == nameof(HungryBird.visitTree)) {
                             // plan to visit the nearest tree
                             // TODO: how is this done?
@@ -120,10 +120,16 @@ namespace Sor.AI.Systems {
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
 
-            var socialAppraisal = new SumConsideration<Mind>(() => {
-                // socialize
-                // TODO: attempt to feed a duck
-            }, "social");
+            var socialAppraisal = new ThresholdConsideration<Mind>(() => {
+                // socialize - attempt to feed a duck
+                // pick a potential fren
+                // TODO: don't choose ducks we're already chums with
+                var candidates = mind.state.seenWings.Where(
+                        x => mind.state.getOpinion(x.mind) > MindConstants.OPINION_NEUTRAL)
+                    .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
+                var fren = candidates.First();
+                // add the fren as a close-range approach
+            }, 0.2f, "social");
             socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
             socialAppraisal.scale = 1 / 2f;
