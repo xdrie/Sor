@@ -121,10 +121,7 @@ namespace Sor.AI {
                         }
 
                         // check closeness
-                        bool closeEnough = (nextTarget.approachPosition(me.body.pos) - me.body.pos).LengthSquared() <
-                                           MindConstants.AT_POSITION_SQ;
-                        // check closeness
-                        if (closeEnough) {
+                        if (nextTarget.closeEnoughApproach(me.body.pos)) {
                             state.plan.Dequeue();
                             continue;
                         }
@@ -138,6 +135,7 @@ namespace Sor.AI {
                                     // feed
                                     controller.tetherLogical.logicPressed = true;
                                 }
+
                                 // now dequeue
                                 state.plan.Dequeue();
                                 break;

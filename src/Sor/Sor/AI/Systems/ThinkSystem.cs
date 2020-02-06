@@ -69,7 +69,7 @@ namespace Sor.AI.Systems {
                             var bean = seenBeans[0];
                             seenBeans.Remove(bean);
                             beanTimeAcc += timePerBean;
-                            state.plan.Enqueue(new EntityTargetSource(bean.Entity, Approach.Direct, beanTimeAcc));
+                            state.plan.Enqueue(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
                         } else if ((string) node.action == nameof(HungryBird.visitTree)) {
                             // plan to visit the nearest tree
                             // TODO: how is this done?
@@ -132,7 +132,7 @@ namespace Sor.AI.Systems {
                 lock (state.plan) {
                     state.plan.Clear();
                     var feedTime = 10f;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.MediumRange, Time.TotalTime + feedTime));
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_MED, Time.TotalTime + feedTime));
                     state.plan.Enqueue(new PlanFeed(fren.Entity));
                 }
                 // if we're close enough to our fren, feed them

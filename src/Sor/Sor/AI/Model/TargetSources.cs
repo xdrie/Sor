@@ -8,61 +8,69 @@ namespace Sor.AI.Model {
     }
 
     public enum Approach {
-        Direct,
-        CloseRange,
-        MediumRange,
-        LongRange,
+        Precise,
+        Within,
     }
 
     public abstract class TargetSource : PlanTask, ITargetSource {
         public float failureTime = 0f;
+        public float approachRange = 0;
+        
+        public const float AT_POSITION_SQ = 2f * 2f;
 
+        public const float RANGE_DIRECT = 0f;
         public const float RANGE_CLOSE = 40f;
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Approach approach, float reachBefore) {
+        public TargetSource(Approach approach, float approachRange, float reachBefore) {
             this.approach = approach;
+            this.approachRange = approachRange;
             this.failureTime = reachBefore;
         }
-        
+
         public override bool valid() {
             if (failureTime <= 0) return true;
             return Time.TotalTime < failureTime;
         }
 
-        public Vector2 approachPosition(Vector2 from) {
+        public Vector2 approachPosition(Vector2 fromPos) {
             var pos = getPosition();
-            // depending on the approach type, make it closer
-            var approachDist = 0f;
-            switch (approach) {
-                case Approach.Direct: return pos;
-                case Approach.CloseRange:
-                    approachDist = RANGE_CLOSE;
-                    break;
-                case Approach.MediumRange:
-                    approachDist = RANGE_MED;
-                    break;
-                case Approach.LongRange:
-                    approachDist = RANGE_LONG;
-                    break;
-            }
+            // don't adjust precise approaches
+            if (approach == Approach.Precise) return pos;
+
             // figure out the point along the way
-            var toFrom = pos - from;
+            var toFrom = pos - fromPos;
             toFrom.Normalize();
-            toFrom *= approachDist;
+            toFrom *= approachRange;
             return pos - toFrom;
+        }
+        
+        public bool closeEnoughApproach(Vector2 fromPos) {
+            var actualPos = getPosition();
+            var approachPos = approachPosition(fromPos);
+            var approachToFrom = approachPos - fromPos;
+            var actualToFrom = actualPos - fromPos;
+            switch (approach) {
+                case Approach.Precise:
+                    return approachToFrom.LengthSquared() < AT_POSITION_SQ;
+                case Approach.Within:
+                    return actualToFrom.LengthSquared() < (approachRange * approachRange);
+                default:
+                    return false; // never
+            }
         }
 
         public abstract Vector2 getPosition();
-        
+
         public Approach approach { get; }
     }
 
     public class FixedTargetSource : TargetSource {
         private readonly Vector2 pos;
 
-        public FixedTargetSource(Vector2 pos, Approach approach = Approach.Direct, float before = 0) : base(approach, before) {
+        public FixedTargetSource(Vector2 pos, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
+            float before = 0) : base(approach, approachRange, before) {
             this.pos = pos;
         }
 
@@ -72,12 +80,13 @@ namespace Sor.AI.Model {
     public class EntityTargetSource : TargetSource {
         public readonly Entity nt;
 
-        public EntityTargetSource(Entity nt, Approach approach = Approach.Direct, float before = 0) : base(approach, before) {
+        public EntityTargetSource(Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
+            float before = 0) : base(approach, approachRange, before) {
             this.nt = nt;
         }
 
         public override bool valid() {
-            var val =  base.valid();
+            var val = base.valid();
             return val && nt != null;
         }
 
