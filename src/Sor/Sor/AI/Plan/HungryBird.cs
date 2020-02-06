@@ -6,7 +6,7 @@ namespace Sor.AI.Plan {
     /// </summary>
     public class HungryBird : Agent, Clonable<HungryBird> {
         public float cost { get; set; }
-        
+
         public float satiety = 0;
 
         public int nearbyBeans = 0;
@@ -18,8 +18,7 @@ namespace Sor.AI.Plan {
         public const float BEAN_ENERGY = 400f;
 
         Option[] opt; // Caching reduces array alloc overheads
-
-        public Option[] Options() => new Option[] {eatBean, visitTree};
+        public Option[] Options() => opt ??= new Option[] {eatBean, visitTree};
 
         public HungryBird Allocate() => new HungryBird();
 
