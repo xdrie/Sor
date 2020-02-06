@@ -14,7 +14,7 @@ namespace Sor.AI.Model {
         LongRange,
     }
 
-    public abstract class TargetSource : ITargetSource {
+    public abstract class TargetSource : PlanTask, ITargetSource {
         public float failureTime = 0f;
 
         public const float RANGE_CLOSE = 40f;
@@ -25,8 +25,8 @@ namespace Sor.AI.Model {
             this.approach = approach;
             this.failureTime = reachBefore;
         }
-
-        public virtual bool valid() {
+        
+        public override bool valid() {
             if (failureTime <= 0) return true;
             return Time.TotalTime < failureTime;
         }
