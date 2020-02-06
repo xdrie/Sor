@@ -129,6 +129,11 @@ namespace Sor.AI.Systems {
                     .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
                 var fren = candidates.First();
                 // add the fren as a close-range approach
+                lock (state.targetQueue) {
+                    state.targetQueue.Clear();
+                    var feedTime = 10f;
+                    state.targetQueue.Enqueue(new EntityTargetSource(fren.Entity, Approach.CloseRange, Time.TotalTime + feedTime));
+                }
             }, 0.2f, "social");
             socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
