@@ -13,7 +13,6 @@ namespace Sor.AI.Model {
     }
 
     public abstract class TargetSource : PlanTask, ITargetSource {
-        public float failureTime = 0f;
         public float approachRange = 0;
         
         public const float AT_POSITION_SQ = 2f * 2f;
@@ -23,15 +22,9 @@ namespace Sor.AI.Model {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Approach approach, float approachRange, float reachBefore) {
+        public TargetSource(Approach approach, float approachRange, float reachBefore) : base(reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;
-            this.failureTime = reachBefore;
-        }
-
-        public override bool valid() {
-            if (failureTime <= 0) return true;
-            return Time.TotalTime < failureTime;
         }
 
         public Vector2 approachPosition(Vector2 fromPos) {

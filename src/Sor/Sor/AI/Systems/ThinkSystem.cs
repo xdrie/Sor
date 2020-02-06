@@ -132,8 +132,9 @@ namespace Sor.AI.Systems {
                 lock (state.plan) {
                     state.plan.Clear();
                     var feedTime = 10f;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_MED, Time.TotalTime + feedTime));
-                    state.plan.Enqueue(new PlanFeed(fren.Entity));
+                    var goalFeedTime = Time.TotalTime + feedTime;
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_MED, goalFeedTime));
+                    state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
                 }
                 // if we're close enough to our fren, feed them
                 var toFren = mind.me.body.pos - fren.body.pos;
