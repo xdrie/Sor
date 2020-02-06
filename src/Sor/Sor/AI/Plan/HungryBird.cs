@@ -25,6 +25,8 @@ namespace Sor.AI.Plan {
         public HungryBird Clone(HungryBird b) {
             b.cost = cost;
             b.nearbyBeans = nearbyBeans;
+            b.nearbyTrees = nearbyTrees;
+            b.satiety = satiety;
             return b;
         }
 
