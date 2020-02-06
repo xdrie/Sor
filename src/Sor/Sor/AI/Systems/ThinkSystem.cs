@@ -133,6 +133,7 @@ namespace Sor.AI.Systems {
                     state.plan.Clear();
                     var feedTime = 10f;
                     state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.MediumRange, Time.TotalTime + feedTime));
+                    state.plan.Enqueue(new PlanFeed(fren.Entity));
                 }
                 // if we're close enough to our fren, feed them
                 var toFren = mind.me.body.pos - fren.body.pos;
