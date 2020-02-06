@@ -12,6 +12,7 @@ namespace Sor.Components.Input {
             
             moveDirectionInput.Nodes.Add(moveDirectionLogical);
             
+            interactInput.Nodes.Add(interactLogical);
             boostInput.Nodes.Add(boostLogical);
         }
 
