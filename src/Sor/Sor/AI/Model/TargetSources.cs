@@ -19,6 +19,7 @@ namespace Sor.AI.Model {
 
         public const float RANGE_DIRECT = 0f;
         public const float RANGE_CLOSE = 40f;
+        public const float RANGE_SHORT = 80f;
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
