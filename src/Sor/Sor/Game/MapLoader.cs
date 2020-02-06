@@ -81,7 +81,7 @@ namespace Sor.Game {
         /// Convert the tilemap into a better data structure
         /// </summary>
         private void analyzeRooms() {
-            mapRepr.roomGraph.rooms = new List<Map.Room>();
+            var rooms = new List<Map.Room>();
             // pass 1 - find all rooms
             for (int r = 0; r < structure.Height; r++) {
                 for (int c = 0; c < structure.Width; c++) {
@@ -178,7 +178,7 @@ namespace Sor.Game {
                             door.roomLocal = room;
                         }
 
-                        mapRepr.roomGraph.rooms.Add(room);
+                        rooms.Add(room);
                         Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})",
                             GlintLogger.LogLevel.Trace);
                     }
@@ -186,7 +186,7 @@ namespace Sor.Game {
             }
 
             // pass 2 - determine room links
-            foreach (var room in mapRepr.roomGraph.rooms) {
+            foreach (var room in rooms) {
                 foreach (var door in room.doors) {
                     var dx = 0;
                     var dy = 0;
@@ -223,7 +223,7 @@ namespace Sor.Game {
                         var sPt = new Point(sx, sy);
                         // TODO: optimize this
                         // check if we're in any other room
-                        var inRoom = mapRepr.roomGraph.rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        var inRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
                         if (inRoom != null) {
                             // set up the connection
                             door.roomOther = inRoom;
@@ -233,6 +233,9 @@ namespace Sor.Game {
                     }
                 }
             }
+            // set up room graph
+            mapRepr.roomGraph = new RoomGraph();
+            mapRepr.roomGraph.rooms = rooms;
         }
 
         /// <summary>
