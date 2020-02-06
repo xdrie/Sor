@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Glint.Util;
 using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
+using Nez;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
@@ -21,6 +22,7 @@ namespace Sor.AI {
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
         public Vector2 target;
+        public Queue<Entity> targetQueue = new Queue<Entity>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
         public struct BoardItem {

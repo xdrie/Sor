@@ -6,6 +6,9 @@ using Sor.Components.Input;
 using Sor.Components.Things;
 
 namespace Sor.Components.Units {
+    /// <summary>
+    /// Represents the physical body of a bird
+    /// </summary>
     public class WingBody : KinBody, ITriggerListener {
         public Wing me;
         private InputController controller;
@@ -21,6 +24,7 @@ namespace Sor.Components.Units {
         public float stdDrag = 16f;
         public float flapDrag = 80f;
         public float gravityFactor = 4000f;
+        public float metabolicRate; // energy burn per-second
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
 
         public float boostCooldown = 0f;
@@ -38,18 +42,25 @@ namespace Sor.Components.Units {
 
             me = Entity.GetComponent<Wing>();
             controller = Entity.GetComponent<InputController>();
-            recalculateKinematics();
+            recalculateValues();
         }
 
-        public void recalculateKinematics() {
+        public void recalculateValues() {
             maxAngular = turnPower * 1.2f;
             angularDrag = turnPower * 2f;
             drag = new Vector2(stdDrag);
             maxVelocity = new Vector2(topSpeed);
+
+            metabolicRate = Constants.CALORIES_PER_KG * mass;
         }
 
         public override void Update() {
             base.Update();
+            
+            // metabolism
+            if (me.core.energy > 0) {
+                me.core.energy -= metabolicRate * Time.DeltaTime;
+            }
 
             if (controller != null) {
                 movement();
