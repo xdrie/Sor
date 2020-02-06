@@ -5,6 +5,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
+using Sor.AI.Model;
 using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
@@ -42,7 +43,7 @@ namespace Sor.AI {
             soul.mind = this;
 
             this.control = control;
-            
+
             gameCtx = Core.Services.GetService<GameContext>();
         }
 
@@ -107,28 +108,42 @@ namespace Sor.AI {
                 controller.zero(); // reset the controller
             }
 
-            // move to target
+            // execute plan
             var targetPosition = default(Vector2?);
-            lock (state.targetQueue) {
-                while (state.targetQueue.Count > 0) {
+            lock (state.plan) {
+                while (state.plan.Count > 0) {
                     // check target validity
-                    var nextTarget = state.targetQueue.Peek();
-                    if (!nextTarget.valid()) {
-                        state.targetQueue.Dequeue(); // it's invalid, remove it
-                        continue;
-                    }
+                    var nextTask = state.plan.Peek();
+                    if (nextTask is TargetSource nextTarget) {
+                        if (!nextTarget.valid()) {
+                            state.plan.Dequeue(); // it's invalid, remove it
+                            continue;
+                        }
 
-                    // check closeness
-                    bool closeEnough = (nextTarget.approachPosition(me.body.pos) - me.body.pos).LengthSquared() <
-                                       MindConstants.AT_POSITION_SQ;
-                    // check closeness
-                    if (closeEnough) {
-                        state.targetQueue.Dequeue();
-                        continue;
-                    }
+                        // check closeness
+                        bool closeEnough = (nextTarget.approachPosition(me.body.pos) - me.body.pos).LengthSquared() <
+                                           MindConstants.AT_POSITION_SQ;
+                        // check closeness
+                        if (closeEnough) {
+                            state.plan.Dequeue();
+                            continue;
+                        }
 
-                    targetPosition = state.targetQueue.Peek().approachPosition(me.body.pos);
-                    break;
+                        targetPosition = nextTarget.approachPosition(me.body.pos);
+                        break;
+                    } else if (nextTask is PlanInteraction inter) {
+                        switch (nextTask) {
+                            case PlanFeed interFeed: {
+                                if (inter.valid()) {
+                                    // feed
+                                    controller.interactLogical.logicPressed = true;
+                                }
+                                // now dequeue
+                                state.plan.Dequeue();
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
