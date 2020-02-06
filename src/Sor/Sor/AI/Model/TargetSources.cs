@@ -14,7 +14,7 @@ namespace Sor.AI.Model {
         }
 
         public bool valid() {
-            if (failureTime <= 0) return false;
+            if (failureTime <= 0) return true;
             return Time.TotalTime < failureTime;
         }
 
