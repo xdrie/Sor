@@ -190,6 +190,8 @@ namespace Sor.Game {
                 foreach (var door in room.doors) {
                     var dx = 0;
                     var dy = 0;
+                    // average the door pos
+                    var inPos = new Point((door.start.X + door.end.X) / 2, (door.start.Y + door.end.Y) / 2);
                     switch (door.dir) {
                         case Direction.Up:
                             dy = -1;
@@ -208,8 +210,8 @@ namespace Sor.Game {
                     // now scan in direction
                     var distScanned = 0;
                     // set initial pos
-                    var ix = door.start.X;
-                    var iy = door.start.Y;
+                    var ix = inPos.X;
+                    var iy = inPos.Y;
                     // set scan pos
                     var sx = ix;
                     var sy = iy;
