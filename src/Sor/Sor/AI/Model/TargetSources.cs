@@ -13,7 +13,7 @@ namespace Sor.AI.Model {
             this.failureTime = reachBefore;
         }
 
-        public bool valid() {
+        public virtual bool valid() {
             if (failureTime <= 0) return true;
             return Time.TotalTime < failureTime;
         }
@@ -36,6 +36,11 @@ namespace Sor.AI.Model {
 
         public EntityTargetSource(Entity nt, float before = 0) : base(before) {
             this.nt = nt;
+        }
+
+        public override bool valid() {
+            var val =  base.valid();
+            return val && nt != null;
         }
 
         public override Vector2 getPosition() => nt.Position;

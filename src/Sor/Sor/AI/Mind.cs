@@ -110,10 +110,16 @@ namespace Sor.AI {
                 while (state.targetQueue.Count > 0) {
                     // check target validity
                     var nextTarget = state.targetQueue.Peek();
-                    bool closeEnough = (nextTarget.getPosition() - me.body.pos).LengthSquared() >
+                    if (!nextTarget.valid()) {
+                        state.targetQueue.Dequeue(); // it's invalid, remove it
+                        continue;
+                    }
+
+                    // check closeness
+                    bool closeEnough = (nextTarget.getPosition() - me.body.pos).LengthSquared() <
                                        MindConstants.NEARBY_POSITION_SQ;
-                    if (!nextTarget.valid() || closeEnough) {
-                        // it's invalid, remove it
+                    // check closeness
+                    if (closeEnough) {
                         state.targetQueue.Dequeue();
                         continue;
                     }
