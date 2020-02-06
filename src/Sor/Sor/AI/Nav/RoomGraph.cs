@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Nez;
 using Nez.AI.Pathfinding;
 using Sor.Game;

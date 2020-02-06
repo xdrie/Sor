@@ -233,9 +233,9 @@ namespace Sor.Game {
                     }
                 }
             }
+
             // set up room graph
-            mapRepr.roomGraph = new RoomGraph();
-            mapRepr.roomGraph.rooms = rooms;
+            mapRepr.roomGraph = new RoomGraph {rooms = rooms};
         }
 
         /// <summary>
