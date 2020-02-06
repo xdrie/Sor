@@ -217,7 +217,7 @@ namespace Sor.Game {
                     var sy = iy;
                     while (distScanned < ROOM_LINK_DIST) {
                         // update scan vars
-                        distScanned = Math.Abs(ix - dx) + Math.Abs(iy - dy);
+                        distScanned = Math.Abs(ix - sx) + Math.Abs(iy - sy);
                         sx += dx;
                         sy += dy;
 
