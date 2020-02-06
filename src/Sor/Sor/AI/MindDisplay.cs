@@ -74,7 +74,7 @@ namespace Sor.AI {
 
                 lock (mind.state.targetQueue) {
                     if (mind.state.targetQueue.Count > 0) {
-                        var targetLoc = mind.state.targetQueue.Peek().Position;
+                        var targetLoc = mind.state.targetQueue.Peek().getPosition();
                         ind.AppendLine($"tgt: ({targetLoc.X:n3}, {targetLoc.Y:n3})");
                     }
                 }

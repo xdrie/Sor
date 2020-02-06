@@ -5,6 +5,7 @@ using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
+using Sor.AI.Model;
 using Sor.AI.Plan;
 using Sor.AI.Signals;
 using Sor.Components.Things;
@@ -61,7 +62,7 @@ namespace Sor.AI.Systems {
                             // TODO: add the bean to the target entity queue
                             var bean = seenBeans[0];
                             seenBeans.Remove(bean);
-                            state.targetQueue.Enqueue(bean.Entity);
+                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity));
                         } else if ((string) node.action == nameof(HungryBird.visitTree)) {
                             // plan to visit the nearest tree
                             // TODO: how is this done?
@@ -91,7 +92,7 @@ namespace Sor.AI.Systems {
                 if (tgtWing != null) {
                     lock (state.targetQueue) {
                         state.targetQueue.Clear(); // reset targets
-                        state.targetQueue.Enqueue(tgtWing.Entity);
+                        state.targetQueue.Enqueue(new EntityTargetSource(tgtWing.Entity));
                     }
                 }
             }, 0.8f, "defend");

@@ -109,7 +109,7 @@ namespace Sor.AI {
             lock (state.targetQueue) {
                 if (state.targetQueue.Count > 0) {
                     // TODO: handle removing things from the queue
-                    targetPosition = state.targetQueue.Peek().Position;
+                    targetPosition = state.targetQueue.Peek().getPosition();
                 }
             }
             pilotToPosition(targetPosition);

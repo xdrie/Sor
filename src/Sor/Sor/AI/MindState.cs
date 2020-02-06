@@ -4,6 +4,7 @@ using Glint.Util;
 using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
+using Sor.AI.Model;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
@@ -21,7 +22,7 @@ namespace Sor.AI {
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
-        public Queue<Entity> targetQueue = new Queue<Entity>();
+        public Queue<ITargetSource> targetQueue = new Queue<ITargetSource>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
         public struct BoardItem {
