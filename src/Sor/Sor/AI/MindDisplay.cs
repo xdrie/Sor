@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
+using Sor.AI.Model;
 using Sor.Components.Units;
 
 namespace Sor.AI {
@@ -77,7 +78,12 @@ namespace Sor.AI {
                         var target = mind.state.targetQueue.Peek();
                         if (target.valid()) {
                             var targetLoc = target.getPosition();
-                            ind.AppendLine($"tgt: ({targetLoc.X:n3}, {targetLoc.Y:n3})");
+                            ind.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                            if (target is EntityTargetSource ets) {
+                                ind.Append($" {ets.nt.Name}");
+                            }
+
+                            ind.AppendLine();
                         }
                     }
                 }

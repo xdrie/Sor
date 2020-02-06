@@ -32,7 +32,7 @@ namespace Sor.AI.Model {
     }
 
     public class EntityTargetSource : TargetSource {
-        private readonly Entity nt;
+        public readonly Entity nt;
 
         public EntityTargetSource(Entity nt, float before = 0) : base(before) {
             this.nt = nt;
