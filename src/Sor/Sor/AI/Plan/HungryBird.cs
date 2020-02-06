@@ -1,3 +1,4 @@
+using System;
 using Activ.GOAP;
 
 namespace Sor.AI.Plan {
@@ -29,6 +30,14 @@ namespace Sor.AI.Plan {
             b.satiety = satiety;
             return b;
         }
+
+        public override bool Equals(object other) {
+            if (other is HungryBird that) {
+                return Math.Abs(this.satiety - that.satiety) < float.Epsilon;
+            } else return false;
+        }
+
+        public override int GetHashCode() => satiety.GetHashCode();
 
         public Cost eatBean() {
             cost += BEAN_COST;
