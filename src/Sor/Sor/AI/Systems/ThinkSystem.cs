@@ -132,7 +132,14 @@ namespace Sor.AI.Systems {
                 lock (state.targetQueue) {
                     state.targetQueue.Clear();
                     var feedTime = 10f;
-                    state.targetQueue.Enqueue(new EntityTargetSource(fren.Entity, Approach.CloseRange, Time.TotalTime + feedTime));
+                    state.targetQueue.Enqueue(new EntityTargetSource(fren.Entity, Approach.MediumRange, Time.TotalTime + feedTime));
+                }
+                // if we're close enough to our fren, feed them
+                var toFren = mind.me.body.pos - fren.body.pos;
+                var feedDist = 160f;
+                if (toFren.LengthSquared() <= feedDist * feedDist) {
+                    // tell it to feed
+                    
                 }
             }, 0.2f, "social");
             socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
