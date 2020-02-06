@@ -56,6 +56,8 @@ namespace Sor.Scenes.Helpers {
                 // resuming from saved state
                 mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated
             }
+            
+            gameContext.map = mapLoader.mapRepr; // copy map representation
 
             var status = pers.loaded ? "recreated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);

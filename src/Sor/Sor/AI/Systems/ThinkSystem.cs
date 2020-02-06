@@ -3,7 +3,9 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using MoreLinq.Extensions;
 using Nez;
+using Nez.AI.Pathfinding;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
 using Sor.AI.Model;
@@ -52,7 +54,8 @@ namespace Sor.AI.Systems {
 
                 // TODO: tweak this so it syncs up with the reasoner selecting the objective
                 var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
-                var next = hungrySolver.Next(hungryPlanModel, new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
+                var next = hungrySolver.Next(hungryPlanModel,
+                    new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
                 // TODO: interpret action plan
                 lock (state.targetQueue) {
                     state.targetQueue.Clear();
@@ -81,6 +84,17 @@ namespace Sor.AI.Systems {
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
+                // attempt to do a room-to-room pathfind
+                // get the nearest room
+                var nearestRoom =
+                    mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
+                            (mind.me.body.pos - x.center.ToVector2()).LengthSquared())
+                        .First();
+                // choose any room other than the nearest
+                var goalRoom = mind.gameCtx.map.roomGraph.rooms
+                    .Where(x => x != nearestRoom).RandomSubset(1)
+                    .First();
+                var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
                 // TODO: actually use map knowledge to explore
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
