@@ -78,18 +78,24 @@ namespace Sor.AI {
                     if (mind.state.targetQueue.Count > 0) {
                         var target = mind.state.targetQueue.Peek();
                         if (target.valid()) {
+                            void drawPosIndicator(Vector2 pos, Color col) {
+                                // draw indicator
+                                var indSize = 4f;
+                                batcher.DrawHollowRect(
+                                    new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
+                                    col, 1f);
+                            }
+                            
+                            var targetLoc = target.getPosition();
                             var approachLoc = target.approachPosition(mind.me.body.pos);
-                            ind.Append($"tgt: ({approachLoc.X:n1}, {approachLoc.Y:n1})");
+                            ind.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
                             if (target is EntityTargetSource ets) {
                                 ind.Append($" {ets.nt.Name}");
                             }
-
-                            // draw indicator
-                            var indSize = 4f;
-                            var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
-                            batcher.DrawHollowRect(
-                                new RectangleF(approachLoc.X - indSize, approachLoc.Y - indSize, indSize * 2, indSize * 2),
-                                trackCol, 1f);
+                            
+                            // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
+                            drawPosIndicator(targetLoc, Color.Yellow);
+                            drawPosIndicator(approachLoc, Color.Blue);
 
                             ind.AppendLine();
                         }
