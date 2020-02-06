@@ -6,23 +6,38 @@ namespace Sor.AI.Model {
         Vector2 getPosition();
     }
 
-    public class FixedTargetSource : ITargetSource {
+    public abstract class TargetSource : ITargetSource {
+        public float failureTime = 0f;
+
+        public TargetSource(float reachBefore) {
+            this.failureTime = reachBefore;
+        }
+
+        public bool valid() {
+            if (failureTime <= 0) return false;
+            return Time.TotalTime < failureTime;
+        }
+
+        public abstract Vector2 getPosition();
+    }
+
+    public class FixedTargetSource : TargetSource {
         private readonly Vector2 pos;
 
-        public FixedTargetSource(Vector2 pos) {
+        public FixedTargetSource(Vector2 pos, float before = 0) : base(before) {
             this.pos = pos;
         }
 
-        public Vector2 getPosition() => pos;
+        public override Vector2 getPosition() => pos;
     }
 
-    public class EntityTargetSource : ITargetSource {
+    public class EntityTargetSource : TargetSource {
         private readonly Entity nt;
 
-        public EntityTargetSource(Entity nt) {
+        public EntityTargetSource(Entity nt, float before = 0) : base(before) {
             this.nt = nt;
         }
 
-        public Vector2 getPosition() => nt.Position;
+        public override Vector2 getPosition() => nt.Position;
     }
 }
