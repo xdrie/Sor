@@ -84,6 +84,7 @@ namespace Sor.AI.Systems {
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
+                // TODO: a more interesting/useful explore action
                 // attempt to do a room-to-room pathfind
                 // get the nearest room
                 var nearestRoom =
