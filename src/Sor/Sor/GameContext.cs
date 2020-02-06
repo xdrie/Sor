@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
+using Sor.AI.Nav;
 using Sor.Game;
 
 namespace Sor {
@@ -8,6 +9,7 @@ namespace Sor {
         public Assets assets = new Assets();
         public Config config;
         public GameData data;
+        public MapRepr map;
 
         public GameContext(Config config) {
             this.config = config;

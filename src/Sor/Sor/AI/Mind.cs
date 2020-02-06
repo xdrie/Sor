@@ -23,6 +23,7 @@ namespace Sor.AI {
         public ThinkSystem thinkSystem;
         public AvianSoul soul;
         public bool debug = false;
+        public GameContext gameCtx;
 
         public int consciousnessSleep = 100;
         protected Task consciousnessTask;
@@ -41,6 +42,8 @@ namespace Sor.AI {
             soul.mind = this;
 
             this.control = control;
+            
+            gameCtx = Core.Services.GetService<GameContext>();
         }
 
         public override void Initialize() {
