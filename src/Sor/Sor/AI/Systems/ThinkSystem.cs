@@ -1,8 +1,13 @@
 using System.Linq;
 using System.Threading;
-using LunchtimeGears.AI.Utility;
+using Activ.GOAP;
+using LunchLib.AI.Utility;
+using LunchLib.AI.Utility.Considerations;
+using Nez;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
+using Sor.AI.Model;
+using Sor.AI.Plan;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 
@@ -38,12 +43,35 @@ namespace Sor.AI.Systems {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
 
-            var eatConsideration = new ThresholdConsideration<Mind>(() => {
-                // eat action
-                // target the nearest bean
-                var tgtBean = state.seenThings.FirstOrDefault(x => x is Capsule);
-                if (tgtBean != null) {
-                    state.target = tgtBean.Entity.Position;
+            var eatConsideration = new ThresholdConsideration<Mind>(() => { // eat action
+                var hungryPlanModel = new HungryBird();
+                var hungrySolver = new Solver<HungryBird>();
+                var seenBeans = state.seenThings.Where(x => x is Capsule).ToList();
+                // update the model
+                hungryPlanModel.nearbyBeans = seenBeans.Count;
+
+                // TODO: tweak this so it syncs up with the reasoner selecting the objective
+                var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
+                var next = hungrySolver.Next(hungryPlanModel, new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
+                // TODO: interpret action plan
+                lock (state.targetQueue) {
+                    state.targetQueue.Clear();
+                    var path = next.Path();
+                    foreach (var node in path) {
+                        // handle planning based on the node
+                        var timePerBean = 5f;
+                        var beanTimeAcc = Time.TotalTime;
+                        if ((string) node.action == nameof(HungryBird.eatBean)) { // plan eating the nearest bean
+                            // TODO: add the bean to the target entity queue
+                            var bean = seenBeans[0];
+                            seenBeans.Remove(bean);
+                            beanTimeAcc += timePerBean;
+                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity, beanTimeAcc));
+                        } else if ((string) node.action == nameof(HungryBird.visitTree)) {
+                            // plan to visit the nearest tree
+                            // TODO: how is this done?
+                        }
+                    }
                 }
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
@@ -66,14 +94,17 @@ namespace Sor.AI.Systems {
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
                 if (tgtWing != null) {
-                    state.target = tgtWing.body.pos;
+                    lock (state.targetQueue) {
+                        state.targetQueue.Clear(); // reset targets
+                        state.targetQueue.Enqueue(new EntityTargetSource(tgtWing.Entity));
+                    }
                 }
             }, 0.8f, "defend");
             defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
             defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
-            
+
             var socialAppraisal = new SumConsideration<Mind>(() => {
                 // socialize
                 // TODO: attempt to feed a duck

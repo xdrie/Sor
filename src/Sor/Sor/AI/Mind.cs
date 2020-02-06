@@ -104,8 +104,39 @@ namespace Sor.AI {
                 controller.zero(); // reset the controller
             }
 
+            // move to target
+            var targetPosition = default(Vector2?);
+            lock (state.targetQueue) {
+                while (state.targetQueue.Count > 0) {
+                    // check target validity
+                    var nextTarget = state.targetQueue.Peek();
+                    if (!nextTarget.valid()) {
+                        state.targetQueue.Dequeue(); // it's invalid, remove it
+                        continue;
+                    }
+
+                    // check closeness
+                    bool closeEnough = (nextTarget.getPosition() - me.body.pos).LengthSquared() <
+                                       MindConstants.NEARBY_POSITION_SQ;
+                    // check closeness
+                    if (closeEnough) {
+                        state.targetQueue.Dequeue();
+                        continue;
+                    }
+
+                    targetPosition = state.targetQueue.Peek().getPosition();
+                    break;
+                }
+            }
+
+            if (targetPosition.HasValue) {
+                pilotToPosition(targetPosition.Value);
+            }
+        }
+
+        private void pilotToPosition(Vector2 goal) {
             // figure out how to move to target
-            var toTarget = state.target - me.body.pos;
+            var toTarget = goal - me.body.pos;
             var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
             var myAngle = -me.body.angle + (Mathf.PI / 2);
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
@@ -128,17 +159,17 @@ namespace Sor.AI {
                 var aD = me.body.stdDrag / sinPi4;
                 var aF = me.body.flapDrag / sinPi4;
                 // d-star
-                var dCrit = 
-                            + (v0 * v0) / (aD + aF)
-                            + 0.5 * ((v0 * v0) / (-(aD - aF)));
+                var dCrit =
+                    +(v0 * v0) / (aD + aF)
+                    + 0.5 * ((v0 * v0) / (-(aD - aF)));
 
                 // var dCritBs = v0 * ((vTBs - v0) / (aBs - aD))
                 //             + (((vTBs - v0) * (vTBs - v0)) / (2 * (aBs - aD)))
                 //             + (vTBs * vTBs) / (aD + aF)
                 //             + 0.5 * ((vTBs * vTBs) / (-(aD - aF)));
-                
+
                 var dCritBs = dCrit * 1.1f;
-                
+
                 // update board
                 lock (state.board) {
                     state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");

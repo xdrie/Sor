@@ -1,4 +1,4 @@
-using LunchtimeGears.AI.Utility;
+using LunchLib.AI.Utility;
 using Sor.AI.Cogs;
 
 namespace Sor.AI.Consid {

@@ -9,10 +9,7 @@ namespace Sor.Systems {
             // misc wing updates
             var me = entity.GetComponent<Wing>();
             // calculate metabolic rate of bird
-            var metabolicRate = Constants.CALORIES_PER_KG * me.body.mass * Time.DeltaTime;
-            if (me.core.energy > 0) {
-                me.core.energy -= metabolicRate;
-            }
+            
         }
     }
 }

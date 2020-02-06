@@ -1,4 +1,3 @@
-using LunchtimeGears.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Units;

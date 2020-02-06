@@ -1,7 +1,6 @@
 using System.Linq;
 using Glint.AI.Misc;
-using LunchtimeGears.AI.Utility;
-using Nez;
+using LunchLib.AI.Utility;
 using Sor.Components.Things;
 
 namespace Sor.AI.Consid {

@@ -1,7 +1,6 @@
 using System;
-using Glint.AI.Misc;
-using LunchtimeGears.Calc;
-using LunchtimeGears.Cogs;
+using LunchLib.Calc;
+using LunchLib.Cogs;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Cogs.Interactions {

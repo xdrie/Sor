@@ -84,7 +84,7 @@ namespace Sor.Components.Units {
                     body.thrustPower = 50f;
                     body.boostTopSpeed = 200f;
                     body.mass = 80f;
-                    body.recalculateKinematics();
+                    body.recalculateValues();
                     break;
                 }
                 case WingClass.Beak: {
@@ -96,7 +96,7 @@ namespace Sor.Components.Units {
                     body.thrustPower = 210f;
                     body.boostTopSpeed = 640f;
                     body.mass = 4f;
-                    body.recalculateKinematics();
+                    body.recalculateValues();
                     break;
                 }
             }
