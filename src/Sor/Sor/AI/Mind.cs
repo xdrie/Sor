@@ -136,7 +136,7 @@ namespace Sor.AI {
                             case PlanFeed interFeed: {
                                 if (inter.valid()) {
                                     // feed
-                                    controller.interactLogical.logicPressed = true;
+                                    controller.tetherLogical.logicPressed = true;
                                 }
                                 // now dequeue
                                 state.plan.Dequeue();
