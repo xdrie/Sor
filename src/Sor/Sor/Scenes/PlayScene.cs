@@ -145,7 +145,8 @@ capsule
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+            if (!gameContext.config.clearSaves)
+                store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
     }
 }
