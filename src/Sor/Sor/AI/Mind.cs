@@ -64,9 +64,9 @@ namespace Sor.AI {
                 // mind systems
                 var cts = new CancellationTokenSource();
                 conciousnessCancel = cts;
-                visionSystem = new VisionSystem(this, 0.2f, cts.Token);
-
-                thinkSystem = new ThinkSystem(this, 0.2f, cts.Token);
+                
+                visionSystem = new VisionSystem(this, 0.4f, cts.Token);
+                thinkSystem = new ThinkSystem(this, 0.4f, cts.Token);
 
                 // start processing tasks
                 consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
