@@ -16,6 +16,7 @@ namespace Sor.AI.Model {
         public float approachRange = 0;
         
         public const float AT_POSITION_SQ = 2f * 2f;
+        public const float NEAR_POSITION_SQ = 10f * 10f;
 
         public const float RANGE_DIRECT = 0f;
         public const float RANGE_CLOSE = 40f;
@@ -49,7 +50,7 @@ namespace Sor.AI.Model {
                 case Approach.Precise:
                     return approachToFrom.LengthSquared() < AT_POSITION_SQ;
                 case Approach.Within:
-                    return actualToFrom.LengthSquared() < (approachRange * approachRange);
+                    return actualToFrom.LengthSquared() < (approachRange * approachRange + NEAR_POSITION_SQ);
                 default:
                     return false; // never
             }
