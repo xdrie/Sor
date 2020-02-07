@@ -31,7 +31,7 @@ namespace Sor.Scenes {
                 new Vector2(720, 140f), gameContext.assets.fgColor));
 
             var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
-                new Vector2(10, Resolution.Y - 20f), gameContext.assets.fgColor));
+                new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
         }
 
         public override void Update() {
