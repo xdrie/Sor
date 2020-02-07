@@ -2,6 +2,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Tweens;
 using Sor.AI;
 using Sor.Components.Camera;
 using Sor.Components.Input;
@@ -72,6 +73,15 @@ capsule
             helpDisplay1.TweenColorTo(Color.Transparent).SetDelay(showHelpTime)
                 .SetCompletionHandler(_ => showingHelp = false).Start();
             helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
+
+            var notifMsgNt = CreateEntity("notif", new Vector2(24f, 24f));
+            var notifyMsg = notifMsgNt.AddComponent(new TextComponent(gameContext.assets.font, "welcome", Vector2.Zero,
+                gameContext.assets.fgColor));
+            notifyMsg.RenderLayer = renderlayer_ui_overlay;
+            var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
+                .SetEaseType(EaseType.CubicIn).SetDelay(1f)
+                .SetCompletionHandler(_ => notifMsgNt.Destroy());
+            tw.Start();
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
