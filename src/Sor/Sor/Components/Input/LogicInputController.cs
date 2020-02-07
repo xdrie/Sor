@@ -21,6 +21,8 @@ namespace Sor.Components.Input {
         public void zero() {
             moveDirectionLogical.LogicValue = Vector2.Zero;
             interactLogical.logicPressed = false;
+            tetherLogical.logicPressed = false;
+            boostLogical.logicPressed = false;
         }
     }
 }
