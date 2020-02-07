@@ -5,6 +5,7 @@ namespace Sor.Components.Input {
     public class LogicInputController : InputController {
         public VirtualJoystick.LogicJoystick moveDirectionLogical { get; } = new VirtualJoystick.LogicJoystick();
         public VirtualButton.LogicButton interactLogical { get; } = new VirtualButton.LogicButton();
+        public VirtualButton.LogicButton tetherLogical { get; } = new VirtualButton.LogicButton();
         public VirtualButton.LogicButton boostLogical { get; } = new VirtualButton.LogicButton();
         
         public override void Initialize() {
@@ -12,6 +13,8 @@ namespace Sor.Components.Input {
             
             moveDirectionInput.Nodes.Add(moveDirectionLogical);
             
+            interactInput.Nodes.Add(interactLogical);
+            tetherInput.Nodes.Add(tetherLogical);
             boostInput.Nodes.Add(boostLogical);
         }
 

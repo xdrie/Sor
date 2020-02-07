@@ -57,8 +57,8 @@ namespace Sor.AI.Systems {
                 var next = hungrySolver.Next(hungryPlanModel,
                     new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
                 // TODO: interpret action plan
-                lock (state.targetQueue) {
-                    state.targetQueue.Clear();
+                lock (state.plan) {
+                    state.plan.Clear();
                     var path = next.Path();
                     foreach (var node in path) {
                         // handle planning based on the node
@@ -69,7 +69,7 @@ namespace Sor.AI.Systems {
                             var bean = seenBeans[0];
                             seenBeans.Remove(bean);
                             beanTimeAcc += timePerBean;
-                            state.targetQueue.Enqueue(new EntityTargetSource(bean.Entity, beanTimeAcc));
+                            state.plan.Enqueue(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
                         } else if ((string) node.action == nameof(HungryBird.visitTree)) {
                             // plan to visit the nearest tree
                             // TODO: how is this done?
@@ -84,6 +84,7 @@ namespace Sor.AI.Systems {
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
+                // TODO: a more interesting/useful explore action
                 // attempt to do a room-to-room pathfind
                 // get the nearest room
                 var nearestRoom =
@@ -108,9 +109,9 @@ namespace Sor.AI.Systems {
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
                 if (tgtWing != null) {
-                    lock (state.targetQueue) {
-                        state.targetQueue.Clear(); // reset targets
-                        state.targetQueue.Enqueue(new EntityTargetSource(tgtWing.Entity));
+                    lock (state.plan) {
+                        state.plan.Clear(); // reset targets
+                        state.plan.Enqueue(new EntityTargetSource(tgtWing.Entity));
                     }
                 }
             }, 0.8f, "defend");
@@ -119,10 +120,30 @@ namespace Sor.AI.Systems {
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
 
-            var socialAppraisal = new SumConsideration<Mind>(() => {
-                // socialize
-                // TODO: attempt to feed a duck
-            }, "social");
+            var socialAppraisal = new ThresholdConsideration<Mind>(() => {
+                // socialize - attempt to feed a duck
+                // pick a potential fren
+                // TODO: don't choose ducks we're already chums with
+                var candidates = mind.state.seenWings.Where(
+                        x => mind.state.getOpinion(x.mind) > MindConstants.OPINION_NEUTRAL)
+                    .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
+                var fren = candidates.First();
+                // add the fren as a close-range approach
+                lock (state.plan) {
+                    state.plan.Clear();
+                    var feedTime = 10f;
+                    var goalFeedTime = Time.TotalTime + feedTime;
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT, goalFeedTime));
+                    state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
+                }
+                // if we're close enough to our fren, feed them
+                var toFren = mind.me.body.pos - fren.body.pos;
+                var feedDist = 160f;
+                if (toFren.LengthSquared() <= feedDist * feedDist) {
+                    // tell it to feed
+                    
+                }
+            }, 0.2f, "social");
             socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
             socialAppraisal.scale = 1 / 2f;
