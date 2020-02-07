@@ -134,23 +134,21 @@ namespace Sor.AI.Systems {
                     var feedTime = 10f;
                     var goalFeedTime = Time.TotalTime + feedTime;
                     state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT, goalFeedTime));
-                    state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
-                }
-                // if we're close enough to our fren, feed them
-                var toFren = mind.me.body.pos - fren.body.pos;
-                var feedDist = 160f;
-                if (toFren.LengthSquared() <= feedDist * feedDist) {
+                    // if we're close enough to our fren, feed them
+                    var toFren = mind.me.body.pos - fren.body.pos;
                     // tell it to feed
-                    
+                    state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
                 }
             }, 0.2f, "social");
             socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
-            socialAppraisal.scale = 1 / 2f;
+            socialAppraisal.addAppraisal(new SocialAppraisals.FriendBudget(mind));
+            socialAppraisal.scale = 1 / 3f;
             reasoner.addConsideration(socialAppraisal);
 
             var resultTable = reasoner.execute();
             if (mind.state.lastPlanTable == null) {
+                // ReSharper disable once InconsistentlySynchronizedField - it is null
                 state.lastPlanTable = resultTable;
             } else {
                 lock (mind.state.lastPlanTable) {
