@@ -64,7 +64,7 @@ namespace Sor.AI {
                 // mind systems
                 var cts = new CancellationTokenSource();
                 conciousnessCancel = cts;
-                
+
                 visionSystem = new VisionSystem(this, 0.4f, cts.Token);
                 thinkSystem = new ThinkSystem(this, 0.4f, cts.Token);
 
@@ -132,15 +132,25 @@ namespace Sor.AI {
                         switch (nextTask) {
                             case PlanFeed interFeed: {
                                 if (inter.valid()) {
-                                    // feed
-                                    controller.tetherLogical.logicPressed = true;
+                                    // ensure alignment
+                                    // TODO: follow target should better try to align
+                                    var dirToOther = interFeed.feedTarget.Position - me.body.pos;
+                                    dirToOther.Normalize();
+                                    // get facing dir
+                                    var facingDir = new Vector2(Mathf.Cos(me.body.stdAngle),
+                                        -Mathf.Sin(me.body.stdAngle));
+                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                                        // feed
+                                        controller.tetherLogical.logicPressed = true;
+                                    }
                                 }
 
-                                // now dequeue
-                                state.plan.Dequeue();
                                 break;
                             }
                         }
+
+                        // now dequeue
+                        state.plan.Dequeue();
                     }
                 }
             }
@@ -154,7 +164,7 @@ namespace Sor.AI {
             // figure out how to move to target
             var toTarget = goal - me.body.pos;
             var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
-            var myAngle = -me.body.angle + (Mathf.PI / 2);
+            var myAngle = me.body.stdAngle;
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
 
             var moveX = 0;
