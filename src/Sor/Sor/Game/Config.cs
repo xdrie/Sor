@@ -4,7 +4,6 @@ using Glint.Util;
 namespace Sor.Game {
     public class Config : GameConfigBase {
         public bool maxVfx = true; // enable all visual effects
-        public bool clearSaves = false;
         public bool cheats = false;
 
         public override void load() {

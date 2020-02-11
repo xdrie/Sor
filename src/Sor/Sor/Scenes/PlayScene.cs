@@ -1,5 +1,6 @@
 using Glint;
 using Glint.Components.Camera;
+using Glint.Game;
 using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;

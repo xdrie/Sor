@@ -1,4 +1,5 @@
 using Glint;
+using Glint.Game;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
