@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using Glint;
 using Glint.Util;
 using Nez.Persistence.Binary;
 

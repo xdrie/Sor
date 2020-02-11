@@ -1,3 +1,4 @@
+using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
@@ -10,7 +11,7 @@ using Sor.Components.Units;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class DuckPhysicsScene : BaseGameScene {
+    public class DuckPhysicsScene : BaseGameScene<GameContext> {
         private Entity physicistDuck;
         private Entity playerNt;
         private const int renderlayer_ui_overlay = 1 << 30;
@@ -59,7 +60,7 @@ namespace Sor.Scenes {
 
             if (Input.IsKeyPressed(Keys.Escape)) {
                 // end this scene
-                transitionScene<MenuScene>(0.1f);
+                TransitionScene<MenuScene>(0.1f);
             }
 
             var wing = physicistDuck.GetComponent<Wing>();

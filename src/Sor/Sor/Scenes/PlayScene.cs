@@ -1,3 +1,5 @@
+using Glint;
+using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -13,7 +15,7 @@ using Sor.Scenes.Helpers;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class PlayScene : BaseGameScene {
+    public class PlayScene : BaseGameScene<GameContext> {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
@@ -100,7 +102,7 @@ capsule
                 // save the game
                 saveGame();
                 // end this scene
-                transitionScene<MenuScene>(0.1f);
+                TransitionScene<MenuScene>(0.1f);
             }
 
             if (!showingHelp) {

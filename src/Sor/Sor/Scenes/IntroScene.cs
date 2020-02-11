@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using Glint;
+using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -6,7 +8,7 @@ using Nez.Tweens;
 using Sor.Components.UI;
 
 namespace Sor.Scenes {
-    public class IntroScene : BaseGameScene {
+    public class IntroScene : BaseGameScene<GameContext> {
 #if DEBUG
         private const float intro_length = 0f;
 #else
@@ -63,7 +65,7 @@ namespace Sor.Scenes {
             // await GameBootstrapper.bootAsync(text => { versionText.Text = text; });
 
             // when finished
-            transitionScene<MenuScene>(0.2f);
+            TransitionScene<MenuScene>(0.2f);
         }
     }
 }
