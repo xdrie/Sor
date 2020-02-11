@@ -9,6 +9,7 @@ namespace Sor {
     public class GameContext : ContextBase {
         public Assets assets = new Assets();
         public Config config;
+        public override GameConfigBase baseConfig => config;
         public GameData data;
         public MapRepr map;
 
