@@ -1,3 +1,4 @@
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
 using Sor.AI.Cogs;
@@ -65,7 +66,7 @@ namespace Sor.Util {
             w.Write(wd.name);
             w.Write((int) wd.wingClass);
             w.Write(wd.energy);
-            w.Write(wd.ply);
+            w.writePersonality(wd.ply);
         }
 
         public static WingData readWingMeta(this IPersistableReader r) {
@@ -73,8 +74,20 @@ namespace Sor.Util {
             wd.name = r.ReadString();
             wd.wingClass = (Wing.WingClass) r.ReadInt();
             wd.energy = r.ReadFloat();
-            wd.ply = r.ReadPersonality();
+            wd.ply = r.readPersonality();
             return wd;
+        }
+        
+        public static void writePersonality(this IPersistableWriter w, BirdPersonality ply) {
+            w.Write(ply.A);
+            w.Write(ply.S);
+        }
+
+        public static BirdPersonality readPersonality(this IPersistableReader r) {
+            var ply = new BirdPersonality();
+            ply.A = r.ReadFloat();
+            ply.S = r.ReadFloat();
+            return ply;
         }
     }
 }
