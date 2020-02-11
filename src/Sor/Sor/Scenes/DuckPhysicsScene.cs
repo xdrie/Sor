@@ -1,3 +1,4 @@
+using Glint.Components.Camera;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -5,7 +6,6 @@ using Nez;
 using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.AI.Model;
-using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.Units;
 using Sor.Systems;
