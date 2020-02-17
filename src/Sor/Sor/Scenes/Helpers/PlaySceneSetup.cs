@@ -1,3 +1,5 @@
+using Glint;
+using Glint.Game;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -32,6 +34,7 @@ namespace Sor.Scenes.Helpers {
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
 
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
+            // TODO: ensure that the loaded map matches the saved map
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var mapLoader = new MapLoader(play, mapEntity);
@@ -46,15 +49,17 @@ namespace Sor.Scenes.Helpers {
                 var frend = createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
                 
-                var tres = createWing("duck-tres", new Vector2(200, 380));
-                var cuatro = createWing("duck-4", new Vector2(0, -100));
-                var cinco = createWing("duck-5", new Vector2(400, 100));
+                // var tres = createWing("duck-tres", new Vector2(200, 380));
+                // var cuatro = createWing("duck-4", new Vector2(0, -100));
+                // var cinco = createWing("duck-5", new Vector2(400, 100));
                 
                 mapLoader.load(mapAsset, createObjects: true);
             } else {
                 // resuming from saved state
                 mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated
             }
+            
+            gameContext.map = mapLoader.mapRepr; // copy map representation
 
             var status = pers.loaded ? "recreated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);

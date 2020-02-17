@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -225,11 +226,12 @@ namespace Sor.Game {
                         var sPt = new Point(sx, sy);
                         // TODO: optimize this
                         // check if we're in any other room
-                        var inRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
-                        if (inRoom != null) {
+                        var otherRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        if (otherRoom != null) {
                             // set up the connection
-                            door.roomOther = inRoom;
-                            room.links.Add(inRoom);
+                            door.roomOther = otherRoom;
+                            room.links.Add(otherRoom);
+                            Global.log.writeLine($"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]", GlintLogger.LogLevel.Trace);
                             break;
                         }
                     }

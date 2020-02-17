@@ -74,24 +74,32 @@ namespace Sor.AI {
                     }
                 }
 
-                lock (mind.state.targetQueue) {
-                    if (mind.state.targetQueue.Count > 0) {
-                        var target = mind.state.targetQueue.Peek();
-                        if (target.valid()) {
-                            var targetLoc = target.getPosition();
-                            ind.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
-                            if (target is EntityTargetSource ets) {
-                                ind.Append($" {ets.nt.Name}");
+                lock (mind.state.plan) {
+                    if (mind.state.plan.Count > 0) {
+                        var planTask = mind.state.plan.Peek();
+                        if (planTask is TargetSource target) {
+                            if (target.valid()) {
+                                void drawPosIndicator(Vector2 pos, Color col) {
+                                    // draw indicator
+                                    var indSize = 4f;
+                                    batcher.DrawHollowRect(
+                                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
+                                        col, 1f);
+                                }
+
+                                var targetLoc = target.getPosition();
+                                var approachLoc = target.approachPosition(mind.me.body.pos);
+                                ind.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                if (target is EntityTargetSource ets) {
+                                    ind.Append($" {ets.nt.Name}");
+                                }
+
+                                // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
+                                drawPosIndicator(targetLoc, Color.Yellow);
+                                drawPosIndicator(approachLoc, Color.Blue);
+
+                                ind.AppendLine();
                             }
-
-                            // draw indicator
-                            var indSize = 4f;
-                            var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
-                            batcher.DrawHollowRect(
-                                new RectangleF(targetLoc.X - indSize, targetLoc.Y - indSize, indSize * 2, indSize * 2),
-                                trackCol, 1f);
-
-                            ind.AppendLine();
                         }
                     }
                 }

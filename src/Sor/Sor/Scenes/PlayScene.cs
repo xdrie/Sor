@@ -1,9 +1,13 @@
+using Glint;
+using Glint.Components.Camera;
+using Glint.Game;
+using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Tweens;
 using Sor.AI;
-using Sor.Components.Camera;
 using Sor.Components.Input;
 using Sor.Components.UI;
 using Sor.Components.Units;
@@ -12,7 +16,7 @@ using Sor.Scenes.Helpers;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class PlayScene : BaseGameScene {
+    public class PlayScene : BaseGameScene<GameContext> {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
@@ -46,7 +50,7 @@ namespace Sor.Scenes {
             // - hud
             const int hudPadding = 8;
             var statusBarSize = new Point(96, 12);
-            var hud = CreateEntity("hud", new Vector2(Resolution.X - statusBarSize.X - hudPadding, hudPadding));
+            var hud = CreateEntity("hud", new Vector2(DesignResolution.X - statusBarSize.X - hudPadding, hudPadding));
             var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
             energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
@@ -73,6 +77,15 @@ capsule
                 .SetCompletionHandler(_ => showingHelp = false).Start();
             helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
 
+            var notifMsgNt = CreateEntity("notif", new Vector2(24f, 24f));
+            var notifyMsg = notifMsgNt.AddComponent(new TextComponent(gameContext.assets.font, "welcome", Vector2.Zero,
+                gameContext.assets.fgColor));
+            notifyMsg.RenderLayer = renderlayer_ui_overlay;
+            var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
+                .SetEaseType(EaseType.CubicIn).SetDelay(1f)
+                .SetCompletionHandler(_ => notifMsgNt.Destroy());
+            tw.Start();
+
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
             var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
@@ -90,7 +103,7 @@ capsule
                 // save the game
                 saveGame();
                 // end this scene
-                transitionScene<MenuScene>(0.1f);
+                TransitionScene<MenuScene>(0.1f);
             }
 
             if (!showingHelp) {
@@ -145,7 +158,8 @@ capsule
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+            if (!gameContext.config.clearSaves)
+                store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
     }
 }

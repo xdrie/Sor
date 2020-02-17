@@ -1,13 +1,18 @@
+using Glint.Config;
+using Glint.Game;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
+using Sor.AI.Nav;
 using Sor.Game;
 
 namespace Sor {
-    public class GameContext {
+    public class GameContext : ContextBase {
         public Assets assets = new Assets();
         public Config config;
+        public override GameConfigBase baseConfig => config;
         public GameData data;
+        public MapRepr map;
 
         public GameContext(Config config) {
             this.config = config;

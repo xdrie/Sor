@@ -28,5 +28,22 @@ namespace Sor.AI.Consid {
                 return PerMath.map11to01(context.soul.traits.sociability);
             }
         }
+
+        /// <summary>
+        /// Energy availability for socializing
+        /// </summary>
+        public class FriendBudget : Appraisal<Mind> {
+            public FriendBudget(Mind context) : base(context) { }
+
+            public override float score() {
+                // allocate 2000 energy
+                var budget = 2000f;
+                if (context.me.core.energy - budget > 0.7f * context.me.core.designMax) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        }
     }
 }
