@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Sor/SorDk/bin/Debug/netcoreapp3.0/SorDk.dll",
+            "program": "${workspaceFolder}/src/Sor/SorDk/bin/Debug/netcoreapp3.1/SorDk.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/Sor/SorDk/bin/Debug/netcoreapp3.0",
+            "cwd": "${workspaceFolder}/src/Sor/SorDk/bin/Debug/netcoreapp3.1",
             "stopAtEntry": false,
             "console": "internalConsole"
         }

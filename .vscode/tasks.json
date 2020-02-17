@@ -11,7 +11,7 @@
                 "build",
                 "src/Sor/SorDk/SorDk.csproj",
                 "-f",
-                "netcoreapp3.0",
+                "netcoreapp3.1",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
