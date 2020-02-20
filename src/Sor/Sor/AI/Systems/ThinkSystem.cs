@@ -120,7 +120,7 @@ namespace Sor.AI.Systems {
             defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
 
-            var socialAppraisal = new ThresholdConsideration<Mind>(() => {
+            var socialConsideration = new ThresholdConsideration<Mind>(() => {
                 // socialize - attempt to feed a duck
                 // pick a potential fren
                 // TODO: don't choose ducks we're already chums with
@@ -140,11 +140,11 @@ namespace Sor.AI.Systems {
                     state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
                 }
             }, 0.2f, "social");
-            socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
-            socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
-            socialAppraisal.addAppraisal(new SocialAppraisals.FriendBudget(mind));
-            socialAppraisal.scale = 1 / 3f;
-            reasoner.addConsideration(socialAppraisal);
+            socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
+            socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
+            socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
+            socialConsideration.scale = 1 / 3f;
+            reasoner.addConsideration(socialConsideration);
 
             var resultTable = reasoner.execute();
             if (mind.state.lastPlanTable == null) {
