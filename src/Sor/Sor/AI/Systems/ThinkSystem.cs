@@ -44,6 +44,7 @@ namespace Sor.AI.Systems {
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
+            reasoner.scoreType = Reasoner<Mind>.ScoreType.Normalized;
 
             var eatConsideration = new ThresholdConsideration<Mind>(() => { // eat action
                 var hungryPlanModel = new HungryBird();
@@ -79,7 +80,6 @@ namespace Sor.AI.Systems {
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
-            eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
@@ -100,7 +100,6 @@ namespace Sor.AI.Systems {
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
-            exploreConsideration.scale = 1 / 2f;
             reasoner.addConsideration(exploreConsideration);
 
             var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
@@ -117,7 +116,6 @@ namespace Sor.AI.Systems {
             }, 0.8f, "defend");
             defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
             defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
-            defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {
@@ -143,7 +141,6 @@ namespace Sor.AI.Systems {
             socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
-            socialConsideration.scale = 1 / 3f;
             reasoner.addConsideration(socialConsideration);
 
             var resultTable = reasoner.execute();
