@@ -16,7 +16,7 @@ namespace Sor.AI.Consid {
                 if (!wings.Any()) return 0;
                 // scale from 0-100
                 var firstWing = wings.First();
-                return Gmathf.map01(context.state.getOpinion(firstWing.mind),
+                return Gmathf.map01clamp01(context.state.getOpinion(firstWing.mind),
                     MindConstants.OPINION_NEUTRAL, MindConstants.OPINION_ALLY);
             }
         }
