@@ -57,6 +57,9 @@ namespace Sor.AI.Systems {
                 var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
                 var next = hungrySolver.Next(hungryPlanModel,
                     new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
+                if (next == null) { // planning failed
+                    return;
+                }
                 // TODO: interpret action plan
                 lock (state.plan) {
                     state.plan.Clear();
