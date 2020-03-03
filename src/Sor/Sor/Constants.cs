@@ -26,6 +26,7 @@ namespace Sor {
         }
 
         public static class Physics {
+            // - defaults (wing)
             public const float DEF_MASS = 10f;
             public const float DEF_TURN_POWER = Mathf.PI * 0.72f;
             public const float DEF_THRUST_POWER = 120;
@@ -34,6 +35,18 @@ namespace Sor {
             public const float DEF_BOOST_TOP_SPEED = 400f;
             public const float DEF_BASE_DRAG = 16f;
             public const float DEF_BRAKE_DRAG = 80f;
+            
+            // alt (predator)
+            public const float BIG_MASS = 80f;
+            public const float BIG_TURN_POWER = Mathf.PI * 0.22f;
+            public const float BIG_THRUST_POWER = 50f;
+            public const float BIG_BOOST_TOP_SPEED = 200f;
+            
+            // alt (beak)
+            public const float SML_MASS = 4f;
+            public const float SML_TURN_POWER = Mathf.PI * 0.96f;
+            public const float SML_THRUST_POWER = 210f;
+            public const float SML_BOOST_TOP_SPEED = 640f;
         }
     }
 }
