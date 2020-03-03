@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
@@ -162,7 +164,9 @@ capsule
             if (!gameContext.config.clearSaves)
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
-        
+
+        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+
         public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
             var duckNt = CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
             if (soul != null) {

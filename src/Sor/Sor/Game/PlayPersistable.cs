@@ -87,7 +87,8 @@ namespace Sor.Game {
             wr.writeBody(play.playerWing.body);
 
             // save all other wings
-            var wingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_WING)
+            var wingsToSave = play.wings
+                .Select(x=>x.Entity)
                 .Where(x => x != play.playerEntity)
                 .ToList();
             wr.Write(wingsToSave.Count);
