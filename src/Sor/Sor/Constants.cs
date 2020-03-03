@@ -19,6 +19,7 @@ namespace Sor {
         public const float CALORIES_PER_KG = 2f;
 
         public static class Physics {
+            public const float DEF_MASS = 10f;
             public const float DEF_TURN_POWER = Mathf.PI * 0.72f;
             public const float DEF_THRUST_POWER = 120;
             public const float DEF_TOP_SPEED = 80f;

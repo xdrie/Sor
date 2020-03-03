@@ -36,7 +36,7 @@ namespace Sor.Components.Units {
             pips.spriteRenderer.LocalOffset = new Vector2(0, 14);
 
             // set body properties
-            body.mass = 10f;
+            body.mass = Constants.Physics.DEF_MASS;
 
             // pips setup
             var pipNumber = 1 + Random.NextInt(5);
@@ -79,7 +79,9 @@ namespace Sor.Components.Units {
                     // this should always be the defaults
                     body.turnPower = Constants.Physics.DEF_TURN_POWER;
                     body.thrustPower = Constants.Physics.DEF_THRUST_POWER;
-                    
+                    body.topSpeed = Constants.Physics.DEF_TOP_SPEED;
+                    body.boostTopSpeed = Constants.Physics.DEF_BOOST_TOP_SPEED;
+
                     break;
                 case WingClass.Predator: {
                     scale = 2f;
