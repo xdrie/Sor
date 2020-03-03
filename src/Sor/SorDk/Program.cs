@@ -42,8 +42,9 @@ namespace SorDk {
             var config = configHelper.load(confStr, args); // load and parse config
             // run in crash-cradle
             try {
-                using var game = new NGame(config);
-                game.Run();
+                using (var game = new NGame(config)) {
+                    game.Run();
+                }
             }
             catch (Exception ex) {
                 Global.log.writeLine($"fatal error: {ex}", GlintLogger.LogLevel.Critical);
