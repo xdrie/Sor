@@ -95,7 +95,7 @@ namespace Sor.AI.Systems {
                     if (state.roomNavPath != null) {
                         lock (state.plan) {
                             if (state.plan.Count > 0)
-                                if (state.plan.First().valid())
+                                if (state.plan.Any(x => x.valid()))
                                     return;
                         }
                     }
