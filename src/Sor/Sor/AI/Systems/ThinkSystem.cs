@@ -90,6 +90,17 @@ namespace Sor.AI.Systems {
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
                 // TODO: a more interesting/useful explore action
+                // don't pathfind if we already have a valid path
+                lock (state) {
+                    if (state.roomNavPath != null) {
+                        lock (state.plan) {
+                            if (state.plan.Count > 0)
+                                if (state.plan.First().valid())
+                                    return;
+                        }
+                    }
+                }
+
                 // attempt to do a room-to-room pathfind
                 // get the nearest room
                 var nearestRoom =
@@ -103,6 +114,9 @@ namespace Sor.AI.Systems {
                     .First();
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
                 if (!foundPath.Any()) return; // pathfind failed
+                lock (state) {
+                    state.roomNavPath = foundPath;
+                }
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
                 lock (state.plan) {
