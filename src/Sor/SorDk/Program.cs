@@ -15,6 +15,9 @@ namespace SorDk {
             using (var sr = new StreamReader(banner)) {
                 Console.WriteLine(sr.ReadToEnd());
                 Console.WriteLine(NGame.GAME_VERSION);
+                #if DEBUG
+                Console.WriteLine("[DEBUG] build, debug code paths enabled. maim mode enabled.");
+                #endif
             }
             
             #if DEBUG
