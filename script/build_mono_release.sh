@@ -18,9 +18,9 @@ ARTIFACT="builds/$ARCNAME.7z"
 
 cd src/$PROJECT
 echo "running restore..."
-dotnet restore
+dotnet restore $PROJECT.Mono.sln
 echo "running build..."
-msbuild $PROJECT.sln /p:Configuration=Release
+msbuild $PROJECT.Mono.sln /p:Configuration=Release
 
 popd
 
