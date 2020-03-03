@@ -94,7 +94,8 @@ namespace Sor.AI.Systems {
                 // get the nearest room
                 var nearestRoom =
                     mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2())).LengthSquared())
+                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                            .LengthSquared())
                         .First();
                 // choose any room other than the nearest
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
@@ -103,18 +104,21 @@ namespace Sor.AI.Systems {
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
                 if (!foundPath.Any()) return; // pathfind failed
                 // TODO: actually use map knowledge to explore
-                // queue the first point
-                var tmapPos = foundPath[0].center.ToVector2();
+                // queue the points of the map
                 lock (state.plan) {
-                    state.plan.Clear(); // reset plan
-                    state.plan.Enqueue(new FixedTargetSource(
-                        mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos)));
+                    foreach (var pathNode in foundPath) {
+                        var tmapPos = pathNode.center.ToVector2();
+
+                        state.plan.Clear(); // reset plan
+                        state.plan.Enqueue(new FixedTargetSource(
+                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos)));
+                    }
                 }
 
                 lock (state.board) {
-                    state.board["exp_pos"] = $"{tmapPos}";
+                    var nextPt = foundPath.First().center;
+                    state.board["exp"] = $"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])";
                 }
-                
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
