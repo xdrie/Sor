@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
@@ -8,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Tweens;
 using Sor.AI;
+using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.UI;
 using Sor.Components.Units;
@@ -25,7 +28,6 @@ namespace Sor.Scenes {
 
         public Entity playerEntity;
         public Wing playerWing;
-        private Entity helpNt;
 
         public override void Initialize() {
             base.Initialize();
@@ -56,27 +58,6 @@ namespace Sor.Scenes {
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
-            helpNt = CreateEntity("help");
-            var helpDisplay1 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
-[IJKL]
-[SHIFT]
-[2]
-",
-                new Vector2(140, 140), gameContext.assets.fgColor));
-            var helpDisplay2 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
-move
-boost
-capsule
-",
-                new Vector2(280, 140), gameContext.assets.fgColor));
-            helpDisplay1.RenderLayer = renderlayer_ui_overlay;
-            helpDisplay2.RenderLayer = renderlayer_ui_overlay;
-            helpNt.SetLocalScale(2f);
-            showingHelp = true;
-            helpDisplay1.TweenColorTo(Color.Transparent).SetDelay(showHelpTime)
-                .SetCompletionHandler(_ => showingHelp = false).Start();
-            helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
-
             var notifMsgNt = CreateEntity("notif", new Vector2(24f, 24f));
             var notifyMsg = notifMsgNt.AddComponent(new TextComponent(gameContext.assets.font, "welcome", Vector2.Zero,
                 gameContext.assets.fgColor));
@@ -106,15 +87,6 @@ capsule
                 TransitionScene<MenuScene>(0.1f);
             }
 
-            if (!showingHelp) {
-                if (Input.IsKeyDown(Keys.Tab)) {
-                    helpNt.Enabled = true;
-                    helpNt.GetComponents<TextComponent>().ForEach(x => x.Color = gameContext.assets.fgColor);
-                } else {
-                    helpNt.Enabled = false;
-                }
-            }
-
             if (InputUtils.IsControlDown()) {
                 Core.Instance.IsMouseVisible = true;
             } else {
@@ -125,7 +97,7 @@ capsule
                 // find the nearest non-player bird and inspect
                 var nearest = default(Wing);
                 var nearestDist = double.MaxValue;
-                foreach (var birdNt in FindEntitiesWithTag(Constants.ENTITY_WING)) {
+                foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
                     var wing = birdNt.GetComponent<Wing>();
                     if (birdNt.HasComponent<PlayerInputController>())
                         continue;
@@ -160,6 +132,19 @@ capsule
             var store = gameContext.data.getStore();
             if (!gameContext.config.clearSaves)
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+        }
+
+        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+
+        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
+            var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);
+            if (soul != null) {
+                if (!soul.calced) soul.calc();
+            }
+
+            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
+            duckNt.AddComponent<LogicInputController>();
+            return duck;
         }
     }
 }

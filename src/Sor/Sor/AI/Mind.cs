@@ -183,8 +183,8 @@ namespace Sor.AI {
                 var vTBs = me.body.boostTopSpeed / sinPi4;
                 var aTh = me.body.thrustPower / sinPi4;
                 var aBs = (me.body.thrustPower / sinPi4) * me.body.boostFactor;
-                var aD = me.body.stdDrag / sinPi4;
-                var aF = me.body.flapDrag / sinPi4;
+                var aD = me.body.baseDrag / sinPi4;
+                var aF = me.body.brakeDrag / sinPi4;
                 // d-star
                 var dCrit =
                     +(v0 * v0) / (aD + aF)
@@ -199,8 +199,8 @@ namespace Sor.AI {
 
                 // update board
                 lock (state.board) {
-                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");
-                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}");
+                    state.board[nameof(dGiv)] = $"{dGiv:n2}";
+                    state.board[nameof(dCrit)] = $"{dCrit:n2}";
                 }
 
                 if (dGiv > dCrit) {

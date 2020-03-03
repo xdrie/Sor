@@ -3,6 +3,7 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
 using Nez.AI.Pathfinding;
@@ -44,6 +45,7 @@ namespace Sor.AI.Systems {
         private void makePlans() {
             // create utility planner
             var reasoner = new Reasoner<Mind>();
+            reasoner.scoreType = Reasoner<Mind>.ScoreType.Normalized;
 
             var eatConsideration = new ThresholdConsideration<Mind>(() => { // eat action
                 var hungryPlanModel = new HungryBird();
@@ -56,6 +58,10 @@ namespace Sor.AI.Systems {
                 var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
                 var next = hungrySolver.Next(hungryPlanModel,
                     new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
+                if (next == null) { // planning failed
+                    return;
+                }
+
                 // TODO: interpret action plan
                 lock (state.plan) {
                     state.plan.Clear();
@@ -79,28 +85,59 @@ namespace Sor.AI.Systems {
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
-            eatConsideration.scale = 1 / 2f;
             reasoner.addConsideration(eatConsideration);
 
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
                 // TODO: a more interesting/useful explore action
+                // don't pathfind if we already have a valid path
+                lock (state) {
+                    if (state.roomNavPath != null) {
+                        lock (state.plan) {
+                            if (state.plan.Count > 0)
+                                if (state.plan.Any(x => x.valid()))
+                                    return;
+                        }
+                    }
+                }
+
                 // attempt to do a room-to-room pathfind
                 // get the nearest room
                 var nearestRoom =
                     mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - x.center.ToVector2()).LengthSquared())
+                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                            .LengthSquared())
                         .First();
                 // choose any room other than the nearest
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
                     .Where(x => x != nearestRoom).RandomSubset(1)
                     .First();
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
+                if (!foundPath.Any()) return; // pathfind failed
+                lock (state) {
+                    state.roomNavPath = foundPath;
+                }
+
                 // TODO: actually use map knowledge to explore
+                // queue the points of the map
+                lock (state.plan) {
+                    foreach (var pathNode in foundPath) {
+                        var tmapPos = pathNode.center.ToVector2();
+
+                        state.plan.Clear(); // reset plan
+                        state.plan.Enqueue(new FixedTargetSource(
+                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                            TargetSource.RANGE_SHORT));
+                    }
+                }
+
+                lock (state.board) {
+                    var nextPt = foundPath.First().center;
+                    state.board["exp"] = $"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])";
+                }
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
-            exploreConsideration.scale = 1 / 2f;
             reasoner.addConsideration(exploreConsideration);
 
             var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
@@ -117,10 +154,9 @@ namespace Sor.AI.Systems {
             }, 0.8f, "defend");
             defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
             defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
-            defendConsideration.scale = 1 / 2f;
             reasoner.addConsideration(defendConsideration);
 
-            var socialAppraisal = new ThresholdConsideration<Mind>(() => {
+            var socialConsideration = new ThresholdConsideration<Mind>(() => {
                 // socialize - attempt to feed a duck
                 // pick a potential fren
                 // TODO: don't choose ducks we're already chums with
@@ -133,18 +169,18 @@ namespace Sor.AI.Systems {
                     state.plan.Clear();
                     var feedTime = 10f;
                     var goalFeedTime = Time.TotalTime + feedTime;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT, goalFeedTime));
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
+                        goalFeedTime));
                     // if we're close enough to our fren, feed them
                     var toFren = mind.me.body.pos - fren.body.pos;
                     // tell it to feed
                     state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
                 }
             }, 0.2f, "social");
-            socialAppraisal.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
-            socialAppraisal.addAppraisal(new SocialAppraisals.Sociability(mind));
-            socialAppraisal.addAppraisal(new SocialAppraisals.FriendBudget(mind));
-            socialAppraisal.scale = 1 / 3f;
-            reasoner.addConsideration(socialAppraisal);
+            socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
+            socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
+            socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
+            reasoner.addConsideration(socialConsideration);
 
             var resultTable = reasoner.execute();
             if (mind.state.lastPlanTable == null) {

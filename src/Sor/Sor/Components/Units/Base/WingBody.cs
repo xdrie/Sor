@@ -15,20 +15,26 @@ namespace Sor.Components.Units {
 
         private GameContext gameContext;
 
-        public float turnPower = Mathf.PI * 0.72f;
-        public float thrustPower = 120f;
-        public float laneFactor = 4f;
-        public float topSpeed = 80f;
-        public float boostFactor = 6.2f;
-        public float boostTopSpeed = 400f;
-        public float stdDrag = 16f;
-        public float flapDrag = 80f;
-        public float gravityFactor = 4000f;
-        public float metabolicRate; // energy burn per-second
+        // - movement
+        public float turnPower = Constants.Physics.DEF_TURN_POWER;
+        public float thrustPower = Constants.Physics.DEF_THRUST_POWER;
+        public float topSpeed = Constants.Physics.DEF_TOP_SPEED;
+        public float boostFactor = Constants.Physics.DEF_BOOST_FACTOR;
+        public float boostTopSpeed = Constants.Physics.DEF_BOOST_TOP_SPEED;
+        public float baseDrag = Constants.Physics.DEF_BASE_DRAG;
+        public float brakeDrag = Constants.Physics.DEF_BRAKE_DRAG;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
-
+        
+        // - movement state
         public float boostCooldown = 0f;
         public bool boosting = false;
+        
+        // - interaction
+        public float laneFactor = 4f; // speed boost from touching lanes
+        public float gravityFactor = 4000f;
+        
+        // - physiology
+        public float metabolicRate; // energy burn per-second
         private float boostDrainKg = 100; // boost drain per kg
 
         public override void Initialize() {
@@ -48,10 +54,10 @@ namespace Sor.Components.Units {
         public void recalculateValues() {
             maxAngular = turnPower * 1.2f;
             angularDrag = turnPower * 2f;
-            drag = new Vector2(stdDrag);
+            drag = new Vector2(baseDrag);
             maxVelocity = new Vector2(topSpeed);
 
-            metabolicRate = Constants.CALORIES_PER_KG * mass;
+            metabolicRate = Constants.Mechanics.CALORIES_PER_KG * mass;
         }
 
         public override void Update() {
@@ -70,14 +76,14 @@ namespace Sor.Components.Units {
 
         private void interaction() {
             if (controller.tetherInput.IsPressed) {
-                var capEnergy = Constants.CAPSULE_SIZE;
+                var capEnergy = Constants.Mechanics.CAPSULE_SIZE;
                 var capSpeed = 40f;
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity("pod", Entity.Position)
-                        .SetTag(Constants.ENTITY_THING);
+                        .SetTag(Constants.Tags.ENTITY_THING);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
@@ -93,13 +99,13 @@ namespace Sor.Components.Units {
             mov.AdvancedCalculateMovement(ref calcMotion, moveCollisions);
             foreach (var result in moveCollisions) {
                 // collision with a wall
-                if (!boosting && result.Collider?.Tag == Constants.COLLIDER_WALL) {
+                if (!boosting && result.Collider?.Tag == Constants.Colliders.COLLIDER_WALL) {
                     // suck velocity from hitting the wall
                     velocity *= VELOCITY_REDUCTION_EXP;
                     motion -= result.MinimumTranslationVector;
                 }
                 // collision with another ship
-                else if (result.Collider?.Tag == Constants.COLLIDER_SHIP) {
+                else if (result.Collider?.Tag == Constants.Colliders.COLLIDER_SHIP) {
                     var hitShip = result.Collider.Entity.GetComponent<WingBody>();
                     // conserve momentum in the collision
                     var netMomentum = momentum + hitShip.momentum;
@@ -150,11 +156,11 @@ namespace Sor.Components.Units {
                 }
 
                 if (controller.boostInput.IsReleased) { // when boost stopped, set a cooldown
-                    boostCooldown = Time.TotalTime + Constants.BOOST_COOLDOWN;
+                    boostCooldown = Time.TotalTime + Constants.Mechanics.BOOST_COOLDOWN;
                 }
             }
 
-            drag = new Vector2(stdDrag);
+            drag = new Vector2(baseDrag);
             // forward thrust
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal * Time.DeltaTime);
@@ -164,12 +170,12 @@ namespace Sor.Components.Units {
                 // float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 // velocity *= fac;
                 // var invVelocity = -velocity;
-                drag = new Vector2(flapDrag);
+                drag = new Vector2(brakeDrag);
             }
         }
 
         public void OnTriggerEnter(Collider other, Collider local) {
-            if (other.Tag == Constants.COLLIDER_THING) {
+            if (other.Tag == Constants.Colliders.COLLIDER_THING) {
                 var hitEntity = other.Entity;
                 if (hitEntity.HasComponent<Capsule>()) {
                     var capsule = hitEntity.GetComponent<Capsule>();
@@ -186,13 +192,13 @@ namespace Sor.Components.Units {
                 }
             }
 
-            if (other.Tag == Constants.COLLIDER_LANE) {
+            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
                 // lanes multiply velocity
                 velocity *= laneFactor;
                 drag = Vector2.Zero;
             }
 
-            if (other.Tag == Constants.TRIGGER_GRAVITY) {
+            if (other.Tag == Constants.Mechanics.TRIGGER_GRAVITY) {
                 var gravThing = other.Entity;
                 var succ = true;
                 if (gravThing.HasComponent<Capsule>()) {
@@ -215,8 +221,8 @@ namespace Sor.Components.Units {
         }
 
         public void OnTriggerExit(Collider other, Collider local) {
-            if (other.Tag == Constants.COLLIDER_LANE) {
-                drag = new Vector2(stdDrag);
+            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
+                drag = new Vector2(baseDrag);
             }
         }
     }
