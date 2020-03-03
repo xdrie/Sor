@@ -81,7 +81,8 @@ namespace Sor.Components.Units {
                     body.thrustPower = Constants.Physics.DEF_THRUST_POWER;
                     body.topSpeed = Constants.Physics.DEF_TOP_SPEED;
                     body.boostTopSpeed = Constants.Physics.DEF_BOOST_TOP_SPEED;
-
+                    body.recalculateValues();
+                    
                     break;
                 case WingClass.Predator: {
                     scale = 2f;
@@ -104,7 +105,7 @@ namespace Sor.Components.Units {
                     break;
                 }
             }
-            
+
             Transform.SetLocalScale(scale);
             pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
         }
