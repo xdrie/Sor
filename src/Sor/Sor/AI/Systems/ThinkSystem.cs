@@ -117,6 +117,7 @@ namespace Sor.AI.Systems {
                 lock (state) {
                     state.roomNavPath = foundPath;
                 }
+
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
                 lock (state.plan) {
@@ -125,7 +126,8 @@ namespace Sor.AI.Systems {
 
                         state.plan.Clear(); // reset plan
                         state.plan.Enqueue(new FixedTargetSource(
-                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos)));
+                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                            TargetSource.RANGE_SHORT));
                     }
                 }
 
