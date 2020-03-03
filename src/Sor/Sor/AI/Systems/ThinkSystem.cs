@@ -3,6 +3,7 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
 using Nez.AI.Pathfinding;
@@ -60,6 +61,7 @@ namespace Sor.AI.Systems {
                 if (next == null) { // planning failed
                     return;
                 }
+
                 // TODO: interpret action plan
                 lock (state.plan) {
                     state.plan.Clear();
@@ -99,7 +101,20 @@ namespace Sor.AI.Systems {
                     .Where(x => x != nearestRoom).RandomSubset(1)
                     .First();
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
+                if (!foundPath.Any()) return; // pathfind failed
                 // TODO: actually use map knowledge to explore
+                // queue the first point
+                var tmapPos = foundPath[0].center.ToVector2();
+                lock (state.plan) {
+                    state.plan.Clear(); // reset plan
+                    state.plan.Enqueue(new FixedTargetSource(
+                        mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos)));
+                }
+
+                lock (state.board) {
+                    state.board["exp_pos"] = new MindState.BoardItem($"{tmapPos}", Color.Yellow);
+                }
+                
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
@@ -134,7 +149,8 @@ namespace Sor.AI.Systems {
                     state.plan.Clear();
                     var feedTime = 10f;
                     var goalFeedTime = Time.TotalTime + feedTime;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT, goalFeedTime));
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
+                        goalFeedTime));
                     // if we're close enough to our fren, feed them
                     var toFren = mind.me.body.pos - fren.body.pos;
                     // tell it to feed
