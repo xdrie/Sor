@@ -1,5 +1,7 @@
+using Nez;
+
 namespace Sor {
-    public class Constants {
+    public static class Constants {
         // - Tags
         // entities
         public const int ENTITY_WING = 0x2888884;
@@ -15,5 +17,15 @@ namespace Sor {
         public const float BOOST_COOLDOWN = 1f;
         public const float CAPSULE_SIZE = 400;
         public const float CALORIES_PER_KG = 2f;
+
+        public static class Physics {
+            public const float DEF_TURN_POWER = Mathf.PI * 0.72f;
+            public const float DEF_THRUST_POWER = 120;
+            public const float DEF_TOP_SPEED = 80f;
+            public const float DEF_BOOST_FACTOR = 6.2f;
+            public const float DEF_BOOST_TOP_SPEED = 400f;
+            public const float DEF_BASE_DRAG = 16f;
+            public const float DEF_BRAKE_DRAG = 80f;
+        }
     }
 }
