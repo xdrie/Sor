@@ -55,7 +55,7 @@ namespace Sor.Game {
             foreach (var th in nature.Objects) {
                 if (th.Type == "tree") {
                     var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y))
-                        .SetTag(Constants.ENTITY_THING);
+                        .SetTag(Constants.Tags.ENTITY_THING);
                     var treeStage = 1;
                     if (th.Properties.TryGetValue("stage", out var stageProp)) {
                         treeStage = int.Parse(stageProp);
@@ -74,7 +74,7 @@ namespace Sor.Game {
             foreach (var collider in rects) {
                 var boxCollider = new BoxCollider(collider);
                 boxCollider.IsTrigger = true;
-                boxCollider.Tag = Constants.COLLIDER_LANE;
+                boxCollider.Tag = Constants.Colliders.COLLIDER_LANE;
                 mapEntity.AddComponent(boxCollider);
             }
         }
@@ -290,7 +290,7 @@ namespace Sor.Game {
             foreach (var coll in adjustedColliders) {
                 var boxCollider = new BoxCollider(coll);
                 mapEntity.AddComponent(boxCollider);
-                boxCollider.Tag = Constants.COLLIDER_WALL;
+                boxCollider.Tag = Constants.Colliders.COLLIDER_WALL;
             }
         }
 

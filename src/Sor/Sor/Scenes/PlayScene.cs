@@ -128,7 +128,7 @@ capsule
                 // find the nearest non-player bird and inspect
                 var nearest = default(Wing);
                 var nearestDist = double.MaxValue;
-                foreach (var birdNt in FindEntitiesWithTag(Constants.ENTITY_WING)) {
+                foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
                     var wing = birdNt.GetComponent<Wing>();
                     if (birdNt.HasComponent<PlayerInputController>())
                         continue;
@@ -165,10 +165,10 @@ capsule
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
 
-        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
 
         public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
-            var duckNt = CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
+            var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);
             if (soul != null) {
                 if (!soul.calced) soul.calc();
             }

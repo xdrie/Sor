@@ -66,7 +66,7 @@ namespace Sor.Scenes.Helpers {
         }
 
         public void createPlayer(Vector2 pos) {
-            play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.ENTITY_WING);
+            play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.Tags.ENTITY_WING);
             var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
             playerSoul.calc();
             play.playerWing = play.playerEntity.AddComponent(new Wing(new Mind(playerSoul, false)));
