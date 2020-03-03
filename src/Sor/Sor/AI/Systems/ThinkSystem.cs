@@ -3,6 +3,7 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
 using Nez.AI.Pathfinding;
@@ -60,6 +61,7 @@ namespace Sor.AI.Systems {
                 if (next == null) { // planning failed
                     return;
                 }
+
                 // TODO: interpret action plan
                 lock (state.plan) {
                     state.plan.Clear();
@@ -88,18 +90,51 @@ namespace Sor.AI.Systems {
             var exploreConsideration = new SumConsideration<Mind>(() => {
                 // explore action
                 // TODO: a more interesting/useful explore action
+                // don't pathfind if we already have a valid path
+                lock (state) {
+                    if (state.roomNavPath != null) {
+                        lock (state.plan) {
+                            if (state.plan.Count > 0)
+                                if (state.plan.Any(x => x.valid()))
+                                    return;
+                        }
+                    }
+                }
+
                 // attempt to do a room-to-room pathfind
                 // get the nearest room
                 var nearestRoom =
                     mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - x.center.ToVector2()).LengthSquared())
+                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                            .LengthSquared())
                         .First();
                 // choose any room other than the nearest
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
                     .Where(x => x != nearestRoom).RandomSubset(1)
                     .First();
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
+                if (!foundPath.Any()) return; // pathfind failed
+                lock (state) {
+                    state.roomNavPath = foundPath;
+                }
+
                 // TODO: actually use map knowledge to explore
+                // queue the points of the map
+                lock (state.plan) {
+                    foreach (var pathNode in foundPath) {
+                        var tmapPos = pathNode.center.ToVector2();
+
+                        state.plan.Clear(); // reset plan
+                        state.plan.Enqueue(new FixedTargetSource(
+                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                            TargetSource.RANGE_SHORT));
+                    }
+                }
+
+                lock (state.board) {
+                    var nextPt = foundPath.First().center;
+                    state.board["exp"] = $"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])";
+                }
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
@@ -134,7 +169,8 @@ namespace Sor.AI.Systems {
                     state.plan.Clear();
                     var feedTime = 10f;
                     var goalFeedTime = Time.TotalTime + feedTime;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT, goalFeedTime));
+                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
+                        goalFeedTime));
                     // if we're close enough to our fren, feed them
                     var toFren = mind.me.body.pos - fren.body.pos;
                     // tell it to feed

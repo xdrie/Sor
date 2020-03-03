@@ -39,6 +39,7 @@ namespace Sor.Game {
 
             // analysis
             mapRepr = new MapRepr();
+            mapRepr.tmxMap = map;
             analyzeRooms();
 
             // load entities

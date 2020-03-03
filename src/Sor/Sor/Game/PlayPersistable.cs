@@ -55,7 +55,7 @@ namespace Sor.Game {
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWingMeta();
-                var wing = setup.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
+                var wing = setup.play.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
@@ -87,7 +87,8 @@ namespace Sor.Game {
             wr.writeBody(play.playerWing.body);
 
             // save all other wings
-            var wingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_WING)
+            var wingsToSave = play.wings
+                .Select(x=>x.Entity)
                 .Where(x => x != play.playerEntity)
                 .ToList();
             wr.Write(wingsToSave.Count);
