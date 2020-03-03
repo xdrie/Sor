@@ -55,7 +55,7 @@ namespace Sor.Game {
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWingMeta();
-                var wing = setup.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
+                var wing = setup.play.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);

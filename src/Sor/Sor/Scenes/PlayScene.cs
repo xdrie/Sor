@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Tweens;
 using Sor.AI;
+using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.UI;
 using Sor.Components.Units;
@@ -160,6 +161,17 @@ capsule
             var store = gameContext.data.getStore();
             if (!gameContext.config.clearSaves)
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+        }
+        
+        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
+            var duckNt = CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
+            if (soul != null) {
+                if (!soul.calced) soul.calc();
+            }
+
+            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
+            duckNt.AddComponent<LogicInputController>();
+            return duck;
         }
     }
 }

@@ -21,6 +21,19 @@ namespace Sor.Game {
             play.playerWing.changeClass(val);
             debugLog($"changed player class to {val}");
         }
+        
+        [Command("g_kill", "kills a wing")]
+        public static void Kill(string name) {
+            var wingNt = play.Entities.FindEntity(name);
+            wingNt.Destroy();
+            debugLog($"killed 1 entity named {wingNt.Name}");
+        }
+        
+        [Command("g_spawn", "spawns a wing")]
+        public static void Spawn(string name) {
+            var wing = play.createWing(name, play.playerWing.Entity.Position);
+            debugLog($"spawned 1 entity named {wing.Entity.Name}");
+        }
 
         public static void debugLog(string v) {
             DebugConsole.Instance.Log(v);
