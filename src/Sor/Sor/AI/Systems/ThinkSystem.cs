@@ -94,7 +94,7 @@ namespace Sor.AI.Systems {
                 // get the nearest room
                 var nearestRoom =
                     mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - x.center.ToVector2()).LengthSquared())
+                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2())).LengthSquared())
                         .First();
                 // choose any room other than the nearest
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
