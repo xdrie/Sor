@@ -36,6 +36,8 @@ namespace Sor.AI {
             }
 
             public BoardItem(string v) : this(v, Color.White) { }
+            
+            public static implicit operator BoardItem(string v) => new BoardItem(v);
         }
 
         public int getOpinion(Mind mind) {

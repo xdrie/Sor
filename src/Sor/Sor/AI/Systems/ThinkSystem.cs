@@ -112,7 +112,7 @@ namespace Sor.AI.Systems {
                 }
 
                 lock (state.board) {
-                    state.board["exp_pos"] = new MindState.BoardItem($"{tmapPos}", Color.Yellow);
+                    state.board["exp_pos"] = $"{tmapPos}";
                 }
                 
             }, "explore");
