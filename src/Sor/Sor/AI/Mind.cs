@@ -1,10 +1,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
+using Sor.AI.Model;
 using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
@@ -23,6 +25,7 @@ namespace Sor.AI {
         public ThinkSystem thinkSystem;
         public AvianSoul soul;
         public bool debug = false;
+        public GameContext gameCtx;
 
         public int consciousnessSleep = 100;
         protected Task consciousnessTask;
@@ -41,6 +44,8 @@ namespace Sor.AI {
             soul.mind = this;
 
             this.control = control;
+
+            gameCtx = Core.Services.GetService<GameContext>();
         }
 
         public override void Initialize() {
@@ -60,9 +65,9 @@ namespace Sor.AI {
                 // mind systems
                 var cts = new CancellationTokenSource();
                 conciousnessCancel = cts;
-                visionSystem = new VisionSystem(this, 0.2f, cts.Token);
 
-                thinkSystem = new ThinkSystem(this, 0.2f, cts.Token);
+                visionSystem = new VisionSystem(this, 0.4f, cts.Token);
+                thinkSystem = new ThinkSystem(this, 0.4f, cts.Token);
 
                 // start processing tasks
                 consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
@@ -104,28 +109,50 @@ namespace Sor.AI {
                 controller.zero(); // reset the controller
             }
 
-            // move to target
+            // execute plan
             var targetPosition = default(Vector2?);
-            lock (state.targetQueue) {
-                while (state.targetQueue.Count > 0) {
+            lock (state.plan) {
+                while (state.plan.Count > 0) {
                     // check target validity
-                    var nextTarget = state.targetQueue.Peek();
-                    if (!nextTarget.valid()) {
-                        state.targetQueue.Dequeue(); // it's invalid, remove it
-                        continue;
-                    }
+                    var nextTask = state.plan.Peek();
+                    if (nextTask is TargetSource nextTarget) {
+                        if (!nextTarget.valid()) {
+                            state.plan.Dequeue(); // it's invalid, remove it
+                            continue;
+                        }
 
-                    // check closeness
-                    bool closeEnough = (nextTarget.getPosition() - me.body.pos).LengthSquared() <
-                                       MindConstants.NEARBY_POSITION_SQ;
-                    // check closeness
-                    if (closeEnough) {
-                        state.targetQueue.Dequeue();
-                        continue;
-                    }
+                        // check closeness
+                        if (nextTarget.closeEnoughApproach(me.body.pos)) {
+                            state.plan.Dequeue();
+                            continue;
+                        }
 
-                    targetPosition = state.targetQueue.Peek().getPosition();
-                    break;
+                        targetPosition = nextTarget.approachPosition(me.body.pos);
+                        break;
+                    } else if (nextTask is PlanInteraction inter) {
+                        switch (nextTask) {
+                            case PlanFeed interFeed: {
+                                if (inter.valid()) {
+                                    // ensure alignment
+                                    // TODO: follow target should better try to align
+                                    var dirToOther = interFeed.feedTarget.Position - me.body.pos;
+                                    dirToOther.Normalize();
+                                    // get facing dir
+                                    var facingDir = new Vector2(Mathf.Cos(me.body.stdAngle),
+                                        -Mathf.Sin(me.body.stdAngle));
+                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                                        // feed
+                                        controller.tetherLogical.logicPressed = true;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
+                        // now dequeue
+                        state.plan.Dequeue();
+                    }
                 }
             }
 
@@ -138,7 +165,7 @@ namespace Sor.AI {
             // figure out how to move to target
             var toTarget = goal - me.body.pos;
             var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
-            var myAngle = -me.body.angle + (Mathf.PI / 2);
+            var myAngle = me.body.stdAngle;
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
 
             var moveX = 0;
@@ -156,8 +183,8 @@ namespace Sor.AI {
                 var vTBs = me.body.boostTopSpeed / sinPi4;
                 var aTh = me.body.thrustPower / sinPi4;
                 var aBs = (me.body.thrustPower / sinPi4) * me.body.boostFactor;
-                var aD = me.body.stdDrag / sinPi4;
-                var aF = me.body.flapDrag / sinPi4;
+                var aD = me.body.baseDrag / sinPi4;
+                var aF = me.body.brakeDrag / sinPi4;
                 // d-star
                 var dCrit =
                     +(v0 * v0) / (aD + aF)
@@ -172,8 +199,8 @@ namespace Sor.AI {
 
                 // update board
                 lock (state.board) {
-                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}");
-                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}");
+                    state.board[nameof(dGiv)] = $"{dGiv:n2}";
+                    state.board[nameof(dCrit)] = $"{dCrit:n2}";
                 }
 
                 if (dGiv > dCrit) {

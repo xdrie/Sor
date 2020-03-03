@@ -21,6 +21,11 @@ namespace Sor.Components.Units {
             set { Transform.LocalRotation = value; }
         }
 
+        /// <summary>
+        /// Standardized angle in radians
+        /// </summary>
+        public float stdAngle => -angle + (Mathf.PI / 2);
+
         public override void Initialize() {
             base.Initialize();
 

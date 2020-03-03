@@ -1,3 +1,4 @@
+using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
@@ -5,7 +6,7 @@ using Nez.Console;
 using Nez.Sprites;
 
 namespace Sor.Scenes {
-    public class MenuScene : BaseGameScene {
+    public class MenuScene : BaseGameScene<GameContext> {
         private SpriteRenderer bookrowSpriteRenderer;
 
         public override void Initialize() {
@@ -31,7 +32,7 @@ namespace Sor.Scenes {
                 new Vector2(720, 140f), gameContext.assets.fgColor));
 
             var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
-                new Vector2(10, Resolution.Y - 20f), gameContext.assets.fgColor));
+                new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
         }
 
         public override void Update() {
@@ -44,17 +45,17 @@ namespace Sor.Scenes {
                     // tween
                     bookrowSpriteRenderer
                         .TweenColorTo(gameContext.assets.palette[2], 0.2f)
-                        .SetCompletionHandler(t => transitionScene(new PlayScene(), 0.5f))
+                        .SetCompletionHandler(t => TransitionScene(new PlayScene(), 0.5f))
                         .Start();
                 }
 
-                #if DEBUG
+#if DEBUG
                 // debug scenes
                 if (Input.IsKeyPressed(Keys.D1)) {
                     // duck physics
-                    transitionScene<DuckPhysicsScene>();
+                    TransitionScene<DuckPhysicsScene>();
                 }
-                #endif
+#endif
 
                 if (Input.IsKeyPressed(Keys.Escape)) {
                     // end this scene

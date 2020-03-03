@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -54,7 +55,7 @@ namespace Sor.Game {
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWingMeta();
-                var wing = setup.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
+                var wing = setup.play.createWing(wd.name, Vector2.Zero, new AvianSoul(wd.ply));
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
@@ -69,7 +70,7 @@ namespace Sor.Game {
                 var thing = thingHelper.loadThing(rd);
                 if (thing != null) { // thing might not be loadedF
                     // tag entity as thing
-                    thing.Entity.SetTag(Constants.ENTITY_THING);
+                    thing.Entity.SetTag(Constants.Tags.ENTITY_THING);
                 }
             }
         }
@@ -86,7 +87,8 @@ namespace Sor.Game {
             wr.writeBody(play.playerWing.body);
 
             // save all other wings
-            var wingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_WING)
+            var wingsToSave = play.wings
+                .Select(x=>x.Entity)
                 .Where(x => x != play.playerEntity)
                 .ToList();
             wr.Write(wingsToSave.Count);
@@ -97,7 +99,7 @@ namespace Sor.Game {
             }
 
             // save world things
-            var thingsToSave = play.FindEntitiesWithTag(Constants.ENTITY_THING).ToList();
+            var thingsToSave = play.FindEntitiesWithTag(Constants.Tags.ENTITY_THING).ToList();
             wr.Write(thingsToSave.Count);
             // sort so trees are before capsules
             var treeList = new List<Thing>();

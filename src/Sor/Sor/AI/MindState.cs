@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Glint;
 using Glint.Util;
 using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
@@ -8,6 +9,7 @@ using Sor.AI.Model;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
+using Sor.Game;
 
 namespace Sor.AI {
     public class MindState {
@@ -22,7 +24,8 @@ namespace Sor.AI {
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
-        public Queue<TargetSource> targetQueue = new Queue<TargetSource>();
+        public Queue<PlanTask> plan = new Queue<PlanTask>();
+        public List<Map.Room> roomNavPath = new List<Map.Room>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
         public struct BoardItem {
@@ -35,6 +38,8 @@ namespace Sor.AI {
             }
 
             public BoardItem(string v) : this(v, Color.White) { }
+            
+            public static implicit operator BoardItem(string v) => new BoardItem(v);
         }
 
         public int getOpinion(Mind mind) {

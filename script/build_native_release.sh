@@ -6,7 +6,7 @@ pushd .
 export CppCompilerAndLinker=clang
 
 # arguments
-FRAMEWORK=netcoreapp3.0
+FRAMEWORK=netcoreapp3.1
 TARGET=$1
 PACK=0
 if [ -n "$2" ] && [ "$2" = "pack" ]; then

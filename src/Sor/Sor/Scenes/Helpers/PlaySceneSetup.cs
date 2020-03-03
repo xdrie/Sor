@@ -1,3 +1,5 @@
+using Glint;
+using Glint.Game;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -32,6 +34,7 @@ namespace Sor.Scenes.Helpers {
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
 
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
+            // TODO: ensure that the loaded map matches the saved map
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             var mapLoader = new MapLoader(play, mapEntity);
@@ -41,42 +44,33 @@ namespace Sor.Scenes.Helpers {
 
             if (!pers.loaded) {
                 // fresh
-                var uno = createWing("duck-uno", new Vector2(-140, 320));
+                var uno = play.createWing("uno", new Vector2(-140, 320));
                 uno.changeClass(Wing.WingClass.Predator);
-                var frend = createWing("frend", new Vector2(-140, 20),
+                var frend = play.createWing("frend", new Vector2(-140, 20),
                     new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
                 
-                var tres = createWing("duck-tres", new Vector2(200, 380));
-                var cuatro = createWing("duck-4", new Vector2(0, -100));
-                var cinco = createWing("duck-5", new Vector2(400, 100));
+                // var tres = createWing("tres", new Vector2(200, 380));
+                // var cuatro = createWing("cuatro", new Vector2(0, -100));
+                // var cinco = createWing("cinco", new Vector2(400, 100));
                 
                 mapLoader.load(mapAsset, createObjects: true);
             } else {
                 // resuming from saved state
                 mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated
             }
+            
+            gameContext.map = mapLoader.mapRepr; // copy map representation
 
             var status = pers.loaded ? "recreated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
         }
 
         public void createPlayer(Vector2 pos) {
-            play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.ENTITY_WING);
+            play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.Tags.ENTITY_WING);
             var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
             playerSoul.calc();
             play.playerWing = play.playerEntity.AddComponent(new Wing(new Mind(playerSoul, false)));
             play.playerEntity.AddComponent<PlayerInputController>();
-        }
-
-        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
-            var duckNt = play.CreateEntity(name, pos).SetTag(Constants.ENTITY_WING);
-            if (soul != null) {
-                if (!soul.calced) soul.calc();
-            }
-
-            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
-            duckNt.AddComponent<LogicInputController>();
-            return duck;
         }
     }
 }

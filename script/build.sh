@@ -11,7 +11,7 @@ GAME=Sor
 SRCDIR=src/${GAME}
 SLN=${SRCDIR}/${GAME}.sln
 PROJ=${SRCDIR}/${GAME}Dk/${GAME}Dk.csproj
-FRAMEWORK=netcoreapp3.0
+FRAMEWORK=netcoreapp3.1
 
 echo "getting submodules..."
 git submodule update --init --recursive

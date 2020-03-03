@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -34,10 +35,11 @@ namespace Sor.Game {
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
-            adjustColliders();
+            // adjustColliders();
 
             // analysis
             mapRepr = new MapRepr();
+            mapRepr.tmxMap = map;
             analyzeRooms();
 
             // load entities
@@ -53,7 +55,7 @@ namespace Sor.Game {
             foreach (var th in nature.Objects) {
                 if (th.Type == "tree") {
                     var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y))
-                        .SetTag(Constants.ENTITY_THING);
+                        .SetTag(Constants.Tags.ENTITY_THING);
                     var treeStage = 1;
                     if (th.Properties.TryGetValue("stage", out var stageProp)) {
                         treeStage = int.Parse(stageProp);
@@ -72,7 +74,7 @@ namespace Sor.Game {
             foreach (var collider in rects) {
                 var boxCollider = new BoxCollider(collider);
                 boxCollider.IsTrigger = true;
-                boxCollider.Tag = Constants.COLLIDER_LANE;
+                boxCollider.Tag = Constants.Colliders.COLLIDER_LANE;
                 mapEntity.AddComponent(boxCollider);
             }
         }
@@ -225,11 +227,12 @@ namespace Sor.Game {
                         var sPt = new Point(sx, sy);
                         // TODO: optimize this
                         // check if we're in any other room
-                        var inRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
-                        if (inRoom != null) {
+                        var otherRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        if (otherRoom != null) {
                             // set up the connection
-                            door.roomOther = inRoom;
-                            room.links.Add(inRoom);
+                            door.roomOther = otherRoom;
+                            room.links.Add(otherRoom);
+                            Global.log.writeLine($"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]", GlintLogger.LogLevel.Trace);
                             break;
                         }
                     }
@@ -287,7 +290,7 @@ namespace Sor.Game {
             foreach (var coll in adjustedColliders) {
                 var boxCollider = new BoxCollider(coll);
                 mapEntity.AddComponent(boxCollider);
-                boxCollider.Tag = Constants.COLLIDER_WALL;
+                boxCollider.Tag = Constants.Colliders.COLLIDER_WALL;
             }
         }
 

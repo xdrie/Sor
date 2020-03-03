@@ -1,9 +1,16 @@
+using System.Collections.Generic;
+using System.Linq;
+using Glint;
+using Glint.Components.Camera;
+using Glint.Game;
+using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Tweens;
 using Sor.AI;
-using Sor.Components.Camera;
+using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.UI;
 using Sor.Components.Units;
@@ -12,7 +19,7 @@ using Sor.Scenes.Helpers;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class PlayScene : BaseGameScene {
+    public class PlayScene : BaseGameScene<GameContext> {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
@@ -21,7 +28,6 @@ namespace Sor.Scenes {
 
         public Entity playerEntity;
         public Wing playerWing;
-        private Entity helpNt;
 
         public override void Initialize() {
             base.Initialize();
@@ -46,32 +52,20 @@ namespace Sor.Scenes {
             // - hud
             const int hudPadding = 8;
             var statusBarSize = new Point(96, 12);
-            var hud = CreateEntity("hud", new Vector2(Resolution.X - statusBarSize.X - hudPadding, hudPadding));
+            var hud = CreateEntity("hud", new Vector2(DesignResolution.X - statusBarSize.X - hudPadding, hudPadding));
             var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
             energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
-            helpNt = CreateEntity("help");
-            var helpDisplay1 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
-[IJKL]
-[SHIFT]
-[2]
-",
-                new Vector2(140, 140), gameContext.assets.fgColor));
-            var helpDisplay2 = helpNt.AddComponent(new TextComponent(gameContext.assets.font, @"
-move
-boost
-capsule
-",
-                new Vector2(280, 140), gameContext.assets.fgColor));
-            helpDisplay1.RenderLayer = renderlayer_ui_overlay;
-            helpDisplay2.RenderLayer = renderlayer_ui_overlay;
-            helpNt.SetLocalScale(2f);
-            showingHelp = true;
-            helpDisplay1.TweenColorTo(Color.Transparent).SetDelay(showHelpTime)
-                .SetCompletionHandler(_ => showingHelp = false).Start();
-            helpDisplay2.TweenColorTo(Color.Transparent).SetDelay(showHelpTime).Start();
+            var notifMsgNt = CreateEntity("notif", new Vector2(24f, 24f));
+            var notifyMsg = notifMsgNt.AddComponent(new TextComponent(gameContext.assets.font, "welcome", Vector2.Zero,
+                gameContext.assets.fgColor));
+            notifyMsg.RenderLayer = renderlayer_ui_overlay;
+            var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
+                .SetEaseType(EaseType.CubicIn).SetDelay(1f)
+                .SetCompletionHandler(_ => notifMsgNt.Destroy());
+            tw.Start();
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
@@ -90,16 +84,7 @@ capsule
                 // save the game
                 saveGame();
                 // end this scene
-                transitionScene<MenuScene>(0.1f);
-            }
-
-            if (!showingHelp) {
-                if (Input.IsKeyDown(Keys.Tab)) {
-                    helpNt.Enabled = true;
-                    helpNt.GetComponents<TextComponent>().ForEach(x => x.Color = gameContext.assets.fgColor);
-                } else {
-                    helpNt.Enabled = false;
-                }
+                TransitionScene<MenuScene>(0.1f);
             }
 
             if (InputUtils.IsControlDown()) {
@@ -112,7 +97,7 @@ capsule
                 // find the nearest non-player bird and inspect
                 var nearest = default(Wing);
                 var nearestDist = double.MaxValue;
-                foreach (var birdNt in FindEntitiesWithTag(Constants.ENTITY_WING)) {
+                foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
                     var wing = birdNt.GetComponent<Wing>();
                     if (birdNt.HasComponent<PlayerInputController>())
                         continue;
@@ -145,7 +130,21 @@ capsule
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+            if (!gameContext.config.clearSaves)
+                store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
+        }
+
+        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+
+        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
+            var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);
+            if (soul != null) {
+                if (!soul.calced) soul.calc();
+            }
+
+            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
+            duckNt.AddComponent<LogicInputController>();
+            return duck;
         }
     }
 }
