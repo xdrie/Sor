@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Glint.Config;
 using Sor;
@@ -15,6 +16,14 @@ namespace SorDk {
                 Console.WriteLine(sr.ReadToEnd());
                 Console.WriteLine(NGame.GAME_VERSION);
             }
+            
+            #if DEBUG
+            // check MAIM (MAintenance IMmediate access) mode
+            if (args.Length > 0 && args[0] == "maim") {
+                Maim.launch(args.Skip(1).ToList());
+                return;
+            }
+            #endif
             
             // load configuration
 #if DEBUG
