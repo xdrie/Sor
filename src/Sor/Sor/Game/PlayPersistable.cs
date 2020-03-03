@@ -60,6 +60,7 @@ namespace Sor.Game {
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
+                Global.log.writeLine($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}", GlintLogger.LogLevel.Trace);
             }
 
             // load world things

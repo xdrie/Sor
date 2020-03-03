@@ -130,7 +130,7 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            if (!gameContext.config.clearSaves)
+            if (!gameContext.config.clearData)
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
 

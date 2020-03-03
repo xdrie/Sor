@@ -8,12 +8,11 @@ namespace Sor.Game {
 
         public override void load() {
             base.load();
-            
-            maxVfx = pr.getBool("video.maxVfx", maxVfx);
+
+            pr.bind(ref maxVfx, VIDEO, nameof(maxVfx));
 
 #if DEBUG // only load debug config in debug builds
-            clearSaves = pr.getBool("debug.clearSaves", clearSaves);
-            cheats = pr.getBool("debug.cheats", cheats);
+            pr.bind(ref cheats, DEBUG, nameof(cheats));
 #endif
         }
     }

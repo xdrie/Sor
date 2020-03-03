@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sor", "Sor\Sor.csproj", "{9229317B-AF8C-44EA-B1A3-90A861977229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SorDk", "SorDk\SorDk.Mono.csproj", "{564358BD-3222-4811-B680-33BAC7A532DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{99E18C3E-4A0C-46CD-A539-7D511999744C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNez", "..\..\lib\XNez\Nez.Portable\XNez.csproj", "{82983CBF-B759-4873-A2EC-00F043A31EBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glint.AI", "..\..\lib\LunchSimulator\src\Lunchtime\Glint.AI\Glint.AI.csproj", "{D26008C3-C5A6-41D8-874D-71A9289F2433}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glint", "..\..\lib\Glint\src\Glint\Glint.csproj", "{D9EED79C-56F8-4498-8165-B32BE4894973}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LunchLib", "..\..\lib\LunchSimulator\src\Lunchtime\LunchLib\LunchLib.csproj", "{E0B1227F-0887-4BF0-8BCE-220DC550FC88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9229317B-AF8C-44EA-B1A3-90A861977229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{564358BD-3222-4811-B680-33BAC7A532DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82983CBF-B759-4873-A2EC-00F043A31EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D26008C3-C5A6-41D8-874D-71A9289F2433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D26008C3-C5A6-41D8-874D-71A9289F2433}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D26008C3-C5A6-41D8-874D-71A9289F2433}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D26008C3-C5A6-41D8-874D-71A9289F2433}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9EED79C-56F8-4498-8165-B32BE4894973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EED79C-56F8-4498-8165-B32BE4894973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9EED79C-56F8-4498-8165-B32BE4894973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9EED79C-56F8-4498-8165-B32BE4894973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0B1227F-0887-4BF0-8BCE-220DC550FC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0B1227F-0887-4BF0-8BCE-220DC550FC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0B1227F-0887-4BF0-8BCE-220DC550FC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B1227F-0887-4BF0-8BCE-220DC550FC88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{82983CBF-B759-4873-A2EC-00F043A31EBB} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
+		{D26008C3-C5A6-41D8-874D-71A9289F2433} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
+		{D9EED79C-56F8-4498-8165-B32BE4894973} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
+		{E0B1227F-0887-4BF0-8BCE-220DC550FC88} = {99E18C3E-4A0C-46CD-A539-7D511999744C}
+	EndGlobalSection
+EndGlobal
