@@ -1,3 +1,4 @@
+using Glint.Physics;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
