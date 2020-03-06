@@ -80,7 +80,7 @@ namespace Sor.Scenes {
             followCamera.AddComponent<CameraShake>();
 
 #if DEBUG
-            // draw nav graph
+            // draw nav graph (only visible in debug render)
             var navGraphDisplay = CreateEntity("navgraph_display");
             navGraphDisplay.AddComponent(new NavGraphDisplay(gameContext.map,
                 FindEntity("map").GetComponent<TiledMapRenderer>()));
