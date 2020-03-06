@@ -41,7 +41,7 @@ namespace Sor.Game {
             mapRepr = new MapRepr();
             mapRepr.tmxMap = map;
             analyzeRooms();
-            mapRepr.sng = createStructuralNavigationGraph();
+            mapRepr.sng = createStructuralNavigationGraph(mapRepr.roomGraph);
 
             // load entities
             loadFeatures();
@@ -246,8 +246,9 @@ namespace Sor.Game {
             mapRepr.roomGraph = new RoomGraph {rooms = rooms};
         }
 
-        private StructuralNavigationGraph createStructuralNavigationGraph() {
-            var sngBuilder = new StructuralNavigationGraphBuilder();
+        private StructuralNavigationGraph createStructuralNavigationGraph(RoomGraph rg) {
+            var sngBuilder = new StructuralNavigationGraphBuilder(rg);
+            sngBuilder.analyze();
             return sngBuilder.build();
         }
 
