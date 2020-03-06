@@ -41,6 +41,7 @@ namespace Sor.Game {
             mapRepr = new MapRepr();
             mapRepr.tmxMap = map;
             analyzeRooms();
+            mapRepr.sng = createStructuralNavigationGraph();
 
             // load entities
             loadFeatures();
@@ -232,7 +233,9 @@ namespace Sor.Game {
                             // set up the connection
                             door.roomOther = otherRoom;
                             room.links.Add(otherRoom);
-                            Global.log.writeLine($"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]", GlintLogger.LogLevel.Trace);
+                            Global.log.writeLine(
+                                $"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
+                                GlintLogger.LogLevel.Trace);
                             break;
                         }
                     }
@@ -241,6 +244,11 @@ namespace Sor.Game {
 
             // set up room graph
             mapRepr.roomGraph = new RoomGraph {rooms = rooms};
+        }
+
+        private StructuralNavigationGraph createStructuralNavigationGraph() {
+            var sngBuilder = new StructuralNavigationGraphBuilder();
+            return sngBuilder.build();
         }
 
         /// <summary>

@@ -112,6 +112,7 @@ namespace Sor.AI.Systems {
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
                     .Where(x => x != nearestRoom).RandomSubset(1)
                     .First();
+                // TODO: instead of searching the room graph, search the "structure navigation graph"
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
                 if (!foundPath.Any()) return; // pathfind failed
                 lock (state) {
