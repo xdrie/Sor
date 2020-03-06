@@ -129,10 +129,9 @@ namespace Sor.AI.Systems {
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
                 lock (state.plan) {
+                    state.plan.Clear(); // reset plan
                     foreach (var pathNode in foundPath) {
                         var tmapPos = pathNode.pos.ToVector2();
-
-                        state.plan.Clear(); // reset plan
                         state.plan.Enqueue(new FixedTargetSource(
                             mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
                             TargetSource.RANGE_SHORT));
