@@ -133,7 +133,7 @@ namespace Sor.AI.Systems {
 
                 lock (state.board) {
                     var nextPt = foundPath.First().center;
-                    state.board["exp"] = $"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])";
+                    state.board["exp"] = new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path");
                 }
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));

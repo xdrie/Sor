@@ -200,8 +200,8 @@ namespace Sor.AI {
 
                 // update board
                 lock (state.board) {
-                    state.board[nameof(dGiv)] = $"{dGiv:n2}";
-                    state.board[nameof(dCrit)] = $"{dCrit:n2}";
+                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}", "mov");
+                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}", "mov");
                 }
 
                 if (dGiv > dCrit) {

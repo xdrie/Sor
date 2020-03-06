@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
@@ -106,8 +107,27 @@ namespace Sor.AI {
                 ind.AppendLine();
                 // draw board
                 lock (mind.state.board) {
-                    foreach (var kv in mind.state.board) {
-                        ind.AppendLine($"  {kv.Key}: {kv.Value.v}");
+                    var boardItems = mind.state.board;
+                    // sort board items by tag
+                    var orderedBoardItems =
+                        boardItems.OrderBy(x => x.Value.tag)
+                            .ToArray();
+                    var taggedItems = new Dictionary<string, List<(string, string)>>();
+                    foreach (var groupedBoardItem in orderedBoardItems) {
+                        if (!taggedItems.ContainsKey(groupedBoardItem.Value.tag)) {
+                            taggedItems[groupedBoardItem.Value.tag] = new List<(string, string)>();
+                        }
+
+                        taggedItems[groupedBoardItem.Value.tag]
+                            .Add((groupedBoardItem.Key, groupedBoardItem.Value.value));
+                    }
+
+                    ind.AppendLine("-- BOARD --");
+                    foreach (var tagGroup in taggedItems) {
+                        ind.AppendLine($" {tagGroup.Key}");
+                        foreach (var (key, disp) in tagGroup.Value) {
+                            ind.AppendLine($"  {key}: {disp}");
+                        }
                     }
                 }
 
