@@ -6,7 +6,28 @@ using Sor.Util;
 namespace Sor.AI.Nav {
     public class StructuralNavigationGraphBuilder {
         private RoomGraph roomGraph;
-        private Dictionary<Map.Room, StructuralNavigationGraph.Node> sngNodes;
+        private Dictionary<Map.Room, DelayedNode> sngNodes;
+
+        class DelayedNode {
+            public StructuralNavigationGraph.Node centerNode;
+            private List<DelayedNode> pendingLinks;
+
+            public DelayedNode(StructuralNavigationGraph.Node centerNode) {
+                this.centerNode = centerNode;
+            }
+
+            public void addPendingLink(DelayedNode node) {
+                pendingLinks.Add(node);
+            }
+
+            public void collapse() {
+                // recursively collapse all pending nodes
+                foreach (var link in pendingLinks) {
+                    link.collapse(); // collapse this child link
+                    centerNode.links.Add(link.centerNode); // attach the child link to me (center)
+                }
+            }
+        }
 
         public StructuralNavigationGraphBuilder(RoomGraph roomGraph) {
             this.roomGraph = roomGraph;
@@ -20,7 +41,8 @@ namespace Sor.AI.Nav {
             // 1. build mapping from room to center nodes
             foreach (var room in roomGraph.rooms) {
                 // create unconnected center nodes
-                sngNodes[room] = new StructuralNavigationGraph.Node(room.center);
+                sngNodes[room] = new DelayedNode(
+                    new StructuralNavigationGraph.Node(room.center));
             }
 
             // 2. create nodes of indirection
@@ -31,12 +53,20 @@ namespace Sor.AI.Nav {
                     // calculate positions of inner and outer door nodes
                     var doorCenter = door.doorCenter;
                     var (dx, dy) = DirectionStepper.stepIn(door.dir);
-                    var outerDoor = doorCenter + new Point(dx * StructuralNavigationGraph.DOOR_NODE_DIST,
-                        dy * StructuralNavigationGraph.DOOR_NODE_DIST);
                     var innerDoor = doorCenter + new Point(-dx * StructuralNavigationGraph.DOOR_NODE_DIST,
                         -dy * StructuralNavigationGraph.DOOR_NODE_DIST);
+                    var outerDoor = doorCenter + new Point(dx * StructuralNavigationGraph.DOOR_NODE_DIST,
+                        dy * StructuralNavigationGraph.DOOR_NODE_DIST);
+                    var innerDoorNode = new DelayedNode(new StructuralNavigationGraph.Node(innerDoor));
+                    var outerDoorNode = new DelayedNode(new StructuralNavigationGraph.Node(outerDoor));
+                    centerNode.addPendingLink(innerDoorNode); // attach CENTER - INNER
+                    innerDoorNode.addPendingLink(outerDoorNode); // attach INNER - OUTER
+                    // when collapsed, we should get CENTER - INNER - OUTER (a "spike")
                 }
             }
+            // now, we have all our nodes of the form
+            // CENTER with [INNER - OUTER] spikes for each door
+            // next, we need to merge these spikes by door link
         }
     }
 }
