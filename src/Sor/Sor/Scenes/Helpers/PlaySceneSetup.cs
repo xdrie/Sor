@@ -33,7 +33,7 @@ namespace Sor.Scenes.Helpers {
             var blockNt = play.CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
 
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test2.tmx");
+            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
             // TODO: ensure that the loaded map matches the saved map
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
