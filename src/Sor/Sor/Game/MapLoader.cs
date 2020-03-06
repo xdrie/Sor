@@ -35,7 +35,7 @@ namespace Sor.Game {
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
-            // adjustColliders();
+            createWallColliders();
 
             // analysis
             mapRepr = new MapRepr();
@@ -246,7 +246,7 @@ namespace Sor.Game {
         /// <summary>
         /// Re-calculate the colliders to better match the tile sprites
         /// </summary>
-        private void adjustColliders() {
+        private void createWallColliders() {
             var rects = structure.GetCollisionRectangles();
             var adjustedColliders = new List<Rectangle>();
             foreach (var rect in rects) {
