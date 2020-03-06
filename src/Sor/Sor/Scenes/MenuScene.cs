@@ -52,6 +52,11 @@ namespace Sor.Scenes {
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
+            void fadeUiSprite(SpriteRenderer ren) {
+                var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
+                tw.Start();
+            }
+
             void bordFlash(Action follow = null) {
                 var colTw = bordWhRen.TweenColorTo(gameContext.assets.paletteWhite)
                     .SetDuration(0.4f)
@@ -60,15 +65,22 @@ namespace Sor.Scenes {
                 colTw.Start();
             }
 
+            void uiFocus(Action follow = null) {
+                fadeUiSprite(frillRen);
+                fadeUiSprite(titleRen);
+                fadeUiSprite(frameRen);
+                bordFlash(follow);
+            }
+
             // add controller
             ui.AddComponent(new MenuInputController());
             var menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
-                        bordFlash(() => { TransitionScene(new PlayScene(), 0.5f); });
+                        uiFocus(() => { TransitionScene(new PlayScene(), 0.5f); });
                     }),
                     new MenuButtonList.Item(new Sprite(textEvoTex), () => {
-                        bordFlash();
+                        uiFocus();
                     }),
                     new MenuButtonList.Item(new Sprite(textOptTex), () => {
                         bordFlash();
