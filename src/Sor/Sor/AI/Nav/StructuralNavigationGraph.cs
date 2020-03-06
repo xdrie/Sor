@@ -13,7 +13,7 @@ namespace Sor.AI.Nav {
         
         public class Node {
             public Point pos;
-            public List<Node> links;
+            public List<Node> links = new List<Node>();
             public RoomLink edge;
 
             public Node(Point pos) {
