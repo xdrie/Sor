@@ -64,7 +64,7 @@ namespace Sor.Scenes {
             notifyMsg.RenderLayer = renderlayer_ui_overlay;
             var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
                 .SetEaseType(EaseType.CubicIn).SetDelay(1f)
-                .SetCompletionHandler(_ => notifMsgNt.Destroy());
+                .SetCompletionHandler(_ => notifMsgNt?.Destroy());
             tw.Start();
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
