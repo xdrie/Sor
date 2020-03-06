@@ -37,6 +37,7 @@ namespace Sor.Game {
         public class Door {
             public Point start;
             public Point end;
+            public Point doorCenter => new Point((start.X + end.X) / 2, (start.Y + end.Y) / 2);
             public Direction dir;
 
             public Room roomLocal; // the room this door belongs to

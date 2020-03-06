@@ -7,6 +7,7 @@ using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.AI.Model;
 using Sor.Components.Input;
+using Sor.Components.Inspect;
 using Sor.Components.Units;
 using Sor.Systems;
 

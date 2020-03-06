@@ -8,6 +8,7 @@ using Nez;
 using Nez.Tiled;
 using Sor.Components.Things;
 using Sor.AI.Nav;
+using Sor.Util;
 
 namespace Sor.Game {
     public class MapLoader {
@@ -35,12 +36,13 @@ namespace Sor.Game {
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
-            createWallColliders();
+            // createWallColliders();
 
             // analysis
             mapRepr = new MapRepr();
             mapRepr.tmxMap = map;
             analyzeRooms();
+            mapRepr.sng = createStructuralNavigationGraph(mapRepr.roomGraph);
 
             // load entities
             loadFeatures();
@@ -190,24 +192,9 @@ namespace Sor.Game {
             // pass 2 - determine room links
             foreach (var room in rooms) {
                 foreach (var door in room.doors) {
-                    var dx = 0;
-                    var dy = 0;
                     // average the door pos
-                    var inPos = new Point((door.start.X + door.end.X) / 2, (door.start.Y + door.end.Y) / 2);
-                    switch (door.dir) {
-                        case Direction.Up:
-                            dy = -1;
-                            break;
-                        case Direction.Right:
-                            dx = 1;
-                            break;
-                        case Direction.Down:
-                            dy = 1;
-                            break;
-                        case Direction.Left:
-                            dx = -1;
-                            break;
-                    }
+                    var inPos = door.doorCenter;
+                    var (dx, dy) = DirectionStepper.stepIn(door.dir);
 
                     // now scan in direction
                     var distScanned = 0;
@@ -232,7 +219,9 @@ namespace Sor.Game {
                             // set up the connection
                             door.roomOther = otherRoom;
                             room.links.Add(otherRoom);
-                            Global.log.writeLine($"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]", GlintLogger.LogLevel.Trace);
+                            Global.log.writeLine(
+                                $"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
+                                GlintLogger.LogLevel.Trace);
                             break;
                         }
                     }
@@ -241,6 +230,12 @@ namespace Sor.Game {
 
             // set up room graph
             mapRepr.roomGraph = new RoomGraph {rooms = rooms};
+        }
+
+        private StructuralNavigationGraph createStructuralNavigationGraph(RoomGraph rg) {
+            var sngBuilder = new StructuralNavigationGraphBuilder(rg);
+            sngBuilder.analyze();
+            return sngBuilder.build();
         }
 
         /// <summary>
