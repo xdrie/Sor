@@ -8,6 +8,7 @@ namespace Sor.AI.Nav {
     public class StructuralNavigationGraphBuilder {
         private RoomGraph roomGraph;
         private Dictionary<Map.Room, DelayedNode> sngNodes = new Dictionary<Map.Room, DelayedNode>();
+        private List<StructuralNavigationGraph.Node> allNodes = new List<StructuralNavigationGraph.Node>();
 
         class DelayedNode {
             public StructuralNavigationGraph.Node centerNode;
@@ -38,8 +39,7 @@ namespace Sor.AI.Nav {
         }
 
         public StructuralNavigationGraph build() {
-            var nodeList = sngNodes.Values.Select(x => x.centerNode).ToList();
-            return new StructuralNavigationGraph(nodeList);
+            return new StructuralNavigationGraph(allNodes);
         }
 
         public void analyze() {
@@ -72,6 +72,8 @@ namespace Sor.AI.Nav {
                 centerNode.collapse();
             }
 
+            var centralNodes = sngNodes.Values.Select(x => x.centerNode).ToList();
+            allNodes.AddRange(centralNodes);
             // now, we have all our nodes of the form
             // CENTER with [INNER - OUTER] spikes for each door
             // 3. next, we need to merge these spikes by door link
@@ -92,6 +94,10 @@ namespace Sor.AI.Nav {
                 while (queue.Count > 0) {
                     // process the current vertex
                     var vertex = queue.Dequeue();
+                    // add to node list
+                    if (!allNodes.Contains(vertex)) {
+                        allNodes.Add(vertex);
+                    }
                     if (vertex.edge != null) {
                         spikeNodes.Add(vertex);
                     }
