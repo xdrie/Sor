@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.BitmapFonts;
+using Sor.AI;
 using Sor.AI.Model;
 using Sor.Components.Units;
 using Sor.Util;
 
-namespace Sor.AI {
+namespace Sor.Components.Inspect {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Wing player;
         private Mind mind;
