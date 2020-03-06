@@ -71,6 +71,7 @@ namespace Sor.AI.Nav {
                     innerDoorNode.addPendingLink(outerDoorNode); // attach INNER - OUTER
                     // when collapsed, we should get CENTER - INNER - OUTER (a "spike")
                 }
+
                 centerNode.collapse();
             }
 
@@ -80,13 +81,13 @@ namespace Sor.AI.Nav {
             // CENTER with [INNER - OUTER] spikes for each door
             // 3. next, we need to merge these spikes by door link
             // and merge all these delayed nodes into a graph
+            var spikeNodes = new List<StructuralNavigationGraph.Node>();
             foreach (var nodePair in sngNodes) {
                 var room = nodePair.Key;
                 var centerNode = nodePair.Value;
                 var gn = centerNode.centerNode;
 
                 // do a BFS on the node. we are going to make a list of spike nodes.
-                var spikeNodes = new List<StructuralNavigationGraph.Node>();
                 var visited = new Dictionary<StructuralNavigationGraph.Node, bool>();
                 var queue = new Queue<StructuralNavigationGraph.Node>();
                 // mark the starting node as visited, and queue it
@@ -100,6 +101,7 @@ namespace Sor.AI.Nav {
                     if (!allNodes.Contains(vertex)) {
                         allNodes.Add(vertex);
                     }
+
                     if (vertex.edge != null) {
                         spikeNodes.Add(vertex);
                     }
@@ -112,22 +114,22 @@ namespace Sor.AI.Nav {
                         }
                     }
                 }
+            }
 
-                // then, we will x2 loop through all spike nodes and match spike to spike via link equiv
-                foreach (var spk1 in spikeNodes) {
-                    foreach (var spk2 in spikeNodes) {
-                        if (spk1 == spk2) continue;
-                        // now, match spike-to-spike
-                        if (spk1.edge.equiv(spk2.edge)) {
-                            // we have a match!
-                            spk1.links.Add(spk2);
-                            spk2.links.Add(spk1);
-                        }
+            // then, we will x2 loop through all spike nodes and match spike to spike via link equiv
+            foreach (var spk1 in spikeNodes) {
+                foreach (var spk2 in spikeNodes) {
+                    if (spk1 == spk2) continue;
+                    // now, match spike-to-spike
+                    if (spk1.edge.equiv(spk2.edge)) {
+                        // we have a match!
+                        spk1.links.Add(spk2);
+                        spk2.links.Add(spk1);
                     }
                 }
-
-                // this should give us a graph!
             }
+
+            // this should give us a graph!e
         }
     }
 }
