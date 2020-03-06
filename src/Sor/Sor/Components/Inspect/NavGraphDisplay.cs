@@ -20,6 +20,10 @@ namespace Sor.Components.Inspect {
             foreach (var node in mapRepr.sng.nodes) {
                 Vector2 toWorldPos(Point tilePos) => mapRenderer.TiledMap.TileToWorldPosition(tilePos.ToVector2());
                 batcher.DrawHollowRect(toWorldPos(node.pos), 4f, 4f, Color.GreenYellow, 1f);
+                // draw edges
+                foreach (var adj in node.links) {
+                    batcher.DrawLine(toWorldPos(node.pos), toWorldPos(adj.pos), Color.GreenYellow, 1f);
+                }
             }
         }
     }
