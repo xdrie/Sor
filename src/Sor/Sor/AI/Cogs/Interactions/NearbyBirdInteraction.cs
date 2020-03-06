@@ -1,5 +1,5 @@
 using System;
-using Glint.AI.Misc;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
     public class NearbyBirdInteraction : BirdInteraction {
@@ -29,8 +29,8 @@ namespace Sor.AI.Cogs.Interactions {
                 me.emotions.fear = 1; // overwrite fear
             }
             
-            opDel = Gmathf.clamp(opDel, -maxDel, maxDel);
-            var newOpi = me.mind.state.addOpinion(them.mind, Gmathf.roundToInt(opDel));
+            opDel = GMathf.clamp(opDel, -maxDel, maxDel);
+            var newOpi = me.mind.state.addOpinion(them.mind, GMathf.roundToInt(opDel));
         }
     }
 }

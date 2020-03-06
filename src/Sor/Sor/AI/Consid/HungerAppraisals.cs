@@ -1,7 +1,7 @@
 using System.Linq;
-using Glint.AI.Misc;
 using LunchLib.AI.Utility;
 using Sor.Components.Things;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
     public static class HungerAppraisals {
@@ -13,8 +13,8 @@ namespace Sor.AI.Consid {
                 // let E be energy percentage (energy / max energy), clamp01
                 // y = (1 - E)^2
                 var energyCore = context.Entity.GetComponent<EnergyCore>();
-                var invEnergyPerc = 1 - Gmathf.clamp01(energyCore.ratio);
-                return Gmathf.sqrt(invEnergyPerc * invEnergyPerc);
+                var invEnergyPerc = 1 - GMathf.clamp01(energyCore.ratio);
+                return GMathf.sqrt(invEnergyPerc * invEnergyPerc);
             }
         }
 

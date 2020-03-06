@@ -1,7 +1,7 @@
 using System.Linq;
-using Glint.AI.Misc;
 using LunchLib.AI.Utility;
 using Sor.AI.Cogs;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
     public static class SocialAppraisals {
@@ -16,7 +16,7 @@ namespace Sor.AI.Consid {
                 if (!wings.Any()) return 0;
                 // scale from 0-100
                 var firstWing = wings.First();
-                return Gmathf.map01clamp01(context.state.getOpinion(firstWing.mind),
+                return GMathf.map01clamp01(context.state.getOpinion(firstWing.mind),
                     MindConstants.OPINION_NEUTRAL, MindConstants.OPINION_ALLY);
             }
         }
