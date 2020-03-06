@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Sor.Game;
+using Sor.Util;
 
 namespace Sor.AI.Nav {
     public class StructuralNavigationGraphBuilder {
@@ -21,6 +22,14 @@ namespace Sor.AI.Nav {
                 sngNodes[room] = new StructuralNavigationGraph.Node(room.center);
             }
             // 2. create nodes of indirection
+            foreach (var nodePair in sngNodes) {
+                var room = nodePair.Key;
+                var centerNode = nodePair.Value;
+                foreach (var door in room.doors) {
+                    var innerDoor = door.doorCenter;
+                    var (dx, dy) = DirectionStepper.stepIn(door.dir);
+                }
+            }
         }
     }
 }
