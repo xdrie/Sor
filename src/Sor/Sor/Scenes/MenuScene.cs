@@ -1,5 +1,6 @@
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Console;
@@ -25,11 +26,22 @@ namespace Sor.Scenes {
             var bordFrameTex = Content.LoadTexture("Data/ui/menu/bord_frame.png");
             var bordWhTex = Content.LoadTexture("Data/ui/menu/bord_wh.png");
 
+            SpriteRenderer addUiSprite(Texture2D texture, Vector2 cornerOffset) {
+                var texSpr = new Sprite(texture);
+                var spRen = ui.AddComponent(new SpriteRenderer(texSpr));
+                spRen.SetLocalOffset(new Vector2(texSpr.Texture2D.Width / 2f, texSpr.Texture2D.Height / 2f) +
+                                     cornerOffset);
+                return spRen;
+            }
+
             // - main menu layout
-            // frill
-            var frillSpr = new Sprite(frillTex);
-            var frill = ui.AddComponent(new SpriteRenderer(frillSpr))
-                .SetLocalOffset(new Vector2(frillSpr.Texture2D.Width / 2f, frillSpr.Texture2D.Height / 2f));
+            var designScale = 4;
+            
+            var frillRen = addUiSprite(frillTex, Vector2.Zero);
+            var titleRen = addUiSprite(titleTex, new Vector2(128, 24) * designScale);
+            var frameRen = addUiSprite(bordFrameTex, new Vector2(24, 40) * designScale);
+            var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
+            bordWhRen.Color = gameContext.assets.paletteBrown;
         }
 
         public override void Update() {
