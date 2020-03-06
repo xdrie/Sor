@@ -4,11 +4,10 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Console;
 using Nez.Sprites;
+using Nez.Textures;
 
 namespace Sor.Scenes {
     public class MenuScene : BaseGameScene<GameContext> {
-        private SpriteRenderer bookrowSpriteRenderer;
-
         public override void Initialize() {
             base.Initialize();
 
@@ -16,23 +15,21 @@ namespace Sor.Scenes {
 
             var ui = CreateEntity("ui");
 
-            // var titleText = new TextComponent(gameContext.assets.font, "SOR", new Vector2(40, 40),
-            //     gameContext.assets.fgColor);
-            // ui.AddComponent(titleTexSpr);
-
-            var titleTexNt = CreateEntity("title", new Vector2(290f, 160f));
-            titleTexNt.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/904.png")));
-            titleTexNt.SetLocalScale(4f);
-
-            var playBtn = CreateEntity("play_button", new Vector2(800f, 120f));
-            bookrowSpriteRenderer =
-                playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
-            playBtn.SetLocalScale(4f);
-            var pressToPlayText = ui.AddComponent(new TextComponent(gameContext.assets.font, "press [E]",
-                new Vector2(720, 140f), gameContext.assets.fgColor));
-
+            // display game version
             var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
                 new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
+
+            // load menu part textures
+            var frillTex = Content.LoadTexture("Data/ui/menu/frill.png");
+            var titleTex = Content.LoadTexture("Data/ui/menu/title.png");
+            var bordFrameTex = Content.LoadTexture("Data/ui/menu/bord_frame.png");
+            var bordWhTex = Content.LoadTexture("Data/ui/menu/bord_wh.png");
+
+            // - main menu layout
+            // frill
+            var frillSpr = new Sprite(frillTex);
+            var frill = ui.AddComponent(new SpriteRenderer(frillSpr))
+                .SetLocalOffset(new Vector2(frillSpr.Texture2D.Width / 2f, frillSpr.Texture2D.Height / 2f));
         }
 
         public override void Update() {
@@ -42,11 +39,7 @@ namespace Sor.Scenes {
             if (!DebugConsole.Instance.IsOpen) {
 #endif
                 if (Input.IsKeyPressed(Keys.E)) {
-                    // tween
-                    bookrowSpriteRenderer
-                        .TweenColorTo(gameContext.assets.palette[2], 0.2f)
-                        .SetCompletionHandler(t => TransitionScene(new PlayScene(), 0.5f))
-                        .Start();
+                    TransitionScene(new PlayScene(), 0.5f);
                 }
 
 #if DEBUG
