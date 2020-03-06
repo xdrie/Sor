@@ -25,6 +25,10 @@ namespace Sor.Scenes {
             var titleTex = Content.LoadTexture("Data/ui/menu/title.png");
             var bordFrameTex = Content.LoadTexture("Data/ui/menu/bord_frame.png");
             var bordWhTex = Content.LoadTexture("Data/ui/menu/bord_wh.png");
+            var buttonTex = Content.LoadTexture("Data/ui/menu/button.png");
+            var textFlyTex = Content.LoadTexture("Data/ui/menu/tex_fly.png");
+            var textEvoTex = Content.LoadTexture("Data/ui/menu/tex_evo.png");
+            var textOptTex = Content.LoadTexture("Data/ui/menu/tex_opt.png");
 
             SpriteRenderer addUiSprite(Texture2D texture, Vector2 cornerOffset) {
                 var texSpr = new Sprite(texture);
