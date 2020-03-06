@@ -35,15 +35,16 @@ namespace Sor.Components.UI {
                 item.buttonAnim.SetLocalOffset(currentOffset);
                 Entity.AddComponent(item.buttonAnim);
                 // also add button text
-                var buttonTextRen = new SpriteRenderer(item.textSpr);
-                buttonTextRen.SetLocalOffset(currentOffset); // center of button frame matches text pos
-                Entity.AddComponent(buttonTextRen);
+                item.texRen = new SpriteRenderer(item.textSpr);
+                item.texRen.SetLocalOffset(currentOffset); // center of button frame matches text pos
+                Entity.AddComponent(item.texRen);
                 currentOffset += new Vector2(0, item.buttonAnim.Sprite.Texture2D.Height);
             }
         }
 
         public class Item {
             public Sprite textSpr;
+            public SpriteRenderer texRen;
             public SpriteAnimator buttonAnim;
             public Action onSelected;
 
@@ -57,9 +58,12 @@ namespace Sor.Components.UI {
             // check input and update the selected sprite
             foreach (var item in items) { // deselect all
                 item.buttonAnim.Play(NOT_SELECTED);
+                // set text color
+                item.texRen.Color = NGame.context.assets.paletteBrown;
             }
             // show on the selected one
             items[selectedItem].buttonAnim.Play(YES_SELECTED);
+            items[selectedItem].texRen.Color = NGame.context.assets.paletteWhite;
             
             // check input to update selection
             var controller = Entity.GetComponent<MenuInputController>();
