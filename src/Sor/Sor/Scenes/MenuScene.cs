@@ -1,14 +1,19 @@
+using System;
+using System.Collections.Generic;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Console;
 using Nez.Sprites;
+using Nez.Textures;
+using Nez.Tweens;
+using Sor.Components.Input;
+using Sor.Components.UI;
 
 namespace Sor.Scenes {
     public class MenuScene : BaseGameScene<GameContext> {
-        private SpriteRenderer bookrowSpriteRenderer;
-
         public override void Initialize() {
             base.Initialize();
 
@@ -16,23 +21,74 @@ namespace Sor.Scenes {
 
             var ui = CreateEntity("ui");
 
-            // var titleText = new TextComponent(gameContext.assets.font, "SOR", new Vector2(40, 40),
-            //     gameContext.assets.fgColor);
-            // ui.AddComponent(titleTexSpr);
-
-            var titleTexNt = CreateEntity("title", new Vector2(290f, 160f));
-            titleTexNt.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/904.png")));
-            titleTexNt.SetLocalScale(4f);
-
-            var playBtn = CreateEntity("play_button", new Vector2(800f, 120f));
-            bookrowSpriteRenderer =
-                playBtn.AddComponent(new SpriteRenderer(Core.Content.LoadTexture("Data/ui/bookrow.png")));
-            playBtn.SetLocalScale(4f);
-            var pressToPlayText = ui.AddComponent(new TextComponent(gameContext.assets.font, "press [E]",
-                new Vector2(720, 140f), gameContext.assets.fgColor));
-
+            // display game version
             var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
                 new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
+
+            // load menu part textures
+            var frillTex = Content.LoadTexture("Data/ui/menu/frill.png");
+            var titleTex = Content.LoadTexture("Data/ui/menu/title.png");
+            var bordFrameTex = Content.LoadTexture("Data/ui/menu/bord_frame.png");
+            var bordWhTex = Content.LoadTexture("Data/ui/menu/bord_wh.png");
+            var buttonTex = Content.LoadTexture("Data/ui/menu/button.png");
+            var textFlyTex = Content.LoadTexture("Data/ui/menu/tex_fly.png");
+            var textEvoTex = Content.LoadTexture("Data/ui/menu/tex_evo.png");
+            var textOptTex = Content.LoadTexture("Data/ui/menu/tex_opt.png");
+
+            SpriteRenderer addUiSprite(Texture2D texture, Vector2 cornerOffset) {
+                var texSpr = new Sprite(texture);
+                var spRen = ui.AddComponent(new SpriteRenderer(texSpr));
+                spRen.SetLocalOffset(new Vector2(texSpr.Texture2D.Width / 2f, texSpr.Texture2D.Height / 2f) +
+                                     cornerOffset);
+                return spRen;
+            }
+
+            // - main menu layout
+            var designScale = 4;
+
+            var frillRen = addUiSprite(frillTex, Vector2.Zero);
+            var titleRen = addUiSprite(titleTex, new Vector2(128, 24) * designScale);
+            var frameRen = addUiSprite(bordFrameTex, new Vector2(24, 40) * designScale);
+            var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
+            bordWhRen.Color = gameContext.assets.paletteBrown;
+
+            void fadeUiSprite(SpriteRenderer ren) {
+                var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
+                tw.Start();
+            }
+
+            void bordFlash(Action follow = null) {
+                var colTw = bordWhRen.TweenColorTo(gameContext.assets.paletteWhite)
+                    .SetDuration(0.4f)
+                    .SetEaseType(EaseType.QuadOut)
+                    .SetCompletionHandler(_ => follow?.Invoke());
+                colTw.Start();
+            }
+
+            void uiFocus(Action follow = null) {
+                fadeUiSprite(frillRen);
+                fadeUiSprite(titleRen);
+                fadeUiSprite(frameRen);
+                bordFlash(follow);
+            }
+
+            // add controller
+            ui.AddComponent(new MenuInputController());
+            var menuButtons = ui.AddComponent(new MenuButtonList(
+                new List<MenuButtonList.Item> {
+                    new MenuButtonList.Item(new Sprite(textFlyTex), () => {
+                        uiFocus(() => { TransitionScene(new PlayScene(), 0.5f); });
+                    }),
+                    new MenuButtonList.Item(new Sprite(textEvoTex), () => {
+                        uiFocus();
+                    }),
+                    new MenuButtonList.Item(new Sprite(textOptTex), () => {
+                        bordFlash();
+                    }),
+                },
+                Sprite.SpritesFromAtlas(buttonTex, 320, 64),
+                (new Vector2(112, 64) * designScale) + new Vector2(160, 32)
+            ));
         }
 
         public override void Update() {
@@ -41,13 +97,6 @@ namespace Sor.Scenes {
 #if DEBUG
             if (!DebugConsole.Instance.IsOpen) {
 #endif
-                if (Input.IsKeyPressed(Keys.E)) {
-                    // tween
-                    bookrowSpriteRenderer
-                        .TweenColorTo(gameContext.assets.palette[2], 0.2f)
-                        .SetCompletionHandler(t => TransitionScene(new PlayScene(), 0.5f))
-                        .Start();
-                }
 
 #if DEBUG
                 // debug scenes
