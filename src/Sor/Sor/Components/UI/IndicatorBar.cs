@@ -10,7 +10,7 @@ namespace Sor.Components.UI {
         public int height;
         public int width;
 
-        public IndicatorBar(int width, int height) : base(Core.Content.LoadTexture("Data/ui/indicator_bar.png")) {
+        public IndicatorBar(int width, int height) : base(Core.Content.LoadTexture("Data/ui/el/indicator_bar.png")) {
             this.width = width;
             this.height = height;
             backdropRenderer = new SpriteRenderer(texture);

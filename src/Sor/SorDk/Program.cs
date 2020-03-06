@@ -40,16 +40,20 @@ namespace SorDk {
             configHelper.ensureDefaultConfig(conf, defaultConf);
             var confStr = File.ReadAllText(conf);
             var config = configHelper.load(confStr, args); // load and parse config
-            // run in crash-cradle
+            // run in crash-cradle (only if NOT debug)
+#if !DEBUG
             try {
-                using (var game = new NGame(config)) {
-                    game.Run();
-                }
+#endif
+            using (var game = new NGame(config)) {
+                game.Run();
             }
-            catch (Exception ex) {
-                Global.log.writeLine($"fatal error: {ex}", GlintLogger.LogLevel.Critical);
-                throw;
-            }
+#if !DEBUG
+        }
+        catch (Exception ex) {
+            Global.log.writeLine($"fatal error: {ex}", GlintLogger.LogLevel.Critical);
+            throw;
+        }
+#endif
         }
     }
 }

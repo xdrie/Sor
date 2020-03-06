@@ -26,7 +26,7 @@ namespace Sor.Scenes {
             gameContext.loadContent();
 
             var cover = CreateEntity("cover", DesignResolution.ToVector2() / 2);
-            var logo = cover.AddComponent<LogoAnimation>();
+            var logo = cover.AddComponent<DevLogoAnimation>();
             var targetWidth = DesignResolution.X * 0.7f;
             
             var baseScale = new Vector2(4f);

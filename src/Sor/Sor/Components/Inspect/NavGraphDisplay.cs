@@ -15,7 +15,10 @@ namespace Sor.Components.Inspect {
             this.mapRenderer = mapRenderer;
         }
 
-        public override void Render(Batcher batcher, Camera camera) {
+        public override void Render(Batcher batcher, Camera camera) { }
+
+        public override void DebugRender(Batcher batcher) {
+            base.DebugRender(batcher);
             // draw points for each point on the map graph
             foreach (var node in mapRepr.sng.nodes) {
                 Vector2 toWorldPos(Point tilePos) => mapRenderer.TiledMap.TileToWorldPosition(tilePos.ToVector2());
