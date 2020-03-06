@@ -23,11 +23,11 @@ namespace Sor {
             public BitmapFont font;
 
             public Color[] palette = {
-                new Color(0xede5ce),
-                new Color(0x8e9c9d),
-                new Color(0xaa5c56),
-                new Color(0x887163),
-                new Color(0x2f2732),
+                new Color(237, 229, 206), // white
+                new Color(142, 156, 157), // gray
+                new Color(170, 92, 86), // orange
+                new Color(136, 113, 99), // brown
+                new Color(47, 39, 50), // purple
             };
 
             public Color colGreen = new Color(137, 202, 143);
@@ -36,8 +36,14 @@ namespace Sor {
             public Color colOrange = new Color(189, 133, 91);
             public Color colRed = new Color(189, 91, 91);
 
-            public Color fgColor => palette[0];
-            public Color bgColor => palette[4];
+            public Color fgColor => paletteWhite;
+            public Color bgColor => palettePurple;
+            
+            public Color paletteWhite => palette[0];
+            public Color paletteGray => palette[1];
+            public Color paletteOrange => palette[2];
+            public Color paletteBrown => palette[3];
+            public Color palettePurple => palette[4];
         }
 
         public void loadContent() {
