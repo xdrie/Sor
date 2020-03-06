@@ -118,21 +118,21 @@ namespace Sor.AI {
                     var orderedBoardItems =
                         boardItems.OrderBy(x => x.Value.tag)
                             .ToArray();
-                    var taggedItems = new Dictionary<string, List<MindState.BoardItem>>();
+                    var taggedItems = new Dictionary<string, List<(string, MindState.BoardItem)>>();
                     foreach (var groupedBoardItem in orderedBoardItems) {
                         if (!taggedItems.ContainsKey(groupedBoardItem.Value.tag)) {
-                            taggedItems[groupedBoardItem.Value.tag] = new List<MindState.BoardItem>();
+                            taggedItems[groupedBoardItem.Value.tag] = new List<(string, MindState.BoardItem)>();
                         }
 
                         taggedItems[groupedBoardItem.Value.tag]
-                            .Add(groupedBoardItem.Value);
+                            .Add((groupedBoardItem.Key, groupedBoardItem.Value));
                     }
 
                     ind.appendLine("-- BOARD --");
                     foreach (var tagGroup in taggedItems) {
                         ind.appendLine($" {tagGroup.Key}");
-                        foreach (var (key, disp) in tagGroup.Value) {
-                            ind.appendLine($"  {key}: {disp}");
+                        foreach (var (key, boardItem) in tagGroup.Value) {
+                            ind.appendLine($"  {key}: {boardItem.value}", boardItem.col);
                         }
                     }
                 }
