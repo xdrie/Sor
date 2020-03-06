@@ -1,4 +1,4 @@
-using Glint.AI.Misc;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs {
     /// <summary>
@@ -19,7 +19,7 @@ namespace Sor.AI.Cogs {
             var s1 = v * min;
             var b = max - min;
             var r = s1 + b * d;
-            if (clamp) r = Gmathf.clamp(r, min, max);
+            if (clamp) r = GMathf.clamp(r, min, max);
             return r;
         }
 
@@ -29,7 +29,7 @@ namespace Sor.AI.Cogs {
         /// <param name="v"></param>
         /// <returns></returns>
         public static float map11to01(float v) {
-            return Gmathf.map01(v, -1f, 1f);
+            return GMathf.map01(v, -1f, 1f);
         }
     }
 }

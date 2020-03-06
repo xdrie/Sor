@@ -6,6 +6,7 @@ using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Model;
+using Sor.AI.Nav;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
@@ -25,21 +26,23 @@ namespace Sor.AI {
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
         public Queue<PlanTask> plan = new Queue<PlanTask>();
-        public List<Map.Room> roomNavPath = new List<Map.Room>();
+        public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
         public struct BoardItem {
-            public string v;
+            public string value;
             public Color col;
+            public string tag;
 
-            public BoardItem(string v, Color col) {
-                this.v = v;
+            public BoardItem(string value, string tag, Color col) {
+                this.value = value;
+                this.tag = tag;
                 this.col = col;
             }
 
-            public BoardItem(string v) : this(v, Color.White) { }
-            
-            public static implicit operator BoardItem(string v) => new BoardItem(v);
+            public BoardItem(string value, string tag) : this(value, tag, Color.White) { }
+
+            public static implicit operator BoardItem(string v) => new BoardItem(v, "misc");
         }
 
         public int getOpinion(Mind mind) {

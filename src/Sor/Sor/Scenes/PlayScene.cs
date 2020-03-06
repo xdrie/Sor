@@ -12,6 +12,7 @@ using Nez.Tweens;
 using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
+using Sor.Components.Inspect;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
@@ -64,7 +65,7 @@ namespace Sor.Scenes {
             notifyMsg.RenderLayer = renderlayer_ui_overlay;
             var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
                 .SetEaseType(EaseType.CubicIn).SetDelay(1f)
-                .SetCompletionHandler(_ => notifMsgNt.Destroy());
+                .SetCompletionHandler(_ => notifMsgNt?.Destroy());
             tw.Start();
 
             var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
@@ -75,6 +76,13 @@ namespace Sor.Scenes {
             var followCamera =
                 Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, LockedCamera.LockMode.Position));
             followCamera.AddComponent<CameraShake>();
+
+#if DEBUG
+            // draw nav graph
+            var navGraphDisplay = CreateEntity("navgraph_display");
+            navGraphDisplay.AddComponent(new NavGraphDisplay(gameContext.map,
+                FindEntity("map").GetComponent<TiledMapRenderer>()));
+#endif
         }
 
         public override void Update() {
@@ -134,7 +142,8 @@ namespace Sor.Scenes {
                 store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
         }
 
-        public IEnumerable<Wing> wings => FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+        public IEnumerable<Wing> wings =>
+            FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
 
         public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
             var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);

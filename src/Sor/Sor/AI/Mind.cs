@@ -11,6 +11,7 @@ using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
 using Sor.Components.Units;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI {
     /// <summary>
@@ -138,8 +139,8 @@ namespace Sor.AI {
                                     var dirToOther = interFeed.feedTarget.Position - me.body.pos;
                                     dirToOther.Normalize();
                                     // get facing dir
-                                    var facingDir = new Vector2(Mathf.Cos(me.body.stdAngle),
-                                        -Mathf.Sin(me.body.stdAngle));
+                                    var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
+                                        -GMathf.sin(me.body.stdAngle));
                                     if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
                                         // feed
                                         controller.tetherLogical.logicPressed = true;
@@ -164,16 +165,16 @@ namespace Sor.AI {
         private void pilotToPosition(Vector2 goal) {
             // figure out how to move to target
             var toTarget = goal - me.body.pos;
-            var targetAngle = -Mathf.Atan2(toTarget.Y, toTarget.X);
+            var targetAngle = -GMathf.atan2(toTarget.Y, toTarget.X);
             var myAngle = me.body.stdAngle;
             var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
 
             var moveX = 0;
             var moveY = 0;
 
-            if (Math.Abs(turnTo) < 0.05f * Mathf.PI) {
+            if (Math.Abs(turnTo) < 0.05f * GMathf.PI) {
                 me.body.angularVelocity *= 0.9f;
-                // me.body.angle = -targetAngle + (Mathf.PI / 2);
+                // me.body.angle = -targetAngle + (GMathf.PI / 2);
 
                 var sinPi4 = 0.707106781187; // sin(pi/4)
                 // we are facing, now move toward them
@@ -199,8 +200,8 @@ namespace Sor.AI {
 
                 // update board
                 lock (state.board) {
-                    state.board[nameof(dGiv)] = $"{dGiv:n2}";
-                    state.board[nameof(dCrit)] = $"{dCrit:n2}";
+                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}", "mov");
+                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}", "mov");
                 }
 
                 if (dGiv > dCrit) {

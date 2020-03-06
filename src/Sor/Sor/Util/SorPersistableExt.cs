@@ -1,3 +1,4 @@
+using Glint.Physics;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez.Persistence.Binary;
@@ -14,14 +15,14 @@ namespace Sor.Util {
 
             public BodyData() {}
             public BodyData(KinBody body) {
-                this.pos = body.Transform.LocalPosition;
-                this.velocity = body.velocity;
-                this.angle = body.angle;
-                this.angularVelocity = body.angularVelocity;
+                pos = body.pos;
+                velocity = body.velocity;
+                angle = body.angle;
+                angularVelocity = body.angularVelocity;
             }
 
             public void copyTo(KinBody body) {
-                body.Transform.LocalPosition = pos;
+                body.pos = pos;
                 body.velocity = velocity;
                 body.angle = angle;
                 body.angularVelocity = angularVelocity;
