@@ -7,11 +7,11 @@ using Sor.Util;
 namespace Sor.AI.Nav {
     public class StructuralNavigationGraphBuilder {
         private RoomGraph roomGraph;
-        private Dictionary<Map.Room, DelayedNode> sngNodes;
+        private Dictionary<Map.Room, DelayedNode> sngNodes = new Dictionary<Map.Room, DelayedNode>();
 
         class DelayedNode {
             public StructuralNavigationGraph.Node centerNode;
-            private List<DelayedNode> pendingLinks;
+            private List<DelayedNode> pendingLinks = new List<DelayedNode>();
 
             public DelayedNode(StructuralNavigationGraph.Node centerNode) {
                 this.centerNode = centerNode;
