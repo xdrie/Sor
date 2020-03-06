@@ -45,11 +45,11 @@ namespace Sor.Components.UI {
         public class Item {
             public Sprite textSpr;
             public SpriteAnimator buttonAnim;
-            public Action selected;
+            public Action onSelected;
 
-            public Item(Sprite textSpr, Action selected) {
+            public Item(Sprite textSpr, Action onSelected) {
                 this.textSpr = textSpr;
-                this.selected = selected;
+                this.onSelected = onSelected;
             }
         }
 
@@ -62,9 +62,20 @@ namespace Sor.Components.UI {
             items[selectedItem].buttonAnim.Play(YES_SELECTED);
             
             // check input to update selection
-            var controller = Entity.GetComponent<InputController>();
-            var navInput = controller.moveDirectionInput;
-            var pressed = controller.interactInput.IsPressed;
+            var controller = Entity.GetComponent<MenuInputController>();
+
+            if (controller.interact.IsPressed) {
+                items[selectedItem].onSelected?.Invoke();
+            }
+
+            var ds = 0;
+            if (controller.navDown.IsPressed) {
+                ds = 1;
+            } else if (controller.navUp.IsPressed) {
+                ds = -1;
+            }
+
+            selectedItem = (items.Count + selectedItem + ds) % items.Count;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Sor.Scenes {
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
             // add controller
-            ui.AddComponent(new PlayerInputController());
+            ui.AddComponent(new MenuInputController());
             var menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => { }),
