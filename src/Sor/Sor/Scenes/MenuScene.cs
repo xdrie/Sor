@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
@@ -7,6 +8,7 @@ using Nez;
 using Nez.Console;
 using Nez.Sprites;
 using Nez.Textures;
+using Nez.Tweens;
 using Sor.Components.Input;
 using Sor.Components.UI;
 
@@ -50,13 +52,27 @@ namespace Sor.Scenes {
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
+            void bordFlash(Action follow = null) {
+                var colTw = bordWhRen.TweenColorTo(gameContext.assets.paletteWhite)
+                    .SetDuration(0.4f)
+                    .SetEaseType(EaseType.QuadOut)
+                    .SetCompletionHandler(_ => follow?.Invoke());
+                colTw.Start();
+            }
+
             // add controller
             ui.AddComponent(new MenuInputController());
             var menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
-                    new MenuButtonList.Item(new Sprite(textFlyTex), () => { }),
-                    new MenuButtonList.Item(new Sprite(textEvoTex), () => { }),
-                    new MenuButtonList.Item(new Sprite(textOptTex), () => { }),
+                    new MenuButtonList.Item(new Sprite(textFlyTex), () => {
+                        bordFlash(() => { TransitionScene(new PlayScene(), 0.5f); });
+                    }),
+                    new MenuButtonList.Item(new Sprite(textEvoTex), () => {
+                        bordFlash();
+                    }),
+                    new MenuButtonList.Item(new Sprite(textOptTex), () => {
+                        bordFlash();
+                    }),
                 },
                 Sprite.SpritesFromAtlas(buttonTex, 320, 64),
                 (new Vector2(112, 64) * designScale) + new Vector2(160, 32)
@@ -69,9 +85,6 @@ namespace Sor.Scenes {
 #if DEBUG
             if (!DebugConsole.Instance.IsOpen) {
 #endif
-                if (Input.IsKeyPressed(Keys.E)) {
-                    TransitionScene(new PlayScene(), 0.5f);
-                }
 
 #if DEBUG
                 // debug scenes
