@@ -134,7 +134,7 @@ namespace Sor.AI.Systems {
                         var tmapPos = pathNode.pos.ToVector2();
                         state.plan.Enqueue(new FixedTargetSource(
                             mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
-                            TargetSource.RANGE_SHORT));
+                            TargetSource.RANGE_DIRECT));
                     }
                 }
 
