@@ -6,6 +6,7 @@ using Nez;
 using Nez.BitmapFonts;
 using Sor.AI.Model;
 using Sor.Components.Units;
+using Sor.Util;
 
 namespace Sor.AI {
     public class MindDisplay : RenderableComponent, IUpdatable {
@@ -42,19 +43,19 @@ namespace Sor.AI {
             if (draw) {
                 // draw mind info representation
 
-                StringBuilder ind = new StringBuilder();
+                var ind = new ColoredTextBuilder(Color.White);
 
                 // draw basic mind state
-                ind.AppendLine($"[mind] {wing.name}");
-                ind.AppendLine($"energy: {wing.core.ratio:n2}");
-                ind.AppendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
+                ind.appendLine($"[mind] {wing.name}");
+                ind.appendLine($"energy: {wing.core.ratio:n2}");
+                ind.appendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 if (player != null) {
                     var plOpinion = mind.state.getOpinion(player.mind);
-                    ind.AppendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
+                    ind.appendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 }
 
-                ind.AppendLine($"ply: {mind.soul.ply}");
-                ind.AppendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
+                ind.appendLine($"ply: {mind.soul.ply}");
+                ind.appendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
 
                 // draw plan table
                 // TODO: draw arrow in front of chosen
@@ -62,14 +63,16 @@ namespace Sor.AI {
                     lock (mind.state.lastPlanTable) {
                         var first = false;
                         foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                            var sb = new StringBuilder();
                             if (!first) {
-                                ind.Append("> ");
+                                sb.Append("> ");
                                 first = true;
                             } else {
-                                ind.Append("  ");
+                                sb.Append("  ");
                             }
 
-                            ind.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                            sb.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                            ind.appendLine(sb.ToString());
                         }
                     }
                 }
@@ -89,22 +92,25 @@ namespace Sor.AI {
 
                                 var targetLoc = target.getPosition();
                                 var approachLoc = target.approachPosition(mind.me.body.pos);
-                                ind.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                var sb = new StringBuilder();
+                                sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
                                 if (target is EntityTargetSource ets) {
-                                    ind.Append($" {ets.nt.Name}");
+                                    sb.Append($" {ets.nt.Name}");
                                 }
+
+                                ind.appendLine(sb.ToString());
 
                                 // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
                                 drawPosIndicator(targetLoc, Color.Yellow);
                                 drawPosIndicator(approachLoc, Color.Blue);
 
-                                ind.AppendLine();
+                                ind.appendLine();
                             }
                         }
                     }
                 }
 
-                ind.AppendLine();
+                ind.appendLine();
                 // draw board
                 lock (mind.state.board) {
                     var boardItems = mind.state.board;
@@ -112,27 +118,27 @@ namespace Sor.AI {
                     var orderedBoardItems =
                         boardItems.OrderBy(x => x.Value.tag)
                             .ToArray();
-                    var taggedItems = new Dictionary<string, List<(string, string)>>();
+                    var taggedItems = new Dictionary<string, List<MindState.BoardItem>>();
                     foreach (var groupedBoardItem in orderedBoardItems) {
                         if (!taggedItems.ContainsKey(groupedBoardItem.Value.tag)) {
-                            taggedItems[groupedBoardItem.Value.tag] = new List<(string, string)>();
+                            taggedItems[groupedBoardItem.Value.tag] = new List<MindState.BoardItem>();
                         }
 
                         taggedItems[groupedBoardItem.Value.tag]
-                            .Add((groupedBoardItem.Key, groupedBoardItem.Value.value));
+                            .Add(groupedBoardItem.Value);
                     }
 
-                    ind.AppendLine("-- BOARD --");
+                    ind.appendLine("-- BOARD --");
                     foreach (var tagGroup in taggedItems) {
-                        ind.AppendLine($" {tagGroup.Key}");
+                        ind.appendLine($" {tagGroup.Key}");
                         foreach (var (key, disp) in tagGroup.Value) {
-                            ind.AppendLine($"  {key}: {disp}");
+                            ind.appendLine($"  {key}: {disp}");
                         }
                     }
                 }
 
-                batcher.DrawString(Graphics.Instance.BitmapFont, ind,
-                    camera.ScreenToWorldPoint(new Vector2(20, 20)), textCol);
+                ind.drawTo(batcher, Graphics.Instance.BitmapFont,
+                    camera.ScreenToWorldPoint(new Vector2(20, 20)));
             }
         }
 
