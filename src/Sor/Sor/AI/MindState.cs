@@ -6,6 +6,7 @@ using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Model;
+using Sor.AI.Nav;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
@@ -25,7 +26,7 @@ namespace Sor.AI {
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
         public Queue<PlanTask> plan = new Queue<PlanTask>();
-        public List<Map.Room> roomNavPath = new List<Map.Room>();
+        public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
         public struct BoardItem {

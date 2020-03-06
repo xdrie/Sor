@@ -46,7 +46,9 @@ namespace Sor.AI.Nav {
             // 1. build mapping from room to center nodes
             foreach (var room in roomGraph.rooms) {
                 // create unconnected center nodes
-                sngNodes[room] = new DelayedNode(new StructuralNavigationGraph.Node(room.center));
+                sngNodes[room] = new DelayedNode(new StructuralNavigationGraph.Node(room.center) {
+                    room = room // store link to room
+                });
             }
 
             // 2. create nodes of indirection

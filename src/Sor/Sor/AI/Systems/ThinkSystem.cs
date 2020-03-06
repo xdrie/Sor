@@ -92,7 +92,7 @@ namespace Sor.AI.Systems {
                 // TODO: a more interesting/useful explore action
                 // don't pathfind if we already have a valid path
                 lock (state) {
-                    if (state.roomNavPath != null) {
+                    if (state.navPath != null) {
                         lock (state.plan) {
                             if (state.plan.Count > 0)
                                 if (state.plan.Any(x => x.valid()))
@@ -102,6 +102,12 @@ namespace Sor.AI.Systems {
                 }
 
                 // attempt to do a room-to-room pathfind
+                // attempt to pathfind using the structural navigation graph
+                // get the nearest node
+                var nearestNode = mind.gameCtx.map.sng.nodes.MinBy(x =>
+                        (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.pos.ToVector2()))
+                        .LengthSquared())
+                    .First();
                 // get the nearest room
                 var nearestRoom =
                     mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
@@ -112,18 +118,19 @@ namespace Sor.AI.Systems {
                 var goalRoom = mind.gameCtx.map.roomGraph.rooms
                     .Where(x => x != nearestRoom).RandomSubset(1)
                     .First();
-                // TODO: instead of searching the room graph, search the "structure navigation graph"
-                var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.roomGraph, nearestRoom, goalRoom);
-                if (!foundPath.Any()) return; // pathfind failed
+                // find the corresponding sng node by room
+                var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
+                if (foundPath == null || !foundPath.Any()) return; // pathfind failed
                 lock (state) {
-                    state.roomNavPath = foundPath;
+                    state.navPath = foundPath;
                 }
 
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
                 lock (state.plan) {
                     foreach (var pathNode in foundPath) {
-                        var tmapPos = pathNode.center.ToVector2();
+                        var tmapPos = pathNode.pos.ToVector2();
 
                         state.plan.Clear(); // reset plan
                         state.plan.Enqueue(new FixedTargetSource(
@@ -133,8 +140,9 @@ namespace Sor.AI.Systems {
                 }
 
                 lock (state.board) {
-                    var nextPt = foundPath.First().center;
-                    state.board["exp"] = new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path");
+                    var nextPt = foundPath.First().pos;
+                    state.board["exp"] =
+                        new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path");
                 }
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
