@@ -69,6 +69,7 @@ namespace Sor.AI.Nav {
                     innerDoorNode.addPendingLink(outerDoorNode); // attach INNER - OUTER
                     // when collapsed, we should get CENTER - INNER - OUTER (a "spike")
                 }
+                centerNode.collapse();
             }
 
             // now, we have all our nodes of the form
