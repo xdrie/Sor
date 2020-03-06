@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,6 +7,8 @@ using Nez;
 using Nez.Console;
 using Nez.Sprites;
 using Nez.Textures;
+using Sor.Components.Input;
+using Sor.Components.UI;
 
 namespace Sor.Scenes {
     public class MenuScene : BaseGameScene<GameContext> {
@@ -40,12 +43,24 @@ namespace Sor.Scenes {
 
             // - main menu layout
             var designScale = 4;
-            
+
             var frillRen = addUiSprite(frillTex, Vector2.Zero);
             var titleRen = addUiSprite(titleTex, new Vector2(128, 24) * designScale);
             var frameRen = addUiSprite(bordFrameTex, new Vector2(24, 40) * designScale);
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
+
+            // add controller
+            ui.AddComponent(new PlayerInputController());
+            var menuButtons = ui.AddComponent(new MenuButtonList(
+                new List<MenuButtonList.Item> {
+                    new MenuButtonList.Item(new Sprite(textFlyTex), () => { }),
+                    new MenuButtonList.Item(new Sprite(textEvoTex), () => { }),
+                    new MenuButtonList.Item(new Sprite(textOptTex), () => { }),
+                },
+                Sprite.SpritesFromAtlas(buttonTex, 320, 64),
+                (new Vector2(112, 64) * designScale) + new Vector2(160, 32)
+            ));
         }
 
         public override void Update() {
