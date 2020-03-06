@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Sor.Game;
 using Sor.Util;
 
@@ -21,13 +22,19 @@ namespace Sor.AI.Nav {
                 // create unconnected center nodes
                 sngNodes[room] = new StructuralNavigationGraph.Node(room.center);
             }
+
             // 2. create nodes of indirection
             foreach (var nodePair in sngNodes) {
                 var room = nodePair.Key;
                 var centerNode = nodePair.Value;
                 foreach (var door in room.doors) {
-                    var innerDoor = door.doorCenter;
+                    // calculate positions of inner and outer door nodes
+                    var doorCenter = door.doorCenter;
                     var (dx, dy) = DirectionStepper.stepIn(door.dir);
+                    var outerDoor = doorCenter + new Point(dx * StructuralNavigationGraph.DOOR_NODE_DIST,
+                        dy * StructuralNavigationGraph.DOOR_NODE_DIST);
+                    var innerDoor = doorCenter + new Point(-dx * StructuralNavigationGraph.DOOR_NODE_DIST,
+                        -dy * StructuralNavigationGraph.DOOR_NODE_DIST);
                 }
             }
         }
