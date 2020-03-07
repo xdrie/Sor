@@ -47,7 +47,7 @@ namespace Sor.Scenes {
             var designScale = 4;
 
             var frillRen = addUiSprite(frillTex, Vector2.Zero);
-            var titleRen = addUiSprite(titleTex, new Vector2(128, 24) * designScale);
+            var titleRen = addUiSprite(titleTex, new Vector2(128, 20) * designScale);
             var frameRen = addUiSprite(bordFrameTex, new Vector2(24, 40) * designScale);
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
