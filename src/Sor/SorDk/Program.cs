@@ -38,7 +38,7 @@ namespace SorDk {
 #endif
             var configHelper = new ConfigHelper<Config>();
             configHelper.ensureDefaultConfig(conf, defaultConf);
-            var confStr = File.ReadAllText(conf);
+            var confStr = File.ReadAllText(Path.Join(Global.baseDir, conf));
             var config = configHelper.load(confStr, args); // load and parse config
             // run in crash-cradle (only if NOT debug)
 #if !DEBUG
