@@ -6,6 +6,9 @@ using Glint;
 using Glint.Config;
 using Sor;
 using Sor.Game;
+#if !DEBUG
+using Glint.Util;
+#endif
 
 namespace SorDk {
     class Program {
