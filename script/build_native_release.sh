@@ -16,9 +16,10 @@ if [ -n "$2" ] && [ "$2" = "pack" ]; then
 fi
 
 # platform
-PROJECT=sor
-PROJECT_DIR=src/Sor/SorDk
-BIN_NAME=SorDk
+PROJECT=Sor
+PROJECT_RUNNER=${PROJECT}Dk
+PROJECT_DIR=src/$PROJECT/$PROJECT_RUNNER
+BIN_NAME=$PROJECT_RUNNER
 BINARY=$BIN_NAME
 if [[ $TARGET == win* ]];
 then
@@ -64,7 +65,7 @@ echo "REV: $REVISION"
 PUBLISH_ARGS="${PROPS} -f $FRAMEWORK -r $TARGET -c Release"
 echo "running native compile (${PUBLISH_ARGS})..."
 cd $PROJECT_DIR
-dotnet publish ${PUBLISH_ARGS}
+dotnet publish ${PROJECT_RUNNER}.csproj ${PUBLISH_ARGS}
 PUBLISH=bin/Release/$FRAMEWORK/$TARGET/publish
 
 echo "copying to staging directory..."
