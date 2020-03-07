@@ -1,25 +1,19 @@
+using LunchLib.Cogs;
+
 namespace Sor.AI.Cogs {
-    public class BirdEmotions {
-        public const float falloff = 0.9f;
-        
+    public class BirdEmotions : Emotions {
         // emotions: [fear, happy]
-        public float[] emotions = {0f, 0f};
+        public override float[] vec { get; } = {0f, 0f};
+        public override float falloff => 0.9f;
 
         public float fear {
-            get { return emotions[0]; }
-            set { emotions[0] = value; }
-        }
-        
-        public float happy {
-            get { return emotions[1]; }
-            set { emotions[1] = value; }
+            get => vec[0];
+            set => vec[0] = value;
         }
 
-        public void tick() {
-            // exponentially tend emotions toward zero
-            for (var i = 0; i < emotions.Length; i++) {
-                emotions[i] = falloff * emotions[i];
-            }
+        public float happy {
+            get => vec[1];
+            set => vec[1] = value;
         }
     }
 }
