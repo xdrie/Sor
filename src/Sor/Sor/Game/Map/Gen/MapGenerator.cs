@@ -16,7 +16,8 @@ namespace Sor.Game.Map.Gen {
             grid = new int[width * height];
 
             roomWall = new DiscreteProbabilityDistribution<int>(new[] {
-                (0.4f, 1),
+                (0.2f, 0),
+                (0.2f, 1),
                 (0.35f, 2),
                 (0.2f, 3),
                 (0.05f, 4)
@@ -34,8 +35,8 @@ namespace Sor.Game.Map.Gen {
         private void addRoomRect(Rectangle newRoomRect) {
             roomRects.Add(newRoomRect);
             // set cells in the grid
-            for (int r = newRoomRect.X; r <= newRoomRect.X + newRoomRect.Width; r++) {
-                for (int c = newRoomRect.Y; c <= newRoomRect.Y + newRoomRect.Height; c++) {
+            for (int r = newRoomRect.X; r < newRoomRect.X + newRoomRect.Width; r++) {
+                for (int c = newRoomRect.Y; c < newRoomRect.Y + newRoomRect.Height; c++) {
                     grid[r * width + c] = roomRects.Count;
                 }
             }
@@ -44,11 +45,16 @@ namespace Sor.Game.Map.Gen {
         public void generate() {
             for (int sy = 0; sy < height; sy++) {
                 for (int sx = 0; sx < width; sx++) {
-                    var roomW = roomWall.next(); // wall of size 1 means a rect of W 0, because 1x1 is a single cell
+                    var roomW = roomWall.next();
                     var roomH = roomWall.next();
+                    var roomSz = roomW * roomH;
+                    // a size of 0w or 0h means skip this room
+                    if (roomSz == 0) {
+                        continue;
+                    }
                     // check validity
-                    var newRoomRect = new Rectangle(sx, sy, roomW - 1, roomH - 1);
-                    if (sy + roomH > height - 1 || sx + roomW > width - 1) { // ensure bounds
+                    var newRoomRect = new Rectangle(sx, sy, roomW, roomH);
+                    if (sy + roomH > height || sx + roomW > width) { // ensure bounds
                         continue;
                     }
 

@@ -34,7 +34,7 @@ q. quit
         }
 
         public static void mapGeneratorTests() {
-            var mapSize = 12;
+            var mapSize = 16;
             var gen = new MapGenerator(mapSize, mapSize);
             gen.generate();
             // debug print the grid
