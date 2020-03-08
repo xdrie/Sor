@@ -1,10 +1,7 @@
 using LunchLib.Cogs;
 
 namespace Sor.AI.Cogs {
-    public class AvianSoul : Sentient {
-        public BirdPersonality ply;
-        public BirdTraits traits;
-        public BirdEmotions emotions;
+    public class AvianSoul : Sentient<BirdPersonality, BirdTraits, BirdEmotions> {
         public Mind mind;
         public bool calced = false;
 

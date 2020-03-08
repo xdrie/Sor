@@ -1,6 +1,5 @@
 using LunchLib.Cogs.Social;
 
 namespace Sor.AI.Cogs.Interactions {
-    public abstract class BirdInteraction : Interaction<AvianSoul> {
-    }
+    public abstract class BirdInteraction : Interaction<AvianSoul, BirdPersonality, BirdTraits, BirdEmotions> { }
 }
