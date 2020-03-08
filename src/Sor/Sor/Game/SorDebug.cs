@@ -38,9 +38,9 @@ namespace Sor.Game {
         }
 
         [Command("g_spawn", "spawns a wing")]
-        public static void Spawn(string name) {
-            var wingPly = new BirdPersonality();
-            wingPly.generateRandom();
+        public static void Spawn(string name, float a = 0f, float s = 0f) {
+            var wingPly = new BirdPersonality {A = a, S = s};
+            // wingPly.generateRandom();
             var wing = play.createWing(name, play.playerWing.Entity.Position, wingPly);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");
         }
