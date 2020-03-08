@@ -44,21 +44,23 @@ namespace Sor.Scenes.Helpers {
 
             if (!pers.loaded) {
                 // fresh
-                var uno = play.createWing("uno", new Vector2(-140, 320));
+                var unoPly = new BirdPersonality();
+                unoPly.generateNeutral();
+                var uno = play.createWing("uno", new Vector2(-140, 320), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
-                var frend = play.createWing("frend", new Vector2(-140, 20),
-                    new AvianSoul(new BirdPersonality {A = -0.8f, S = 0.7f}));
-                
+                var frendPly = new BirdPersonality {A = -0.8f, S = 0.7f};
+                var frend = play.createWing("frend", new Vector2(-140, 20), frendPly);
+
                 // var tres = createWing("tres", new Vector2(200, 380));
                 // var cuatro = createWing("cuatro", new Vector2(0, -100));
                 // var cinco = createWing("cinco", new Vector2(400, 100));
-                
+
                 mapLoader.load(mapAsset, createObjects: true);
             } else {
                 // resuming from saved state
                 mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated
             }
-            
+
             gameContext.map = mapLoader.mapRepr; // copy map representation
 
             var status = pers.loaded ? "recreated" : "freshly created";
@@ -67,8 +69,8 @@ namespace Sor.Scenes.Helpers {
 
         public void createPlayer(Vector2 pos) {
             play.playerEntity = play.CreateEntity("player", pos).SetTag(Constants.Tags.ENTITY_WING);
-            var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
-            playerSoul.calc();
+            var playerSoul = new AvianSoul();
+            playerSoul.ply.generateNeutral();
             play.playerWing = play.playerEntity.AddComponent(new Wing(new Mind(playerSoul, false)));
             play.playerEntity.AddComponent<PlayerInputController>();
         }

@@ -152,13 +152,9 @@ namespace Sor.Scenes {
         public IEnumerable<Wing> wings =>
             FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
 
-        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
+        public Wing createWing(string name, Vector2 pos, BirdPersonality ply) {
             var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);
-            if (soul != null) {
-                if (!soul.calced) soul.calc();
-            }
-
-            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
+            var duck = duckNt.AddComponent(new Wing(new Mind(new AvianSoul {ply = ply}, true)));
             duckNt.AddComponent<LogicInputController>();
             return duck;
         }

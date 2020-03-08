@@ -34,16 +34,14 @@ namespace Sor.AI {
 
         public Mind() : this(null, true) { }
 
-        public Mind(AvianSoul inSoul, bool control) {
-            soul = inSoul;
-            if (soul == null) { // generate soul
-                soul = AvianSoul.generate(this);
-                soul.calc();
-                Global.log.writeLine($"generated soul {soul.ply}", GlintLogger.LogLevel.Trace);
+        public Mind(AvianSoul soul, bool control) {
+            if (soul == null) { // generate a new soul
+                this.soul = new AvianSoul(this);
+                this.soul.ply.generateRandom(); // randomize its personality
+                Global.log.writeLine($"generated soul with personality {this.soul.ply}", GlintLogger.LogLevel.Trace);
             }
-
-            soul.mind = this;
-
+            this.soul = soul;
+            this.soul.mind = this;
             this.control = control;
 
             gameCtx = Core.Services.GetService<GameContext>();
