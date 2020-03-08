@@ -42,6 +42,8 @@ namespace Sor.AI {
             }
             this.soul = soul;
             this.soul.mind = this;
+            // run calc on the soul
+            this.soul.recalculate();
             this.control = control;
 
             gameCtx = Core.Services.GetService<GameContext>();
