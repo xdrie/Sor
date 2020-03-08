@@ -7,10 +7,9 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
 using Sor.Components.Things;
-using Sor.AI.Nav;
 using Sor.Util;
 
-namespace Sor.Game {
+namespace Sor.Game.Map {
     public class MapLoader {
         private Scene scene;
         private readonly Entity mapEntity;

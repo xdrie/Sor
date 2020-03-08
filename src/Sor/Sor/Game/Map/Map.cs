@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
 
-namespace Sor.Game {
+namespace Sor.Game.Map {
     /// <summary>
     /// a data structure representing a model of the map
     /// </summary>

@@ -1,6 +1,6 @@
 using Nez.Tiled;
 
-namespace Sor.AI.Nav {
+namespace Sor.Game.Map {
     public class MapRepr {
         public RoomGraph roomGraph;
         public TmxMap tmxMap;

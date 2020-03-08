@@ -3,8 +3,8 @@ using Glint.Game;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;
-using Sor.AI.Nav;
 using Sor.Game;
+using Sor.Game.Map;
 
 namespace Sor {
     public class GameContext : ContextBase {

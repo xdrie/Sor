@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Nez;
 using Nez.AI.Pathfinding;
-using Sor.Game;
 
-namespace Sor.AI.Nav {
+namespace Sor.Game.Map {
     public class RoomGraph : IWeightedGraph<Map.Room> {
         public List<Map.Room> rooms;
         

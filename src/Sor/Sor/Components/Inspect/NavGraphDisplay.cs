@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 using Nez;
-using Sor.AI.Nav;
+using Sor.Game.Map;
 
 namespace Sor.Components.Inspect {
 #if DEBUG

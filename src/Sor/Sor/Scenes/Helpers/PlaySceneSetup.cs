@@ -8,6 +8,7 @@ using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Game.Map;
 
 namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {

@@ -6,11 +6,11 @@ using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Model;
-using Sor.AI.Nav;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Game.Map;
 
 namespace Sor.AI {
     public class MindState {
