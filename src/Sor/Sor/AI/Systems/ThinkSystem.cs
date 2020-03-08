@@ -168,8 +168,9 @@ namespace Sor.AI.Systems {
                 // socialize - attempt to feed a duck
                 // pick a potential fren
                 // TODO: don't choose ducks we're already chums with
+                // TODO: improved prospective socialization
                 var candidates = mind.state.seenWings.Where(
-                        x => mind.state.getOpinion(x.mind) > MindConstants.OPINION_NEUTRAL)
+                        x => mind.state.getOpinion(x.mind) > SocialAppraisals.NearbyPotentialAllies.opinionThreshold(mind))
                     .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
                 var fren = candidates.First();
                 // add the fren as a close-range approach

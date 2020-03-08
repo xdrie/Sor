@@ -8,16 +8,24 @@ namespace Sor.AI.Consid {
         public class NearbyPotentialAllies : Appraisal<Mind> {
             public NearbyPotentialAllies(Mind context) : base(context) { }
 
+            public static int opinionThreshold(Mind mind) {
+                var prospective = mind.soul.traits.sociability > 0.6f;
+                var thresh =
+                    prospective ? MindConstants.OPINION_NEUTRAL - 50 : MindConstants.OPINION_NEUTRAL;
+                return thresh;
+            }
+
             public override float score() {
                 // TODO: a more prospective way to look for friendships
+                var thresh = opinionThreshold(context);
                 var wings = context.state.seenWings.Where(
-                        x => context.state.getOpinion(x.mind) > MindConstants.OPINION_NEUTRAL)
+                        x => context.state.getOpinion(x.mind) > thresh)
                     .OrderByDescending(x => context.state.getOpinion(x.mind)).ToList();
                 if (!wings.Any()) return 0;
                 // scale from 0-100
                 var firstWing = wings.First();
                 return GMathf.map01clamp01(context.state.getOpinion(firstWing.mind),
-                    MindConstants.OPINION_NEUTRAL, MindConstants.OPINION_ALLY);
+                    thresh, MindConstants.OPINION_ALLY);
             }
         }
 
