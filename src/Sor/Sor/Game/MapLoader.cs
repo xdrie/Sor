@@ -36,7 +36,7 @@ namespace Sor.Game {
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
-            // createWallColliders();
+            createWallColliders(); // comment out to disable wall collision
 
             // analysis
             mapRepr = new MapRepr();
