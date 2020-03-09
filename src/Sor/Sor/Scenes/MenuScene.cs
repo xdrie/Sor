@@ -59,13 +59,14 @@ namespace Sor.Scenes {
             
             SpriteAnimator addWait() {
                 var waitSprs = Sprite.SpritesFromAtlas(waitTex, 32 * designScale, 32 * designScale);
-                var anim = new SpriteAnimator(waitSprs[0]);
+                var waitNt = CreateEntity("wait", DesignResolution.ToVector2() / 2f);
+                var anim = waitNt.AddComponent(new SpriteAnimator(waitSprs[0]));
                 anim.AddAnimation("load", waitSprs.ToArray());
                 return anim;
             }
 
-            void fadeUiSprite(SpriteRenderer ren) {
-                var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
+            void fadeUiSprite(SpriteRenderer ren, float dur = 0.4f) {
+                var tw = ren.TweenColorTo(Color.Transparent, dur);
                 tw.Start();
             }
 
@@ -83,7 +84,7 @@ namespace Sor.Scenes {
                 fadeUiSprite(frameRen);
                 fadeUiSprite(versionText);
                 menuButtons.active = false;
-                menuButtons.applyToRenderers(fadeUiSprite);
+                menuButtons.applyToRenderers(ren => fadeUiSprite(ren));
                 bordFlash(follow);
             }
 
@@ -93,9 +94,9 @@ namespace Sor.Scenes {
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
                         uiFocus(async () => {
-                            return;
                             var wait = addWait();
                             wait.Play("load");
+                            fadeUiSprite(bordWhRen);
                             var playContext = new PlayContext(); // empty play context
                             await Task.Delay(2000);
                             // run load game on a worker thread
@@ -105,7 +106,7 @@ namespace Sor.Scenes {
                             });
                             fadeUiSprite(wait);
                             var play = new PlayScene(playContext);
-                            // TransitionScene(play, 0.5f);
+                            TransitionScene(play, 0.5f);
                         });
                     }),
                     new MenuButtonList.Item(new Sprite(textEvoTex), () => {
