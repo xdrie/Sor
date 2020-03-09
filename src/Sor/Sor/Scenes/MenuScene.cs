@@ -67,7 +67,7 @@ namespace Sor.Scenes {
             }
 
             void fadeUiSprite(SpriteRenderer ren) {
-                ren.fade(Color.Transparent);
+                ren.fade(Color.Transparent).Start();
             }
 
             void bordFlash(Action follow = null) {
