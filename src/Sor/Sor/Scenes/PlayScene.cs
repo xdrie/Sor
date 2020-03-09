@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
@@ -16,6 +14,7 @@ using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
 using Sor.Game.Map;
+using Sor.Game.Map.Gen;
 using Sor.Systems;
 
 namespace Sor.Scenes {
@@ -55,12 +54,12 @@ namespace Sor.Scenes {
             base.OnStart();
             
             // - scene setup
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
-            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-            // var genMapSize = 100;
-            // var gen = new MapGenerator(genMapSize, genMapSize);
-            // gen.generate();
-            // gen.copyToTilemap(mapAsset);
+            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+            var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
+            var genMapSize = 100;
+            var gen = new MapGenerator(genMapSize, genMapSize);
+            gen.generate();
+            gen.copyToTilemap(mapAsset);
             // TODO: ensure that the loaded map matches the saved map
             var mapEntity = CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
