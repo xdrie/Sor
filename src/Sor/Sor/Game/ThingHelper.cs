@@ -63,7 +63,7 @@ namespace Sor.Game {
                     res = null;
                     break;
                 case ThingKind.Capsule: {
-                    var nt = pers.play.CreateEntity("cap");
+                    var nt = new Entity("cap");
                     var cap = nt.AddComponent(new Capsule());
                     cap.acquired = rd.ReadBool();
                     // read body
@@ -93,7 +93,7 @@ namespace Sor.Game {
                 }
 
                 case ThingKind.Tree: {
-                    var nt = pers.play.CreateEntity("tree");
+                    var nt = new Entity("tree");
                     var tree = nt.AddComponent(new Tree());
                     // load tree
                     tree.Entity.Position = rd.ReadVec2();

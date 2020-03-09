@@ -17,33 +17,21 @@ namespace Sor.AI.Cogs {
         public float[] disposition => new[] {v0, v1};
         public override float[] vec => GMathf.normVec(new[] {A, S});
 
-        public static BirdPersonality makeRandom() {
-            var p = new BirdPersonality();
+        public override void generateRandom() {
             // TODO: make this a more interesting curve
             var vfU = 0f;
             var vfS = 0.4f;
-            p.S = GMathf.clamp(Distribution.normalRand(vfU, vfS), -1f, 1f);
-            p.A = GMathf.clamp(Distribution.normalRand(vfU, vfS), -1f, 1f);
+            S = GMathf.clamp(Distribution.normalRand(vfU, vfS), -1f, 1f);
+            A = GMathf.clamp(Distribution.normalRand(vfU, vfS), -1f, 1f);
             // generate humor vector
             // TODO: this should be weighted based on other traits 
             // so that similar personalities tend toward similar humor
             var diVfU = 0f;
             var diVfS = 0.6f;
-            p.v0 = GMathf.clamp(Distribution.normalRand(diVfU, diVfS), -1f, 1f);
-            p.v1 = GMathf.clamp(Distribution.normalRand(diVfU, diVfS), -1f, 1f);
-
-            return p;
+            v0 = GMathf.clamp(Distribution.normalRand(diVfU, diVfS), -1f, 1f);
+            v1 = GMathf.clamp(Distribution.normalRand(diVfU, diVfS), -1f, 1f);
         }
-
-        public static BirdPersonality makeNeutral() {
-            var p = new BirdPersonality();
-            p.S = 0;
-            p.A = 0;
-            p.v0 = 0;
-            p.v1 = 0;
-            return p;
-        }
-
+        
         public override string ToString() {
             return $"[A:{A:n2},S:{S:n2},v0:{v0:n2},v1:{v1:n2}]";
         }

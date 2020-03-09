@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Sor.Game;
 using Sor.Util;
 
-namespace Sor.AI.Nav {
+namespace Sor.Game.Map {
     public class StructuralNavigationGraphBuilder {
         private RoomGraph roomGraph;
         private Dictionary<Map.Room, DelayedNode> sngNodes = new Dictionary<Map.Room, DelayedNode>();

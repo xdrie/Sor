@@ -7,12 +7,11 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
 using Sor.Components.Things;
-using Sor.AI.Nav;
 using Sor.Util;
 
-namespace Sor.Game {
+namespace Sor.Game.Map {
     public class MapLoader {
-        private Scene scene;
+        private readonly PlayContext playContext;
         private readonly Entity mapEntity;
         private TmxLayer structure;
         private TmxLayer features;
@@ -21,22 +20,25 @@ namespace Sor.Game {
         private TmxMap map;
         public MapRepr mapRepr;
 
+        public const string LAYER_STRUCTURE = "structure";
+        public const string LAYER_FEATURES = "features";
+
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
-        public MapLoader(Scene scene, Entity mapEntity) {
-            this.scene = scene;
+        public MapLoader(PlayContext playContext, Entity mapEntity) {
+            this.playContext = playContext;
             this.mapEntity = mapEntity;
         }
 
         public void load(TmxMap map, bool createObjects) {
             this.map = map;
             // structural recreation
-            structure = map.GetLayer<TmxLayer>("structure");
-            features = map.GetLayer<TmxLayer>("features");
+            structure = map.GetLayer<TmxLayer>(LAYER_STRUCTURE);
+            features = map.GetLayer<TmxLayer>(LAYER_FEATURES);
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
-            // createWallColliders();
+            createWallColliders(); // comment out to disable wall collision
 
             // analysis
             mapRepr = new MapRepr();
@@ -56,14 +58,16 @@ namespace Sor.Game {
         private void loadNature() {
             foreach (var th in nature.Objects) {
                 if (th.Type == "tree") {
-                    var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y))
-                        .SetTag(Constants.Tags.ENTITY_THING);
                     var treeStage = 1;
                     if (th.Properties.TryGetValue("stage", out var stageProp)) {
                         treeStage = int.Parse(stageProp);
                     }
 
-                    nt.AddComponent(new Tree {stage = treeStage});
+                    var nt = new Entity(th.Name)
+                        .SetTag(Constants.Tags.ENTITY_THING);
+                    nt.Position = new Vector2(th.X, th.Y);
+                    var tree = nt.AddComponent(new Tree {stage = treeStage});
+                    playContext.addThing(tree);
                     Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
                 }
             }
@@ -220,7 +224,7 @@ namespace Sor.Game {
                             door.roomOther = otherRoom;
                             room.links.Add(otherRoom);
                             Global.log.writeLine(
-                                $"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
+                                $"room link [dist: {distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
                                 GlintLogger.LogLevel.Trace);
                             break;
                         }
@@ -229,7 +233,7 @@ namespace Sor.Game {
             }
 
             // set up room graph
-            mapRepr.roomGraph = new RoomGraph {rooms = rooms};
+            mapRepr.roomGraph = new RoomGraph( rooms);
         }
 
         private StructuralNavigationGraph createStructuralNavigationGraph(RoomGraph rg) {

@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using Nez;
 using Nez.AI.Pathfinding;
-using Sor.Game;
 
-namespace Sor.AI.Nav {
+namespace Sor.Game.Map {
     public class RoomGraph : IWeightedGraph<Map.Room> {
-        public List<Map.Room> rooms;
-        
+        public readonly List<Map.Room> rooms;
+
+        public RoomGraph(List<Map.Room> rooms) {
+            this.rooms = rooms;
+        }
+
         public IEnumerable<Map.Room> GetNeighbors(Map.Room node) {
             return node.links;
         }
