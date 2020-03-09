@@ -100,6 +100,9 @@ namespace Sor.AI.Systems {
                         }
                     }
                 }
+                
+                // cancel if no map model
+                if (mind.gameCtx.map == null) return;
 
                 // attempt to do a room-to-room pathfind
                 // attempt to pathfind using the structural navigation graph

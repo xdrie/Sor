@@ -4,8 +4,12 @@ using Nez.AI.Pathfinding;
 
 namespace Sor.Game.Map {
     public class RoomGraph : IWeightedGraph<Map.Room> {
-        public List<Map.Room> rooms;
-        
+        public readonly List<Map.Room> rooms;
+
+        public RoomGraph(List<Map.Room> rooms) {
+            this.rooms = rooms;
+        }
+
         public IEnumerable<Map.Room> GetNeighbors(Map.Room node) {
             return node.links;
         }

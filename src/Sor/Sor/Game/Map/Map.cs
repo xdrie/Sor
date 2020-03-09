@@ -20,6 +20,11 @@ namespace Sor.Game.Map {
 
             public Point center;
 
+            public int x => ul.X;
+            public int y => ul.Y;
+            public int width => dr.X - ul.X;
+            public int height => dr.Y - ul.Y;
+
             public List<Door> doors = new List<Door>();
             public List<Room> links = new List<Room>();
 

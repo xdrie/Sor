@@ -5,17 +5,13 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Persistence.Binary;
-using Sor.AI.Cogs;
 using Sor.Components.Things;
 using Sor.Components.Units;
-using Sor.Scenes;
-using Sor.Scenes.Helpers;
 using Sor.Util;
 
 namespace Sor.Game {
     public class PlayPersistable : IPersistable {
-        public PlayScene play;
-        public PlaySceneSetup setup;
+        public PlayContext playContext;
 
         public bool loaded = false;
         public const int version = 3;
@@ -25,9 +21,8 @@ namespace Sor.Game {
         public List<Wing> wings = new List<Wing>();
         public List<Tree> trees = new List<Tree>();
 
-        public PlayPersistable(PlaySceneSetup setup) {
-            this.play = setup.play;
-            this.setup = setup;
+        public PlayPersistable(PlayContext playContext) {
+            this.playContext = playContext;
         }
 
         public void Recover(IPersistableReader rd) {
@@ -41,21 +36,25 @@ namespace Sor.Game {
 
             // load game time
             Time.TotalTime = rd.ReadFloat() + timeAdvance;
+            
+            // set rehydrated flag
+            playContext.rehydrated = true;
 
             // read player
             var playerWd = rd.readWingMeta();
-            play.playerWing.name = playerWd.name;
-            play.playerWing.core.energy = playerWd.energy;
-            play.playerWing.mind.soul.ply = playerWd.ply;
-            var bodyData = rd.readBodyData();
-            bodyData.copyTo(play.playerWing.body);
-            wings.Add(play.playerWing);
+            var playerBodyData = rd.readBodyData();
+            playContext.createPlayer(playerBodyData.pos);
+            playContext.playerWing.name = playerWd.name;
+            playContext.playerWing.core.energy = playerWd.energy;
+            playContext.playerWing.mind.soul.ply = playerWd.ply;
+            playerBodyData.copyTo(playContext.playerWing.body);
+            wings.Add(playContext.playerWing);
 
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWingMeta();
-                var wing = setup.play.createWing(wd.name, Vector2.Zero, wd.ply);
+                var wing = playContext.createWing(wd.name, Vector2.Zero, wd.ply);
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
@@ -73,6 +72,8 @@ namespace Sor.Game {
                     // tag entity as thing
                     thing.Entity.SetTag(Constants.Tags.ENTITY_THING);
                 }
+                // add to context
+                playContext.addThing(thing);
             }
         }
 
@@ -84,13 +85,12 @@ namespace Sor.Game {
             wr.Write(Time.TotalTime);
 
             // save player
-            wr.writeWingMeta(play.playerWing);
-            wr.writeBody(play.playerWing.body);
+            wr.writeWingMeta(playContext.playerWing);
+            wr.writeBody(playContext.playerWing.body);
 
             // save all other wings
-            var wingsToSave = play.wings
-                .Select(x=>x.Entity)
-                .Where(x => x != play.playerEntity)
+            var wingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.ENTITY_WING)
+                .Where(x => x != playContext.playerWing.Entity)
                 .ToList();
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {
@@ -100,7 +100,7 @@ namespace Sor.Game {
             }
 
             // save world things
-            var thingsToSave = play.FindEntitiesWithTag(Constants.Tags.ENTITY_THING).ToList();
+            var thingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.ENTITY_THING).ToList();
             wr.Write(thingsToSave.Count);
             // sort so trees are before capsules
             var treeList = new List<Thing>();

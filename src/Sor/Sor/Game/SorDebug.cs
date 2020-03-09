@@ -13,20 +13,20 @@ namespace Sor.Game {
 
         [Command("g_energy", "adds energy to the player")]
         public static void Energy(float val) {
-            play.playerWing.core.energy += val;
+            play.playContext.playerWing.core.energy += val;
             debugLog($"gave {val} energy to player");
         }
 
         [Command("g_class", "changes player wing class")]
         public static void Class(int newClass) {
             var val = (Wing.WingClass) newClass;
-            play.playerWing.changeClass(val);
+            play.playContext.playerWing.changeClass(val);
             debugLog($"changed player class to {val}");
         }
 
         [Command("g_list", "lists all wings")]
         public static void List() {
-            var wings = play.wings.ToList();
+            var wings = play.playContext.wings.ToList();
             debugLog($"{wings.Count} wings: {string.Join(",", wings.Select(x => x.name))}");
         }
 
@@ -41,7 +41,8 @@ namespace Sor.Game {
         public static void Spawn(string name, float a = 0f, float s = 0f) {
             var wingPly = new BirdPersonality {A = a, S = s};
             // wingPly.generateRandom();
-            var wing = play.createWing(name, play.playerWing.Entity.Position, wingPly);
+            var wing = play.playContext.createWing(name, play.playContext.playerWing.Entity.Position, wingPly);
+            play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");
         }
 

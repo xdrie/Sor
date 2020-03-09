@@ -39,14 +39,7 @@ q. quit
             gen.generate();
             // debug print the grid
             Console.WriteLine("--grid");
-            for (int c = 0; c < mapSize; c++) {
-                for (int r = 0; r < mapSize; r++) {
-                    var cell = gen.grid[r * mapSize + c];
-                    Console.Write($"{cell,4}");
-                }
-
-                Console.WriteLine();
-            }
+            var sb = gen.dumpGrid();
 
             // debug print the rect list
             Console.WriteLine("--rectlist");
