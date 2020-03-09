@@ -35,7 +35,7 @@ q. quit
 
         public static void mapGeneratorTests() {
             var mapSize = 16;
-            var gen = new MapGenerator(mapSize, mapSize);
+            var gen = new MapGenerator(mapSize, mapSize, Nez.Random.RNG.Next(int.MinValue, int.MaxValue));
             gen.generate();
             // debug print the grid
             Console.WriteLine("--grid");

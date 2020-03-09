@@ -22,12 +22,13 @@ namespace Sor.Game.Map.Gen {
         private const int cellDoorSize = 5;
         private const int cellTilePadding = 10;
 
-        public MapGenerator(int width, int height) {
+        public MapGenerator(int width, int height, int seed) {
             this.width = width;
             this.height = height;
             grid = new int[width * height];
 
-            roomWall = new DiscreteProbabilityDistribution<int>(new[] {
+            var rng = new Rng(seed);
+            roomWall = new DiscreteProbabilityDistribution<int>(rng, new[] {
                 (0.2f, 0),
                 (0.2f, 1),
                 (0.35f, 2),

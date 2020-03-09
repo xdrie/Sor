@@ -37,6 +37,10 @@ namespace Sor.Game {
             // load game time
             Time.TotalTime = rd.ReadFloat() + timeAdvance;
             
+            // load map seed
+            playContext.mapgenSeed = rd.ReadInt();
+            Global.log.writeLine($"loaded mapgen seed: {playContext.mapgenSeed}", GlintLogger.LogLevel.Trace);
+            
             // set rehydrated flag
             playContext.rehydrated = true;
 
@@ -83,6 +87,9 @@ namespace Sor.Game {
 
             // save game time
             wr.Write(Time.TotalTime);
+            
+            // save map seed
+            wr.Write(playContext.mapgenSeed);
 
             // save player
             wr.writeWingMeta(playContext.playerWing);

@@ -22,6 +22,7 @@ namespace Sor.Game {
         public List<Wing> createdWings = new List<Wing>();
         public List<Thing> createdThings = new List<Thing>();
         public Entity mapNt;
+        public int mapgenSeed = 0;
         public bool rehydrated = false;
 
         public PlayScene scene;
@@ -49,13 +50,16 @@ namespace Sor.Game {
             return duck;
         }
 
-        public void load() {
-            // load map
+        private void loadMap() {
+            // TODO: figure out whether we're creating a new map or restoring (does it matter if we seed the rng)
             // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
             // var genMapSize = 100;
             var genMapSize = 16;
-            var gen = new MapGenerator(genMapSize, genMapSize);
+            if (mapgenSeed == 0) {
+                mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
+            }
+            var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
             gen.generate();
             // log generated map
             Glint.Global.log.writeLine(
@@ -70,6 +74,10 @@ namespace Sor.Game {
             mapLoader = new MapLoader(this, mapNt);
             // load map
             mapLoader.load(mapAsset, createObjects: !rehydrated);
+        }
+
+        public void load() {
+            loadMap();
         }
     }
 }
