@@ -11,6 +11,7 @@ using Nez.Textures;
 using Nez.Tweens;
 using Sor.Components.Input;
 using Sor.Components.UI;
+using Sor.Game;
 
 namespace Sor.Scenes {
     public class MenuScene : BaseGameScene<GameContext> {
@@ -77,7 +78,11 @@ namespace Sor.Scenes {
             var menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
-                        uiFocus(() => { TransitionScene(new PlayScene(), 0.5f); });
+                        uiFocus(() => {
+                            var playContext = new PlayContext(); // empty play context
+                            var play = new PlayScene(playContext);
+                            TransitionScene(play, 0.5f);
+                        });
                     }),
                     new MenuButtonList.Item(new Sprite(textEvoTex), () => {
                         uiFocus();
