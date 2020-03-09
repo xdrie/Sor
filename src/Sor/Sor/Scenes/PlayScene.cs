@@ -52,7 +52,7 @@ namespace Sor.Scenes {
 
         public override void OnStart() {
             base.OnStart();
-            
+
             // - scene setup
 
             if (!playContext.rehydrated) { // freshly creating the scene
@@ -69,17 +69,19 @@ namespace Sor.Scenes {
             foreach (var wing in playContext.createdWings) { // attach all wings
                 AddEntity(wing.Entity);
             }
+
             playContext.createdWings.Clear();
-            
+
             foreach (var thing in playContext.createdThings) { // attach all things
                 AddEntity(thing.Entity);
             }
-            playContext.createdThings.Clear(); 
-            
+
+            playContext.createdThings.Clear();
+
             // set up map
             AddEntity(playContext.mapNt);
             gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
-            
+
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
 
@@ -119,12 +121,11 @@ namespace Sor.Scenes {
             Camera.SetMaximumZoom(2f);
             Camera.SetMinimumZoom(0.5f);
             // Camera.SetZoom(-1f);
-            
+
 #if DEBUG
             // draw nav graph (only visible in debug render)
             var navGraphDisplay = CreateEntity("navgraph_display");
-            navGraphDisplay.AddComponent(new NavGraphDisplay(gameContext.map,
-                FindEntity("map").GetComponent<TiledMapRenderer>()));
+            navGraphDisplay.AddComponent(new NavGraphDisplay(FindEntity("map").GetComponent<TiledMapRenderer>()));
 #endif
         }
 
