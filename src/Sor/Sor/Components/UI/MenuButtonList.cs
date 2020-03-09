@@ -15,6 +15,7 @@ namespace Sor.Components.UI {
         private const string YES_SELECTED = "sel";
 
         public int selectedItem = 0;
+        public bool active = true;
 
         public MenuButtonList(List<Item> items, List<Sprite> buttonSprites, Vector2 offset) {
             this.items = items;
@@ -55,6 +56,8 @@ namespace Sor.Components.UI {
         }
 
         public void Update() {
+            if (!active) return;
+            
             // check input and update the selected sprite
             foreach (var item in items) { // deselect all
                 item.buttonAnim.Play(NOT_SELECTED);

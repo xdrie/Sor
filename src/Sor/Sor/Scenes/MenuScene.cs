@@ -82,6 +82,7 @@ namespace Sor.Scenes {
                 fadeUiSprite(titleRen);
                 fadeUiSprite(frameRen);
                 fadeUiSprite(versionText);
+                menuButtons.active = false;
                 menuButtons.applyToRenderers(fadeUiSprite);
                 bordFlash(follow);
             }
@@ -92,8 +93,11 @@ namespace Sor.Scenes {
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
                         uiFocus(async () => {
+                            return;
                             var wait = addWait();
+                            wait.Play("load");
                             var playContext = new PlayContext(); // empty play context
+                            await Task.Delay(2000);
                             // run load game on a worker thread
                             await Task.Run(() => {
                                 GameLoader.loadSave(playContext); // load from save
@@ -101,7 +105,7 @@ namespace Sor.Scenes {
                             });
                             fadeUiSprite(wait);
                             var play = new PlayScene(playContext);
-                            TransitionScene(play, 0.5f);
+                            // TransitionScene(play, 0.5f);
                         });
                     }),
                     new MenuButtonList.Item(new Sprite(textEvoTex), () => {
