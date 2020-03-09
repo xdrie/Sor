@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using LunchLib.Calc;
 using Microsoft.Xna.Framework;
+using Nez.Tiled;
 
 namespace Sor.Game.Map.Gen {
     public class MapGenerator {
@@ -52,6 +53,7 @@ namespace Sor.Game.Map.Gen {
                     if (roomSz == 0) {
                         continue;
                     }
+
                     // check validity
                     var newRoomRect = new Rectangle(sx, sy, roomW, roomH);
                     if (sy + roomH > height || sx + roomW > width) { // ensure bounds
@@ -70,8 +72,43 @@ namespace Sor.Game.Map.Gen {
             }
         }
 
-        public void copyToTilemap() {
-            
+        private static void resizeTmxLayer(TmxLayer layer, int width, int height) {
+            var oldWidth = layer.Width;
+            var oldHeight = layer.Height;
+            layer.Width = width;
+            layer.Height = height;
+            var index = 0;
+            // copy old gids
+            var oldTiles = (TmxLayerTile[]) layer.Tiles.Clone();
+            // and create new tile buffer
+            layer.Tiles = new TmxLayerTile[width * height];
+            for (var j = 0; j < oldHeight; j++)
+            for (var i = 0; i < oldWidth; i++) {
+                var oldTile = oldTiles[index];
+                var gid = default(int);
+                if (oldTile != null) {
+                    gid = oldTile.Gid;
+                    layer.Tiles[index] = new TmxLayerTile(layer.Map, (uint) gid, i, j);
+                } else {
+                    layer.Tiles[index] = null;
+                }
+
+                index++;
+            }
+        }
+
+        public void copyToTilemap(TmxMap map) {
+            var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
+            // reset size to be big
+            resizeTmxLayer(structure, 2000, 2000);
+            // set all the tiles to be big
+            for (int sy = 0; sy < structure.Height; sy++) {
+                for (int sx = 0; sx < structure.Width; sx++) {
+                    // var tile = structure.GetTile(sx, sy);
+                    // structure.SetTile(sx, sy, )
+                    structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
+                }
+            }
         }
     }
 }

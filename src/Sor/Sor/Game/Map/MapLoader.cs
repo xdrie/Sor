@@ -20,6 +20,8 @@ namespace Sor.Game.Map {
         private TmxMap map;
         public MapRepr mapRepr;
 
+        public const string LAYER_STRUCTURE = "structure";
+        
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
@@ -31,7 +33,7 @@ namespace Sor.Game.Map {
         public void load(TmxMap map, bool createObjects) {
             this.map = map;
             // structural recreation
-            structure = map.GetLayer<TmxLayer>("structure");
+            structure = map.GetLayer<TmxLayer>(LAYER_STRUCTURE);
             features = map.GetLayer<TmxLayer>("features");
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];

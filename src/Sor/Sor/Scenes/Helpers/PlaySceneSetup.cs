@@ -9,6 +9,7 @@ using Sor.Components.Input;
 using Sor.Components.Units;
 using Sor.Game;
 using Sor.Game.Map;
+using Sor.Game.Map.Gen;
 
 namespace Sor.Scenes.Helpers {
     public class PlaySceneSetup {
@@ -34,7 +35,12 @@ namespace Sor.Scenes.Helpers {
             var blockNt = play.CreateEntity("block", new Vector2(140, 140));
             var blockColl = blockNt.AddComponent(new BoxCollider(-4, -16, 8, 32));
 
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+            var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
+            var genMapSize = 100;
+            var gen = new MapGenerator(genMapSize, genMapSize);
+            gen.generate();
+            gen.copyToTilemap(mapAsset);
             // TODO: ensure that the loaded map matches the saved map
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
