@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -11,7 +12,7 @@ namespace Sor.Game.Map.Gen {
         public int height;
         public int[] grid;
         private DiscreteProbabilityDistribution<int> roomWall;
-        private List<Rectangle> roomRects = new List<Rectangle>();
+        public List<Rectangle> roomRects = new List<Rectangle>();
         private Dictionary<Rectangle, Map.Room> rectToRooms;
         private RoomGraph graph;
         private const int cellTileSize = 8;
@@ -363,6 +364,20 @@ namespace Sor.Game.Map.Gen {
             // structure.SetTile(pickTile(map, 0, 3, Map.TileKind.Wall, Map.TileOri.Left));
             // structure.SetTile(pickTile(map, 0, 2, Map.TileKind.Wall, Map.TileOri.Left));
             // structure.SetTile(pickTile(map, 0, 1, Map.TileKind.Wall, Map.TileOri.Left));
+        }
+
+        public string dumpGrid() {
+            var sb = new StringBuilder();
+            for (int c = 0; c < width; c++) {
+                for (int r = 0; r < height; r++) {
+                    var cell = grid[r * width + c];
+                    sb.Append($"{cell,4}");
+                }
+
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
     }
 }

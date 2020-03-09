@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -56,6 +57,10 @@ namespace Sor.Game {
             var genMapSize = 4;
             var gen = new MapGenerator(genMapSize, genMapSize);
             gen.generate();
+            // log generated map
+            Glint.Global.log.writeLine(
+                $"generated map of size {genMapSize}, with {gen.roomRects.Count}:\n{gen.dumpGrid()}",
+                GlintLogger.LogLevel.Trace);
             gen.analyze();
             gen.copyToTilemap(mapAsset);
             // TODO: ensure that the loaded map matches the saved map
