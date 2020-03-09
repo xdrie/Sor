@@ -33,6 +33,14 @@ namespace Sor.Game.Map.Gen {
             });
         }
 
+        public void setGrid(int x, int y, int v) {
+            grid[y * width + x] = v;
+        }
+
+        public int getGrid(int x, int y) {
+            return grid[y * width + x];
+        }
+
         private bool overlapsAnyRect(Rectangle rect) {
             foreach (var roomRect in roomRects) {
                 if (roomRect.Intersects(rect)) return true;
@@ -44,9 +52,9 @@ namespace Sor.Game.Map.Gen {
         private void addRoomRect(Rectangle newRoomRect) {
             roomRects.Add(newRoomRect);
             // set cells in the grid
-            for (int r = newRoomRect.X; r < newRoomRect.X + newRoomRect.Width; r++) {
-                for (int c = newRoomRect.Y; c < newRoomRect.Y + newRoomRect.Height; c++) {
-                    grid[r * width + c] = roomRects.Count;
+            for (int sx = newRoomRect.X; sx < newRoomRect.X + newRoomRect.Width; sx++) {
+                for (int sy = newRoomRect.Y; sy < newRoomRect.Y + newRoomRect.Height; sy++) {
+                    setGrid(sx, sy, roomRects.Count);
                 }
             }
         }
@@ -116,9 +124,9 @@ namespace Sor.Game.Map.Gen {
             }
 
             // analyze grid and build graph
-            for (int c = 0; c < width; c++) {
-                for (int r = 0; r < height; r++) {
-                    var cpt = new Point(r, c);
+            for (int asy = 0; asy < width; asy++) {
+                for (int asx = 0; asx < height; asx++) {
+                    var cpt = new Point(asx, asy);
                     // find rect containing
                     var currRect = default(Rectangle);
                     bool foundRect = false;
@@ -132,17 +140,18 @@ namespace Sor.Game.Map.Gen {
 
                     if (!foundRect) continue;
 
-                    var cell = grid[r * width + c];
+                    var cell = getGrid(asx, asy);
                     // check neighbors
                     for (var dx = -1; dx <= 1; dx++) {
                         for (var dy = -1; dy <= 1; dy++) {
-                            var sc = c + dx;
-                            var sr = r + dy;
+                            // scan position of neighbor
+                            var neighY = asy + dx;
+                            var neighX = asx + dy;
                             // check bounds
-                            if (sc < 0 || sr < 0 || sc >= width || sr >= height) continue;
-                            var spt = new Point(sr, sc);
+                            if (neighY < 0 || neighX < 0 || neighY >= width || neighX >= height) continue;
+                            var spt = new Point(neighX, neighY);
                             if (currRect.Contains(spt)) continue;
-                            var neigh = grid[sr * width + sc];
+                            var neigh = getGrid(neighX, neighY);
                             if (neigh > 0 && cell != neigh) {
                                 // this is a different room, figure out which one and add a link
                                 var neighRect = roomRects.Single(x => x.Contains(spt));
@@ -368,9 +377,9 @@ namespace Sor.Game.Map.Gen {
 
         public string dumpGrid() {
             var sb = new StringBuilder();
-            for (int c = 0; c < width; c++) {
-                for (int r = 0; r < height; r++) {
-                    var cell = grid[r * width + c];
+            for (int sy = 0; sy < height; sy++) {
+                for (int sx = 0; sx < width; sx++) {
+                    var cell = getGrid(sx, sy);
                     sb.Append($"{cell,4}");
                 }
 
