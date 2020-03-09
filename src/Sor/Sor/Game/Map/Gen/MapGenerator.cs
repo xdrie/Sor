@@ -15,6 +15,7 @@ namespace Sor.Game.Map.Gen {
         private Dictionary<Rectangle, Map.Room> rectToRooms;
         private RoomGraph graph;
         private const int cellTileSize = 8;
+        private const int cellDoorSize = 5;
         private const int cellTilePadding = 4;
 
         public MapGenerator(int width, int height) {
@@ -263,6 +264,67 @@ namespace Sor.Game.Map.Gen {
 
             for (int sy = bry - 1; sy > uly; sy--) { // left wall
                 structure.SetTile(pickTile(structure.Map, ulx, sy, Map.TileKind.Wall, Map.TileOri.Left));
+            }
+
+            // carve doors for all links
+            foreach (var link in room.links) {
+                var linkDirection = default(Direction);
+                if (link.center.X > room.center.X) { // right link
+                    linkDirection = Direction.Right;
+                }
+
+                if (link.center.Y > room.center.Y) { // down link
+                    linkDirection = Direction.Down;
+                }
+
+                if (link.center.X < room.center.X) { // left link
+                    linkDirection = Direction.Left;
+                }
+
+                if (link.center.Y < room.center.Y) { // up link
+                    linkDirection = Direction.Up;
+                }
+
+                // based on the direction, carve a door
+                var csx = 0; // carve start x
+                var csy = 0; // carve start y
+                var dx = 0; // carve dx
+                var dy = 0; // carve dy
+                switch (linkDirection) {
+                    case Direction.Up: // cut in center of upper wall
+                        csx = (ulx + brx) / 2 - cellDoorSize / 2;
+                        csy = uly;
+                        dx = 1;
+                        break;
+                    case Direction.Right:
+                        csx = brx;
+                        csy = (uly + bry) / 2 - cellDoorSize / 2;
+                        dy = 1;
+                        break;
+                    case Direction.Down:
+                        csx = (ulx + brx) / 2 - cellDoorSize / 2;
+                        csy = bry;
+                        dx = 1;
+                        break;
+                    case Direction.Left:
+                        csx = ulx;
+                        csy = (uly + bry) / 2 - cellDoorSize / 2;
+                        dy = 1;
+                        break;
+                }
+
+                // carve
+                var laserX = csx;
+                var laserY = csy;
+                for (var crx = 0; crx < cellDoorSize; crx += 1) {
+                    for (var cry = 0; cry < cellDoorSize; cry += 1) {
+                        // update laser pos
+                        laserX = csx + crx * dx;
+                        laserY = csy + cry * dy;
+                        // unset the tile
+                        structure.RemoveTile(laserX, laserY);
+                    }
+                }
             }
         }
 
