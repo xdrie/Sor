@@ -42,11 +42,12 @@ namespace Sor.Game {
 
             // read player
             var playerWd = rd.readWingMeta();
+            var playerBodyData = rd.readBodyData();
+            playContext.createPlayer(playerBodyData.pos);
             playContext.playerWing.name = playerWd.name;
             playContext.playerWing.core.energy = playerWd.energy;
             playContext.playerWing.mind.soul.ply = playerWd.ply;
-            var bodyData = rd.readBodyData();
-            bodyData.copyTo(playContext.playerWing.body);
+            playerBodyData.copyTo(playContext.playerWing.body);
             wings.Add(playContext.playerWing);
 
             // load all wings
