@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Glint.Composer;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -65,9 +66,8 @@ namespace Sor.Scenes {
                 return anim;
             }
 
-            void fadeUiSprite(SpriteRenderer ren, float dur = 0.4f) {
-                var tw = ren.TweenColorTo(Color.Transparent, dur);
-                tw.Start();
+            void fadeUiSprite(SpriteRenderer ren) {
+                ren.fade(Color.Transparent);
             }
 
             void bordFlash(Action follow = null) {
@@ -84,7 +84,7 @@ namespace Sor.Scenes {
                 fadeUiSprite(frameRen);
                 fadeUiSprite(versionText);
                 menuButtons.active = false;
-                menuButtons.applyToRenderers(ren => fadeUiSprite(ren));
+                menuButtons.applyToRenderers(fadeUiSprite);
                 bordFlash(follow);
             }
 
