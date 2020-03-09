@@ -233,7 +233,7 @@ namespace Sor.Game.Map {
             }
 
             // set up room graph
-            mapRepr.roomGraph = new RoomGraph {rooms = rooms};
+            mapRepr.roomGraph = new RoomGraph( rooms);
         }
 
         private StructuralNavigationGraph createStructuralNavigationGraph(RoomGraph rg) {

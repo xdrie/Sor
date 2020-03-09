@@ -55,6 +55,7 @@ namespace Sor.Game {
             var genMapSize = 100;
             var gen = new MapGenerator(genMapSize, genMapSize);
             gen.generate();
+            gen.analyze();
             gen.copyToTilemap(mapAsset);
             // TODO: ensure that the loaded map matches the saved map
             mapNt = new Entity("map");
