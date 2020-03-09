@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Glint;
+using Glint.Util;
 using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -250,6 +252,8 @@ namespace Sor.Game.Map.Gen {
             structure.SetTile(ulCorner);
             var brCorner = pickTile(structure.Map, brx, bry, Map.TileKind.Corner, Map.TileOri.DownRight);
             structure.SetTile(brCorner);
+            Global.log.writeLine($"room tilegen from {new Point(ulx, uly)} to {new Point(brx, bry)}", GlintLogger.LogLevel.Trace);
+            
             var urx = brx;
             var ury = uly;
             var urCorner = pickTile(structure.Map, urx, ury, Map.TileKind.Corner, Map.TileOri.UpRight);
