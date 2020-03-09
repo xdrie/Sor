@@ -19,6 +19,7 @@ namespace Sor.Components.Inspect {
 
         public override void DebugRender(Batcher batcher) {
             base.DebugRender(batcher);
+            if (mapRepr == null) return;
             // draw points for each point on the map graph
             foreach (var node in mapRepr.sng.nodes) {
                 Vector2 toWorldPos(Point tilePos) => mapRenderer.TiledMap.TileToWorldPosition(tilePos.ToVector2());
