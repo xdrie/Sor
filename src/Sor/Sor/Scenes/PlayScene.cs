@@ -49,9 +49,12 @@ namespace Sor.Scenes {
             var fixedRenderer =
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
+        }
 
+        public override void OnStart() {
+            base.OnStart();
+            
             // - scene setup
-
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
             // var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
             // var genMapSize = 100;
