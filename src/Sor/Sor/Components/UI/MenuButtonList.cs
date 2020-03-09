@@ -81,5 +81,12 @@ namespace Sor.Components.UI {
 
             selectedItem = (items.Count + selectedItem + ds) % items.Count;
         }
+
+        public void applyToRenderers(Action<SpriteRenderer> renAction) {
+            foreach (var item in items) {
+                renAction(item.buttonAnim);
+                renAction(item.texRen);
+            }
+        }
     }
 }

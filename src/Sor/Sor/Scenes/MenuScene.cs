@@ -53,6 +53,8 @@ namespace Sor.Scenes {
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
+            var menuButtons = default(MenuButtonList);
+
             void fadeUiSprite(SpriteRenderer ren) {
                 var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
                 tw.Start();
@@ -70,12 +72,14 @@ namespace Sor.Scenes {
                 fadeUiSprite(frillRen);
                 fadeUiSprite(titleRen);
                 fadeUiSprite(frameRen);
+                fadeUiSprite(versionText);
+                menuButtons.applyToRenderers(fadeUiSprite);
                 bordFlash(follow);
             }
 
             // add controller
             ui.AddComponent(new MenuInputController());
-            var menuButtons = ui.AddComponent(new MenuButtonList(
+            menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
                         uiFocus(() => {
