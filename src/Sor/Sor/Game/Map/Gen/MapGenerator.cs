@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -344,15 +345,17 @@ namespace Sor.Game.Map.Gen {
 
         public void copyToTilemap(TmxMap map) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
-            // // reset size to be big
-            // resizeTmxLayer(structure, 2000, 2000);
-            // // set all the tiles to be big
-            // for (int sy = 0; sy < structure.Height; sy++) {
-            //     for (int sx = 0; sx < structure.Width; sx++) {
-            //         // var tile = structure.GetTile(sx, sy);
-            //         structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
-            //     }
-            // }
+            // clear the structure map
+            var srWidth = Math.Max((width + 1) * (cellTileSize + cellTilePadding), map.Width);
+            var srHeight = Math.Max((height + 1) * (cellTileSize + cellTilePadding), map.Height);
+            resizeTmxLayer(structure, srWidth, srHeight);
+            // clear all the tiles
+            for (int sy = 0; sy < structure.Height; sy++) {
+                for (int sx = 0; sx < structure.Width; sx++) {
+                    structure.RemoveTile(sx, sy);
+                }
+            }
+
 
             // create rooms
             foreach (var room in graph.rooms) {
