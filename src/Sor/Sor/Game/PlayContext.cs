@@ -59,7 +59,7 @@ namespace Sor.Game {
             gen.generate();
             // log generated map
             Glint.Global.log.writeLine(
-                $"generated map of size {genMapSize}, with {gen.roomRects.Count}:\n{gen.dumpGrid()}",
+                $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
                 GlintLogger.LogLevel.Trace);
             gen.analyze();
             gen.copyToTilemap(mapAsset);
