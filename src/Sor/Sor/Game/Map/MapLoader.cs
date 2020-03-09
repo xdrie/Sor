@@ -224,7 +224,7 @@ namespace Sor.Game.Map {
                             door.roomOther = otherRoom;
                             room.links.Add(otherRoom);
                             Global.log.writeLine(
-                                $"room link [{distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
+                                $"room link [dist: {distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
                                 GlintLogger.LogLevel.Trace);
                             break;
                         }
