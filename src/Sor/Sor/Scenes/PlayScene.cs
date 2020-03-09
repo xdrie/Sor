@@ -78,7 +78,7 @@ namespace Sor.Scenes {
             
             // set up map
             AddEntity(playContext.mapNt);
-            // gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
             
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);

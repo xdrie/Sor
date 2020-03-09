@@ -18,7 +18,7 @@ namespace Sor.Game.Map.Gen {
         public List<Rectangle> roomRects = new List<Rectangle>();
         private Dictionary<Rectangle, Map.Room> rectToRooms;
         private RoomGraph graph;
-        private const int cellTileSize = 8;
+        private const int cellTileSize = 12;
         private const int cellDoorSize = 5;
         private const int cellTilePadding = 6;
 
