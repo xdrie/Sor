@@ -62,7 +62,7 @@ namespace Sor.Scenes.Helpers {
                 // var cuatro = createWing("cuatro", new Vector2(0, -100));
                 // var cinco = createWing("cinco", new Vector2(400, 100));
 
-                mapLoader.load(mapAsset, createObjects: true);
+                // mapLoader.load(mapAsset, createObjects: true);
             } else {
                 // resuming from saved state
                 mapLoader.load(mapAsset, createObjects: false); // entities are already repopulated

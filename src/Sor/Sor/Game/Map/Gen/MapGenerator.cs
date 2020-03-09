@@ -81,9 +81,11 @@ namespace Sor.Game.Map.Gen {
             // copy old gids
             var oldTiles = (TmxLayerTile[]) layer.Tiles.Clone();
             // and create new tile buffer
-            layer.Tiles = new TmxLayerTile[width * height];
+            var newTileBufSize = width * height;
+            layer.Tiles = new TmxLayerTile[newTileBufSize];
             for (var j = 0; j < oldHeight; j++)
             for (var i = 0; i < oldWidth; i++) {
+                if (index >= newTileBufSize) break;
                 var oldTile = oldTiles[index];
                 var gid = default(int);
                 if (oldTile != null) {
@@ -106,7 +108,7 @@ namespace Sor.Game.Map.Gen {
                 for (int sx = 0; sx < structure.Width; sx++) {
                     // var tile = structure.GetTile(sx, sy);
                     // structure.SetTile(sx, sy, )
-                    structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
+                    // structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
                 }
             }
         }
