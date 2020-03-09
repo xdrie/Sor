@@ -80,6 +80,7 @@ namespace Sor.Scenes {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
                         uiFocus(() => {
                             var playContext = new PlayContext(); // empty play context
+                            GameLoader.loadSave(playContext); // load from save
                             var play = new PlayScene(playContext);
                             TransitionScene(play, 0.5f);
                         });
