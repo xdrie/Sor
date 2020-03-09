@@ -265,21 +265,21 @@ namespace Sor.Game.Map.Gen {
                 GlintLogger.LogLevel.Trace);
 
             // set walls
-            // for (var sx = ulp.X + 1; sx < brp.X; sx++) { // upper wall
-            //     structure.SetTile(pickTile(structure.Map, sx, ulp.Y, Map.TileKind.Wall, Map.TileOri.Up));
-            // }
-            //
-            // for (var sy = ulp.Y + 1; sy < brp.Y; sy++) { // right wall
-            //     structure.SetTile(pickTile(structure.Map, brp.X, sy, Map.TileKind.Wall, Map.TileOri.Right));
-            // }
-            //
-            // for (var sx = brp.X - 1; sx > ulp.X; sx--) { // lower wall
-            //     structure.SetTile(pickTile(structure.Map, sx, brp.Y, Map.TileKind.Wall, Map.TileOri.Down));
-            // }
-            //
-            // for (var sy = brp.Y - 1; sy > ulp.Y; sy--) { // left wall
-            //     structure.SetTile(pickTile(structure.Map, ulp.X, sy, Map.TileKind.Wall, Map.TileOri.Left));
-            // }
+            for (var sx = ulp.X + 1; sx < brp.X; sx++) { // upper wall
+                structure.SetTile(pickTile(structure.Map, sx, ulp.Y, Map.TileKind.Wall, Map.TileOri.Up));
+            }
+            
+            for (var sy = ulp.Y + 1; sy < brp.Y; sy++) { // right wall
+                structure.SetTile(pickTile(structure.Map, brp.X, sy, Map.TileKind.Wall, Map.TileOri.Right));
+            }
+            
+            for (var sx = brp.X - 1; sx > ulp.X; sx--) { // lower wall
+                structure.SetTile(pickTile(structure.Map, sx, brp.Y, Map.TileKind.Wall, Map.TileOri.Down));
+            }
+            
+            for (var sy = brp.Y - 1; sy > ulp.Y; sy--) { // left wall
+                structure.SetTile(pickTile(structure.Map, ulp.X, sy, Map.TileKind.Wall, Map.TileOri.Left));
+            }
 
             // carve doors for all links
             foreach (var link in room.links) {
