@@ -118,7 +118,7 @@ namespace Sor.Scenes {
             followCamera.AddComponent<CameraShake>();
             Camera.SetMaximumZoom(2f);
             Camera.SetMinimumZoom(0.5f);
-            Camera.SetZoom(-1f);
+            // Camera.SetZoom(-1f);
             
 #if DEBUG
             // draw nav graph (only visible in debug render)
