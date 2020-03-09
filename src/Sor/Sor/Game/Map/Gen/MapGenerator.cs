@@ -250,15 +250,23 @@ namespace Sor.Game.Map.Gen {
                 // createRoom(structure, room);
             }
             
-            // attempt to test picktile
-            structure.SetTile(pickTile(map, 0, 0, Map.TileKind.Corner, Map.TileOri.UpLeft));
-            structure.SetTile(pickTile(map, 1, 0, Map.TileKind.Wall, Map.TileOri.Up));
-            structure.SetTile(pickTile(map, 2, 0, Map.TileKind.Corner, Map.TileOri.UpRight));
-            structure.SetTile(pickTile(map, 2, 1, Map.TileKind.Wall, Map.TileOri.Right));
-            structure.SetTile(pickTile(map, 2, 2, Map.TileKind.Corner, Map.TileOri.DownRight));
-            structure.SetTile(pickTile(map, 1, 2, Map.TileKind.Wall, Map.TileOri.Down));
-            structure.SetTile(pickTile(map, 0, 2, Map.TileKind.Corner, Map.TileOri.DownLeft));
-            structure.SetTile(pickTile(map, 0, 1, Map.TileKind.Wall, Map.TileOri.Left));
+            // // attempt to test picktile
+            // structure.SetTile(pickTile(map, 0, 0, Map.TileKind.Corner, Map.TileOri.UpLeft));
+            // structure.SetTile(pickTile(map, 1, 0, Map.TileKind.Wall, Map.TileOri.Up));
+            // structure.SetTile(pickTile(map, 2, 0, Map.TileKind.Wall, Map.TileOri.Up));
+            // structure.SetTile(pickTile(map, 3, 0, Map.TileKind.Wall, Map.TileOri.Up));
+            // structure.SetTile(pickTile(map, 4, 0, Map.TileKind.Corner, Map.TileOri.UpRight));
+            // structure.SetTile(pickTile(map, 4, 1, Map.TileKind.Wall, Map.TileOri.Right));
+            // structure.SetTile(pickTile(map, 4, 2, Map.TileKind.Wall, Map.TileOri.Right));
+            // structure.SetTile(pickTile(map, 4, 3, Map.TileKind.Wall, Map.TileOri.Right));
+            // structure.SetTile(pickTile(map, 4, 4, Map.TileKind.Corner, Map.TileOri.DownRight));
+            // structure.SetTile(pickTile(map, 3, 4, Map.TileKind.Wall, Map.TileOri.Down));
+            // structure.SetTile(pickTile(map, 2, 4, Map.TileKind.Wall, Map.TileOri.Down));
+            // structure.SetTile(pickTile(map, 1, 4, Map.TileKind.Wall, Map.TileOri.Down));
+            // structure.SetTile(pickTile(map, 0, 4, Map.TileKind.Corner, Map.TileOri.DownLeft));
+            // structure.SetTile(pickTile(map, 0, 3, Map.TileKind.Wall, Map.TileOri.Left));
+            // structure.SetTile(pickTile(map, 0, 2, Map.TileKind.Wall, Map.TileOri.Left));
+            // structure.SetTile(pickTile(map, 0, 1, Map.TileKind.Wall, Map.TileOri.Left));
         }
     }
 }
