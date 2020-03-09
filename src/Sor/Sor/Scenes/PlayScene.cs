@@ -54,17 +54,6 @@ namespace Sor.Scenes {
             base.OnStart();
             
             // - scene setup
-            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-            var genMapSize = 100;
-            var gen = new MapGenerator(genMapSize, genMapSize);
-            gen.generate();
-            gen.copyToTilemap(mapAsset);
-            // TODO: ensure that the loaded map matches the saved map
-            var mapEntity = CreateEntity("map");
-            var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
-            mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
-            var mapLoader = new MapLoader(this, mapEntity);
 
             if (!playContext.rehydrated) { // freshly creating the scene
                 playContext.createPlayer(new Vector2(200, 200));
@@ -87,9 +76,10 @@ namespace Sor.Scenes {
             }
             playContext.createdThings.Clear(); 
             
-            // load map
-            mapLoader.load(mapAsset, createObjects: !playContext.rehydrated);
-            gameContext.map = mapLoader.mapRepr; // copy map representation
+            // set up map
+            AddEntity(playContext.mapNt);
+            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+            
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
 

@@ -7,6 +7,8 @@ using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.Things;
 using Sor.Components.Units;
+using Sor.Game.Map;
+using Sor.Game.Map.Gen;
 using Sor.Scenes;
 
 namespace Sor.Game {
@@ -18,9 +20,11 @@ namespace Sor.Game {
 
         public List<Wing> createdWings = new List<Wing>();
         public List<Thing> createdThings = new List<Thing>();
+        public Entity mapNt;
         public bool rehydrated = false;
 
         public PlayScene scene;
+        public MapLoader mapLoader;
 
         public void addThing(Thing thing) {
             createdThings.Add(thing);
@@ -42,6 +46,23 @@ namespace Sor.Game {
             duckNt.AddComponent<LogicInputController>();
             createdWings.Add(duck);
             return duck;
+        }
+
+        public void load() {
+            // load map
+            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+            var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
+            var genMapSize = 100;
+            var gen = new MapGenerator(genMapSize, genMapSize);
+            gen.generate();
+            gen.copyToTilemap(mapAsset);
+            // TODO: ensure that the loaded map matches the saved map
+            mapNt = new Entity("map");
+            var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
+            mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
+            mapLoader = new MapLoader(this, mapNt);
+            // load map
+            mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
     }
 }

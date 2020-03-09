@@ -11,7 +11,7 @@ using Sor.Util;
 
 namespace Sor.Game.Map {
     public class MapLoader {
-        private Scene scene;
+        private readonly PlayContext playContext;
         private readonly Entity mapEntity;
         private TmxLayer structure;
         private TmxLayer features;
@@ -22,12 +22,12 @@ namespace Sor.Game.Map {
 
         public const string LAYER_STRUCTURE = "structure";
         public const string LAYER_FEATURES = "features";
-        
+
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
-        public MapLoader(Scene scene, Entity mapEntity) {
-            this.scene = scene;
+        public MapLoader(PlayContext playContext, Entity mapEntity) {
+            this.playContext = playContext;
             this.mapEntity = mapEntity;
         }
 
@@ -58,14 +58,16 @@ namespace Sor.Game.Map {
         private void loadNature() {
             foreach (var th in nature.Objects) {
                 if (th.Type == "tree") {
-                    var nt = scene.CreateEntity(th.Name, new Vector2(th.X, th.Y))
-                        .SetTag(Constants.Tags.ENTITY_THING);
                     var treeStage = 1;
                     if (th.Properties.TryGetValue("stage", out var stageProp)) {
                         treeStage = int.Parse(stageProp);
                     }
 
-                    nt.AddComponent(new Tree {stage = treeStage});
+                    var nt = new Entity(th.Name)
+                        .SetTag(Constants.Tags.ENTITY_THING);
+                    nt.Position = new Vector2(th.X, th.Y);
+                    var tree = nt.AddComponent(new Tree {stage = treeStage});
+                    playContext.addThing(tree);
                     Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
                 }
             }

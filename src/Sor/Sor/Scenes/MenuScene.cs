@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,6 +36,7 @@ namespace Sor.Scenes {
             var textFlyTex = Content.LoadTexture("Data/ui/menu/tex_fly.png");
             var textEvoTex = Content.LoadTexture("Data/ui/menu/tex_evo.png");
             var textOptTex = Content.LoadTexture("Data/ui/menu/tex_opt.png");
+            var waitTex = Content.LoadTexture("Data/ui/menu/wait.png");
 
             SpriteRenderer addUiSprite(Texture2D texture, Vector2 cornerOffset) {
                 var texSpr = new Sprite(texture);
@@ -54,6 +56,13 @@ namespace Sor.Scenes {
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
             var menuButtons = default(MenuButtonList);
+            
+            SpriteAnimator addWait() {
+                var waitSprs = Sprite.SpritesFromAtlas(waitTex, 32 * designScale, 32 * designScale);
+                var anim = new SpriteAnimator(waitSprs[0]);
+                anim.AddAnimation("load", waitSprs.ToArray());
+                return anim;
+            }
 
             void fadeUiSprite(SpriteRenderer ren) {
                 var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
@@ -82,9 +91,15 @@ namespace Sor.Scenes {
             menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
-                        uiFocus(() => {
+                        uiFocus(async () => {
+                            var wait = addWait();
                             var playContext = new PlayContext(); // empty play context
-                            GameLoader.loadSave(playContext); // load from save
+                            // run load game on a worker thread
+                            await Task.Run(() => {
+                                GameLoader.loadSave(playContext); // load from save
+                                playContext.load();
+                            });
+                            fadeUiSprite(wait);
                             var play = new PlayScene(playContext);
                             TransitionScene(play, 0.5f);
                         });
