@@ -244,41 +244,41 @@ namespace Sor.Game.Map.Gen {
             }
 
             // put in the corners
-            var ulx = scaleCell(room.x);
-            var uly = scaleCell(room.y);
-            var brx = ulx + scaleCell(room.width) - cellTilePadding;
-            var bry = uly + scaleCell(room.height) - cellTilePadding;
-            var ulCorner = pickTile(structure.Map, ulx, uly, Map.TileKind.Corner, Map.TileOri.UpLeft);
+            var ulp = new Point(scaleCell(room.x), scaleCell(room.y));
+            var brp = new Point(ulp.X + scaleCell(room.width) - cellTilePadding,
+                ulp.Y + scaleCell(room.height) - cellTilePadding);
+            var urp = new Point(brp.X, ulp.Y);
+            var blp = new Point(ulp.X, brp.Y);
+
+            var ulCorner = pickTile(structure.Map, ulp.X, ulp.Y, Map.TileKind.Corner, Map.TileOri.UpLeft);
             structure.SetTile(ulCorner);
-            var brCorner = pickTile(structure.Map, brx, bry, Map.TileKind.Corner, Map.TileOri.DownRight);
+            var brCorner = pickTile(structure.Map, brp.X, brp.Y, Map.TileKind.Corner, Map.TileOri.DownRight);
             structure.SetTile(brCorner);
-            Global.log.writeLine($"room tilegen from {new Point(ulx, uly)} to {new Point(brx, bry)}", GlintLogger.LogLevel.Trace);
-            
-            var urx = brx;
-            var ury = uly;
-            var urCorner = pickTile(structure.Map, urx, ury, Map.TileKind.Corner, Map.TileOri.UpRight);
+
+            var urCorner = pickTile(structure.Map, urp.X, urp.Y, Map.TileKind.Corner, Map.TileOri.UpRight);
             structure.SetTile(urCorner);
-            var blx = ulx;
-            var bly = bry;
-            var blCorner = pickTile(structure.Map, blx, bly, Map.TileKind.Corner, Map.TileOri.DownLeft);
+            var blCorner = pickTile(structure.Map, blp.X, blp.Y, Map.TileKind.Corner, Map.TileOri.DownLeft);
             structure.SetTile(blCorner);
 
+            Global.log.writeLine($"room tilegen from ul:{ulp}, ur:{urp}, br:{brp}, bl:{blp}",
+                GlintLogger.LogLevel.Trace);
+
             // set walls
-            for (var sx = ulx + 1; sx < brx; sx++) { // upper wall
-                structure.SetTile(pickTile(structure.Map, sx, uly, Map.TileKind.Wall, Map.TileOri.Up));
-            }
-
-            for (var sy = uly + 1; sy < bry; sy++) { // right wall
-                structure.SetTile(pickTile(structure.Map, brx, sy, Map.TileKind.Wall, Map.TileOri.Right));
-            }
-
-            for (var sx = brx - 1; sx > ulx; sx--) { // lower wall
-                structure.SetTile(pickTile(structure.Map, sx, bry, Map.TileKind.Wall, Map.TileOri.Down));
-            }
-
-            for (var sy = bry - 1; sy > uly; sy--) { // left wall
-                structure.SetTile(pickTile(structure.Map, ulx, sy, Map.TileKind.Wall, Map.TileOri.Left));
-            }
+            // for (var sx = ulp.X + 1; sx < brp.X; sx++) { // upper wall
+            //     structure.SetTile(pickTile(structure.Map, sx, ulp.Y, Map.TileKind.Wall, Map.TileOri.Up));
+            // }
+            //
+            // for (var sy = ulp.Y + 1; sy < brp.Y; sy++) { // right wall
+            //     structure.SetTile(pickTile(structure.Map, brp.X, sy, Map.TileKind.Wall, Map.TileOri.Right));
+            // }
+            //
+            // for (var sx = brp.X - 1; sx > ulp.X; sx--) { // lower wall
+            //     structure.SetTile(pickTile(structure.Map, sx, brp.Y, Map.TileKind.Wall, Map.TileOri.Down));
+            // }
+            //
+            // for (var sy = brp.Y - 1; sy > ulp.Y; sy--) { // left wall
+            //     structure.SetTile(pickTile(structure.Map, ulp.X, sy, Map.TileKind.Wall, Map.TileOri.Left));
+            // }
 
             // carve doors for all links
             foreach (var link in room.links) {
@@ -306,23 +306,23 @@ namespace Sor.Game.Map.Gen {
                 var dy = 0; // carve dy
                 switch (linkDirection) {
                     case Direction.Up: // cut in center of upper wall
-                        csx = (ulx + brx) / 2 - cellDoorSize / 2;
-                        csy = uly;
+                        csx = (ulp.X + brp.X) / 2 - cellDoorSize / 2;
+                        csy = ulp.Y;
                         dx = 1;
                         break;
                     case Direction.Right:
-                        csx = brx;
-                        csy = (uly + bry) / 2 - cellDoorSize / 2;
+                        csx = brp.X;
+                        csy = (ulp.Y + brp.Y) / 2 - cellDoorSize / 2;
                         dy = 1;
                         break;
                     case Direction.Down:
-                        csx = (ulx + brx) / 2 - cellDoorSize / 2;
-                        csy = bry;
+                        csx = (ulp.X + brp.X) / 2 - cellDoorSize / 2;
+                        csy = brp.Y;
                         dx = 1;
                         break;
                     case Direction.Left:
-                        csx = ulx;
-                        csy = (uly + bry) / 2 - cellDoorSize / 2;
+                        csx = ulp.X;
+                        csy = (ulp.Y + brp.Y) / 2 - cellDoorSize / 2;
                         dy = 1;
                         break;
                 }
