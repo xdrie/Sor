@@ -54,16 +54,16 @@ namespace Sor.Game.Map.Gen {
         private void addRoomRect(Rectangle newRoomRect) {
             roomRects.Add(newRoomRect);
             // set cells in the grid
-            for (int sx = newRoomRect.X; sx < newRoomRect.X + newRoomRect.Width; sx++) {
-                for (int sy = newRoomRect.Y; sy < newRoomRect.Y + newRoomRect.Height; sy++) {
+            for (var sx = newRoomRect.X; sx < newRoomRect.X + newRoomRect.Width; sx++) {
+                for (var sy = newRoomRect.Y; sy < newRoomRect.Y + newRoomRect.Height; sy++) {
                     setGrid(sx, sy, roomRects.Count);
                 }
             }
         }
 
         public void generate() {
-            for (int sy = 0; sy < height; sy++) {
-                for (int sx = 0; sx < width; sx++) {
+            for (var sy = 0; sy < height; sy++) {
+                for (var sx = 0; sx < width; sx++) {
                     var roomW = roomWall.next();
                     var roomH = roomWall.next();
                     var roomSz = roomW * roomH;
@@ -126,12 +126,12 @@ namespace Sor.Game.Map.Gen {
             }
 
             // analyze grid and build graph
-            for (int asy = 0; asy < width; asy++) {
-                for (int asx = 0; asx < height; asx++) {
+            for (var asy = 0; asy < width; asy++) {
+                for (var asx = 0; asx < height; asx++) {
                     var cpt = new Point(asx, asy);
                     // find rect containing
                     var currRect = default(Rectangle);
-                    bool foundRect = false;
+                    var foundRect = false;
                     foreach (var rect in roomRects) {
                         if (rect.Contains(cpt)) {
                             currRect = rect;
@@ -264,19 +264,19 @@ namespace Sor.Game.Map.Gen {
             structure.SetTile(blCorner);
 
             // set walls
-            for (int sx = ulx + 1; sx < brx; sx++) { // upper wall
+            for (var sx = ulx + 1; sx < brx; sx++) { // upper wall
                 structure.SetTile(pickTile(structure.Map, sx, uly, Map.TileKind.Wall, Map.TileOri.Up));
             }
 
-            for (int sy = uly + 1; sy < bry; sy++) { // right wall
+            for (var sy = uly + 1; sy < bry; sy++) { // right wall
                 structure.SetTile(pickTile(structure.Map, brx, sy, Map.TileKind.Wall, Map.TileOri.Right));
             }
 
-            for (int sx = brx - 1; sx > ulx; sx--) { // lower wall
+            for (var sx = brx - 1; sx > ulx; sx--) { // lower wall
                 structure.SetTile(pickTile(structure.Map, sx, bry, Map.TileKind.Wall, Map.TileOri.Down));
             }
 
-            for (int sy = bry - 1; sy > uly; sy--) { // left wall
+            for (var sy = bry - 1; sy > uly; sy--) { // left wall
                 structure.SetTile(pickTile(structure.Map, ulx, sy, Map.TileKind.Wall, Map.TileOri.Left));
             }
 
@@ -381,8 +381,8 @@ namespace Sor.Game.Map.Gen {
 
         public string dumpGrid() {
             var sb = new StringBuilder();
-            for (int sy = 0; sy < height; sy++) {
-                for (int sx = 0; sx < width; sx++) {
+            for (var sy = 0; sy < height; sy++) {
+                for (var sx = 0; sx < width; sx++) {
                     var cell = getGrid(sx, sy);
                     sb.Append($"{cell,4}");
                 }
