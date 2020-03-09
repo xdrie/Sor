@@ -14,8 +14,8 @@ namespace Sor.Game.Map.Gen {
         private List<Rectangle> roomRects = new List<Rectangle>();
         private Dictionary<Rectangle, Map.Room> rectToRooms;
         private RoomGraph graph;
-        private const int cellTileSize = 16;
-        private const int cellTilePadding = 8;
+        private const int cellTileSize = 8;
+        private const int cellTilePadding = 4;
 
         public MapGenerator(int width, int height) {
             this.width = width;
@@ -127,6 +127,7 @@ namespace Sor.Game.Map.Gen {
                             break;
                         }
                     }
+
                     if (!foundRect) continue;
 
                     var cell = grid[r * width + c];
@@ -154,7 +155,7 @@ namespace Sor.Game.Map.Gen {
 
             graph = new RoomGraph(rectToRooms.Values.ToList());
         }
-        
+
         private static TmxLayerTile pickTile(TmxMap map, int x, int y, Map.TileKind kind, Map.TileOri ori) {
             var tid = 0U;
             switch (kind) {
@@ -165,7 +166,7 @@ namespace Sor.Game.Map.Gen {
                     tid = 2;
                     break;
             }
-            
+
             var tile = new TmxLayerTile(map, tid, x, y);
 
             var tileDir = default(Direction);
@@ -195,7 +196,7 @@ namespace Sor.Game.Map.Gen {
                     tileDir = Direction.Up;
                     break;
             }
-            
+
             // now, map tile dir to flips
             switch (tileDir) {
                 case Direction.Up:
@@ -225,13 +226,46 @@ namespace Sor.Game.Map.Gen {
 
         private void createRoom(TmxLayer structure, Map.Room room) {
             // figure out UL point
-            var txUl = room.x * (cellTileSize + cellTilePadding);
-            var tyUl = room.x * (cellTileSize + cellTilePadding);
-            // put in the top left tile
-            var ulCorner = pickTile(structure.Map, txUl, tyUl, Map.TileKind.Corner, Map.TileOri.UpLeft);
+            int scaleCell(int c) {
+                return c * (cellTileSize + cellTilePadding);
+            }
+
+            // put in the corners
+            var ulx = scaleCell(room.x);
+            var uly = scaleCell(room.y);
+            var brx = ulx + scaleCell(room.width) - cellTilePadding;
+            var bry = uly + scaleCell(room.height) - cellTilePadding;
+            var ulCorner = pickTile(structure.Map, ulx, uly, Map.TileKind.Corner, Map.TileOri.UpLeft);
             structure.SetTile(ulCorner);
+            var brCorner = pickTile(structure.Map, brx, bry, Map.TileKind.Corner, Map.TileOri.DownRight);
+            structure.SetTile(brCorner);
+            var urx = brx;
+            var ury = uly;
+            var urCorner = pickTile(structure.Map, urx, ury, Map.TileKind.Corner, Map.TileOri.UpRight);
+            structure.SetTile(urCorner);
+            var blx = ulx;
+            var bly = bry;
+            var blCorner = pickTile(structure.Map, blx, bly, Map.TileKind.Corner, Map.TileOri.DownLeft);
+            structure.SetTile(blCorner);
+
+            // set walls
+            for (int sx = ulx + 1; sx < brx; sx++) { // upper wall
+                structure.SetTile(pickTile(structure.Map, sx, uly, Map.TileKind.Wall, Map.TileOri.Up));
+            }
+
+            for (int sy = uly + 1; sy < bry; sy++) { // right wall
+                structure.SetTile(pickTile(structure.Map, brx, sy, Map.TileKind.Wall, Map.TileOri.Right));
+            }
+
+            for (int sx = brx - 1; sx > ulx; sx--) { // lower wall
+                structure.SetTile(pickTile(structure.Map, sx, bry, Map.TileKind.Wall, Map.TileOri.Down));
+            }
+
+            for (int sy = bry - 1; sy > uly; sy--) { // left wall
+                structure.SetTile(pickTile(structure.Map, ulx, sy, Map.TileKind.Wall, Map.TileOri.Left));
+            }
         }
-        
+
         public void copyToTilemap(TmxMap map) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
             // // reset size to be big
@@ -243,13 +277,13 @@ namespace Sor.Game.Map.Gen {
             //         structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
             //     }
             // }
-            
+
             // create rooms
             foreach (var room in graph.rooms) {
                 // render the room to tiles
-                // createRoom(structure, room);
+                createRoom(structure, room);
             }
-            
+
             // // attempt to test picktile
             // structure.SetTile(pickTile(map, 0, 0, Map.TileKind.Corner, Map.TileOri.UpLeft));
             // structure.SetTile(pickTile(map, 1, 0, Map.TileKind.Wall, Map.TileOri.Up));
