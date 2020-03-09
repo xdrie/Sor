@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LunchLib.Calc;
 using Microsoft.Xna.Framework;
+using Nez;
 using Nez.Tiled;
 
 namespace Sor.Game.Map.Gen {
@@ -13,6 +14,8 @@ namespace Sor.Game.Map.Gen {
         private List<Rectangle> roomRects = new List<Rectangle>();
         private Dictionary<Rectangle, Map.Room> rectToRooms;
         private RoomGraph graph;
+        private const int cellTileSize = 16;
+        private const int cellTilePadding = 8;
 
         public MapGenerator(int width, int height) {
             this.width = width;
@@ -151,10 +154,82 @@ namespace Sor.Game.Map.Gen {
 
             graph = new RoomGraph(rectToRooms.Values.ToList());
         }
+        
+        private static TmxLayerTile pickTile(TmxMap map, int x, int y, Map.TileKind kind, Map.TileOri ori) {
+            var tid = 0U;
+            switch (kind) {
+                case Map.TileKind.Corner:
+                    tid = 3;
+                    break;
+                case Map.TileKind.Wall:
+                    tid = 2;
+                    break;
+            }
+            
+            var tile = new TmxLayerTile(map, tid, x, y);
 
-        private void createRoom(TmxMap map, Map.Room room) {
+            var tileDir = default(Direction);
+            switch (ori) {
+                case Map.TileOri.Left:
+                    tileDir = Direction.Up;
+                    break;
+                case Map.TileOri.Up:
+                    tileDir = Direction.Right;
+                    break;
+                case Map.TileOri.Right:
+                    tileDir = Direction.Down;
+                    break;
+                case Map.TileOri.Down:
+                    tileDir = Direction.Left;
+                    break;
+                case Map.TileOri.UpLeft:
+                    tileDir = Direction.Right;
+                    break;
+                case Map.TileOri.UpRight:
+                    tileDir = Direction.Down;
+                    break;
+                case Map.TileOri.DownRight:
+                    tileDir = Direction.Left;
+                    break;
+                case Map.TileOri.DownLeft:
+                    tileDir = Direction.Up;
+                    break;
+            }
+            
+            // now, map tile dir to flips
+            switch (tileDir) {
+                case Direction.Up:
+                    tile.DiagonalFlip = false;
+                    tile.HorizontalFlip = false;
+                    tile.VerticalFlip = false;
+                    break;
+                case Direction.Right:
+                    tile.DiagonalFlip = true;
+                    tile.HorizontalFlip = true;
+                    tile.VerticalFlip = false;
+                    break;
+                case Direction.Down:
+                    tile.DiagonalFlip = false;
+                    tile.HorizontalFlip = true;
+                    tile.VerticalFlip = true;
+                    break;
+                case Direction.Left:
+                    tile.DiagonalFlip = true;
+                    tile.HorizontalFlip = false;
+                    tile.VerticalFlip = true;
+                    break;
+            }
+
+            return tile;
+        }
+
+        private void createRoom(TmxLayer structure, Map.Room room) {
             // figure out UL point
-            room.ul
+            var txUl = room.x * (cellTileSize + cellTilePadding);
+            var tyUl = room.x * (cellTileSize + cellTilePadding);
+            // put in the top left tile
+            var ulCorner = pickTile(structure.Map, txUl, tyUl, Map.TileKind.Corner, Map.TileOri.UpLeft);
+            structure.SetTile(ulCorner);
         }
         
         public void copyToTilemap(TmxMap map) {
@@ -170,6 +245,20 @@ namespace Sor.Game.Map.Gen {
             // }
             
             // create rooms
+            foreach (var room in graph.rooms) {
+                // render the room to tiles
+                // createRoom(structure, room);
+            }
+            
+            // attempt to test picktile
+            structure.SetTile(pickTile(map, 0, 0, Map.TileKind.Corner, Map.TileOri.UpLeft));
+            structure.SetTile(pickTile(map, 1, 0, Map.TileKind.Wall, Map.TileOri.Up));
+            structure.SetTile(pickTile(map, 2, 0, Map.TileKind.Corner, Map.TileOri.UpRight));
+            structure.SetTile(pickTile(map, 2, 1, Map.TileKind.Wall, Map.TileOri.Right));
+            structure.SetTile(pickTile(map, 2, 2, Map.TileKind.Corner, Map.TileOri.DownRight));
+            structure.SetTile(pickTile(map, 1, 2, Map.TileKind.Wall, Map.TileOri.Down));
+            structure.SetTile(pickTile(map, 0, 2, Map.TileKind.Corner, Map.TileOri.DownLeft));
+            structure.SetTile(pickTile(map, 0, 1, Map.TileKind.Wall, Map.TileOri.Left));
         }
     }
 }

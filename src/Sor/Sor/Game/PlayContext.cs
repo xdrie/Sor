@@ -52,7 +52,8 @@ namespace Sor.Game {
             // load map
             // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-            var genMapSize = 100;
+            // var genMapSize = 100;
+            var genMapSize = 4;
             var gen = new MapGenerator(genMapSize, genMapSize);
             gen.generate();
             gen.analyze();
