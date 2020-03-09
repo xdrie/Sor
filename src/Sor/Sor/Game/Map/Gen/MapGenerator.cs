@@ -69,5 +69,9 @@ namespace Sor.Game.Map.Gen {
                 }
             }
         }
+
+        public void copyToTilemap() {
+            
+        }
     }
 }
