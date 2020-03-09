@@ -107,8 +107,7 @@ namespace Sor.Game.Map.Gen {
             for (int sy = 0; sy < structure.Height; sy++) {
                 for (int sx = 0; sx < structure.Width; sx++) {
                     // var tile = structure.GetTile(sx, sy);
-                    // structure.SetTile(sx, sy, )
-                    // structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
+                    structure.SetTile(new TmxLayerTile(map, 3, sx, sy));
                 }
             }
         }

@@ -44,6 +44,7 @@ namespace Sor.Scenes.Helpers {
             // TODO: ensure that the loaded map matches the saved map
             var mapEntity = play.CreateEntity("map");
             var mapRenderer = mapEntity.AddComponent(new TiledMapRenderer(mapAsset, null, false));
+            mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
             var mapLoader = new MapLoader(play, mapEntity);
 
             // load the game from data

@@ -21,6 +21,7 @@ namespace Sor.Game.Map {
         public MapRepr mapRepr;
 
         public const string LAYER_STRUCTURE = "structure";
+        public const string LAYER_FEATURES = "features";
         
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
@@ -34,7 +35,7 @@ namespace Sor.Game.Map {
             this.map = map;
             // structural recreation
             structure = map.GetLayer<TmxLayer>(LAYER_STRUCTURE);
-            features = map.GetLayer<TmxLayer>("features");
+            features = map.GetLayer<TmxLayer>(LAYER_FEATURES);
             nature = map.GetObjectGroup("nature");
             worldTileset = map.Tilesets["world_tiles"];
             createWallColliders(); // comment out to disable wall collision
