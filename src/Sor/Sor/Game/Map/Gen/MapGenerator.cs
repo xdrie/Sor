@@ -17,7 +17,7 @@ namespace Sor.Game.Map.Gen {
         private RoomGraph graph;
         private const int cellTileSize = 8;
         private const int cellDoorSize = 5;
-        private const int cellTilePadding = 4;
+        private const int cellTilePadding = 6;
 
         public MapGenerator(int width, int height) {
             this.width = width;
