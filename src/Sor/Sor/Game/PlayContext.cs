@@ -54,8 +54,8 @@ namespace Sor.Game {
             // TODO: figure out whether we're creating a new map or restoring (does it matter if we seed the rng)
             // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
             var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-            // var genMapSize = 100;
-            var genMapSize = 16;
+            var genMapSize = NGame.context.config.generatedMapSize;
+            // var genMapSize = 16;
             if (mapgenSeed == 0) {
                 mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
             }
