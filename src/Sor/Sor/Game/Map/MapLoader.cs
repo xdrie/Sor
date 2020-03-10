@@ -216,9 +216,15 @@ namespace Sor.Game.Map {
 
                         // check if we're inside another room
                         var sPt = new Point(sx, sy);
-                        // TODO: optimize this
+                        // TODO: optimize this checking
                         // check if we're in any other room
-                        var otherRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        var otherRoom = default(Map.Room);
+                        foreach (var testRoom in rooms) {
+                            if (testRoom.inRoom(sPt)) {
+                                otherRoom = testRoom;
+                                break;
+                            }
+                        }
                         if (otherRoom != null) {
                             // set up the connection
                             door.roomOther = otherRoom;
