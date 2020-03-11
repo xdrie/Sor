@@ -6,7 +6,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;

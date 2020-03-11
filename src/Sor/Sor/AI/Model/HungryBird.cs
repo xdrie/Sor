@@ -1,7 +1,7 @@
 using System;
 using Activ.GOAP;
 
-namespace Sor.AI.Plan {
+namespace Sor.AI.Model {
     /// <summary>
     /// Represents a hungry bird trying to get energy.
     /// </summary>

@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.Components.Units;
 using Sor.Util;
 

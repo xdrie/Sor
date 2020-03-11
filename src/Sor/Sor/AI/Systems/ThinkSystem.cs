@@ -10,7 +10,7 @@ using Nez.AI.Pathfinding;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
 using Sor.AI.Model;
-using Sor.AI.Plan;
+using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 

@@ -5,7 +5,7 @@ using Glint.Util;
 using LunchLib.AI.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
