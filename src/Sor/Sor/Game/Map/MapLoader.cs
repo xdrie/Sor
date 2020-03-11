@@ -22,6 +22,10 @@ namespace Sor.Game.Map {
 
         public const string LAYER_STRUCTURE = "structure";
         public const string LAYER_FEATURES = "features";
+        public const string LAYER_NATURE = "nature";
+        public const string TILESET_WORLD = "world_tiles";
+        public const string OBJECT_TREE = "tree";
+        public const string OBJECT_PROP_STAGE = "stage";
 
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
@@ -36,8 +40,8 @@ namespace Sor.Game.Map {
             // structural recreation
             structure = map.GetLayer<TmxLayer>(LAYER_STRUCTURE);
             features = map.GetLayer<TmxLayer>(LAYER_FEATURES);
-            nature = map.GetObjectGroup("nature");
-            worldTileset = map.Tilesets["world_tiles"];
+            nature = map.GetObjectGroup(LAYER_NATURE);
+            worldTileset = map.Tilesets[TILESET_WORLD];
             createWallColliders(); // comment out to disable wall collision
 
             // analysis
@@ -57,9 +61,9 @@ namespace Sor.Game.Map {
 
         private void loadNature() {
             foreach (var th in nature.Objects) {
-                if (th.Type == "tree") {
-                    var treeStage = 1;
-                    if (th.Properties.TryGetValue("stage", out var stageProp)) {
+                if (th.Type == OBJECT_TREE) {
+                    var treeStage = 1; // default tree stage
+                    if (th.Properties.TryGetValue(OBJECT_PROP_STAGE, out var stageProp)) {
                         treeStage = int.Parse(stageProp);
                     }
 
@@ -216,9 +220,16 @@ namespace Sor.Game.Map {
 
                         // check if we're inside another room
                         var sPt = new Point(sx, sy);
-                        // TODO: optimize this
+                        // TODO: optimize this checking
                         // check if we're in any other room
-                        var otherRoom = rooms.SingleOrDefault(x => x.inRoom(sPt));
+                        var otherRoom = default(Map.Room);
+                        foreach (var testRoom in rooms) {
+                            if (testRoom.inRoom(sPt)) {
+                                otherRoom = testRoom;
+                                break;
+                            }
+                        }
+
                         if (otherRoom != null) {
                             // set up the connection
                             door.roomOther = otherRoom;
@@ -233,7 +244,7 @@ namespace Sor.Game.Map {
             }
 
             // set up room graph
-            mapRepr.roomGraph = new RoomGraph( rooms);
+            mapRepr.roomGraph = new RoomGraph(rooms);
         }
 
         private StructuralNavigationGraph createStructuralNavigationGraph(RoomGraph rg) {
