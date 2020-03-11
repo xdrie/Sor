@@ -11,29 +11,42 @@ using Nez.Tiled;
 
 namespace Sor.Game.Map.Gen {
     public class MapGenerator {
+        private Dictionary<Rectangle, Map.Room> rectToRooms;
+        private RoomGraph graph;
+        private Rng rng;
+
+        private DiscreteProbabilityDistribution<int> roomWallDistr;
+        private DiscreteProbabilityDistribution<int> treeLevelDistr;
+
+        private const int CELL_TILE_SIZE = 12; // the size in tiles that a cell converts to
+        private const int CELL_DOOR_SIZE = 5; // size of the doors cut into rooms
+        private const int CELL_TILE_SPACING = 10; // spacing between map grid cells
+        private const int ROOM_OBJECT_PADDING = 2; // spacing between the room walls and objects 
+
         public int width;
         public int height;
         public int[] grid;
-        private DiscreteProbabilityDistribution<int> roomWall;
         public List<Rectangle> roomRects = new List<Rectangle>();
-        private Dictionary<Rectangle, Map.Room> rectToRooms;
-        private RoomGraph graph;
-        private const int cellTileSize = 12;
-        private const int cellDoorSize = 5;
-        private const int cellTilePadding = 10;
 
         public MapGenerator(int width, int height, int seed) {
             this.width = width;
             this.height = height;
             grid = new int[width * height];
 
-            var rng = new Rng(seed);
-            roomWall = new DiscreteProbabilityDistribution<int>(rng, new[] {
+            rng = new Rng(seed);
+            roomWallDistr = new DiscreteProbabilityDistribution<int>(rng, new[] {
                 (0.2f, 0),
                 (0.2f, 1),
                 (0.35f, 2),
                 (0.2f, 3),
                 (0.05f, 4)
+            });
+            treeLevelDistr = new DiscreteProbabilityDistribution<int>(rng, new[] {
+                (0.2f, 1),
+                (0.4f, 2),
+                (0.2f, 3),
+                (0.1f, 4),
+                (0.1f, 5),
             });
         }
 
@@ -66,8 +79,8 @@ namespace Sor.Game.Map.Gen {
         public void generate() {
             for (var sy = 0; sy < height; sy++) {
                 for (var sx = 0; sx < width; sx++) {
-                    var roomW = roomWall.next();
-                    var roomH = roomWall.next();
+                    var roomW = roomWallDistr.next();
+                    var roomH = roomWallDistr.next();
                     var roomSz = roomW * roomH;
                     // a size of 0w or 0h means skip this room
                     if (roomSz == 0) {
@@ -123,8 +136,10 @@ namespace Sor.Game.Map.Gen {
             rectToRooms = new Dictionary<Rectangle, Map.Room>();
             // map rects to rooms
             foreach (var rect in roomRects) {
-                rectToRooms[rect] = new Map.Room(new Point(rect.Left, rect.Top),
-                    new Point(rect.Right, rect.Bottom));
+                rectToRooms[rect] =
+                    new Map.Room(new Point(rect.Left, rect.Top),
+                        new Point(rect.Right, rect.Bottom));
+                // these are mini/fake rooms on the cell grid scale, not on the tile scale
             }
 
             // analyze grid and build graph
@@ -242,13 +257,13 @@ namespace Sor.Game.Map.Gen {
         private void createRoom(TmxLayer structure, Map.Room room) {
             // figure out UL point
             int scaleCell(int c) {
-                return c * (cellTileSize + cellTilePadding);
+                return c * (CELL_TILE_SIZE + CELL_TILE_SPACING);
             }
 
             // put in the corners
             var ulp = new Point(scaleCell(room.x), scaleCell(room.y));
-            var brp = new Point(ulp.X + scaleCell(room.width) - cellTilePadding,
-                ulp.Y + scaleCell(room.height) - cellTilePadding);
+            var brp = new Point(ulp.X + scaleCell(room.width) - CELL_TILE_SPACING,
+                ulp.Y + scaleCell(room.height) - CELL_TILE_SPACING);
             var urp = new Point(brp.X, ulp.Y);
             var blp = new Point(ulp.X, brp.Y);
 
@@ -269,15 +284,15 @@ namespace Sor.Game.Map.Gen {
             for (var sx = ulp.X + 1; sx < brp.X; sx++) { // upper wall
                 structure.SetTile(pickTile(structure.Map, sx, ulp.Y, Map.TileKind.Wall, Map.TileOri.Up));
             }
-            
+
             for (var sy = ulp.Y + 1; sy < brp.Y; sy++) { // right wall
                 structure.SetTile(pickTile(structure.Map, brp.X, sy, Map.TileKind.Wall, Map.TileOri.Right));
             }
-            
+
             for (var sx = brp.X - 1; sx > ulp.X; sx--) { // lower wall
                 structure.SetTile(pickTile(structure.Map, sx, brp.Y, Map.TileKind.Wall, Map.TileOri.Down));
             }
-            
+
             for (var sy = brp.Y - 1; sy > ulp.Y; sy--) { // left wall
                 structure.SetTile(pickTile(structure.Map, ulp.X, sy, Map.TileKind.Wall, Map.TileOri.Left));
             }
@@ -308,23 +323,23 @@ namespace Sor.Game.Map.Gen {
                 var dy = 0; // carve dy
                 switch (linkDirection) {
                     case Direction.Up: // cut in center of upper wall
-                        csx = (ulp.X + brp.X) / 2 - cellDoorSize / 2;
+                        csx = (ulp.X + brp.X) / 2 - CELL_DOOR_SIZE / 2;
                         csy = ulp.Y;
                         dx = 1;
                         break;
                     case Direction.Right:
                         csx = brp.X;
-                        csy = (ulp.Y + brp.Y) / 2 - cellDoorSize / 2;
+                        csy = (ulp.Y + brp.Y) / 2 - CELL_DOOR_SIZE / 2;
                         dy = 1;
                         break;
                     case Direction.Down:
-                        csx = (ulp.X + brp.X) / 2 - cellDoorSize / 2;
+                        csx = (ulp.X + brp.X) / 2 - CELL_DOOR_SIZE / 2;
                         csy = brp.Y;
                         dx = 1;
                         break;
                     case Direction.Left:
                         csx = ulp.X;
-                        csy = (ulp.Y + brp.Y) / 2 - cellDoorSize / 2;
+                        csy = (ulp.Y + brp.Y) / 2 - CELL_DOOR_SIZE / 2;
                         dy = 1;
                         break;
                 }
@@ -332,8 +347,8 @@ namespace Sor.Game.Map.Gen {
                 // carve
                 var laserX = csx;
                 var laserY = csy;
-                for (var crx = 0; crx < cellDoorSize; crx += 1) {
-                    for (var cry = 0; cry < cellDoorSize; cry += 1) {
+                for (var crx = 0; crx < CELL_DOOR_SIZE; crx += 1) {
+                    for (var cry = 0; cry < CELL_DOOR_SIZE; cry += 1) {
                         // update laser pos
                         laserX = csx + crx * dx;
                         laserY = csy + cry * dy;
@@ -344,11 +359,47 @@ namespace Sor.Game.Map.Gen {
             }
         }
 
+        private void placeTree(TmxObjectGroup nature, Map.Room room, int stage) {
+            // 1. pick a random spot in the room
+            var placePoint = new Point(
+                rng.next(room.x * CELL_TILE_SIZE + ROOM_OBJECT_PADDING,
+                    room.x * CELL_TILE_SIZE + room.width * CELL_TILE_SIZE - ROOM_OBJECT_PADDING),
+                rng.next(room.y * CELL_TILE_SIZE + ROOM_OBJECT_PADDING,
+                    room.y * CELL_TILE_SIZE + room.height * CELL_TILE_SIZE - ROOM_OBJECT_PADDING));
+            // 2. ensure the spot is empty
+            foreach (var obj in nature.Objects) {
+                if (obj.Type == MapLoader.OBJECT_TREE) {
+                    var objX = (int) obj.X;
+                    var objY = (int) obj.Y;
+                    if (objX == placePoint.X && objY == placePoint.Y) {
+                        // the pieces overlap, fail
+                        return;
+                    }
+                }
+            }
+
+            // 3. add a tree object
+            nature.Objects.Add(new TmxObject {
+                X = placePoint.X * nature.Map.TileWidth,
+                Y = placePoint.Y * nature.Map.TileHeight,
+                Name = $"{MapLoader.OBJECT_TREE}_{placePoint.X}_{placePoint.Y}",
+                Type = MapLoader.OBJECT_TREE,
+                Properties = new Dictionary<string, string> {
+                    {MapLoader.OBJECT_PROP_STAGE, stage.ToString()}
+                },
+                ObjectType = TmxObjectType.Basic,
+                Width = nature.Map.TileWidth,
+                Height = nature.Map.TileHeight
+            });
+        }
+
         public void copyToTilemap(TmxMap map) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
-            // clear the structure map
-            var srWidth = Math.Max((width + 1) * (cellTileSize + cellTilePadding), map.Width);
-            var srHeight = Math.Max((height + 1) * (cellTileSize + cellTilePadding), map.Height);
+            var nature = map.GetObjectGroup(MapLoader.LAYER_NATURE);
+            // clear/reset the map
+            // 1. clear the structure map
+            var srWidth = Math.Max((width + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Width);
+            var srHeight = Math.Max((height + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Height);
             resizeTmxLayer(structure, srWidth, srHeight);
             // clear all the tiles
             for (int sy = 0; sy < structure.Height; sy++) {
@@ -357,11 +408,22 @@ namespace Sor.Game.Map.Gen {
                 }
             }
 
+            // 2. clear the nature map
+            nature.Objects.Clear();
+
 
             // create rooms
             foreach (var room in graph.rooms) {
                 // render the room to tiles
                 createRoom(structure, room);
+            }
+
+            // create objects
+            // TODO: improve this object generation
+            // for now, put a random-leveled tree in each room
+            foreach (var room in graph.rooms) {
+                var treeLevel = treeLevelDistr.next();
+                placeTree(nature, room, treeLevel);
             }
 
             // // attempt to test picktile
