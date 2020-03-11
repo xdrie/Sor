@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Glint;
 using Glint.Util;
 using LunchLib.AI.Utility.Considerations;
@@ -64,5 +65,20 @@ namespace Sor.AI {
 
             return res;
         }
+
+        /// <summary>
+        /// copy new plan to task plan
+        /// </summary>
+        /// <param name="tasks">new task list</param>
+        public void setPlan(IEnumerable<PlanTask> tasks) {
+            lock (plan) {
+                plan.Clear();
+                foreach (var task in tasks) {
+                    plan.Enqueue(task);
+                }
+            }
+        }
+
+        public bool isPlanValid => plan.Any(x => x.valid());
     }
 }
