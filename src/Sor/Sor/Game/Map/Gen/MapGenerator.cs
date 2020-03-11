@@ -254,16 +254,17 @@ namespace Sor.Game.Map.Gen {
             return tile;
         }
 
+        private int cellToTilePos(int c) {
+            return c * (CELL_TILE_SIZE + CELL_TILE_SPACING);
+        }
+
         private void createRoom(TmxLayer structure, Map.Room room) {
             // figure out UL point
-            int scaleCell(int c) {
-                return c * (CELL_TILE_SIZE + CELL_TILE_SPACING);
-            }
 
             // put in the corners
-            var ulp = new Point(scaleCell(room.x), scaleCell(room.y));
-            var brp = new Point(ulp.X + scaleCell(room.width) - CELL_TILE_SPACING,
-                ulp.Y + scaleCell(room.height) - CELL_TILE_SPACING);
+            var ulp = new Point(cellToTilePos(room.x), cellToTilePos(room.y));
+            var brp = new Point(ulp.X + cellToTilePos(room.width) - CELL_TILE_SPACING,
+                ulp.Y + cellToTilePos(room.height) - CELL_TILE_SPACING);
             var urp = new Point(brp.X, ulp.Y);
             var blp = new Point(ulp.X, brp.Y);
 
@@ -362,10 +363,11 @@ namespace Sor.Game.Map.Gen {
         private void placeTree(TmxObjectGroup nature, Map.Room room, int stage) {
             // 1. pick a random spot in the room
             var placePoint = new Point(
-                rng.next(room.x * CELL_TILE_SIZE + ROOM_OBJECT_PADDING,
-                    room.x * CELL_TILE_SIZE + room.width * CELL_TILE_SIZE - ROOM_OBJECT_PADDING),
-                rng.next(room.y * CELL_TILE_SIZE + ROOM_OBJECT_PADDING,
-                    room.y * CELL_TILE_SIZE + room.height * CELL_TILE_SIZE - ROOM_OBJECT_PADDING));
+                rng.next(cellToTilePos(room.x) + ROOM_OBJECT_PADDING,
+                    cellToTilePos(room.x + room.width) - CELL_TILE_SPACING - ROOM_OBJECT_PADDING),
+                rng.next(cellToTilePos(room.y) + ROOM_OBJECT_PADDING,
+                    cellToTilePos(room.y + room.height) - CELL_TILE_SPACING - ROOM_OBJECT_PADDING));
+            // var placePoint = new Point(cellToTilePos(room.x), cellToTilePos(room.y));
             // 2. ensure the spot is empty
             foreach (var obj in nature.Objects) {
                 if (obj.Type == MapLoader.OBJECT_TREE) {
@@ -380,8 +382,8 @@ namespace Sor.Game.Map.Gen {
 
             // 3. add a tree object
             nature.Objects.Add(new TmxObject {
-                X = placePoint.X * nature.Map.TileWidth,
-                Y = placePoint.Y * nature.Map.TileHeight,
+                X = nature.Map.TileToWorldPositionX(placePoint.X),
+                Y = nature.Map.TileToWorldPositionY(placePoint.Y),
                 Name = $"{MapLoader.OBJECT_TREE}_{placePoint.X}_{placePoint.Y}",
                 Type = MapLoader.OBJECT_TREE,
                 Properties = new Dictionary<string, string> {
