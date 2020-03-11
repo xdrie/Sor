@@ -21,10 +21,9 @@ namespace Sor.AI.Model {
 
         #region Type Overrides
 
-        public override HungryBird Allocate() => new HungryBird();
-
         public override HungryBird Clone(HungryBird b) {
             b.cost = cost;
+            
             b.nearbyBeans = nearbyBeans;
             b.nearbyTrees = nearbyTrees;
             b.satiety = satiety;
