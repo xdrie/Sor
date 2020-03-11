@@ -79,7 +79,7 @@ namespace Sor.Components.Inspect {
 
                 lock (mind.state.plan) {
                     if (mind.state.plan.Count > 0) {
-                        var planTask = mind.state.plan.Peek();
+                        mind.state.plan.TryPeek(out var planTask);
                         if (planTask is TargetSource target) {
                             if (target.valid()) {
                                 void drawPosIndicator(Vector2 pos, Color col) {
