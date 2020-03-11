@@ -199,10 +199,8 @@ namespace Sor.AI {
                 var dCritBs = dCrit * 1.1f;
 
                 // update board
-                lock (state.board) {
-                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}", "mov");
-                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}", "mov");
-                }
+                state.setBoard(nameof(dGiv), new MindState.BoardItem($"{dGiv:n2}", "mov"));
+                state.setBoard(nameof(dCrit), new MindState.BoardItem($"{dCrit:n2}", "mov"));
 
                 if (dGiv > dCrit) {
                     moveY = -1;

@@ -80,5 +80,11 @@ namespace Sor.AI {
         }
 
         public bool isPlanValid => plan.Any(x => x.valid());
+
+        public void setBoard(string key, BoardItem item) {
+            lock (board) {
+                board[key] = item;
+            }
+        }
     }
 }

@@ -138,11 +138,9 @@ namespace Sor.AI.Systems {
 
                 state.setPlan(newPlan);
 
-                lock (state.board) {
-                    var nextPt = foundPath.First().pos;
-                    state.board["exp"] =
-                        new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path");
-                }
+                var nextPt = foundPath.First().pos;
+                state.setBoard("exp",
+                    new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path"));
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
