@@ -176,7 +176,7 @@ namespace Sor.AI.Systems {
                 var newPlan = new List<PlanTask>();
                 var feedTime = 10f;
                 var goalFeedTime = Time.TotalTime + feedTime;
-                state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
+                newPlan.Add(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
                     goalFeedTime));
                 // if we're close enough to our fren, feed them
                 var toFren = mind.me.body.pos - fren.body.pos;
