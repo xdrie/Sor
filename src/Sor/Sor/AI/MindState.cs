@@ -26,7 +26,7 @@ namespace Sor.AI {
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
-        public Queue<PlanTask> plan = new Queue<PlanTask>();
+        public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
 
@@ -72,7 +72,9 @@ namespace Sor.AI {
         /// <param name="tasks">new task list</param>
         public void setPlan(IEnumerable<PlanTask> tasks) {
             lock (plan) {
-                plan.Clear();
+                while (plan.Count > 0) {
+                    plan.TryDequeue(out var item);
+                }
                 foreach (var task in tasks) {
                     plan.Enqueue(task);
                 }

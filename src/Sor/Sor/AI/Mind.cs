@@ -40,6 +40,7 @@ namespace Sor.AI {
                 this.soul.ply.generateRandom(); // randomize its personality
                 Global.log.writeLine($"generated soul with personality {this.soul.ply}", GlintLogger.LogLevel.Trace);
             }
+
             this.soul = soul;
             this.soul.mind = this;
             // run calc on the soul
@@ -112,47 +113,48 @@ namespace Sor.AI {
 
             // execute plan
             var targetPosition = default(Vector2?);
-            lock (state.plan) {
-                while (state.plan.Count > 0) {
-                    // check target validity
-                    var nextTask = state.plan.Peek();
-                    if (nextTask is TargetSource nextTarget) {
-                        if (!nextTarget.valid()) {
-                            state.plan.Dequeue(); // it's invalid, remove it
-                            continue;
-                        }
+            while (state.plan.Count > 0) {
+                // check target validity
+                state.plan.TryPeek(out var nextTask);
+                if (nextTask is TargetSource nextTarget) {
+                    if (!nextTarget.valid()) {
+                        state.plan.TryDequeue(out var result); // it's invalid, remove it
+                        continue;
+                    }
 
-                        // check closeness
-                        if (nextTarget.closeEnoughApproach(me.body.pos)) {
-                            state.plan.Dequeue();
-                            continue;
-                        }
+                    // check closeness
+                    if (nextTarget.closeEnoughApproach(me.body.pos)) {
+                        state.plan.TryDequeue(out var result);
+                        continue;
+                    }
 
-                        targetPosition = nextTarget.approachPosition(me.body.pos);
-                        break;
-                    } else if (nextTask is PlanInteraction inter) {
-                        switch (nextTask) {
-                            case PlanFeed interFeed: {
-                                if (inter.valid()) {
-                                    // ensure alignment
-                                    // TODO: follow target should better try to align
-                                    var dirToOther = interFeed.feedTarget.Position - me.body.pos;
-                                    dirToOther.Normalize();
-                                    // get facing dir
-                                    var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
-                                        -GMathf.sin(me.body.stdAngle));
-                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
-                                        // feed
-                                        controller.tetherLogical.logicPressed = true;
-                                    }
+                    targetPosition = nextTarget.approachPosition(me.body.pos);
+                    break;
+                } else if (nextTask is PlanInteraction inter) {
+                    switch (nextTask) {
+                        case PlanFeed interFeed: {
+                            if (inter.valid()) {
+                                // ensure alignment
+                                // TODO: follow target should better try to align
+                                var dirToOther = interFeed.feedTarget.Position - me.body.pos;
+                                dirToOther.Normalize();
+                                // get facing dir
+                                var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
+                                    -GMathf.sin(me.body.stdAngle));
+                                if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                                    // feed
+                                    controller.tetherLogical.logicPressed = true;
                                 }
-
-                                break;
                             }
-                        }
 
-                        // now dequeue
-                        state.plan.Dequeue();
+                            break;
+                        }
+                    }
+
+                    // now dequeue
+                    var planDequeueResult = state.plan.TryDequeue(out var result);
+                    if (!planDequeueResult) {
+                        Global.log.writeLine("dequeuing item from plan queue failed", GlintLogger.LogLevel.Error);
                     }
                 }
             }
