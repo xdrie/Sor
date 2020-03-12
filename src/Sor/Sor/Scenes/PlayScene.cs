@@ -179,7 +179,7 @@ namespace Sor.Scenes {
 
                 // camera zoom
                 if (Input.IsKeyPressed(Keys.D0)) {
-                    Camera.SetZoom(0f);
+                    Camera.RawZoom = 1f;
                 }
 
                 var zoomDelta = 1f * Time.DeltaTime;
