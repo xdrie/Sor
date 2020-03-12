@@ -6,6 +6,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Console;
 using Nez.Tweens;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
@@ -132,44 +133,66 @@ namespace Sor.Scenes {
         public override void Update() {
             base.Update();
 
-            if (Input.IsKeyPressed(Keys.Escape)) {
-                // save the game
-                saveGame();
-                // end this scene
-                TransitionScene<MenuScene>(0.1f);
-            }
+#if DEBUG
+            if (!DebugConsole.Instance.IsOpen) {
+#endif
 
-            if (InputUtils.IsControlDown()) {
-                Core.Instance.IsMouseVisible = true;
-            } else {
-                Core.Instance.IsMouseVisible = false;
-            }
+                if (Input.IsKeyPressed(Keys.Escape)) {
+                    // save the game
+                    saveGame();
+                    // end this scene
+                    TransitionScene<MenuScene>(0.1f);
+                }
 
-            if (Input.LeftMouseButtonPressed) {
-                // find the nearest non-player bird and inspect
-                var nearest = default(Wing);
-                var nearestDist = double.MaxValue;
-                foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
-                    var wing = birdNt.GetComponent<Wing>();
-                    if (birdNt.HasComponent<PlayerInputController>())
-                        continue;
-                    if (birdNt.HasComponent<MindDisplay>()) {
-                        birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
+                if (InputUtils.IsControlDown()) {
+                    Core.Instance.IsMouseVisible = true;
+                } else {
+                    Core.Instance.IsMouseVisible = false;
+                }
+
+                if (Input.LeftMouseButtonPressed) {
+                    // find the nearest non-player bird and inspect
+                    var nearest = default(Wing);
+                    var nearestDist = double.MaxValue;
+                    foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
+                        var wing = birdNt.GetComponent<Wing>();
+                        if (birdNt.HasComponent<PlayerInputController>())
+                            continue;
+                        if (birdNt.HasComponent<MindDisplay>()) {
+                            birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
+                        }
+
+                        var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
+                        var distSq = (birdNt.Position - mouseWp).LengthSquared();
+                        if (distSq < nearestDist) {
+                            nearest = wing;
+                            nearestDist = distSq;
+                        }
                     }
 
-                    var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                    var distSq = (birdNt.Position - mouseWp).LengthSquared();
-                    if (distSq < nearestDist) {
-                        nearest = wing;
-                        nearestDist = distSq;
+                    if (nearest != null) {
+                        Global.log.writeLine($"selected mind_inspect on {nearest.name}",
+                            GlintLogger.LogLevel.Information);
+                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }
 
-                if (nearest != null) {
-                    Global.log.writeLine($"selected mind_inspect on {nearest.name}", GlintLogger.LogLevel.Information);
-                    nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
+                // camera zoom
+                if (Input.IsKeyPressed(Keys.D0)) {
+                    Camera.SetZoom(0f);
                 }
+
+                var zoomDelta = 1f * Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.OemPlus)) {
+                    Camera.ZoomIn(zoomDelta);
+                }
+
+                if (Input.IsKeyDown(Keys.OemMinus)) {
+                    Camera.ZoomOut(zoomDelta);
+                }
+#if DEBUG
             }
+#endif
         }
 
         public override void Unload() {
