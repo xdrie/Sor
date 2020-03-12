@@ -14,6 +14,7 @@ using Sor.AI.Model;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
+using Sor.Util;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
@@ -69,13 +70,13 @@ namespace Sor.AI.Systems {
                     // handle planning based on the node
                     var timePerBean = 5f;
                     var beanTimeAcc = Time.TotalTime;
-                    if ((string) node.action == nameof(HungryBird.eatBean)) { // plan eating the nearest bean
+                    if (node.matches(nameof(HungryBird.eatBean))) { // plan eating the nearest bean
                         // TODO: add the bean to the target entity queue
                         var bean = seenBeans[0];
                         seenBeans.Remove(bean);
                         beanTimeAcc += timePerBean;
                         newPlan.Add(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
-                    } else if ((string) node.action == nameof(HungryBird.visitTree)) {
+                    } else if (node.matches(nameof(HungryBird.visitTree))) {
                         // plan to visit the nearest tree
                         // TODO: how is this done?
                     }
