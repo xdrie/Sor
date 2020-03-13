@@ -7,6 +7,7 @@ namespace Sor.Components.Things {
     public class EnergyCore : Component {
         public float energy;
         public float designMax;
+        public float overloadThreshold = 1.4f;
 
         public EnergyCore(float capacity) {
             energy = capacity;
@@ -14,5 +15,7 @@ namespace Sor.Components.Things {
         }
         
         public float ratio => energy / designMax;
+
+        public float overloadedNess() => Mathf.Pow((1 - (ratio - overloadThreshold + 1)), -2);
     }
 }

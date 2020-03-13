@@ -1,12 +1,13 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Tweens;
 using Sor.AI;
 using Sor.Components.Things;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
-    public class Wing : GAnimatedSprite {
+    public class Wing : GAnimatedSprite, IUpdatable {
         public WingBody body;
         public Mind mind;
         public BoxCollider hitbox;
@@ -22,7 +23,7 @@ namespace Sor.Components.Units {
 
         public override void Initialize() {
             base.Initialize();
-            
+
             // set up ship sprite
             spriteRenderer.Color = NGame.context.assets.paletteWhite;
 
@@ -68,7 +69,7 @@ namespace Sor.Components.Units {
         }
 
         public void changeClass(WingClass newClass) {
-            this.wingClass = newClass;
+            wingClass = newClass;
             // set baseline properties
             // properly revert all changes, including transform positions and scales
             var scale = 1f;
@@ -91,11 +92,11 @@ namespace Sor.Components.Units {
                     scale = 2f;
 
                     body.mass = Constants.Physics.BIG_MASS;
-                    
+
                     body.turnPower = Constants.Physics.BIG_TURN_POWER;
                     body.thrustPower = Constants.Physics.BIG_THRUST_POWER;
                     body.boostTopSpeed = Constants.Physics.BIG_BOOST_TOP_SPEED;
-                    
+
                     body.recalculateValues();
                     break;
                 }
@@ -103,11 +104,11 @@ namespace Sor.Components.Units {
                     scale = 0.5f;
 
                     body.mass = Constants.Physics.SML_MASS;
-                    
+
                     body.turnPower = Constants.Physics.SML_TURN_POWER;
                     body.thrustPower = Constants.Physics.SML_THRUST_POWER;
                     body.boostTopSpeed = Constants.Physics.SML_BOOST_TOP_SPEED;
-                    
+
                     body.recalculateValues();
                     break;
                 }
@@ -115,6 +116,21 @@ namespace Sor.Components.Units {
 
             Transform.SetLocalScale(scale);
             pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
+        }
+
+        public void Update() {
+            // - overload effects
+            // check energy core for overload
+            var overload = core.overloadedNess();
+            if (overload > 0) {
+                // overloaded!
+                ColorExt.Lerp(ref NGame.context.assets.paletteWhite, ref NGame.context.assets.paletteOrange, 
+                    out var targetCol, overload);
+                // spriteRenderer.Color = targetCol;
+            } else {
+                // reset sprite color
+                spriteRenderer.Color = NGame.context.assets.paletteWhite;
+            }
         }
     }
 }
