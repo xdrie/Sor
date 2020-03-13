@@ -1,4 +1,6 @@
 using LunchLib.Calc;
+using Microsoft.Xna.Framework;
+using Nez;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
@@ -44,6 +46,9 @@ namespace Sor.AI.Cogs.Interactions {
                         (int) GMathExt.transformTrait(-me.traits.wary, -4, 0, -4, 0);
                 }
 
+                me.mind.state.setBoard("nearby fear",
+                    new MindState.BoardItem($"L: {longDistanceWariness}, C: {closeWariness}", "interaction",
+                        Color.Orange, Time.TotalTime + 1f));
                 opinionDelta = longDistanceWariness + closeWariness;
                 // being in the presence of a threat is scary
                 me.emotions.fear = 1;

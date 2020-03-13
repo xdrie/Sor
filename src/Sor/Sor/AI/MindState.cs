@@ -34,24 +34,18 @@ namespace Sor.AI {
             public string value;
             public Color col;
             public string tag;
-            public int lifetime;
-            public int ticks;
+            public float expireTime;
 
-            public BoardItem(string value, string tag, Color col, int lifetime = 0) {
+            public BoardItem(string value, string tag, Color col, float expireTime = 0) {
                 this.value = value;
                 this.tag = tag;
                 this.col = col;
-                this.lifetime = lifetime;
-                ticks = 0;
+                this.expireTime = expireTime;
             }
 
             public BoardItem(string value, string tag) : this(value, tag, Color.White) { }
 
             public static implicit operator BoardItem(string v) => new BoardItem(v, "misc");
-
-            public void tick() {
-                ticks++;
-            }
         }
 
         public int getOpinion(Mind mind) {
@@ -101,8 +95,7 @@ namespace Sor.AI {
             var expiredItems = new List<string>();
             foreach (var itemKvp in board) {
                 var item = itemKvp.Value;
-                item.tick();
-                if (item.lifetime > 0 && item.ticks >= item.lifetime) {
+                if (item.expireTime > 0 && Time.DeltaTime > item.expireTime) {
                     expiredItems.Add(itemKvp.Key);
                 }
             }
