@@ -52,21 +52,21 @@ namespace Sor.Game {
 
         private void loadMap() {
             // TODO: figure out whether we're creating a new map or restoring (does it matter if we seed the rng)
-            var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
-            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-            // var genMapSize = NGame.context.config.generatedMapSize;
-            // // var genMapSize = 16;
-            // if (mapgenSeed == 0) {
-            //     mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
-            // }
-            // var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
-            // gen.generate();
-            // gen.analyze();
-            // gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
+            // var mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+            var mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
+            var genMapSize = NGame.context.config.generatedMapSize;
+            // var genMapSize = 16;
+            if (mapgenSeed == 0) {
+                mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
+            }
+            var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
+            gen.generate();
+            gen.analyze();
+            gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
             // log generated map
-            // Glint.Global.log.writeLine(
-            //     $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
-            //     GlintLogger.LogLevel.Trace);
+            Glint.Global.log.writeLine(
+                $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
+                GlintLogger.LogLevel.Trace);
             // TODO: ensure that the loaded map matches the saved map
             mapNt = new Entity("map");
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
