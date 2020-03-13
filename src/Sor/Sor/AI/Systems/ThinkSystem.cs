@@ -170,7 +170,7 @@ namespace Sor.AI.Systems {
                 var socialPlanModel = new SocializingBird();
                 var solver = new Solver<SocializingBird>();
                 // update the model
-                socialPlanModel.energyBudget = mind.me.core.energy - (mind.me.core.designMax * 0.8f);
+                socialPlanModel.energyBudget = SocialAppraisals.FriendBudget.budget(mind);
                 var feedRange = TargetSource.RANGE_SHORT;
                 socialPlanModel.withinDist = (fren.body.pos - mind.me.body.pos).LengthSquared() < feedRange;
 
@@ -200,6 +200,7 @@ namespace Sor.AI.Systems {
             }, 0.2f, "social");
             socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
+            socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
             reasoner.addConsideration(socialConsideration);
 
             var resultTable = reasoner.execute();

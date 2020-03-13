@@ -58,17 +58,18 @@ namespace Sor.Scenes {
 
             if (!playContext.rehydrated) { // freshly creating the scene
                 playContext.createPlayer(new Vector2(200, 200));
-                var unoPly = new BirdPersonality();
-                unoPly.generateNeutral();
-                var uno = playContext.createWing("uno", new Vector2(-140, 920), unoPly);
-                uno.changeClass(Wing.WingClass.Predator);
+                
+                // var unoPly = new BirdPersonality();
+                // unoPly.generateNeutral();
+                // var uno = playContext.createWing("uno", new Vector2(-140, 920), unoPly);
+                // uno.changeClass(Wing.WingClass.Predator);
 
                 var frend = playContext.createWing("frend", new Vector2(-140, 20),
                     new BirdPersonality {A = -0.8f, S = 0.7f});
-                var fren2 = playContext.createWing("f2", new Vector2(400, -80),
-                    new BirdPersonality {A = -0.8f, S = 0.9f});
-                var da = playContext.createWing("da", new Vector2(640, 920),
-                    new BirdPersonality {A = 0.6f, S = -0.2f});
+                // var fren2 = playContext.createWing("f2", new Vector2(400, -80),
+                //     new BirdPersonality {A = -0.8f, S = 0.9f});
+                // var da = playContext.createWing("da", new Vector2(640, 920),
+                //     new BirdPersonality {A = 0.6f, S = -0.2f});
             }
 
             AddEntity(playContext.playerWing.Entity);
