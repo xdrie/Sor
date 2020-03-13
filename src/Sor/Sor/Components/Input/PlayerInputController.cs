@@ -22,6 +22,8 @@ namespace Sor.Components.Input {
             
             boostInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.LeftShift));
             
+            fireInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.Space));
+            
             tetherInput.Nodes.Add(new VirtualButton.KeyboardKey(Keys.D2));
         }
     }
