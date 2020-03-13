@@ -14,6 +14,7 @@ using Sor.AI.Model;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
+using Sor.Game.Map;
 using Sor.Util;
 
 namespace Sor.AI.Systems {
@@ -114,12 +115,22 @@ namespace Sor.AI.Systems {
                             (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
                             .LengthSquared())
                         .First();
-                // choose any room other than the nearest
-                var goalRoom = mind.gameCtx.map.roomGraph.rooms
-                    .Where(x => x != nearestRoom).RandomSubset(1)
-                    .First();
-                // find the corresponding sng node by room
-                var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                // TODO: navigate by room, not by node
+                // choose a goal room by randomly walking the graph
+                // var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                var goalNode = nearestNode;
+                var visited = new Dictionary<StructuralNavigationGraph.Node, bool>();
+                var walkDist = 6;
+                for (var i = 0; i < walkDist; i++) {
+                    visited[goalNode] = true;
+                    goalNode = goalNode.links
+                        .Where(x => !(visited.ContainsKey(x) && visited[x]))
+                        .RandomSubset(1).SingleOrDefault();
+                    if (goalNode == null) {
+                        return; // failed to walk along the graph, pathfind fail
+                    }
+                }
+
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) return; // pathfind failed
                 lock (state) {
