@@ -23,7 +23,7 @@ namespace Sor.Components.Items {
 
         private void animationCompleted(string anim) {
             // destroy shoot after done
-            Entity.RemoveComponent(this);
+             Entity.RemoveComponent(this);
         }
     }
 }
