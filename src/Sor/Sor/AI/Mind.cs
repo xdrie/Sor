@@ -93,8 +93,10 @@ namespace Sor.AI {
         public void Update() { // Sense-Think-Act AI
             if (control) {
                 sense(); // sense the world around
-                act(); // carry out decisions
+                act(); // carry out decisions();
             }
+            // update state information
+            state.tick();
         }
 
         public override void OnRemovedFromEntity() {
