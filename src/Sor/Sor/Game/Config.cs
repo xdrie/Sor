@@ -10,6 +10,7 @@ namespace Sor.Game {
         public const string INTERNAL = "internal";
         public bool cameraLockedRotation = false;
         public int generatedMapSize = 40;
+        public bool enableWalls = false;
 
         public override void load() {
             base.load();
@@ -24,6 +25,7 @@ namespace Sor.Game {
             // internal options
             pr.bind(ref cameraLockedRotation, INTERNAL, rename(nameof(cameraLockedRotation)));
             pr.bind(ref generatedMapSize, INTERNAL, rename(nameof(generatedMapSize)));
+            pr.bind(ref enableWalls, INTERNAL, rename(nameof(enableWalls)));
 #endif
         }
     }

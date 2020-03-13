@@ -42,7 +42,7 @@ namespace Sor.Game.Map {
             features = map.GetLayer<TmxLayer>(LAYER_FEATURES);
             nature = map.GetObjectGroup(LAYER_NATURE);
             worldTileset = map.Tilesets[TILESET_WORLD];
-            createWallColliders(); // comment out to disable wall collision
+            if (NGame.context.config.enableWalls) createWallColliders(); // comment out to disable wall collision
 
             // analysis
             mapRepr = new MapRepr();
