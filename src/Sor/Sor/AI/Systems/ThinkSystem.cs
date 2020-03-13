@@ -123,10 +123,11 @@ namespace Sor.AI.Systems {
                 var walkDist = 6;
                 for (var i = 0; i < walkDist; i++) {
                     visited[goalNode] = true;
-                    goalNode = goalNode.links?
-                        .Where(x => !(visited.ContainsKey(x) && visited[x]))
-                        .RandomSubset(1).SingleOrDefault();
-                    if (goalNode == null) {
+                    var validLinks = goalNode.links?
+                        .Where(x => !(visited.ContainsKey(x) && visited[x]));
+                    if (validLinks != null && validLinks.Any()) {
+                        goalNode = validLinks.RandomSubset(1).SingleOrDefault();
+                    } else {
                         break; // we could not walk any further
                     }
                 }
