@@ -163,31 +163,42 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(defendConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {
-                // socialize - attempt to feed a duck
-                // pick a potential fren
-                // TODO: don't choose ducks we're already chums with
-                // TODO: improved prospective socialization
-                var candidates = mind.state.seenWings.Where(
-                        x => mind.state.getOpinion(x.mind) >
-                             SocialAppraisals.NearbyPotentialAllies.opinionThreshold(mind))
-                    .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
-                var fren = candidates.First();
-                // add the fren as a close-range approach
-                // TODO: refactor this
+                // socialize - become friends with nearby ducks
+                var thresh = SocialAppraisals.NearbyPotentialAllies.opinionThreshold(mind);
+                var fren = SocialAppraisals.NearbyPotentialAllies.bestCandidate(mind, thresh);
+                // solve a plan to figure out how to interact
+                var socialPlanModel = new SocializingBird();
+                var solver = new Solver<SocializingBird>();
+                // update the model
+                var feedRange = TargetSource.RANGE_SHORT;
+                socialPlanModel.withinDist = (fren.body.pos - mind.me.body.pos).LengthSquared() < feedRange;
+
+                // solve the model and get action plan
+                var goalBrownies = 20;
+                var next = solver.Next(socialPlanModel,
+                    new Goal<SocializingBird>(x => x.brownies > goalBrownies));
+                if (next == null) { // no plan could be found
+                    return;
+                }
+
+                // translate the action plan to tasks
                 var newPlan = new List<PlanTask>();
                 var feedTime = 10f;
                 var goalFeedTime = Time.TotalTime + feedTime;
-                newPlan.Add(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
-                    goalFeedTime));
-                // if we're close enough to our fren, feed them
-                var toFren = mind.me.body.pos - fren.body.pos;
-                // tell it to feed
-                newPlan.Add(new PlanFeed(fren.Entity, goalFeedTime));
+                var path = next.Path();
+                foreach (var node in path) {
+                    if (node.matches(nameof(SocializingBird.chase))) {
+                        newPlan.Add(
+                            new EntityTargetSource(fren.Entity, Approach.Within, feedRange, goalFeedTime));
+                    } else if (node.matches(nameof(SocializingBird.feed))) {
+                        newPlan.Add(new PlanFeed(fren.Entity, goalFeedTime));
+                    }
+                }
+
                 state.setPlan(newPlan);
             }, 0.2f, "social");
             socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
-            socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
             reasoner.addConsideration(socialConsideration);
 
             var resultTable = reasoner.execute();
