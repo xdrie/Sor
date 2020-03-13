@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using Glint.Physics;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Sor.AI.Signals;
 using Sor.Components.Input;
+using Sor.Components.Items;
 using Sor.Components.Things;
 
 namespace Sor.Components.Units {
@@ -90,6 +92,11 @@ namespace Sor.Components.Units {
                     cap.sender = me;
                     cap.launch(capEnergy, capMotion.rotate(angle));
                 }
+            }
+
+            if (controller.fireInput.IsPressed) {
+                var shoot = Entity.AddComponent(new Shoot());
+                shoot.animator.Play("fire", SpriteAnimator.LoopMode.Once);
             }
         }
 

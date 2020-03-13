@@ -1,9 +1,10 @@
 using Glint.Sprites;
 using Nez;
+using Nez.Sprites;
 
 namespace Sor.Components.Items {
     public class Shoot : GAnimatedSprite {
-        public Shoot() : base(Core.Content.LoadTexture("Data/sprites/shoot.png"), 64, 64) { }
+        public Shoot() : base(Core.Content.LoadTexture("Data/sprites/shoot.png"), 128, 128) { }
 
         public override void Initialize() {
             base.Initialize();
@@ -17,6 +18,12 @@ namespace Sor.Components.Items {
                 sprites[5],
                 sprites[6]
             });
+            animator.OnAnimationCompletedEvent += animationCompleted;
+        }
+
+        private void animationCompleted(string anim) {
+            // destroy shoot after done
+            Entity.RemoveComponent(this);
         }
     }
 }
