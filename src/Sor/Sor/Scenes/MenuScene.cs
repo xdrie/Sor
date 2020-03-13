@@ -25,7 +25,11 @@ namespace Sor.Scenes {
             var ui = CreateEntity("ui");
 
             // display game version
-            var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
+            var versionStr = NGame.GAME_VERSION;
+            #if DEBUG
+            versionStr += " [DEBUG]";
+            #endif
+            var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, versionStr,
                 new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
 
             // load menu part textures
