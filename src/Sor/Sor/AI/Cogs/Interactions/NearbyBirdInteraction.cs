@@ -21,18 +21,18 @@ namespace Sor.AI.Cogs.Interactions {
             
             // if you get WAY too close, you will be labeled a threat
             
-            var maxDel = 4;
-            var opDel = -maxDel * (me.traits.wary + 1);
-            var currentOp = me.mind.state.getOpinion(them.mind);
-            if (currentOp > MindConstants.OPINION_ALLY) {
-                opDel = Math.Abs(opDel);
+            var maxOpinionDelta = 4;
+            var opinionDelta = -maxOpinionDelta * (me.traits.wary + 1);
+            var currentOpinion = me.mind.state.getOpinion(them.mind);
+            if (currentOpinion > MindConstants.OPINION_ALLY) {
+                opinionDelta = Math.Abs(opinionDelta);
             } else {
                 // TODO: take anxiety better into account
                 me.emotions.fear = 1; // overwrite fear
             }
             
-            opDel = GMathf.clamp(opDel, -maxDel, maxDel);
-            var newOpi = me.mind.state.addOpinion(them.mind, GMathf.roundToInt(opDel));
+            opinionDelta = GMathf.clamp(opinionDelta, -maxOpinionDelta, maxOpinionDelta);
+            var newOpinion = me.mind.state.addOpinion(them.mind, GMathf.roundToInt(opinionDelta));
         }
     }
 }
