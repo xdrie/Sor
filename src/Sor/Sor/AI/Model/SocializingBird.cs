@@ -1,4 +1,3 @@
-using System;
 using Activ.GOAP;
 
 namespace Sor.AI.Model {
@@ -38,7 +37,7 @@ namespace Sor.AI.Model {
         public Cost feed() {
             // feed bean to target
             // only valid if we are close enough and have energy budget
-            if (withinDist) {
+            if (withinDist && energyBudget > 0) {
                 cost += FEED_COST;
                 brownies += 10;
                 return true;

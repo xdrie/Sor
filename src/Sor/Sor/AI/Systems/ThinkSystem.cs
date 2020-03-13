@@ -170,6 +170,7 @@ namespace Sor.AI.Systems {
                 var socialPlanModel = new SocializingBird();
                 var solver = new Solver<SocializingBird>();
                 // update the model
+                socialPlanModel.energyBudget = mind.me.core.energy - (mind.me.core.designMax * 0.8f);
                 var feedRange = TargetSource.RANGE_SHORT;
                 socialPlanModel.withinDist = (fren.body.pos - mind.me.body.pos).LengthSquared() < feedRange;
 
