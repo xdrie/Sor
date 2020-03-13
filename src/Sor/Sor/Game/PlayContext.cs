@@ -61,12 +61,12 @@ namespace Sor.Game {
             }
             var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
             gen.generate();
+            gen.analyze();
+            gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
             // log generated map
             Glint.Global.log.writeLine(
                 $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
                 GlintLogger.LogLevel.Trace);
-            gen.analyze();
-            gen.copyToTilemap(mapAsset);
             // TODO: ensure that the loaded map matches the saved map
             mapNt = new Entity("map");
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));

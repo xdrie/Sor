@@ -19,6 +19,8 @@ namespace Sor.AI.Cogs.Interactions {
             // if opinion is positive, then i feel secure
             // if my anxiety is high, i will react more strongly to both
             
+            // if you get WAY too close, you will be labeled a threat
+            
             var maxDel = 4;
             var opDel = -maxDel * (me.traits.wary + 1);
             var currentOp = me.mind.state.getOpinion(them.mind);

@@ -395,7 +395,7 @@ namespace Sor.Game.Map.Gen {
             });
         }
 
-        public void copyToTilemap(TmxMap map) {
+        public void copyToTilemap(TmxMap map, bool createObjects) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
             var nature = map.GetObjectGroup(MapLoader.LAYER_NATURE);
             // clear/reset the map
@@ -413,19 +413,20 @@ namespace Sor.Game.Map.Gen {
             // 2. clear the nature map
             nature.Objects.Clear();
 
-
             // create rooms
             foreach (var room in graph.rooms) {
                 // render the room to tiles
                 createRoom(structure, room);
             }
 
-            // create objects
-            // TODO: improve this object generation
-            // for now, put a random-leveled tree in each room
-            foreach (var room in graph.rooms) {
-                var treeLevel = treeLevelDistr.next();
-                placeTree(nature, room, treeLevel);
+            if (createObjects) {
+                // create objects
+                // TODO: improve this object generation
+                // for now, put a random-leveled tree in each room
+                foreach (var room in graph.rooms) {
+                    var treeLevel = treeLevelDistr.next();
+                    placeTree(nature, room, treeLevel);
+                }
             }
 
             // // attempt to test picktile

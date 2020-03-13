@@ -1,6 +1,8 @@
 using System.Linq;
 using LunchLib.AI.Utility;
+using MoreLinq;
 using Sor.AI.Cogs;
+using Sor.Components.Units;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
@@ -15,16 +17,20 @@ namespace Sor.AI.Consid {
                 return thresh;
             }
 
+            public static Wing bestCandidate(Mind mind, int thresh) {
+                // TODO: de-prioritize ducks we're already chums with
+                var wings = mind.state.seenWings.MaxBy(
+                    x => mind.state.getOpinion(x.mind) > thresh);
+                if (!wings.Any()) return null;
+                return wings.First();
+            }
+
             public override float score() {
-                // TODO: a more prospective way to look for friendships
                 var thresh = opinionThreshold(context);
-                var wings = context.state.seenWings.Where(
-                        x => context.state.getOpinion(x.mind) > thresh)
-                    .OrderByDescending(x => context.state.getOpinion(x.mind)).ToList();
-                if (!wings.Any()) return 0;
+                var candidate = bestCandidate(context, thresh);
+                if (candidate == null) return 0;
                 // scale from 0-100
-                var firstWing = wings.First();
-                return GMathf.map01clamp01(context.state.getOpinion(firstWing.mind),
+                return GMathf.map01clamp01(context.state.getOpinion(candidate.mind),
                     thresh, MindConstants.OPINION_ALLY);
             }
         }
@@ -43,10 +49,14 @@ namespace Sor.AI.Consid {
         public class FriendBudget : Appraisal<Mind> {
             public FriendBudget(Mind context) : base(context) { }
 
+            public static float budget(Mind mind) {
+                return mind.me.core.energy - mind.me.core.designMax * 0.8f;
+            }
+
             public override float score() {
-                // allocate 2000 energy
-                var budget = 2000f;
-                if (context.me.core.energy - budget > 0.7f * context.me.core.designMax) {
+                // allocate energy for budget
+                if (budget(context) > 0) {
+                    // TODO: make this scale along a curve
                     return 1;
                 }
 

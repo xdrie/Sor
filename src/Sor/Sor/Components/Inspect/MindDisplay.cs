@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.Components.Units;
 using Sor.Util;
 
@@ -25,14 +25,14 @@ namespace Sor.Components.Inspect {
             base.OnAddedToEntity();
 
             mind = Entity.GetComponent<Mind>();
-            mind.debug = true; // enable trace debug
+            mind.inspected = true; // enable trace debug
             wing = mind.me;
         }
 
         public override void OnRemovedFromEntity() {
             base.OnRemovedFromEntity();
 
-            mind.debug = false; // disable trace debug
+            mind.inspected = false; // disable trace debug
         }
 
         public override RectangleF Bounds {
@@ -79,7 +79,7 @@ namespace Sor.Components.Inspect {
 
                 lock (mind.state.plan) {
                     if (mind.state.plan.Count > 0) {
-                        var planTask = mind.state.plan.Peek();
+                        mind.state.plan.TryPeek(out var planTask);
                         if (planTask is TargetSource target) {
                             if (target.valid()) {
                                 void drawPosIndicator(Vector2 pos, Color col) {

@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Nez;
 
-namespace Sor.AI.Model {
+namespace Sor.AI.Plans {
     public interface ITargetSource {
         Vector2 getPosition();
         Approach approach { get; }
