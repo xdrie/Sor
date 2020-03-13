@@ -1,6 +1,7 @@
 using System.Linq;
 using LunchLib.AI.Utility;
 using MoreLinq;
+using Nez;
 using Sor.AI.Cogs;
 using Sor.Components.Units;
 using XNez.GUtils.Misc;
@@ -39,7 +40,8 @@ namespace Sor.AI.Consid {
             public Sociability(Mind context) : base(context) { }
 
             public override float score() {
-                return PerMath.map11to01(context.soul.traits.sociability);
+                // scale [0,1] sociability on sqrt curve
+                return Mathf.Sqrt(PerMath.map11to01(context.soul.traits.sociability));
             }
         }
 
