@@ -25,7 +25,7 @@ namespace Sor.AI {
         public VisionSystem visionSystem;
         public ThinkSystem thinkSystem;
         public AvianSoul soul;
-        public bool debug = false;
+        public bool inspected = false;
         public GameContext gameCtx;
 
         public int consciousnessSleep = 100;

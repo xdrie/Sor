@@ -25,14 +25,14 @@ namespace Sor.Components.Inspect {
             base.OnAddedToEntity();
 
             mind = Entity.GetComponent<Mind>();
-            mind.debug = true; // enable trace debug
+            mind.inspected = true; // enable trace debug
             wing = mind.me;
         }
 
         public override void OnRemovedFromEntity() {
             base.OnRemovedFromEntity();
 
-            mind.debug = false; // disable trace debug
+            mind.inspected = false; // disable trace debug
         }
 
         public override RectangleF Bounds {
