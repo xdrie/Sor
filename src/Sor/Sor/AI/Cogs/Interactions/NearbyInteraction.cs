@@ -2,11 +2,11 @@ using System;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
-    public class NearbyBirdInteraction : BirdInteraction {
+    public class NearbyInteraction : BirdInteraction {
         private float dist;
         public static float nearRange = MindConstants.SENSE_RANGE / 4;
 
-        public NearbyBirdInteraction(float dist) {
+        public NearbyInteraction(float dist) {
             this.dist = dist;
         }
         
