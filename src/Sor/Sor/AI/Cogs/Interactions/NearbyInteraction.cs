@@ -1,4 +1,3 @@
-using System;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
@@ -21,18 +20,30 @@ namespace Sor.AI.Cogs.Interactions {
             
             // if you get WAY too close, you will be labeled a threat
             
-            var maxOpinionDelta = 4;
-            var opinionDelta = -maxOpinionDelta * (me.traits.wary + 1);
+            var maxOpinionDelta = 4; // range [-4, 4]
+            var opinionDelta = 0;
             var currentOpinion = me.mind.state.getOpinion(them.mind);
             if (currentOpinion > MindConstants.OPINION_ALLY) {
-                opinionDelta = Math.Abs(opinionDelta);
+                // we're friends, we should have a positive opinion
+                // this is based on both anxiety and sociability.
+                // TODO: positive opinion from being near friends
+                // this should fall off to a negligible account above a certain threshold
             } else {
                 // TODO: take anxiety better into account
-                me.emotions.fear = 1; // overwrite fear
+                // calculate opinion-affecting factors
+                // [-4, 0]: long-distance wariness
+                var longDistanceWariness = (int) GMathf.clamp(GMathf.map(me.traits.wary, -1f, 1f, -4f, 2f), -4f, 0f);
+                // [-4, 0]: short distance wariness
+                var shortDistanceWariness = 0;
+                
+                opinionDelta = longDistanceWariness + shortDistanceWariness;
+                // being in the presence of a threat is scary
+                me.emotions.fear = 1;
             }
             
+            // clamp the opinion delta to the required range
             opinionDelta = GMathf.clamp(opinionDelta, -maxOpinionDelta, maxOpinionDelta);
-            var newOpinion = me.mind.state.addOpinion(them.mind, GMathf.roundToInt(opinionDelta));
+            me.mind.state.addOpinion(them.mind, GMathf.roundToInt(opinionDelta));
         }
     }
 }
