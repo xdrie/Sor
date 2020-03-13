@@ -39,11 +39,11 @@ namespace Sor {
             public Color fgColor => paletteWhite;
             public Color bgColor => palettePurple;
             
-            public Color paletteWhite => palette[0];
-            public Color paletteGray => palette[1];
-            public Color paletteOrange => palette[2];
-            public Color paletteBrown => palette[3];
-            public Color palettePurple => palette[4];
+            public ref Color paletteWhite => ref palette[0];
+            public ref Color paletteGray => ref palette[1];
+            public ref Color paletteOrange => ref palette[2];
+            public ref Color paletteBrown => ref palette[3];
+            public ref Color palettePurple => ref palette[4];
         }
 
         public void loadContent() {
