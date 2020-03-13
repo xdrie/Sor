@@ -32,13 +32,14 @@ namespace Sor.Game {
             createdThings.Add(thing);
         }
 
-        public void createPlayer(Vector2 pos) {
+        public Wing createPlayer(Vector2 pos) {
             var playerNt = new Entity("player").SetTag(Constants.Tags.ENTITY_WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
             playerWing.body.pos = pos;
             playerNt.AddComponent<PlayerInputController>();
+            return playerWing;
         }
 
         public Wing createWing(string name, Vector2 pos, BirdPersonality ply) {

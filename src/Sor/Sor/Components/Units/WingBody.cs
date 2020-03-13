@@ -95,8 +95,11 @@ namespace Sor.Components.Units {
             }
 
             if (controller.fireInput.IsPressed) {
-                var shoot = Entity.AddComponent(new Shoot());
-                shoot.animator.Play("fire", SpriteAnimator.LoopMode.Once);
+                // check if entity has a gun
+                var gun = Entity.GetComponent<Shooter>();
+                if (gun != null) {
+                    gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
+                }
             }
         }
 

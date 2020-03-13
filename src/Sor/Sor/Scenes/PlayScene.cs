@@ -11,6 +11,7 @@ using Nez.Tweens;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.Inspect;
+using Sor.Components.Items;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
@@ -57,7 +58,8 @@ namespace Sor.Scenes {
             // - scene setup
 
             if (!playContext.rehydrated) { // freshly creating the scene
-                playContext.createPlayer(new Vector2(200, 200));
+                var player = playContext.createPlayer(new Vector2(200, 200));
+                player.Entity.AddComponent(new Shooter());
                 
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
