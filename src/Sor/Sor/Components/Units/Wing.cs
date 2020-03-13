@@ -126,7 +126,7 @@ namespace Sor.Components.Units {
                 // overloaded!
                 ColorExt.Lerp(ref NGame.context.assets.paletteWhite, ref NGame.context.assets.paletteOrange, 
                     out var targetCol, overload);
-                // spriteRenderer.Color = targetCol;
+                spriteRenderer.Color = targetCol;
             } else {
                 // reset sprite color
                 spriteRenderer.Color = NGame.context.assets.paletteWhite;
