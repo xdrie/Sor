@@ -22,10 +22,9 @@ namespace Sor.Components.Units {
 
         public override void Initialize() {
             base.Initialize();
-
-            animator.AddAnimation("ship", new[] {sprites[0]});
-            animator.AddAnimation("ship2block", new[] {sprites[1], sprites[2], sprites[3], sprites[4]});
-            animator.AddAnimation("block", new[] {sprites[5]});
+            
+            // set up ship sprite
+            spriteRenderer.Color = NGame.context.assets.paletteWhite;
 
             Entity.AddComponent(mind); // add mind component
             body = Entity.AddComponent(new WingBody());
