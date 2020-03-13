@@ -2,9 +2,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.AI.Pathfinding;
-using Sor.Game;
 
-namespace Sor.AI.Nav {
+namespace Sor.Game.Map {
     public class StructuralNavigationGraph : IWeightedGraph<StructuralNavigationGraph.Node> {
         public const int DOOR_NODE_DIST = 2;
         public List<Node> nodes;

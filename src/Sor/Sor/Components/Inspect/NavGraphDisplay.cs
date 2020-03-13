@@ -1,17 +1,15 @@
 using Microsoft.Xna.Framework;
 using Nez;
-using Sor.AI.Nav;
+using Sor.Game.Map;
 
 namespace Sor.Components.Inspect {
 #if DEBUG
     public class NavGraphDisplay : RenderableComponent {
-        private readonly MapRepr mapRepr;
         private readonly TiledMapRenderer mapRenderer;
 
         public override RectangleF Bounds => mapRenderer.Bounds;
 
-        public NavGraphDisplay(MapRepr mapRepr, TiledMapRenderer mapRenderer) {
-            this.mapRepr = mapRepr;
+        public NavGraphDisplay(TiledMapRenderer mapRenderer) {
             this.mapRenderer = mapRenderer;
         }
 
@@ -19,6 +17,8 @@ namespace Sor.Components.Inspect {
 
         public override void DebugRender(Batcher batcher) {
             base.DebugRender(batcher);
+            var mapRepr = NGame.context.map;
+            if (mapRepr == null) return;
             // draw points for each point on the map graph
             foreach (var node in mapRepr.sng.nodes) {
                 Vector2 toWorldPos(Point tilePos) => mapRenderer.TiledMap.TileToWorldPosition(tilePos.ToVector2());

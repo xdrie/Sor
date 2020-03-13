@@ -1,13 +1,11 @@
 using System;
 using Activ.GOAP;
 
-namespace Sor.AI.Plan {
+namespace Sor.AI.Model {
     /// <summary>
     /// Represents a hungry bird trying to get energy.
     /// </summary>
-    public class HungryBird : Agent, Clonable<HungryBird> {
-        public float cost { get; set; }
-
+    public class HungryBird : ActionPlanningModel<HungryBird> {
         public float satiety = 0;
 
         public int nearbyBeans = 0;
@@ -18,13 +16,14 @@ namespace Sor.AI.Plan {
         public const float BEANS_PER_TREE = 1.5f;
         public const float BEAN_ENERGY = 400f;
 
-        Option[] opt; // Caching reduces array alloc overheads
-        public Option[] Options() => opt ??= new Option[] {eatBean, visitTree};
 
-        public HungryBird Allocate() => new HungryBird();
+        public override Option[] ActionOptions => new Option[] {eatBean, visitTree};
 
-        public HungryBird Clone(HungryBird b) {
+        #region Type Overrides
+
+        public override HungryBird Clone(HungryBird b) {
             b.cost = cost;
+            
             b.nearbyBeans = nearbyBeans;
             b.nearbyTrees = nearbyTrees;
             b.satiety = satiety;
@@ -38,6 +37,8 @@ namespace Sor.AI.Plan {
         }
 
         public override int GetHashCode() => satiety.GetHashCode();
+
+        #endregion
 
         public Cost eatBean() {
             cost += BEAN_COST;

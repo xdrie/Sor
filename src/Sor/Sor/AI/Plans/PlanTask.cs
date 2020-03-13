@@ -1,6 +1,6 @@
 using Nez;
 
-namespace Sor.AI.Model {
+namespace Sor.AI.Plans {
     public abstract class PlanTask {
         public float failureTime = 0f;
 

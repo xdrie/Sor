@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Activ.GOAP;
@@ -10,9 +11,11 @@ using Nez.AI.Pathfinding;
 using Sor.AI.Cogs.Interactions;
 using Sor.AI.Consid;
 using Sor.AI.Model;
-using Sor.AI.Plan;
+using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
+using Sor.Game.Map;
+using Sor.Util;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
@@ -62,26 +65,25 @@ namespace Sor.AI.Systems {
                     return;
                 }
 
-                // TODO: interpret action plan
-                lock (state.plan) {
-                    state.plan.Clear();
-                    var path = next.Path();
-                    foreach (var node in path) {
-                        // handle planning based on the node
-                        var timePerBean = 5f;
-                        var beanTimeAcc = Time.TotalTime;
-                        if ((string) node.action == nameof(HungryBird.eatBean)) { // plan eating the nearest bean
-                            // TODO: add the bean to the target entity queue
-                            var bean = seenBeans[0];
-                            seenBeans.Remove(bean);
-                            beanTimeAcc += timePerBean;
-                            state.plan.Enqueue(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
-                        } else if ((string) node.action == nameof(HungryBird.visitTree)) {
-                            // plan to visit the nearest tree
-                            // TODO: how is this done?
-                        }
+                var newPlan = new List<PlanTask>();
+                var path = next.Path();
+                foreach (var node in path) {
+                    // handle planning based on the node
+                    var timePerBean = 5f;
+                    var beanTimeAcc = Time.TotalTime;
+                    if (node.matches(nameof(HungryBird.eatBean))) { // plan eating the nearest bean
+                        // TODO: add the bean to the target entity queue
+                        var bean = seenBeans[0];
+                        seenBeans.Remove(bean);
+                        beanTimeAcc += timePerBean;
+                        newPlan.Add(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
+                    } else if (node.matches(nameof(HungryBird.visitTree))) {
+                        // plan to visit the nearest tree
+                        // TODO: how is this done?
                     }
                 }
+
+                state.setPlan(newPlan);
             }, 0.6f, "eat");
             eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
             eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
@@ -93,13 +95,12 @@ namespace Sor.AI.Systems {
                 // don't pathfind if we already have a valid path
                 lock (state) {
                     if (state.navPath != null) {
-                        lock (state.plan) {
-                            if (state.plan.Count > 0)
-                                if (state.plan.Any(x => x.valid()))
-                                    return;
-                        }
+                        if (state.isPlanValid) return;
                     }
                 }
+
+                // cancel if no map model
+                if (mind.gameCtx.map == null) return;
 
                 // attempt to do a room-to-room pathfind
                 // attempt to pathfind using the structural navigation graph
@@ -114,12 +115,23 @@ namespace Sor.AI.Systems {
                             (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
                             .LengthSquared())
                         .First();
-                // choose any room other than the nearest
-                var goalRoom = mind.gameCtx.map.roomGraph.rooms
-                    .Where(x => x != nearestRoom).RandomSubset(1)
-                    .First();
-                // find the corresponding sng node by room
-                var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                // TODO: navigate by room, not by node
+                // choose a goal room by randomly walking the graph
+                // var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                var goalNode = nearestNode;
+                var visited = new Dictionary<StructuralNavigationGraph.Node, bool>();
+                var walkDist = 6;
+                for (var i = 0; i < walkDist; i++) {
+                    visited[goalNode] = true;
+                    var validLinks = goalNode.links?
+                        .Where(x => !(visited.ContainsKey(x) && visited[x]));
+                    if (validLinks != null && validLinks.Any()) {
+                        goalNode = validLinks.RandomSubset(1).SingleOrDefault();
+                    } else {
+                        break; // we could not walk any further
+                    }
+                }
+
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) return; // pathfind failed
                 lock (state) {
@@ -128,21 +140,20 @@ namespace Sor.AI.Systems {
 
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
-                lock (state.plan) {
-                    state.plan.Clear(); // reset plan
-                    foreach (var pathNode in foundPath) {
-                        var tmapPos = pathNode.pos.ToVector2();
-                        state.plan.Enqueue(new FixedTargetSource(
-                            mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
-                            TargetSource.RANGE_DIRECT));
-                    }
+
+                var newPlan = new List<PlanTask>();
+                foreach (var pathNode in foundPath) {
+                    var tmapPos = pathNode.pos.ToVector2();
+                    newPlan.Add(new FixedTargetSource(
+                        mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                        TargetSource.RANGE_DIRECT));
                 }
 
-                lock (state.board) {
-                    var nextPt = foundPath.First().pos;
-                    state.board["exp"] =
-                        new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path");
-                }
+                state.setPlan(newPlan);
+
+                var nextPt = foundPath.First().pos;
+                state.setBoard("exp",
+                    new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path"));
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
@@ -154,10 +165,9 @@ namespace Sor.AI.Systems {
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
                 if (tgtWing != null) {
-                    lock (state.plan) {
-                        state.plan.Clear(); // reset targets
-                        state.plan.Enqueue(new EntityTargetSource(tgtWing.Entity));
-                    }
+                    // reset targets
+                    // TODO: a much better way to have fight-or-flight
+                    state.setPlan(new[] {new EntityTargetSource(tgtWing.Entity)});
                 }
             }, 0.8f, "defend");
             defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
@@ -165,25 +175,40 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(defendConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {
-                // socialize - attempt to feed a duck
-                // pick a potential fren
-                // TODO: don't choose ducks we're already chums with
-                var candidates = mind.state.seenWings.Where(
-                        x => mind.state.getOpinion(x.mind) > MindConstants.OPINION_NEUTRAL)
-                    .OrderByDescending(x => mind.state.getOpinion(x.mind)).ToList();
-                var fren = candidates.First();
-                // add the fren as a close-range approach
-                lock (state.plan) {
-                    state.plan.Clear();
-                    var feedTime = 10f;
-                    var goalFeedTime = Time.TotalTime + feedTime;
-                    state.plan.Enqueue(new EntityTargetSource(fren.Entity, Approach.Within, TargetSource.RANGE_SHORT,
-                        goalFeedTime));
-                    // if we're close enough to our fren, feed them
-                    var toFren = mind.me.body.pos - fren.body.pos;
-                    // tell it to feed
-                    state.plan.Enqueue(new PlanFeed(fren.Entity, goalFeedTime));
+                // socialize - become friends with nearby ducks
+                var thresh = SocialAppraisals.NearbyPotentialAllies.opinionThreshold(mind);
+                var fren = SocialAppraisals.NearbyPotentialAllies.bestCandidate(mind, thresh);
+                // solve a plan to figure out how to interact
+                var socialPlanModel = new SocializingBird();
+                var solver = new Solver<SocializingBird>();
+                // update the model
+                socialPlanModel.energyBudget = SocialAppraisals.FriendBudget.budget(mind);
+                var feedRange = TargetSource.RANGE_SHORT;
+                socialPlanModel.withinDist = (fren.body.pos - mind.me.body.pos).LengthSquared() < feedRange;
+
+                // solve the model and get action plan
+                var goalBrownies = 20;
+                var next = solver.Next(socialPlanModel,
+                    new Goal<SocializingBird>(x => x.brownies > goalBrownies));
+                if (next == null) { // no plan could be found
+                    return;
                 }
+
+                // translate the action plan to tasks
+                var newPlan = new List<PlanTask>();
+                var feedTime = 10f;
+                var goalFeedTime = Time.TotalTime + feedTime;
+                var path = next.Path();
+                foreach (var node in path) {
+                    if (node.matches(nameof(SocializingBird.chase))) {
+                        newPlan.Add(
+                            new EntityTargetSource(fren.Entity, Approach.Within, feedRange, goalFeedTime));
+                    } else if (node.matches(nameof(SocializingBird.feed))) {
+                        newPlan.Add(new PlanFeed(fren.Entity, goalFeedTime));
+                    }
+                }
+
+                state.setPlan(newPlan);
             }, 0.2f, "social");
             socialConsideration.addAppraisal(new SocialAppraisals.NearbyPotentialAllies(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
@@ -229,8 +254,8 @@ namespace Sor.AI.Systems {
                 foreach (var wing in state.seenWings) {
                     var toWing = entity.Position - wing.Entity.Position;
                     var toWingDist = toWing.Length();
-                    if (toWingDist <= NearbyBirdInteraction.nearRange) {
-                        var interaction = new NearbyBirdInteraction(toWingDist);
+                    if (toWingDist <= NearbyInteraction.triggerRange) {
+                        var interaction = new NearbyInteraction(toWingDist);
                         interaction.run(mind.soul, wing.mind.soul);
                     }
                 }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Nez;
 using Sor.AI;
 using Sor.AI.Cogs;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.Components.Input;
 using Sor.Components.Inspect;
 using Sor.Components.Units;
@@ -31,15 +31,15 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
 
             playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.Tags.ENTITY_WING);
-            var playerSoul = new AvianSoul(BirdPersonality.makeNeutral());
-            playerSoul.calc();
+            var playerSoul = new AvianSoul();
+            playerSoul.ply.generateNeutral();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
             playerNt.AddComponent<PlayerInputController>();
 
             // set up scene things
             physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.ENTITY_WING);
-            var physicistSoul = new AvianSoul(new BirdPersonality {A = 0.8f, S = -0.4f});
-            physicistSoul.calc();
+            var physicistPersonality = new BirdPersonality {A = 0.8f, S = -0.4f};
+            var physicistSoul = new AvianSoul {ply = physicistPersonality};
             var duckWing = physicistDuck.AddComponent(new Wing(new Mind(physicistSoul, true)));
             physicistDuck.AddComponent<LogicInputController>();
             physicistDuck.AddComponent(new MindDisplay(playerWing, true));

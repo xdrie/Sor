@@ -23,7 +23,7 @@ GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
     REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="sor_mono-v$REVISION"
+ARCNAME="${PROJECT}_mono-v$REVISION"
 
 CONFIGURATION=Release
 if [[ $DEBUG -eq 1 ]];

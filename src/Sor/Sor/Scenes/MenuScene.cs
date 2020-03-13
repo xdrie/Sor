@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Glint.Composer;
 using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +13,7 @@ using Nez.Textures;
 using Nez.Tweens;
 using Sor.Components.Input;
 using Sor.Components.UI;
+using Sor.Game;
 
 namespace Sor.Scenes {
     public class MenuScene : BaseGameScene<GameContext> {
@@ -22,7 +25,11 @@ namespace Sor.Scenes {
             var ui = CreateEntity("ui");
 
             // display game version
-            var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, NGame.GAME_VERSION,
+            var versionStr = NGame.GAME_VERSION;
+            #if DEBUG
+            versionStr += " [DEBUG]";
+            #endif
+            var versionText = ui.AddComponent(new TextComponent(gameContext.assets.font, versionStr,
                 new Vector2(10, DesignResolution.Y - 20f), gameContext.assets.fgColor));
 
             // load menu part textures
@@ -34,6 +41,7 @@ namespace Sor.Scenes {
             var textFlyTex = Content.LoadTexture("Data/ui/menu/tex_fly.png");
             var textEvoTex = Content.LoadTexture("Data/ui/menu/tex_evo.png");
             var textOptTex = Content.LoadTexture("Data/ui/menu/tex_opt.png");
+            var waitTex = Content.LoadTexture("Data/ui/menu/wait.png");
 
             SpriteRenderer addUiSprite(Texture2D texture, Vector2 cornerOffset) {
                 var texSpr = new Sprite(texture);
@@ -47,14 +55,23 @@ namespace Sor.Scenes {
             var designScale = 4;
 
             var frillRen = addUiSprite(frillTex, Vector2.Zero);
-            var titleRen = addUiSprite(titleTex, new Vector2(128, 24) * designScale);
+            var titleRen = addUiSprite(titleTex, new Vector2(128, 20) * designScale);
             var frameRen = addUiSprite(bordFrameTex, new Vector2(24, 40) * designScale);
             var bordWhRen = addUiSprite(bordWhTex, new Vector2(24, 40) * designScale);
             bordWhRen.Color = gameContext.assets.paletteBrown;
 
+            var menuButtons = default(MenuButtonList);
+            
+            SpriteAnimator addWait() {
+                var waitSprs = Sprite.SpritesFromAtlas(waitTex, 32 * designScale, 32 * designScale);
+                var waitNt = CreateEntity("wait", DesignResolution.ToVector2() / 2f);
+                var anim = waitNt.AddComponent(new SpriteAnimator(waitSprs[0]));
+                anim.AddAnimation("load", waitSprs.ToArray());
+                return anim;
+            }
+
             void fadeUiSprite(SpriteRenderer ren) {
-                var tw = ren.TweenColorTo(Color.Transparent, 0.4f);
-                tw.Start();
+                ren.fade(Color.Transparent).Start();
             }
 
             void bordFlash(Action follow = null) {
@@ -69,15 +86,31 @@ namespace Sor.Scenes {
                 fadeUiSprite(frillRen);
                 fadeUiSprite(titleRen);
                 fadeUiSprite(frameRen);
+                fadeUiSprite(versionText);
+                menuButtons.active = false;
+                menuButtons.applyToRenderers(fadeUiSprite);
                 bordFlash(follow);
             }
 
             // add controller
             ui.AddComponent(new MenuInputController());
-            var menuButtons = ui.AddComponent(new MenuButtonList(
+            menuButtons = ui.AddComponent(new MenuButtonList(
                 new List<MenuButtonList.Item> {
                     new MenuButtonList.Item(new Sprite(textFlyTex), () => {
-                        uiFocus(() => { TransitionScene(new PlayScene(), 0.5f); });
+                        uiFocus(async () => {
+                            var wait = addWait();
+                            wait.Play("load");
+                            fadeUiSprite(bordWhRen);
+                            var playContext = new PlayContext(); // empty play context
+                            // run load game on a worker thread
+                            await Task.Run(() => {
+                                GameLoader.loadSave(playContext); // load from save
+                                playContext.load();
+                            });
+                            fadeUiSprite(wait);
+                            var play = new PlayScene(playContext);
+                            TransitionScene(play, 0.5f);
+                        });
                     }),
                     new MenuButtonList.Item(new Sprite(textEvoTex), () => {
                         uiFocus();

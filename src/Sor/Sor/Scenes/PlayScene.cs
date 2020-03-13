@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
@@ -8,15 +6,16 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
+using Nez.Console;
 using Nez.Tweens;
-using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.Inspect;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
-using Sor.Scenes.Helpers;
+using Sor.Game.Map;
+using Sor.Game.Map.Gen;
 using Sor.Systems;
 
 namespace Sor.Scenes {
@@ -27,8 +26,12 @@ namespace Sor.Scenes {
         public bool showingHelp;
         public const float showHelpTime = 4f;
 
-        public Entity playerEntity;
-        public Wing playerWing;
+        public PlayContext playContext;
+
+        public PlayScene(PlayContext playContext) {
+            this.playContext = playContext;
+            playContext.scene = this;
+        }
 
         public override void Initialize() {
             base.Initialize();
@@ -36,9 +39,6 @@ namespace Sor.Scenes {
 #if DEBUG
             SorDebug.play = this;
 #endif
-
-            var setup = new PlaySceneSetup(this);
-            setup.createScene();
 
             ClearColor = gameContext.assets.bgColor;
 
@@ -49,6 +49,51 @@ namespace Sor.Scenes {
             var fixedRenderer =
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
+        }
+
+        public override void OnStart() {
+            base.OnStart();
+
+            // - scene setup
+
+            if (!playContext.rehydrated) { // freshly creating the scene
+                playContext.createPlayer(new Vector2(200, 200));
+                
+                var unoPly = new BirdPersonality();
+                unoPly.generateNeutral();
+                var uno = playContext.createWing("uno", new Vector2(-140, 920), unoPly);
+                uno.changeClass(Wing.WingClass.Predator);
+
+                // a friendly bird
+                var frend = playContext.createWing("frend", new Vector2(-140, 20),
+                    new BirdPersonality {A = -0.8f, S = 0.7f});
+                // a second friendly bird
+                var fren2 = playContext.createWing("yii", new Vector2(400, -80),
+                    new BirdPersonality {A = -0.5f, S = 0.4f});
+                // a somewhat anxious bird
+                var anxious1 = playContext.createWing("ada", new Vector2(640, 920),
+                    new BirdPersonality {A = 0.6f, S = -0.2f});
+            }
+
+            AddEntity(playContext.playerWing.Entity);
+            foreach (var wing in playContext.createdWings) { // attach all wings
+                AddEntity(wing.Entity);
+            }
+
+            playContext.createdWings.Clear();
+
+            foreach (var thing in playContext.createdThings) { // attach all things
+                AddEntity(thing.Entity);
+            }
+
+            playContext.createdThings.Clear();
+
+            // set up map
+            AddEntity(playContext.mapNt);
+            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+
+            var status = playContext.rehydrated ? "rehydrated" : "freshly created";
+            Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
 
             // - hud
             const int hudPadding = 8;
@@ -70,9 +115,9 @@ namespace Sor.Scenes {
                 });
             tw.Start();
 
-            var hudSystem = AddEntityProcessor(new HudSystem(playerWing, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(playContext.playerWing, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(playerWing));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(playContext.playerWing));
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
@@ -81,58 +126,82 @@ namespace Sor.Scenes {
             }
 
             var followCamera =
-                Camera.Entity.AddComponent(new LockedCamera(playerEntity, Camera, cameraLockMode));
+                Camera.Entity.AddComponent(new LockedCamera(playContext.playerWing.Entity, Camera, cameraLockMode));
             followCamera.AddComponent<CameraShake>();
+            Camera.SetMaximumZoom(2f);
+            Camera.SetMinimumZoom(0.5f);
+            // Camera.SetZoom(-1f);
 
 #if DEBUG
             // draw nav graph (only visible in debug render)
             var navGraphDisplay = CreateEntity("navgraph_display");
-            navGraphDisplay.AddComponent(new NavGraphDisplay(gameContext.map,
-                FindEntity("map").GetComponent<TiledMapRenderer>()));
+            navGraphDisplay.AddComponent(new NavGraphDisplay(FindEntity("map").GetComponent<TiledMapRenderer>()));
 #endif
         }
 
         public override void Update() {
             base.Update();
 
-            if (Input.IsKeyPressed(Keys.Escape)) {
-                // save the game
-                saveGame();
-                // end this scene
-                TransitionScene<MenuScene>(0.1f);
-            }
+#if DEBUG
+            if (!DebugConsole.Instance.IsOpen) {
+#endif
 
-            if (InputUtils.IsControlDown()) {
-                Core.Instance.IsMouseVisible = true;
-            } else {
-                Core.Instance.IsMouseVisible = false;
-            }
+                if (Input.IsKeyPressed(Keys.Escape)) {
+                    // save the game
+                    saveGame();
+                    // end this scene
+                    TransitionScene<MenuScene>(0.1f);
+                }
 
-            if (Input.LeftMouseButtonPressed) {
-                // find the nearest non-player bird and inspect
-                var nearest = default(Wing);
-                var nearestDist = double.MaxValue;
-                foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
-                    var wing = birdNt.GetComponent<Wing>();
-                    if (birdNt.HasComponent<PlayerInputController>())
-                        continue;
-                    if (birdNt.HasComponent<MindDisplay>()) {
-                        birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
+                if (InputUtils.IsControlDown()) {
+                    Core.Instance.IsMouseVisible = true;
+                } else {
+                    Core.Instance.IsMouseVisible = false;
+                }
+
+                if (Input.LeftMouseButtonPressed) {
+                    // find the nearest non-player bird and inspect
+                    var nearest = default(Wing);
+                    var nearestDist = double.MaxValue;
+                    foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
+                        var wing = birdNt.GetComponent<Wing>();
+                        if (birdNt.HasComponent<PlayerInputController>())
+                            continue;
+                        if (birdNt.HasComponent<MindDisplay>()) {
+                            birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
+                        }
+
+                        var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
+                        var distSq = (birdNt.Position - mouseWp).LengthSquared();
+                        if (distSq < nearestDist) {
+                            nearest = wing;
+                            nearestDist = distSq;
+                        }
                     }
 
-                    var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                    var distSq = (birdNt.Position - mouseWp).LengthSquared();
-                    if (distSq < nearestDist) {
-                        nearest = wing;
-                        nearestDist = distSq;
+                    if (nearest != null) {
+                        Global.log.writeLine($"selected mind_inspect on {nearest.name}",
+                            GlintLogger.LogLevel.Information);
+                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }
 
-                if (nearest != null) {
-                    Global.log.writeLine($"selected mind_inspect on {nearest.name}", GlintLogger.LogLevel.Information);
-                    nearest?.AddComponent(new MindDisplay(playerWing, true));
+                // camera zoom
+                if (Input.IsKeyPressed(Keys.D0)) {
+                    Camera.RawZoom = 1f;
                 }
+
+                var zoomDelta = 1f * Time.DeltaTime;
+                if (Input.IsKeyDown(Keys.OemPlus)) {
+                    Camera.ZoomIn(zoomDelta);
+                }
+
+                if (Input.IsKeyDown(Keys.OemMinus)) {
+                    Camera.ZoomOut(zoomDelta);
+                }
+#if DEBUG
             }
+#endif
         }
 
         public override void Unload() {
@@ -146,21 +215,7 @@ namespace Sor.Scenes {
         public void saveGame() {
             var store = gameContext.data.getStore();
             if (!gameContext.config.clearData)
-                store.Save(GameData.TEST_SAVE, new PlayPersistable(new PlaySceneSetup(this)));
-        }
-
-        public IEnumerable<Wing> wings =>
-            FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
-
-        public Wing createWing(string name, Vector2 pos, AvianSoul soul = null) {
-            var duckNt = CreateEntity(name, pos).SetTag(Constants.Tags.ENTITY_WING);
-            if (soul != null) {
-                if (!soul.calced) soul.calc();
-            }
-
-            var duck = duckNt.AddComponent(new Wing(new Mind(soul, true)));
-            duckNt.AddComponent<LogicInputController>();
-            return duck;
+                store.Save(GameData.TEST_SAVE, new PlayPersistable(playContext));
         }
     }
 }

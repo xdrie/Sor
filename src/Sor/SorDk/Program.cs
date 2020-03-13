@@ -4,9 +4,11 @@ using System.Linq;
 using System.Reflection;
 using Glint;
 using Glint.Config;
-using Glint.Util;
 using Sor;
 using Sor.Game;
+#if !DEBUG
+using Glint.Util;
+#endif
 
 namespace SorDk {
     class Program {
@@ -38,7 +40,7 @@ namespace SorDk {
 #endif
             var configHelper = new ConfigHelper<Config>();
             configHelper.ensureDefaultConfig(conf, defaultConf);
-            var confStr = File.ReadAllText(conf);
+            var confStr = File.ReadAllText(Path.Join(Global.baseDir, conf));
             var config = configHelper.load(confStr, args); // load and parse config
             // run in crash-cradle (only if NOT debug)
 #if !DEBUG

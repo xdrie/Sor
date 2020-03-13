@@ -1,6 +1,6 @@
 using Nez;
 
-namespace Sor.AI.Model {
+namespace Sor.AI.Plans {
     public abstract class PlanInteraction : PlanTask {
         public Entity[] interactees;
 

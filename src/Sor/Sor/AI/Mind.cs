@@ -6,7 +6,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
-using Sor.AI.Model;
+using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
@@ -25,7 +25,7 @@ namespace Sor.AI {
         public VisionSystem visionSystem;
         public ThinkSystem thinkSystem;
         public AvianSoul soul;
-        public bool debug = false;
+        public bool inspected = false;
         public GameContext gameCtx;
 
         public int consciousnessSleep = 100;
@@ -34,16 +34,17 @@ namespace Sor.AI {
 
         public Mind() : this(null, true) { }
 
-        public Mind(AvianSoul inSoul, bool control) {
-            soul = inSoul;
-            if (soul == null) { // generate soul
-                soul = AvianSoul.generate(this);
-                soul.calc();
-                Global.log.writeLine($"generated soul {soul.ply}", GlintLogger.LogLevel.Trace);
+        public Mind(AvianSoul soul, bool control) {
+            if (soul == null) { // generate a new soul
+                this.soul = new AvianSoul(this);
+                this.soul.ply.generateRandom(); // randomize its personality
+                Global.log.writeLine($"generated soul with personality {this.soul.ply}", GlintLogger.LogLevel.Trace);
             }
 
-            soul.mind = this;
-
+            this.soul = soul;
+            this.soul.mind = this;
+            // run calc on the soul
+            this.soul.recalculate();
             this.control = control;
 
             gameCtx = Core.Services.GetService<GameContext>();
@@ -92,8 +93,10 @@ namespace Sor.AI {
         public void Update() { // Sense-Think-Act AI
             if (control) {
                 sense(); // sense the world around
-                act(); // carry out decisions
+                act(); // carry out decisions();
             }
+            // update state information
+            state.tick();
         }
 
         public override void OnRemovedFromEntity() {
@@ -112,47 +115,48 @@ namespace Sor.AI {
 
             // execute plan
             var targetPosition = default(Vector2?);
-            lock (state.plan) {
-                while (state.plan.Count > 0) {
-                    // check target validity
-                    var nextTask = state.plan.Peek();
-                    if (nextTask is TargetSource nextTarget) {
-                        if (!nextTarget.valid()) {
-                            state.plan.Dequeue(); // it's invalid, remove it
-                            continue;
-                        }
+            while (state.plan.Count > 0) {
+                // check target validity
+                state.plan.TryPeek(out var nextTask);
+                if (nextTask is TargetSource nextTarget) {
+                    if (!nextTarget.valid()) {
+                        state.plan.TryDequeue(out var result); // it's invalid, remove it
+                        continue;
+                    }
 
-                        // check closeness
-                        if (nextTarget.closeEnoughApproach(me.body.pos)) {
-                            state.plan.Dequeue();
-                            continue;
-                        }
+                    // check closeness
+                    if (nextTarget.closeEnoughApproach(me.body.pos)) {
+                        state.plan.TryDequeue(out var result);
+                        continue;
+                    }
 
-                        targetPosition = nextTarget.approachPosition(me.body.pos);
-                        break;
-                    } else if (nextTask is PlanInteraction inter) {
-                        switch (nextTask) {
-                            case PlanFeed interFeed: {
-                                if (inter.valid()) {
-                                    // ensure alignment
-                                    // TODO: follow target should better try to align
-                                    var dirToOther = interFeed.feedTarget.Position - me.body.pos;
-                                    dirToOther.Normalize();
-                                    // get facing dir
-                                    var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
-                                        -GMathf.sin(me.body.stdAngle));
-                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
-                                        // feed
-                                        controller.tetherLogical.logicPressed = true;
-                                    }
+                    targetPosition = nextTarget.approachPosition(me.body.pos);
+                    break;
+                } else if (nextTask is PlanInteraction inter) {
+                    switch (nextTask) {
+                        case PlanFeed interFeed: {
+                            if (inter.valid()) {
+                                // ensure alignment
+                                // TODO: follow target should better try to align
+                                var dirToOther = interFeed.feedTarget.Position - me.body.pos;
+                                dirToOther.Normalize();
+                                // get facing dir
+                                var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
+                                    -GMathf.sin(me.body.stdAngle));
+                                if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                                    // feed
+                                    controller.tetherLogical.logicPressed = true;
                                 }
-
-                                break;
                             }
-                        }
 
-                        // now dequeue
-                        state.plan.Dequeue();
+                            break;
+                        }
+                    }
+
+                    // now dequeue
+                    var planDequeueResult = state.plan.TryDequeue(out var result);
+                    if (!planDequeueResult) {
+                        Global.log.writeLine("dequeuing item from plan queue failed", GlintLogger.LogLevel.Error);
                     }
                 }
             }
@@ -199,10 +203,8 @@ namespace Sor.AI {
                 var dCritBs = dCrit * 1.1f;
 
                 // update board
-                lock (state.board) {
-                    state.board[nameof(dGiv)] = new MindState.BoardItem($"{dGiv:n2}", "mov");
-                    state.board[nameof(dCrit)] = new MindState.BoardItem($"{dCrit:n2}", "mov");
-                }
+                state.setBoard(nameof(dGiv), new MindState.BoardItem($"{dGiv:n2}", "mov"));
+                state.setBoard(nameof(dCrit), new MindState.BoardItem($"{dCrit:n2}", "mov"));
 
                 if (dGiv > dCrit) {
                     moveY = -1;
