@@ -177,7 +177,11 @@ namespace Sor.AI.Systems {
             
             // FLIGHT of fight-or-flight
             var fleeConsideration = new ThresholdSumConsideration<Mind>(() => {
-                // TODO: run away
+                // run away
+                var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
+                // TODO: get multiple threats to find the path to avoid as many as possible
+                // set a task to "avoid" (get out of range of bird)
+                // TODO: add avoid task
             }, 0.5f, "flee");
             fleeConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
             fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
