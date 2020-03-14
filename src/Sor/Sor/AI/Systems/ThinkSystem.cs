@@ -171,8 +171,8 @@ namespace Sor.AI.Systems {
                     state.setPlan(new[] {new EntityTargetSource(tgtWing.Entity)});
                 }
             }, 0.8f, "defend");
-            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
-            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
+            defendConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
+            defendConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind));
             reasoner.addConsideration(defendConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {

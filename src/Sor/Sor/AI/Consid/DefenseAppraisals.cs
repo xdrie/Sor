@@ -2,7 +2,7 @@ using System.Linq;
 using LunchLib.AI.Utility;
 
 namespace Sor.AI.Consid {
-    public static class DefendAppraisals {
+    public static class DefenseAppraisals {
         public class NearbyThreat : Appraisal<Mind> {
             public NearbyThreat(Mind context) : base(context) { }
 
