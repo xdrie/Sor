@@ -36,6 +36,9 @@ namespace Sor.Components.Units {
         public float laneFactor = 4f; // speed boost from touching lanes
         public float gravityFactor = 4000f;
         
+        // - interaction state
+        public float shootCooldown = 0f;
+        
         // - physiology
         public float metabolicRate; // energy burn per-second
         private float boostDrainKg = 100; // boost drain per kg
@@ -97,8 +100,10 @@ namespace Sor.Components.Units {
             if (controller.fireInput.IsPressed) {
                 // check if entity has a gun
                 var gun = Entity.GetComponent<Shooter>();
-                if (gun != null) {
+                if (gun != null && Time.TotalTime > shootCooldown) {
+                    gun.enableHit();
                     gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
+                    shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
                 }
             }
         }

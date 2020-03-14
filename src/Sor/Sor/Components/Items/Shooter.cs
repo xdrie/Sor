@@ -5,6 +5,8 @@ namespace Sor.Components.Items {
     public class Shooter : GAnimatedSprite {
         public Shooter() : base(Core.Content.LoadTexture("Data/sprites/shoot.png"), 128, 128) { }
 
+        public BoxCollider hitbox;
+
         public override void Initialize() {
             base.Initialize();
 
@@ -34,11 +36,20 @@ namespace Sor.Components.Items {
             });
 
             animator.OnAnimationCompletedEvent += onAnimCompleted;
+            // set up hitbox
+            hitbox = new BoxCollider(-28 * 2, -2 * 2, 4 * 2, 10 * 2) {Tag = Constants.Colliders.COLLIDER_SHOOT};
+
             onAnimCompleted(null); // reset animation
+        }
+
+        public void enableHit() {
+            // add the hitbox
+            Entity.AddComponent(hitbox);
         }
 
         private void onAnimCompleted(string anim) {
             animator.Play("idle");
+            if (hitbox.Attached) Entity.RemoveComponent(hitbox);
         }
 
         public void destroy() {
