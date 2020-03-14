@@ -253,7 +253,9 @@ namespace Sor.AI.Systems {
             lock (state.seenWings) {
                 foreach (var wing in state.seenWings) {
                     var toWing = entity.Position - wing.Entity.Position;
-                    var toWingDist = toWing.Length();
+                    // subtract diag hitbox
+                    var hitboxRadSq = wing.hitbox.Width * wing.hitbox.Width + wing.hitbox.Height * wing.hitbox.Height;
+                    var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);
                     if (toWingDist <= NearbyInteraction.triggerRange) {
                         var interaction = new NearbyInteraction(toWingDist);
                         interaction.run(mind.soul, wing.mind.soul);

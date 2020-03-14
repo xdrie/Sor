@@ -7,7 +7,7 @@ namespace Sor.AI.Cogs.Interactions {
     public class NearbyInteraction : BirdInteraction {
         private float dist;
         public const float triggerRange = MindConstants.SENSE_RANGE / 4;
-        private const float closeDistance = 25f;
+        private const float closeDistance = 40f;
 
         public NearbyInteraction(float dist) {
             this.dist = dist;
