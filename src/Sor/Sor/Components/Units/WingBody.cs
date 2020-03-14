@@ -99,11 +99,16 @@ namespace Sor.Components.Units {
 
             if (controller.fireInput.IsPressed) {
                 // check if entity has a gun
+                var shootEnergy = Constants.Mechanics.SHOOT_COST_PER_KG * mass;
                 var gun = Entity.GetComponent<Shooter>();
                 if (gun != null && Time.TotalTime > shootCooldown) {
-                    gun.prepare();
-                    gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
-                    shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
+                    // ensure gun can fire
+                    if (me.core.energy > shootEnergy) {
+                        me.core.energy -= shootEnergy;
+                        gun.prepare();
+                        gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
+                        shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
+                    }
                 }
             }
         }
@@ -212,6 +217,9 @@ namespace Sor.Components.Units {
                     if (hitEntity.HasComponent<Shooter>()) {
                         var shooter = hitEntity.GetComponent<Shooter>();
                         if (shooter.firing) {
+                            // ouch
+                            me.core.energy -= Constants.Mechanics.SHOOT_DRAIN;
+                            me.core.clamp();
                             // send signal to mind
                             if (me.mind.control) {
                                 me.mind.signal(new ItemSignals.ShotSignal(shooter));

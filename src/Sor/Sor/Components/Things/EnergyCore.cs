@@ -19,5 +19,11 @@ namespace Sor.Components.Things {
         public float overloadedNess() => 1 - Mathf.Pow((ratio - overloadThreshold + 1), -2);
 
         public void fill() => energy = designMax;
+
+        public void clamp() {
+            if (energy < 0f) {
+                energy = 0f;
+            }
+        }
     }
 }
