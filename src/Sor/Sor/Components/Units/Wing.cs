@@ -90,7 +90,7 @@ namespace Sor.Components.Units {
                     body.recalculateValues();
 
                     core.designMax = 10_000;
-                    
+
                     break;
                 case WingClass.Predator: {
                     scale = 2f;
@@ -100,7 +100,7 @@ namespace Sor.Components.Units {
                     body.turnPower = Constants.Physics.BIG_TURN_POWER;
                     body.thrustPower = Constants.Physics.BIG_THRUST_POWER;
                     body.boostTopSpeed = Constants.Physics.BIG_BOOST_TOP_SPEED;
-                    
+
                     core.designMax = 60_000;
 
                     body.recalculateValues();
@@ -114,16 +114,18 @@ namespace Sor.Components.Units {
                     body.turnPower = Constants.Physics.SML_TURN_POWER;
                     body.thrustPower = Constants.Physics.SML_THRUST_POWER;
                     body.boostTopSpeed = Constants.Physics.SML_BOOST_TOP_SPEED;
-                    
+
                     core.designMax = 5_000;
 
                     body.recalculateValues();
                     break;
                 }
             }
-            
+
             // do common setup
-            core.fill();
+            if (core.ratio < 1f) {
+                core.fill();
+            }
 
             Transform.SetLocalScale(scale);
             pips.spriteRenderer.LocalOffset = pips.spriteRenderer.LocalOffset * scale;
@@ -135,7 +137,7 @@ namespace Sor.Components.Units {
             var overload = core.overloadedNess();
             if (overload > 0) {
                 // overloaded!
-                ColorExt.Lerp(ref NGame.context.assets.paletteWhite, ref NGame.context.assets.paletteOrange, 
+                ColorExt.Lerp(ref NGame.context.assets.paletteWhite, ref NGame.context.assets.paletteOrange,
                     out var targetCol, overload);
                 spriteRenderer.Color = targetCol;
             } else {
