@@ -28,6 +28,12 @@ namespace Sor {
         }
 
         public static class Physics {
+            // physics layers
+            public const int LAYER_DEFAULT = 0;
+            public const int LAYER_FIRE = 1 << 3;
+            
+            // birds
+            
             // - defaults (wing)
             public const float DEF_MASS = 10f;
             public const float DEF_TURN_POWER = Mathf.PI * 0.72f;

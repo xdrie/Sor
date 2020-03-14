@@ -1,4 +1,5 @@
 using Glint.Sprites;
+using Microsoft.Xna.Framework;
 using Nez;
 
 namespace Sor.Components.Items {
@@ -6,6 +7,7 @@ namespace Sor.Components.Items {
         public Shooter() : base(Core.Content.LoadTexture("Data/sprites/shoot.png"), 128, 128) { }
 
         public BoxCollider hitbox;
+        public bool firing = false;
 
         public override void Initialize() {
             base.Initialize();
@@ -37,19 +39,18 @@ namespace Sor.Components.Items {
 
             animator.OnAnimationCompletedEvent += onAnimCompleted;
             // set up hitbox
-            hitbox = new BoxCollider(-28 * 2, -2 * 2, 4 * 2, 10 * 2) {Tag = Constants.Colliders.COLLIDER_SHOOT};
+            hitbox = new BoxCollider(-2 * 2, -28 * 2, 4 * 2, 20 * 2) {Tag = Constants.Colliders.COLLIDER_SHOOT};
+            hitbox.LocalOffset = new Vector2(0, -28);
+            hitbox.IsTrigger = true;
+            Flags.SetFlagExclusive(ref hitbox.PhysicsLayer, Constants.Physics.LAYER_FIRE);
+            Entity.AddComponent(hitbox);
 
             onAnimCompleted(null); // reset animation
         }
 
-        public void enableHit() {
-            // add the hitbox
-            Entity.AddComponent(hitbox);
-        }
-
         private void onAnimCompleted(string anim) {
             animator.Play("idle");
-            if (hitbox.Attached) Entity.RemoveComponent(hitbox);
+            firing = false;
         }
 
         public void destroy() {

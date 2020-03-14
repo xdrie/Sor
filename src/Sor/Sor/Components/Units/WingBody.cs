@@ -27,18 +27,18 @@ namespace Sor.Components.Units {
         public float baseDrag = Constants.Physics.DEF_BASE_DRAG;
         public float brakeDrag = Constants.Physics.DEF_BRAKE_DRAG;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
-        
+
         // - movement state
         public float boostCooldown = 0f;
         public bool boosting = false;
-        
+
         // - interaction
         public float laneFactor = 4f; // speed boost from touching lanes
         public float gravityFactor = 4000f;
-        
+
         // - interaction state
         public float shootCooldown = 0f;
-        
+
         // - physiology
         public float metabolicRate; // energy burn per-second
         private float boostDrainKg = 100; // boost drain per kg
@@ -68,7 +68,7 @@ namespace Sor.Components.Units {
 
         public override void Update() {
             base.Update();
-            
+
             // metabolism
             if (me.core.energy > 0) {
                 me.core.energy -= metabolicRate * Time.DeltaTime;
@@ -101,7 +101,7 @@ namespace Sor.Components.Units {
                 // check if entity has a gun
                 var gun = Entity.GetComponent<Shooter>();
                 if (gun != null && Time.TotalTime > shootCooldown) {
-                    gun.enableHit();
+                    gun.firing = true;
                     gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
                     shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
                 }
@@ -163,8 +163,7 @@ namespace Sor.Components.Units {
                     boostRibbon.StartEmitting();
                     boostRibbon.Enabled = true;
                 }
-            }
-            else {
+            } else {
                 boosting = false;
                 maxVelocity = new Vector2(topSpeed); // reset velocity cap
                 if (boostRibbon.IsEmitting) {
@@ -181,8 +180,7 @@ namespace Sor.Components.Units {
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal * Time.DeltaTime);
                 velocity += thrustVec.rotate(angle);
-            }
-            else { // slowdown thrust
+            } else { // slowdown thrust
                 // float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 // velocity *= fac;
                 // var invVelocity = -velocity;
@@ -191,20 +189,37 @@ namespace Sor.Components.Units {
         }
 
         public void OnTriggerEnter(Collider other, Collider local) {
-            if (other.Tag == Constants.Colliders.COLLIDER_THING) {
-                var hitEntity = other.Entity;
-                if (hitEntity.HasComponent<Capsule>()) {
-                    var capsule = hitEntity.GetComponent<Capsule>();
-                    if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
-                        // apply the capsule
-                        var gotEnergy = capsule.energy;
-                        me.core.energy += gotEnergy;
-                        capsule.acquire(); // blow it up
-                        // send signal to mind
-                        if (me.mind.control) {
-                            me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
+            var hitEntity = other.Entity;
+            switch (other.Tag) {
+                case Constants.Colliders.COLLIDER_THING: {
+                    if (hitEntity.HasComponent<Capsule>()) {
+                        var capsule = hitEntity.GetComponent<Capsule>();
+                        if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
+                            // apply the capsule
+                            var gotEnergy = capsule.energy;
+                            me.core.energy += gotEnergy;
+                            capsule.acquire(); // blow it up
+                            // send signal to mind
+                            if (me.mind.control) {
+                                me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
+                            }
                         }
                     }
+
+                    break;
+                }
+                case Constants.Colliders.COLLIDER_SHOOT: {
+                    if (hitEntity.HasComponent<Shooter>()) {
+                        var shooter = hitEntity.GetComponent<Shooter>();
+                        if (shooter.firing) {
+                            // send signal to mind
+                            if (me.mind.control) {
+                                me.mind.signal(new ItemSignals.ShotSignal(shooter));
+                            }
+                        }
+                    }
+
+                    break;
                 }
             }
 

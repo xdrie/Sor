@@ -1,3 +1,4 @@
+using Sor.Components.Items;
 using Sor.Components.Things;
 
 namespace Sor.AI.Signals {
@@ -9,6 +10,14 @@ namespace Sor.AI.Signals {
             public CapsuleAcquiredSignal(Capsule cap, double energy) {
                 this.cap = cap;
                 this.energy = energy;
+            }
+        }
+
+        public class ShotSignal : MindSignal {
+            public Shooter gun;
+
+            public ShotSignal(Shooter gun) {
+                this.gun = gun;
             }
         }
     }
