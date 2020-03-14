@@ -101,7 +101,7 @@ namespace Sor.Components.Units {
                 // check if entity has a gun
                 var gun = Entity.GetComponent<Shooter>();
                 if (gun != null && Time.TotalTime > shootCooldown) {
-                    gun.firing = true;
+                    gun.prepare();
                     gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
                     shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
                 }
