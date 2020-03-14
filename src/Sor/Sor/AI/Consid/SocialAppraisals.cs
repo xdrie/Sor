@@ -22,7 +22,7 @@ namespace Sor.AI.Consid {
                 // TODO: de-prioritize ducks we're already chums with
                 lock (mind.state.seenWings) {
                     var wings = mind.state.seenWings.MaxBy(
-                        x => mind.state.getOpinion(x.mind) > thresh);
+                        x => mind.state.getOpinion(x.mind) - thresh);
                     if (!wings.Any()) return null;
 
                     return wings.First();
