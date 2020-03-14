@@ -57,11 +57,6 @@ namespace Sor.Game {
             var kind = (ThingKind) rd.ReadInt();
             var res = default(Thing);
             switch (kind) {
-                case ThingKind.Unknown:
-                    // unrecognized thing
-                    Global.log.writeLine("unrecognized thing kind", GlintLogger.LogLevel.Error);
-                    res = null;
-                    break;
                 case ThingKind.Capsule: {
                     var nt = new Entity("cap");
                     var cap = nt.AddComponent(new Capsule());
@@ -106,6 +101,11 @@ namespace Sor.Game {
                     res = tree;
                     break;
                 }
+                default:
+                    // unrecognized thing
+                    Global.log.writeLine("unrecognized thing kind", GlintLogger.LogLevel.Error);
+                    res = null;
+                    break;
             }
 
             if (res != null) {
