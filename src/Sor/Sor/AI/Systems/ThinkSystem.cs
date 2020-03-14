@@ -164,12 +164,11 @@ namespace Sor.AI.Systems {
             var fightConsideration = new ThresholdSumConsideration<Mind>(() => {
                 // fight threat nearby
                 // TODO: figure out the most "threatening" wing, delegate to goal planner
-                var tgtWing = state.seenWings.FirstOrDefault(
-                    x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
-                if (tgtWing != null) {
-                    // reset targets
-                    // TODO: a much better way to have fight-or-flight
-                    state.setPlan(new[] {new EntityTargetSource(tgtWing.Entity)});
+                var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
+                if (threat != null) {
+                    // TODO: improve fighting/engagement, delegate to action planner
+                    // set the entity as our target
+                    state.setPlan(new[] {new EntityTargetSource(threat.Entity)});
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
