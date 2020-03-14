@@ -89,7 +89,7 @@ namespace Sor.Components.Units {
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity("pod", Entity.Position)
-                        .SetTag(Constants.Tags.ENTITY_THING);
+                        .SetTag(Constants.Tags.THING);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
@@ -115,13 +115,13 @@ namespace Sor.Components.Units {
             mov.AdvancedCalculateMovement(ref calcMotion, moveCollisions);
             foreach (var result in moveCollisions) {
                 // collision with a wall
-                if (!boosting && result.Collider?.Tag == Constants.Colliders.COLLIDER_WALL) {
+                if (!boosting && result.Collider?.Tag == Constants.Colliders.WALL) {
                     // suck velocity from hitting the wall
                     velocity *= VELOCITY_REDUCTION_EXP;
                     motion -= result.MinimumTranslationVector;
                 }
                 // collision with another ship
-                else if (result.Collider?.Tag == Constants.Colliders.COLLIDER_SHIP) {
+                else if (result.Collider?.Tag == Constants.Colliders.SHIP) {
                     var hitShip = result.Collider.Entity.GetComponent<WingBody>();
                     // conserve momentum in the collision
                     var netMomentum = momentum + hitShip.momentum;
@@ -191,7 +191,7 @@ namespace Sor.Components.Units {
         public void OnTriggerEnter(Collider other, Collider local) {
             var hitEntity = other.Entity;
             switch (other.Tag) {
-                case Constants.Colliders.COLLIDER_THING: {
+                case Constants.Colliders.THING: {
                     if (hitEntity.HasComponent<Capsule>()) {
                         var capsule = hitEntity.GetComponent<Capsule>();
                         if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
@@ -208,7 +208,7 @@ namespace Sor.Components.Units {
 
                     break;
                 }
-                case Constants.Colliders.COLLIDER_SHOOT: {
+                case Constants.Colliders.SHOOT: {
                     if (hitEntity.HasComponent<Shooter>()) {
                         var shooter = hitEntity.GetComponent<Shooter>();
                         if (shooter.firing) {
@@ -223,7 +223,7 @@ namespace Sor.Components.Units {
                 }
             }
 
-            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
+            if (other.Tag == Constants.Colliders.LANE) {
                 // lanes multiply velocity
                 velocity *= laneFactor;
                 drag = Vector2.Zero;
@@ -252,7 +252,7 @@ namespace Sor.Components.Units {
         }
 
         public void OnTriggerExit(Collider other, Collider local) {
-            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
+            if (other.Tag == Constants.Colliders.LANE) {
                 drag = new Vector2(baseDrag);
             }
         }

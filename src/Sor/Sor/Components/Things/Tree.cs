@@ -71,7 +71,7 @@ namespace Sor.Components.Things {
                 // spawn a fruit
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
                 var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset)
-                    .SetTag(Constants.Tags.ENTITY_THING);
+                    .SetTag(Constants.Tags.THING);
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;

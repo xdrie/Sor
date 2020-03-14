@@ -30,14 +30,14 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.Tags.ENTITY_WING);
+            playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
             playerNt.AddComponent<PlayerInputController>();
 
             // set up scene things
-            physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.ENTITY_WING);
+            physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.WING);
             var physicistPersonality = new BirdPersonality {A = 0.8f, S = -0.4f};
             var physicistSoul = new AvianSoul {ply = physicistPersonality};
             var duckWing = physicistDuck.AddComponent(new Wing(new Mind(physicistSoul, true)));

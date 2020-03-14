@@ -5,17 +5,17 @@ namespace Sor {
         // - Tags
         public static class Tags {
             // entities
-            public const int ENTITY_WING = 0x2888884;
-            public const int ENTITY_THING = 0x9973824;
+            public const int WING = 0x2888884;
+            public const int THING = 0x9973824;
         }
 
         // colliders
         public static class Colliders {
-            public const int COLLIDER_SHIP = 0x2342340;
-            public const int COLLIDER_WALL = 0x2398448;
-            public const int COLLIDER_THING = 0x9823429;
-            public const int COLLIDER_LANE = 0x8723847;
-            public const int COLLIDER_SHOOT = 0x3784234;
+            public const int SHIP = 0x2342340;
+            public const int WALL = 0x2398448;
+            public const int THING = 0x9823429;
+            public const int LANE = 0x8723847;
+            public const int SHOOT = 0x3784234;
         }
 
         // - Game mechanics

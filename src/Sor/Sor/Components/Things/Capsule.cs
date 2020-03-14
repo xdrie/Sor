@@ -32,7 +32,7 @@ namespace Sor.Components.Things {
             despawnAt = Time.TotalTime + lifetime;
 
             body = Entity.AddComponent<CapsuleBody>();
-            Entity.AddComponent(new BoxCollider(-8, -12, 8, 24) {Tag = Constants.Colliders.COLLIDER_THING, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-8, -12, 8, 24) {Tag = Constants.Colliders.THING, IsTrigger = true});
             Entity.AddComponent(new BoxCollider(-40, -40, 80, 80) {Tag = Constants.Mechanics.TRIGGER_GRAVITY, IsTrigger = true});
 
             // use slow updates

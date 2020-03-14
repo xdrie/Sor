@@ -165,7 +165,7 @@ namespace Sor.Scenes {
                     // find the nearest non-player bird and inspect
                     var nearest = default(Wing);
                     var nearestDist = double.MaxValue;
-                    foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.ENTITY_WING)) {
+                    foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.WING)) {
                         var wing = birdNt.GetComponent<Wing>();
                         if (birdNt.HasComponent<PlayerInputController>())
                             continue;

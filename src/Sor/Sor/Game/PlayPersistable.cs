@@ -74,7 +74,7 @@ namespace Sor.Game {
                 var thing = thingHelper.loadThing(rd);
                 if (thing != null) { // thing might not be loadedF
                     // tag entity as thing
-                    thing.Entity.SetTag(Constants.Tags.ENTITY_THING);
+                    thing.Entity.SetTag(Constants.Tags.THING);
                     // add to context
                     playContext.addThing(thing);
                 }
@@ -96,7 +96,7 @@ namespace Sor.Game {
             wr.writeBody(playContext.playerWing.body);
 
             // save all other wings
-            var wingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.ENTITY_WING)
+            var wingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.WING)
                 .Where(x => x != playContext.playerWing.Entity)
                 .ToList();
             wr.Write(wingsToSave.Count);
@@ -107,7 +107,7 @@ namespace Sor.Game {
             }
 
             // save world things
-            var thingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.ENTITY_THING).ToList();
+            var thingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.THING).ToList();
             wr.Write(thingsToSave.Count);
             // sort so trees are before capsules
             var treeList = new List<Thing>();

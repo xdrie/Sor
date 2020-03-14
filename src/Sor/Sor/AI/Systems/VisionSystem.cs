@@ -23,9 +23,9 @@ namespace Sor.AI.Systems {
                 foreach (var sensorResult in sensorCollResults) {
                     if (sensorResult.Entity == null) continue;
                     var sensed = sensorResult.Entity;
-                    if (sensorResult.Tag == Constants.Colliders.COLLIDER_SHIP && sensed != entity) {
+                    if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != entity) {
                         state.seenWings.Add(sensed.GetComponent<Wing>());
-                    } else if (sensorResult.Tag == Constants.Colliders.COLLIDER_THING) {
+                    } else if (sensorResult.Tag == Constants.Colliders.THING) {
                         state.seenThings.Add(sensed.GetComponent<Thing>());
                     }
                 }

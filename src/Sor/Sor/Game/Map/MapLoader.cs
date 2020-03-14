@@ -68,7 +68,7 @@ namespace Sor.Game.Map {
                     }
 
                     var nt = new Entity(th.Name)
-                        .SetTag(Constants.Tags.ENTITY_THING);
+                        .SetTag(Constants.Tags.THING);
                     nt.Position = new Vector2(th.X, th.Y);
                     var tree = nt.AddComponent(new Tree {stage = treeStage});
                     playContext.addThing(tree);
@@ -84,7 +84,7 @@ namespace Sor.Game.Map {
             foreach (var collider in rects) {
                 var boxCollider = new BoxCollider(collider);
                 boxCollider.IsTrigger = true;
-                boxCollider.Tag = Constants.Colliders.COLLIDER_LANE;
+                boxCollider.Tag = Constants.Colliders.LANE;
                 mapEntity.AddComponent(boxCollider);
             }
         }
@@ -300,7 +300,7 @@ namespace Sor.Game.Map {
             foreach (var coll in adjustedColliders) {
                 var boxCollider = new BoxCollider(coll);
                 mapEntity.AddComponent(boxCollider);
-                boxCollider.Tag = Constants.Colliders.COLLIDER_WALL;
+                boxCollider.Tag = Constants.Colliders.WALL;
             }
         }
 
