@@ -23,6 +23,8 @@ namespace Sor {
             public const float BOOST_COOLDOWN = 1f;
             public const float SHOOT_COOLDOWN = 1f;
             public const float CAPSULE_SIZE = 400;
+            public const float SHOOT_COST_PER_KG = 200;
+            public const float SHOOT_DRAIN = 2000;
             public const float CALORIES_PER_KG = 2f;
             public const int TRIGGER_GRAVITY = 0x9233742;
         }

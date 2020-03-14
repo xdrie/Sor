@@ -8,6 +8,7 @@ namespace Sor.Components.Items {
 
         public BoxCollider hitbox;
         public bool firing = false;
+        private Vector2 hitboxOffset;
 
         public override void Initialize() {
             base.Initialize();
@@ -40,7 +41,8 @@ namespace Sor.Components.Items {
             animator.OnAnimationCompletedEvent += onAnimCompleted;
             // set up hitbox
             hitbox = new BoxCollider(-2 * 2, -28 * 2, 4 * 2, 20 * 2) {Tag = Constants.Colliders.SHOOT};
-            hitbox.LocalOffset = new Vector2(0, -28);
+            hitboxOffset = new Vector2(0, -28);
+            
             hitbox.IsTrigger = true;
             Flags.SetFlagExclusive(ref hitbox.PhysicsLayer, Constants.Physics.LAYER_FIRE);
             Entity.AddComponent(hitbox);
@@ -48,9 +50,15 @@ namespace Sor.Components.Items {
             onAnimCompleted(null); // reset animation
         }
 
+        public void prepare() {
+            firing = true;
+            hitbox.LocalOffset = hitboxOffset;
+        }
+
         private void onAnimCompleted(string anim) {
             animator.Play("idle");
             firing = false;
+            hitbox.LocalOffset = -hitboxOffset;
         }
 
         public void destroy() {

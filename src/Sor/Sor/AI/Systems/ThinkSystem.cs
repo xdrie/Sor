@@ -14,6 +14,7 @@ using Sor.AI.Model;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
+using Sor.Components.Units;
 using Sor.Game.Map;
 using Sor.Util;
 
@@ -240,6 +241,16 @@ namespace Sor.AI.Systems {
                         interaction.run(mind.soul, from.mind.soul);
                     }
 
+                    break;
+                }
+                case ItemSignals.ShotSignal sig: {
+                    var from = sig.gun.Entity.GetComponent<Wing>();
+                    if (from != null && from != mind.me) {
+                        // run a being shot interaction
+                        var interaction = new ShotInteraction(from, sig);
+                        interaction.run(mind.soul, from.mind.soul);
+                    }
+                    
                     break;
                 }
             }

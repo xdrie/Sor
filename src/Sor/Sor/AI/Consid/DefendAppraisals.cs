@@ -7,10 +7,12 @@ namespace Sor.AI.Consid {
             public NearbyThreat(Mind context) : base(context) { }
 
             public override float score() {
-                return context.state.seenWings.Any(
-                    x => context.state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL)
-                    ? 1
-                    : 0;
+                lock (context.state.seenWings) {
+                    return context.state.seenWings.Any(
+                        x => context.state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL)
+                        ? 1
+                        : 0;
+                }
             }
         }
 
