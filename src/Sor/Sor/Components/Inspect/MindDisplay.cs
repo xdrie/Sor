@@ -62,7 +62,11 @@ namespace Sor.Components.Inspect {
                 if (mind.state.lastPlanTable != null) {
                     lock (mind.state.lastPlanTable) {
                         var first = false;
-                        foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                        var options = mind.state.lastPlanTable
+                            .OrderByDescending(x => x.Value).ToList();
+                        foreach (var consid in options) {
+                            // exclude zeroes
+                            if (consid.Value.Approximately(0)) continue;
                             var sb = new StringBuilder();
                             if (!first) {
                                 sb.Append("> ");
