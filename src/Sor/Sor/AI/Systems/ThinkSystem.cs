@@ -160,8 +160,9 @@ namespace Sor.AI.Systems {
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
             reasoner.addConsideration(exploreConsideration);
 
-            var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
-                // defend action
+            // FIGHT of fight-or-flight
+            var fightConsideration = new ThresholdSumConsideration<Mind>(() => {
+                // fight threat nearby
                 // TODO: figure out the most "threatening" wing, delegate to goal planner
                 var tgtWing = state.seenWings.FirstOrDefault(
                     x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
@@ -170,10 +171,18 @@ namespace Sor.AI.Systems {
                     // TODO: a much better way to have fight-or-flight
                     state.setPlan(new[] {new EntityTargetSource(tgtWing.Entity)});
                 }
-            }, 0.8f, "defend");
-            defendConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
-            defendConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind));
-            reasoner.addConsideration(defendConsideration);
+            }, 0.8f, "fight");
+            fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
+            fightConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind));
+            reasoner.addConsideration(fightConsideration);
+            
+            // FLIGHT of fight-or-flight
+            var fleeConsideration = new ThresholdSumConsideration<Mind>(() => {
+                // TODO: run away
+            }, 0.5f, "flee");
+            fleeConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
+            fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
+            reasoner.addConsideration(fleeConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {
                 // socialize - become friends with nearby ducks
