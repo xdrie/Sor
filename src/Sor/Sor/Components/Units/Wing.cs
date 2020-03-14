@@ -30,6 +30,8 @@ namespace Sor.Components.Units {
             Entity.AddComponent(mind); // add mind component
             body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-6, -10, 12, 18) {Tag = Constants.Colliders.COLLIDER_SHIP});
+            Flags.SetFlagExclusive(ref hitbox.PhysicsLayer, Constants.Physics.LAYER_DEFAULT);
+            Flags.SetFlag(ref hitbox.CollidesWithLayers, Constants.Physics.LAYER_DEFAULT);
             core = Entity.AddComponent(new EnergyCore(10_000));
             // add pips
             pips = Entity.AddComponent<Pips>();

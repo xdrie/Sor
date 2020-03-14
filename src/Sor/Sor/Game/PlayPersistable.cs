@@ -75,9 +75,9 @@ namespace Sor.Game {
                 if (thing != null) { // thing might not be loadedF
                     // tag entity as thing
                     thing.Entity.SetTag(Constants.Tags.ENTITY_THING);
+                    // add to context
+                    playContext.addThing(thing);
                 }
-                // add to context
-                playContext.addThing(thing);
             }
         }
 

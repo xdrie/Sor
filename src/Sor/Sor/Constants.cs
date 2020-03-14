@@ -15,17 +15,25 @@ namespace Sor {
             public const int COLLIDER_WALL = 0x2398448;
             public const int COLLIDER_THING = 0x9823429;
             public const int COLLIDER_LANE = 0x8723847;
+            public const int COLLIDER_SHOOT = 0x3784234;
         }
 
         // - Game mechanics
         public static class Mechanics {
             public const float BOOST_COOLDOWN = 1f;
+            public const float SHOOT_COOLDOWN = 1f;
             public const float CAPSULE_SIZE = 400;
             public const float CALORIES_PER_KG = 2f;
             public const int TRIGGER_GRAVITY = 0x9233742;
         }
 
         public static class Physics {
+            // physics layers
+            public const int LAYER_DEFAULT = 0;
+            public const int LAYER_FIRE = 1 << 3;
+            
+            // birds
+            
             // - defaults (wing)
             public const float DEF_MASS = 10f;
             public const float DEF_TURN_POWER = Mathf.PI * 0.72f;

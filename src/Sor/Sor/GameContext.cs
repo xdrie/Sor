@@ -35,6 +35,9 @@ namespace Sor {
             public Color colYellow = new Color(190, 175, 91);
             public Color colOrange = new Color(189, 133, 91);
             public Color colRed = new Color(189, 91, 91);
+            
+            public Color colFire1 = new Color(255, 169, 15);
+            public Color colFire2 = new Color(224, 108, 70);
 
             public Color fgColor => paletteWhite;
             public Color bgColor => palettePurple;
