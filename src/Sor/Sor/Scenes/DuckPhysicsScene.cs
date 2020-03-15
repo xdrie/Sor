@@ -46,7 +46,7 @@ namespace Sor.Scenes {
             duckWing.core.energy = 1000f;
 
             // set pos to current pos
-            duckWing.mind.state.plan.Enqueue(new EntityTargetSource(playerWing.Entity));
+            duckWing.mind.state.plan.Enqueue(new EntityTarget(playerWing.Entity));
 
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
 
@@ -68,7 +68,7 @@ namespace Sor.Scenes {
             if (Input.LeftMouseButtonDown) {
                 // set duck target to mouse pos
                 var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                wing.mind.state.plan.Enqueue(new FixedTargetSource(mouseWp));
+                wing.mind.state.plan.Enqueue(new FixedTarget(mouseWp));
             }
         }
     }

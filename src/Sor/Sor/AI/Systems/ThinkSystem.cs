@@ -77,7 +77,7 @@ namespace Sor.AI.Systems {
                         var bean = seenBeans[0];
                         seenBeans.Remove(bean);
                         beanTimeAcc += timePerBean;
-                        newPlan.Add(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
+                        newPlan.Add(new EntityTarget(bean.Entity, Approach.Precise, beanTimeAcc));
                     } else if (node.matches(nameof(HungryBird.visitTree))) {
                         // plan to visit the nearest tree
                         // TODO: how is this done?
@@ -145,7 +145,7 @@ namespace Sor.AI.Systems {
                 var newPlan = new List<PlanTask>();
                 foreach (var pathNode in foundPath) {
                     var tmapPos = pathNode.pos.ToVector2();
-                    newPlan.Add(new FixedTargetSource(
+                    newPlan.Add(new FixedTarget(
                         mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
                         TargetSource.RANGE_DIRECT));
                 }
@@ -168,7 +168,7 @@ namespace Sor.AI.Systems {
                 if (threat != null) {
                     // TODO: improve fighting/engagement, delegate to action planner
                     // set the entity as our target
-                    state.setPlan(new[] {new EntityTargetSource(threat.Entity)});
+                    state.setPlan(new[] {new EntityTarget(threat.Entity)});
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
@@ -215,7 +215,7 @@ namespace Sor.AI.Systems {
                 foreach (var node in path) {
                     if (node.matches(nameof(SocializingBird.chase))) {
                         newPlan.Add(
-                            new EntityTargetSource(fren.Entity, Approach.Within, feedRange, goalFeedTime));
+                            new EntityTarget(fren.Entity, Approach.Within, feedRange, goalFeedTime));
                     } else if (node.matches(nameof(SocializingBird.feed))) {
                         newPlan.Add(new PlanFeed(fren.Entity, goalFeedTime));
                     }

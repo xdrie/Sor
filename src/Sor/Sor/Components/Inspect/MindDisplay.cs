@@ -98,7 +98,7 @@ namespace Sor.Components.Inspect {
                                 var approachLoc = target.approachPosition(mind.me.body.pos);
                                 var sb = new StringBuilder();
                                 sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
-                                if (target is EntityTargetSource ets) {
+                                if (target is EntityTarget ets) {
                                     sb.Append($" {ets.nt.Name}");
                                 }
 

@@ -62,31 +62,4 @@ namespace Sor.AI.Plans {
 
         public Approach approach { get; }
     }
-
-    public class FixedTargetSource : TargetSource {
-        private readonly Vector2 pos;
-
-        public FixedTargetSource(Vector2 pos, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
-            float before = 0) : base(approach, approachRange, before) {
-            this.pos = pos;
-        }
-
-        public override Vector2 getPosition() => pos;
-    }
-
-    public class EntityTargetSource : TargetSource {
-        public readonly Entity nt;
-
-        public EntityTargetSource(Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
-            float before = 0) : base(approach, approachRange, before) {
-            this.nt = nt;
-        }
-
-        public override bool valid() {
-            var val = base.valid();
-            return val && nt != null;
-        }
-
-        public override Vector2 getPosition() => nt.Position;
-    }
 }
