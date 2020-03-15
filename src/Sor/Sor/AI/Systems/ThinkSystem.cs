@@ -168,7 +168,9 @@ namespace Sor.AI.Systems {
                 if (threat != null) {
                     // TODO: improve fighting/engagement, delegate to action planner
                     // set the entity as our target
-                    state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
+                    // state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
+                    // run away
+                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED) });
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
@@ -181,7 +183,8 @@ namespace Sor.AI.Systems {
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
                 // TODO: get multiple threats to find the path to avoid as many as possible
                 // set a task to "avoid" (get out of range of bird)
-                // TODO: add avoid task
+                // add avoid task
+                state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED) });
             }, 0.5f, "flee");
             fleeConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
             fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
