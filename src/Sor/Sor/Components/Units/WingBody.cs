@@ -35,9 +35,11 @@ namespace Sor.Components.Units {
         // - interaction
         public float laneFactor = 4f; // speed boost from touching lanes
         public float gravityFactor = 4000f;
+        public float baseCapSpeed = 40f;
 
         // - interaction state
         public float shootCooldown = 0f;
+        public float shootCharge = 0f;
 
         // - physiology
         public float metabolicRate; // energy burn per-second
@@ -81,9 +83,15 @@ namespace Sor.Components.Units {
         }
 
         private void interaction() {
-            if (controller.tetherInput.IsPressed) {
-                var capEnergy = Constants.Mechanics.CAPSULE_SIZE;
-                var capSpeed = 40f;
+            if (controller.tetherInput.IsDown) {
+                // increase shoot charge
+                shootCharge += Time.DeltaTime;
+            }
+            if (shootCharge > 0 && controller.tetherInput.IsReleased) {
+                // clamp shoot charge
+                shootCharge = Mathf.Clamp(shootCharge, 0f, 2f);
+                var capEnergy = Constants.Mechanics.CAPSULE_SIZE * Mathf.Pow(1 + shootCharge, 2f);
+                var capSpeed = baseCapSpeed * Mathf.Pow(1 + shootCharge, 2f);
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
@@ -95,6 +103,8 @@ namespace Sor.Components.Units {
                     cap.sender = me;
                     cap.launch(capEnergy, capMotion.rotate(angle));
                 }
+
+                shootCharge = 0; // reset charge
             }
 
             if (controller.fireInput.IsPressed) {

@@ -42,6 +42,7 @@ namespace Sor.Components.Things {
         public void launch(float launchEnergy, Vector2 launch) {
             energy = launchEnergy;
             body.velocity += launch;
+            body.maxVelocity = new Vector2(launch.Length());
         }
 
         public class CapsuleBody : KinBody {
