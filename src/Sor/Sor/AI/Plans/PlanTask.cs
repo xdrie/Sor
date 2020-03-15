@@ -10,6 +10,10 @@ namespace Sor.AI.Plans {
             failureTime = reachBefore;
         }
         
+        /// <summary>
+        /// whether the goal should still be pursued (valid/ongoing)
+        /// </summary>
+        /// <returns></returns>
         public virtual bool valid() {
             if (failureTime <= 0) return true;
             return Time.TotalTime < failureTime;

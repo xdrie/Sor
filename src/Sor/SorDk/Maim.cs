@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Glint;
+using Glint.Platform;
 using Sor.Game.Map.Gen;
 
 namespace SorDk {
@@ -21,8 +23,9 @@ q. quit
                 if (int.TryParse(inp, out var choice)) {
                     switch (choice) {
                         case 0:
-                            // print debug info
-                            // TODO: system information
+                            // this only works on desktop
+                            var platform = new DesktopPlatform();
+                            platform.logSystemInformation(); // print debug info
                             break;
                         case 1:
                             // mapgen tests

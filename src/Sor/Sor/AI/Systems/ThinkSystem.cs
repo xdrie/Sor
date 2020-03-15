@@ -20,10 +20,13 @@ using Sor.Util;
 
 namespace Sor.AI.Systems {
     public class ThinkSystem : MindSystem {
-        public int maxSignalsPerThink = 40;
+        private int maxSignalsPerThink = 40;
+        private Reasoner<Mind> reasoner;
 
         public ThinkSystem(Mind mind, float refresh, CancellationToken cancelToken) :
-            base(mind, refresh, cancelToken) { }
+            base(mind, refresh, cancelToken) {
+            createReasoner();
+        }
 
         protected override void process() {
             // look at signals
@@ -46,9 +49,9 @@ namespace Sor.AI.Systems {
             makePlans();
         }
 
-        private void makePlans() {
+        private void createReasoner() {
             // create utility planner
-            var reasoner = new Reasoner<Mind>();
+            reasoner = new Reasoner<Mind>();
             reasoner.scoreType = Reasoner<Mind>.ScoreType.Normalized;
 
             var eatConsideration = new ThresholdConsideration<Mind>(() => { // eat action
@@ -167,10 +170,11 @@ namespace Sor.AI.Systems {
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
                 if (threat != null) {
                     // TODO: improve fighting/engagement, delegate to action planner
-                    // set the entity as our target
-                    // state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
-                    // run away
-                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
+                    // follow and attack them
+                    state.setPlan(new PlanTask[] {
+                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT),
+                        new PlanAttack(mind, entity),
+                    });
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
@@ -232,8 +236,12 @@ namespace Sor.AI.Systems {
             socialConsideration.addAppraisal(new SocialAppraisals.Sociability(mind));
             socialConsideration.addAppraisal(new SocialAppraisals.FriendBudget(mind));
             reasoner.addConsideration(socialConsideration);
+        }
 
+        private void makePlans() {
+            // run the utility ai planner
             var resultTable = reasoner.execute();
+            // store plan log
             if (mind.state.lastPlanTable == null) {
                 // ReSharper disable once InconsistentlySynchronizedField - it is null
                 state.lastPlanTable = resultTable;
@@ -243,9 +251,8 @@ namespace Sor.AI.Systems {
                 }
             }
 
-            var chosen = reasoner.choose(resultTable);
-            // run action
-            chosen.action();
+            var chosen = reasoner.choose(resultTable); // pick the best-scored option
+            chosen.action(); // execute the action
         }
 
         private void processSignal(MindSignal result) {
@@ -260,11 +267,21 @@ namespace Sor.AI.Systems {
 
                     break;
                 }
-                case ItemSignals.ShotSignal sig: {
+                case PhysicalSignals.ShotSignal sig: {
                     var from = sig.gun.Entity.GetComponent<Wing>();
                     if (from != null && from != mind.me) {
                         // run a being shot interaction
                         var interaction = new ShotInteraction(from, sig);
+                        interaction.run(mind.soul, from.mind.soul);
+                    }
+
+                    break;
+                }
+                case PhysicalSignals.BumpSignal sig: {
+                    var from = sig.wing;
+                    if (from != null && from != mind.me) {
+                        // run an interaction for being bumped
+                        var interaction = new BumpInteraction(sig);
                         interaction.run(mind.soul, from.mind.soul);
                     }
 

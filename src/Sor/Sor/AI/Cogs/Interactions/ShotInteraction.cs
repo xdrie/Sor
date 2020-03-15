@@ -5,7 +5,7 @@ using Sor.Components.Units;
 namespace Sor.AI.Cogs.Interactions {
     public class ShotInteraction : BirdInteraction {
         public Wing shooter;
-        public ItemSignals.ShotSignal sig;
+        public PhysicalSignals.ShotSignal sig;
         
         struct Traits {
             public static float[] vec_anger = {0.6f, 0.9f};
@@ -19,7 +19,7 @@ namespace Sor.AI.Cogs.Interactions {
             }
         }
 
-        public ShotInteraction(Wing shooter, ItemSignals.ShotSignal sig) {
+        public ShotInteraction(Wing shooter, PhysicalSignals.ShotSignal sig) {
             this.shooter = shooter;
             this.sig = sig;
         }
@@ -30,7 +30,7 @@ namespace Sor.AI.Cogs.Interactions {
 
             // we are ANGERY
             // TODO: calculate anger amount from being shot
-            me.mind.state.addOpinion(them.mind, -20);
+            me.mind.state.addOpinion(them.mind, -40);
         }
     }
 }

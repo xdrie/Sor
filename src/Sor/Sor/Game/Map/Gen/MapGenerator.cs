@@ -114,6 +114,9 @@ namespace Sor.Game.Map.Gen {
             var oldHeight = layer.Height;
             layer.Width = width;
             layer.Height = height;
+            // // adjust whole map size if necessary
+            // layer.Map.Width = Math.Max(layer.Map.Width, width);
+            // layer.Map.Height = Math.Max(layer.Map.Height, height);
             var index = 0;
             // copy old gids
             var oldTiles = (TmxLayerTile[]) layer.Tiles.Clone();

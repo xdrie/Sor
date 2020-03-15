@@ -18,15 +18,16 @@ namespace Sor.AI.Doer {
             var targetPosition = default(Vector2?);
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) { // go through goals until we find one to execute
-                // check target validity
                 mind.state.plan.TryPeek(out var nextTask);
+                // remove invalid goals
+                if (!nextTask.valid()) {
+                    mind.state.plan.TryDequeue(out var result);
+                    continue;
+                }
+
                 switch (nextTask) {
                     case TargetSource nextTarget:
-                        if (!nextTarget.valid()) {
-                            mind.state.plan.TryDequeue(out var result); // it's invalid, remove it
-                            continue;
-                        }
-
+                        // - go to a target
                         // check closeness
                         if (nextTarget.closeEnoughApproach(mind.me.body.pos)) {
                             mind.state.plan.TryDequeue(out var result);
@@ -34,46 +35,49 @@ namespace Sor.AI.Doer {
                         }
 
                         targetPosition = nextTarget.approachPosition(mind.me.body.pos);
-                        immediateGoal = true;
+                        immediateGoal = true; // goal acquired
                         break;
                     case PlanInteraction inter: {
-                        switch (nextTask) {
-                            case PlanFeed interFeed: {
-                                if (inter.valid()) {
-                                    // ensure alignment
-                                    // TODO: follow target should better try to align
-                                    var dirToOther = interFeed.feedTarget.Position - mind.me.body.pos;
-                                    dirToOther.Normalize();
-                                    // get facing dir
-                                    var facingDir = new Vector2(GMathf.cos(mind.me.body.stdAngle),
-                                        -GMathf.sin(mind.me.body.stdAngle));
-                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
-                                        // feed
-                                        mind.controller.tetherLogical.logicPressed = true;
-                                    }
-                                }
-
-                                immediateGoal = true;
-                                break;
-                            }
-                        }
-    
-                        // now dequeue
-                        var planDequeueResult = mind.state.plan.TryDequeue(out var result);
-                        if (!planDequeueResult) {
-                            Global.log.writeLine("dequeuing item from plan queue failed", GlintLogger.LogLevel.Error);
-                        }
+                        immediateGoal = true; // all interactions are immediate goals
+                        processInteraction(inter);
+                        mind.state.plan.TryDequeue(out var result); // dequeue handled interaction
 
                         break;
                     }
                 }
             }
 
+            // constant movement
             if (targetPosition.HasValue) {
                 pilotToPosition(targetPosition.Value);
             }
         }
-        
+
+        private void processInteraction(PlanInteraction inter) {
+            switch (inter) {
+                case PlanFeed interFeed: {
+                    // ensure alignment
+                    // TODO: follow target should better try to align
+                    var dirToOther = interFeed.target.Position - mind.me.body.pos;
+                    dirToOther.Normalize();
+                    // get facing dir
+                    var facingDir = new Vector2(GMathf.cos(mind.me.body.stdAngle),
+                        -GMathf.sin(mind.me.body.stdAngle));
+                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                        // feed
+                        mind.controller.tetherLogical.logicPressed = true;
+                    }
+
+                    break;
+                }
+                case PlanAttack interAtk: {
+                    // TODO: attempt to attack
+
+                    break;
+                }
+            }
+        }
+
         private void pilotToPosition(Vector2 goal) {
             // figure out how to move to target
             var toTarget = goal - mind.me.body.pos;

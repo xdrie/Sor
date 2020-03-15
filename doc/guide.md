@@ -7,6 +7,7 @@
 + `DPAD` or `IJKL` - move
 + `SHIFT` - boost
 + `[2]` - launch capsule
++ `SPACE` - fire weapon (while equipped)
 
 ### platform
 + `F11` - fullscreen
