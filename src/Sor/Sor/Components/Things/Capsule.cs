@@ -42,6 +42,7 @@ namespace Sor.Components.Things {
         public void launch(float launchEnergy, Vector2 launch) {
             energy = launchEnergy;
             body.velocity += launch;
+            body.maxVelocity = new Vector2(launch.Length());
         }
 
         public class CapsuleBody : KinBody {
@@ -78,7 +79,7 @@ namespace Sor.Components.Things {
             }
 
             // update animation speed based on energy
-            var animSpeed = Mathf.Clamp(energy / 400f, 0.5f, 2f);
+            var animSpeed = Mathf.Clamp(energy / (Constants.Mechanics.CAPSULE_SIZE * 4), 0.25f, 4f);
             animator.Speed = animSpeed;
             // check despawn
             if (Time.TotalTime > despawnAt) {
