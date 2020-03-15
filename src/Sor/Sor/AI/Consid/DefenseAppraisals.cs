@@ -5,6 +5,7 @@ using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using MoreLinq;
 using Nez;
+using Sor.Components.Items;
 using Sor.Components.Units;
 using XNez.GUtils.Misc;
 
@@ -86,12 +87,24 @@ namespace Sor.AI.Consid {
                 // if we're faster, we want to fight less
                 var energyRatio = context.me.core.energy / threat.mind.me.core.energy;
                 var energyScore = scoreRatio(1 / energyRatio, 30);
+                
+                // 4. compare armed state
+                var threatWeaponMaxscore = 40;
+                var threatWeapon = threat.mind.GetComponent<Shooter>();
+                var myWeapon = context.me.GetComponent<Shooter>();
+                // if they're armed, set negative score
+                var armoryScore = threatWeapon == null ? 0 : -threatWeaponMaxscore;
+                // TODO: compare weapons
+                if (myWeapon != null) { // if i'm armed too
+                    // then negate the score penalty
+                    armoryScore += threatWeaponMaxscore;
+                }
 
                 // clamp score to [-100, 100] -> transform [0, 1]
-                var score = coreSizeScore + maneuScore + speedScore + energyScore;
+                var score = coreSizeScore + maneuScore + speedScore + energyScore + armoryScore;
 
                 context.state.setBoard("judged threat",
-                    new MindState.BoardItem($"E: {energyScore}, C: {coreSizeScore}, M: {maneuScore}, S: {speedScore}",
+                    new MindState.BoardItem($"E:{energyScore}, C:{coreSizeScore}, M:{maneuScore}, S:{speedScore}",
                         "interaction",
                         Color.Orange, Time.TotalTime + 1f));
 
