@@ -145,5 +145,9 @@ namespace Sor.Components.Units {
                 spriteRenderer.Color = NGame.context.assets.paletteWhite;
             }
         }
+
+        public override string ToString() {
+            return $"[Wing {name}]";
+        }
     }
 }

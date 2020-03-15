@@ -88,7 +88,7 @@ namespace Sor.AI.Consid {
                 var energyScore = scoreRatio(1 / energyRatio, 30);
 
                 // clamp score to [-100, 100] -> transform [0, 1]
-                var score = coreSizeScore + maneuScore + speedScore;
+                var score = coreSizeScore + maneuScore + speedScore + energyScore;
 
                 context.state.setBoard("judged threat",
                     new MindState.BoardItem($"E: {energyScore}, C: {coreSizeScore}, M: {maneuScore}, S: {speedScore}",
