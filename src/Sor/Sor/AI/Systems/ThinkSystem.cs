@@ -260,7 +260,7 @@ namespace Sor.AI.Systems {
 
                     break;
                 }
-                case ItemSignals.ShotSignal sig: {
+                case PhysicalSignals.ShotSignal sig: {
                     var from = sig.gun.Entity.GetComponent<Wing>();
                     if (from != null && from != mind.me) {
                         // run a being shot interaction
@@ -268,6 +268,15 @@ namespace Sor.AI.Systems {
                         interaction.run(mind.soul, from.mind.soul);
                     }
 
+                    break;
+                }
+                case PhysicalSignals.BumpSignal sig: {
+                    var from = sig.wing;
+                    if (from != null && from != mind.me) {
+                        // run an interaction for being bumped
+                        var interaction = new BumpInteraction(sig);
+                        interaction.run(mind.soul, from.mind.soul);
+                    }
                     break;
                 }
             }

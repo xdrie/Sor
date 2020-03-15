@@ -139,12 +139,18 @@ namespace Sor.Components.Units {
                 else if (result.Collider?.Tag == Constants.Colliders.SHIP) {
                     var hitShip = result.Collider.Entity.GetComponent<WingBody>();
                     // conserve momentum in the collision
+                    var impactMomentum = hitShip.momentum; // store impact
                     var netMomentum = momentum + hitShip.momentum;
                     var totalMass = mass + hitShip.mass;
                     var vf = netMomentum / totalMass;
                     velocity = vf;
                     hitShip.velocity = vf;
                     motion -= result.MinimumTranslationVector;
+                    
+                    // send signal to mind
+                    if (me.mind.control) {
+                        me.mind.signal(new PhysicalSignals.BumpSignal(hitShip.me, impactMomentum));
+                    }
                 }
             }
 
@@ -235,7 +241,7 @@ namespace Sor.Components.Units {
                             me.core.clamp();
                             // send signal to mind
                             if (me.mind.control) {
-                                me.mind.signal(new ItemSignals.ShotSignal(shooter));
+                                me.mind.signal(new PhysicalSignals.ShotSignal(shooter));
                             }
                         }
                     }
