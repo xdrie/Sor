@@ -10,7 +10,7 @@ namespace Sor {
         public const string GAME_TITLE = "Sor";
         public const string GAME_VERSION = "0.7.5.04-dev";
 
-        public static GameContext context => Core.Services.GetService<GameContext>(); 
+        public static GameContext context => Services.GetService<GameContext>(); 
 
         public NGame(Config config) : base(config, new GameContext(config), GAME_TITLE, new Point(960, 540)) { }
 
