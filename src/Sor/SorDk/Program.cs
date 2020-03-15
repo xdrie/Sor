@@ -47,6 +47,9 @@ namespace SorDk {
             try {
 #endif
             using (var game = new NGame(config)) {
+                #if DEBUG
+                GlintCore.GamePlatform.logSystemInformation();
+                #endif
                 game.Run();
             }
 #if !DEBUG
