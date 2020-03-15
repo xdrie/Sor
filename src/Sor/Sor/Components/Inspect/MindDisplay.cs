@@ -7,6 +7,7 @@ using Nez;
 using Sor.AI;
 using Sor.AI.Plans;
 using Sor.Components.Units;
+using Sor.Game;
 using Sor.Util;
 
 namespace Sor.Components.Inspect {
@@ -78,17 +79,20 @@ namespace Sor.Components.Inspect {
 
                             // add consid nam and score
                             sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
-                            // add appraisals
-                            foreach (var appr in consid.Key.lastScores) {
-                                var lowerCamelName = appr.Key.GetType().Name;
-                                var nameBuilder = new StringBuilder();
-                                nameBuilder.Append(lowerCamelName[0].ToString().ToLower());
-                                nameBuilder.Append(lowerCamelName.Substring(1));
-                                var apprName = StringUtils.abbreviate(nameBuilder.ToString(), 2);
-                                sb.Append($" ({apprName}: {appr.Value:n2})");
+                            if (SorDebug.aiTrace) {
+                                // add appraisals
+                                foreach (var appr in consid.Key.lastScores) {
+                                    var lowerCamelName = appr.Key.GetType().Name;
+                                    var nameBuilder = new StringBuilder();
+                                    nameBuilder.Append(lowerCamelName[0].ToString().ToLower());
+                                    nameBuilder.Append(lowerCamelName.Substring(1));
+                                    var apprName = StringUtils.abbreviate(nameBuilder.ToString(), 2);
+                                    sb.Append($" ({apprName}: {appr.Value:n2})");
+                                }
                             }
+
                             sb.AppendLine();
-                            
+
                             ind.appendLine(sb.ToString());
                         }
                     }
