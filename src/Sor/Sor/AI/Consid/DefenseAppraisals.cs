@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using LunchLib.AI.Utility;
 using LunchLib.Calc;
+using Microsoft.Xna.Framework;
 using MoreLinq;
 using Nez;
 using Sor.Components.Units;
@@ -56,8 +57,9 @@ namespace Sor.AI.Consid {
         public class ThreatFightable : Appraisal<Mind> {
             public ThreatFightable(Mind context) : base(context) { }
 
-            private float scoreRatio(float ratio) {
-                return Curve.ratioAdvantage(ratio, 1.2f);
+            private int scoreRatio(float ratio, int weight) {
+                var score = Curve.ratioAdvantage(ratio, 1.2f);
+                return (int) (score * weight);
             }
 
             public override float score() {
@@ -68,20 +70,33 @@ namespace Sor.AI.Consid {
                 // TODO: use better functions to map ratios to score
                 // 1. compare core sizes (ratio) -> transform [-40, 40]
                 var coreSizeRatio = context.me.core.designMax / threat.mind.me.core.designMax;
-                var coreSizeScore = scoreRatio(1 / coreSizeRatio) * 40f;
+                var coreSizeScore = scoreRatio(1 / coreSizeRatio, 20);
+
                 // 2. compare maneuverability (ratio) -> transform [-20, 20]
                 // if we're more maneuverable, it might not be worth fighting
                 var maneuverabilityRatio = context.me.body.turnPower / threat.mind.me.body.turnPower;
-                var maneuScore = scoreRatio(maneuverabilityRatio) * 20f;
+                var maneuScore = scoreRatio(maneuverabilityRatio, 20);
+
                 // 3. compare speed (ratio) -> transform [-40, 40]
                 // if we're faster, we want to fight less
                 var speedRatio = context.me.body.thrustPower / threat.mind.me.body.thrustPower;
-                var speedScore = scoreRatio(speedRatio) * 40f;
+                var speedScore = scoreRatio(speedRatio, 30);
+
+                // 3. compare energy (ratio) -> transform [-40, 40]
+                // if we're faster, we want to fight less
+                var energyRatio = context.me.core.energy / threat.mind.me.core.energy;
+                var energyScore = scoreRatio(1 / energyRatio, 30);
 
                 // clamp score to [-100, 100] -> transform [0, 1]
                 var score = coreSizeScore + maneuScore + speedScore;
-                var clampedScore = GMathf.clamp(score, -100, 100);
-                var fightable = GMathf.map01(clampedScore, -100, 100);
+
+                context.state.setBoard("judged threat",
+                    new MindState.BoardItem($"E: {energyScore}, C: {coreSizeScore}, M: {maneuScore}, S: {speedScore}",
+                        "interaction",
+                        Color.Orange, Time.TotalTime + 1f));
+
+                var clampedScore = GMathf.clamp(score, -100, 100); // clamp score
+                var fightable = GMathf.map01(clampedScore, -100, 100); // map to [-1,1]
                 return fightable;
             }
         }
