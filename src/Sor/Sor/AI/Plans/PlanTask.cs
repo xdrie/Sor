@@ -5,7 +5,7 @@ namespace Sor.AI.Plans {
         public float failureTime = 0f;
 
         public PlanTask(float reachBefore) {
-            this.failureTime = reachBefore;
+            failureTime = reachBefore;
         }
         
         public virtual bool valid() {

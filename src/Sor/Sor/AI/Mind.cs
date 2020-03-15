@@ -117,7 +117,7 @@ namespace Sor.AI {
             // execute plan
             var targetPosition = default(Vector2?);
             var setGoal = false;
-            while (state.plan.Count > 0 && !setGoal) {
+            while (state.plan.Count > 0 && !setGoal) { // go through goals until we find one to execute
                 // check target validity
                 state.plan.TryPeek(out var nextTask);
                 switch (nextTask) {

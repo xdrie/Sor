@@ -11,10 +11,11 @@ namespace Sor.AI.Plans {
         }
 
         public override bool valid() {
-            var val = base.valid();
+            var val = base.valid(); // time condition
+            // entity must not be null 
             return val && nt != null;
         }
 
-        public override Vector2 getPosition() => nt.Position;
+        public override Vector2 getPosition(Mind mind) => nt.Position;
     }
 }
