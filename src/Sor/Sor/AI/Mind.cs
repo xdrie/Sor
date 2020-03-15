@@ -95,6 +95,7 @@ namespace Sor.AI {
                 sense(); // sense the world around
                 act(); // carry out decisions();
             }
+
             // update state information
             state.tick();
         }
@@ -115,48 +116,55 @@ namespace Sor.AI {
 
             // execute plan
             var targetPosition = default(Vector2?);
-            while (state.plan.Count > 0) {
+            var setGoal = false;
+            while (state.plan.Count > 0 && !setGoal) {
                 // check target validity
                 state.plan.TryPeek(out var nextTask);
-                if (nextTask is TargetSource nextTarget) {
-                    if (!nextTarget.valid()) {
-                        state.plan.TryDequeue(out var result); // it's invalid, remove it
-                        continue;
-                    }
-
-                    // check closeness
-                    if (nextTarget.closeEnoughApproach(me.body.pos)) {
-                        state.plan.TryDequeue(out var result);
-                        continue;
-                    }
-
-                    targetPosition = nextTarget.approachPosition(me.body.pos);
-                    break;
-                } else if (nextTask is PlanInteraction inter) {
-                    switch (nextTask) {
-                        case PlanFeed interFeed: {
-                            if (inter.valid()) {
-                                // ensure alignment
-                                // TODO: follow target should better try to align
-                                var dirToOther = interFeed.feedTarget.Position - me.body.pos;
-                                dirToOther.Normalize();
-                                // get facing dir
-                                var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
-                                    -GMathf.sin(me.body.stdAngle));
-                                if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
-                                    // feed
-                                    controller.tetherLogical.logicPressed = true;
-                                }
-                            }
-
-                            break;
+                switch (nextTask) {
+                    case TargetSource nextTarget:
+                        if (!nextTarget.valid()) {
+                            state.plan.TryDequeue(out var result); // it's invalid, remove it
+                            continue;
                         }
-                    }
 
-                    // now dequeue
-                    var planDequeueResult = state.plan.TryDequeue(out var result);
-                    if (!planDequeueResult) {
-                        Global.log.writeLine("dequeuing item from plan queue failed", GlintLogger.LogLevel.Error);
+                        // check closeness
+                        if (nextTarget.closeEnoughApproach(me.body.pos)) {
+                            state.plan.TryDequeue(out var result);
+                            continue;
+                        }
+
+                        targetPosition = nextTarget.approachPosition(me.body.pos);
+                        setGoal = false;
+                        break;
+                    case PlanInteraction inter: {
+                        switch (nextTask) {
+                            case PlanFeed interFeed: {
+                                if (inter.valid()) {
+                                    // ensure alignment
+                                    // TODO: follow target should better try to align
+                                    var dirToOther = interFeed.feedTarget.Position - me.body.pos;
+                                    dirToOther.Normalize();
+                                    // get facing dir
+                                    var facingDir = new Vector2(GMathf.cos(me.body.stdAngle),
+                                        -GMathf.sin(me.body.stdAngle));
+                                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                                        // feed
+                                        controller.tetherLogical.logicPressed = true;
+                                    }
+                                }
+
+                                setGoal = true;
+                                break;
+                            }
+                        }
+
+                        // now dequeue
+                        var planDequeueResult = state.plan.TryDequeue(out var result);
+                        if (!planDequeueResult) {
+                            Global.log.writeLine("dequeuing item from plan queue failed", GlintLogger.LogLevel.Error);
+                        }
+
+                        break;
                     }
                 }
             }
