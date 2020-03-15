@@ -37,13 +37,13 @@ namespace Sor.AI.Cogs.Interactions {
                 // calculate opinion-affecting factors
                 // [-4, 0]: long-distance wariness
                 var longDistanceWariness =
-                    (int) GMathExt.transformTrait(-me.traits.wary, -4, 2, -4, 0);
+                    (int) TraitCalc.transformTrait(-me.traits.wary, -4, 2, -4, 0);
                 // [-4, -1]: close distance wariness
                 var closeWariness = 0;
                 if (dist < closeDistance) {
                     // extreme caution
                     closeWariness =
-                        (int) GMathExt.transformTrait(-me.traits.wary, -4, 0, -4, -1);
+                        (int) TraitCalc.transformTrait(-me.traits.wary, -4, 0, -4, -1);
                 }
 
                 me.mind.state.setBoard("nearby fear",

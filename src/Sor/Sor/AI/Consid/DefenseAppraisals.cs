@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using LunchLib.AI.Utility;
 using LunchLib.Calc;
@@ -14,7 +15,7 @@ namespace Sor.AI.Consid {
             public static int threatThreshold(Mind mind) {
                 // threat threshold (min opinion to be threat) depends on personality
                 // threshold range: [-100, 70]
-                return (int) GMathExt.transformTrait(mind.soul.traits.aggression,
+                return (int) TraitCalc.transformTrait(mind.soul.traits.aggression,
                     -120, 70, -100, 70);
             }
 
@@ -23,7 +24,7 @@ namespace Sor.AI.Consid {
                 // TODO: allow tracking multiple threats
                 lock (mind.state.seenWings) {
                     var wings = mind.state.seenWings
-                        .Where(x=> mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
+                        .Where(x => mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
                         .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
                     if (!wings.Any()) return null;
 
@@ -56,10 +57,7 @@ namespace Sor.AI.Consid {
             public ThreatFightable(Mind context) : base(context) { }
 
             private float scoreRatio(float ratio) {
-                // this assumes that <1 is advantage and >1 is disadvantage
-                if (ratio < 1) return 1; // adv
-                if (ratio > 1) return -1; // disadv
-                return 0; // neutral
+                return Curve.ratioAdvantage(ratio, 1.2f);
             }
 
             public override float score() {
