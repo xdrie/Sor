@@ -79,6 +79,7 @@ namespace Sor.Components.Inspect {
 
                             // add consid nam and score
                             sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
+                            #if DEBUG
                             if (SorDebug.aiTrace) {
                                 // add appraisals
                                 foreach (var appr in consid.Key.lastScores) {
@@ -90,6 +91,7 @@ namespace Sor.Components.Inspect {
                                     sb.Append($" ({apprName}: {appr.Value:n2})");
                                 }
                             }
+                            #endif
 
                             sb.AppendLine();
 
