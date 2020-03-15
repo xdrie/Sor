@@ -11,8 +11,8 @@ namespace Sor.AI.Plans {
             // calculate the vector from them to us, then make sure it's at least the approach distance
             // 1. get dir to me
             var dirToMe = Vector2Ext.Normalize(nt.Position - mind.me.body.pos);
-            // 2. scale to minimum range, find resultant
-            var targetAway = approachRange * dirToMe;
+            // 2. scale to minimum range, find resultant (away)
+            var targetAway = approachRange * -dirToMe;
             return targetAway;
         }
     }

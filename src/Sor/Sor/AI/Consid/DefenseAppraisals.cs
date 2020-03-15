@@ -22,8 +22,9 @@ namespace Sor.AI.Consid {
                 // find the nearby duck with the lowest opinion
                 // TODO: allow tracking multiple threats
                 lock (mind.state.seenWings) {
-                    var wings = mind.state.seenWings.MaxBy(
-                        x => threatThreshold(mind) - mind.state.getOpinion(x.mind));
+                    var wings = mind.state.seenWings
+                        .Where(x=> mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
+                        .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
                     if (!wings.Any()) return null;
 
                     return wings.First();
@@ -31,7 +32,7 @@ namespace Sor.AI.Consid {
             }
 
             private float threateningNess(int opinionDelta) {
-                // how threatened this opinion delta makes us feel
+                // how threatened this opinion delta makes us feel (operates on negative opinion deltas)
                 var t_threat = context.soul.traits.aggression; // threat sensitivity [0,1]
                 return
                     1 -
@@ -45,7 +46,7 @@ namespace Sor.AI.Consid {
                     var threatWing = greatestThreat(context);
                     if (threatWing == null) return 0;
                     var threatOpinion = context.state.getOpinion(threatWing.mind);
-                    var threatValue = threateningNess(threatThreshold(context) - threatOpinion);
+                    var threatValue = threateningNess(threatOpinion - threatThreshold(context));
                     return threatValue;
                 }
             }
@@ -65,7 +66,7 @@ namespace Sor.AI.Consid {
                 // determine how fightable nearby threats are
                 var threat = NearbyThreat.greatestThreat(context);
                 if (threat == null) return 0; // no threat means don't score
-                
+
                 // TODO: use better functions to map ratios to score
                 // 1. compare core sizes (ratio) -> transform [-40, 40]
                 var coreSizeRatio = context.me.core.designMax / threat.mind.me.core.designMax;

@@ -170,22 +170,24 @@ namespace Sor.AI.Systems {
                     // set the entity as our target
                     // state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
                     // run away
-                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED) });
+                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
             fightConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind));
             reasoner.addConsideration(fightConsideration);
-            
+
             // FLIGHT of fight-or-flight
-            var fleeConsideration = new ThresholdSumConsideration<Mind>(() => {
+            var fleeConsideration = new ThresholdConsideration<Mind>(() => {
                 // run away
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
-                // TODO: get multiple threats to find the path to avoid as many as possible
-                // set a task to "avoid" (get out of range of bird)
-                // add avoid task
-                state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED) });
-            }, 0.5f, "flee");
+                if (threat != null) {
+                    // TODO: get multiple threats to find the path to avoid as many as possible
+                    // set a task to "avoid" (get out of range of bird)
+                    // add avoid task
+                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
+                }
+            }, 0.4f, "flee");
             fleeConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
             fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
             reasoner.addConsideration(fleeConsideration);
@@ -265,7 +267,7 @@ namespace Sor.AI.Systems {
                         var interaction = new ShotInteraction(from, sig);
                         interaction.run(mind.soul, from.mind.soul);
                     }
-                    
+
                     break;
                 }
             }
