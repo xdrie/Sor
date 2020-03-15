@@ -167,10 +167,11 @@ namespace Sor.AI.Systems {
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
                 if (threat != null) {
                     // TODO: improve fighting/engagement, delegate to action planner
-                    // set the entity as our target
-                    // state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
-                    // run away
-                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
+                    // follow and attack them
+                    state.setPlan(new PlanTask[] {
+                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT),
+                        new PlanAttack(mind, entity), 
+                    });
                 }
             }, 0.8f, "fight");
             fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
