@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -66,7 +67,7 @@ namespace Sor.Components.Inspect {
                             .OrderByDescending(x => x.Value).ToList();
                         foreach (var consid in options) {
                             // exclude zeroes
-                            if (consid.Value.Approximately(0)) continue;
+                            // if (consid.Value.Approximately(0)) continue;
                             var sb = new StringBuilder();
                             if (!first) {
                                 sb.Append("> ");
@@ -75,7 +76,19 @@ namespace Sor.Components.Inspect {
                                 sb.Append("  ");
                             }
 
-                            sb.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                            // add consid nam and score
+                            sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
+                            // add appraisals
+                            foreach (var appr in consid.Key.lastScores) {
+                                var lowerCamelName = appr.Key.GetType().Name;
+                                var nameBuilder = new StringBuilder();
+                                nameBuilder.Append(lowerCamelName[0].ToString().ToLower());
+                                nameBuilder.Append(lowerCamelName.Substring(1));
+                                var apprName = StringUtils.abbreviate(nameBuilder.ToString(), 2);
+                                sb.Append($" ({apprName}: {appr.Value:n2})");
+                            }
+                            sb.AppendLine();
+                            
                             ind.appendLine(sb.ToString());
                         }
                     }
