@@ -56,6 +56,23 @@ namespace Sor.Components.Inspect {
                     ind.appendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 }
 
+                lock (mind.state.opinion) {
+                    var positive = 0;
+                    var negative = 0;
+                    var netOpi = 0;
+                    foreach (var op in mind.state.opinion) {
+                        var opVal = op.Value;
+                        var pos = opVal > MindConstants.OPINION_NEUTRAL;
+                        netOpi += opVal;
+                        if (pos) {
+                            positive++;
+                        } else {
+                            negative++;
+                        }
+                    }
+                    ind.appendLine($"rel: +{positive} | -{negative} = {netOpi}");
+                }
+
                 ind.appendLine($"ply: {mind.soul.ply}");
                 ind.appendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
 
