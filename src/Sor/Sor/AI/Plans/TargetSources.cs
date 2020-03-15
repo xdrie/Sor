@@ -3,7 +3,7 @@ using Nez;
 
 namespace Sor.AI.Plans {
     public interface ITargetSource {
-        Vector2 getPosition(Mind mind);
+        Vector2 getPosition();
         Approach approach { get; }
     }
 
@@ -24,13 +24,13 @@ namespace Sor.AI.Plans {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Approach approach, float approachRange, float reachBefore) : base(reachBefore) {
+        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind, reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;
         }
 
-        public Vector2 approachPosition(Vector2 fromPos, Mind mind) {
-            var pos = getPosition(mind);
+        public Vector2 approachPosition(Vector2 fromPos) {
+            var pos = getPosition();
             // don't adjust precise approaches
             if (approach == Approach.Precise) return pos;
 
@@ -41,9 +41,9 @@ namespace Sor.AI.Plans {
             return pos - toFrom;
         }
         
-        public bool closeEnoughApproach(Vector2 fromPos, Mind mind) {
-            var actualPos = getPosition(mind);
-            var approachPos = approachPosition(fromPos, mind);
+        public bool closeEnoughApproach(Vector2 fromPos) {
+            var actualPos = getPosition();
+            var approachPos = approachPosition(fromPos);
             var approachToFrom = approachPos - fromPos;
             var actualToFrom = actualPos - fromPos;
             switch (approach) {
@@ -58,7 +58,7 @@ namespace Sor.AI.Plans {
             }
         }
 
-        public abstract Vector2 getPosition(Mind mind);
+        public abstract Vector2 getPosition();
 
         public Approach approach { get; }
     }

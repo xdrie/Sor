@@ -4,8 +4,8 @@ namespace Sor.AI.Plans {
     public class FixedTarget : TargetSource {
         private readonly Vector2 pos;
 
-        public FixedTarget(Vector2 pos, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
-            float before = 0) : base(approach, approachRange, before) {
+        public FixedTarget(Mind mind, Vector2 pos, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
+            float before = 0) : base(mind, approach, approachRange, before) {
             this.pos = pos;
         }
 
