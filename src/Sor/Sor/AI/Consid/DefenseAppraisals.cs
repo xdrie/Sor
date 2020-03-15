@@ -58,7 +58,7 @@ namespace Sor.AI.Consid {
             public ThreatFightable(Mind context) : base(context) { }
 
             private int scoreRatio(float ratio, int weight) {
-                var score = Curve.ratioAdvantage(ratio, 1.2f);
+                var score = LCurves.ratioAdvantage(ratio, 1.2f);
                 return (int) (score * weight);
             }
 
