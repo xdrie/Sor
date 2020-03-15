@@ -64,6 +64,8 @@ namespace Sor.AI.Consid {
             public override float score() {
                 // determine how fightable nearby threats are
                 var threat = NearbyThreat.greatestThreat(context);
+                if (threat == null) return 0; // no threat means don't score
+                
                 // TODO: use better functions to map ratios to score
                 // 1. compare core sizes (ratio) -> transform [-40, 40]
                 var coreSizeRatio = context.me.core.designMax / threat.mind.me.core.designMax;
