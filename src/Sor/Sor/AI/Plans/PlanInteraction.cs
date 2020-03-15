@@ -13,12 +13,4 @@ namespace Sor.AI.Plans {
             return true;
         }
     }
-
-    public class PlanFeed : PlanInteraction {
-        public Entity feedTarget;
-
-        public PlanFeed(Mind mind, Entity feedTarget, float before = 0) : base(mind, new[] {feedTarget}, before) {
-            this.feedTarget = feedTarget;
-        }
-    }
 }
