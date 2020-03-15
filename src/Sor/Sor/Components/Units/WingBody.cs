@@ -160,6 +160,9 @@ namespace Sor.Components.Units {
                 boosting = true;
                 thrustVal *= boostFactor; // multiply thrust power
                 maxVelocity = new Vector2(boostTopSpeed); // increase velocity cap
+                if (me.core.overloadedNess() > 0) { // boost bonus when overloaded
+                    maxVelocity *= Mathf.Sqrt(1 + me.core.overloadedNess());
+                }
                 if (gameContext.config.maxVfx) {
                     Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
                 }
