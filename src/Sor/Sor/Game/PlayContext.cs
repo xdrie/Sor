@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Glint;
 using Glint.Util;
+using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -60,6 +62,7 @@ namespace Sor.Game {
             if (mapgenSeed == 0) {
                 mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
             }
+
             var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
             gen.generate();
             gen.analyze();
@@ -73,12 +76,42 @@ namespace Sor.Game {
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
             mapLoader = new MapLoader(this, mapNt);
+
             // load map
             mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
 
         public void load() {
             loadMap();
+            if (!rehydrated) {
+                // fresh load
+                spawnBirds();
+            }
+        }
+
+        private void spawnBirds() {
+            // now, spawn a bunch of birds across the rooms
+            int spawnedBirds = 0;
+            var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
+            var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
+                (0.5f, Wing.WingClass.Wing),
+                (0.3f, Wing.WingClass.Beak),
+                (0.2f, Wing.WingClass.Predator)
+            });
+            foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
+                var roomBirdProb = 0.2f;
+                if (Random.Chance(roomBirdProb)) {
+                    spawnedBirds++;
+                    var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                    var spawnPly = new BirdPersonality();
+                    spawnPly.generateRandom();
+                    var bord = createWing($"b_{spawnedBirds}", spawnPos, spawnPly);
+
+                    bord.changeClass(birdClassDist.next());
+                }
+            }
+
+            Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
         }
     }
 }
