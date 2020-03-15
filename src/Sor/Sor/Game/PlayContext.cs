@@ -17,7 +17,7 @@ namespace Sor.Game {
         public Wing playerWing;
 
         public IEnumerable<Wing> wings =>
-            scene.FindEntitiesWithTag(Constants.Tags.ENTITY_WING).Select(x => x.GetComponent<Wing>());
+            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
 
         public List<Wing> createdWings = new List<Wing>();
         public List<Thing> createdThings = new List<Thing>();
@@ -32,17 +32,18 @@ namespace Sor.Game {
             createdThings.Add(thing);
         }
 
-        public void createPlayer(Vector2 pos) {
-            var playerNt = new Entity("player").SetTag(Constants.Tags.ENTITY_WING);
+        public Wing createPlayer(Vector2 pos) {
+            var playerNt = new Entity("player").SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
             playerWing.body.pos = pos;
             playerNt.AddComponent<PlayerInputController>();
+            return playerWing;
         }
 
         public Wing createWing(string name, Vector2 pos, BirdPersonality ply) {
-            var duckNt = new Entity(name).SetTag(Constants.Tags.ENTITY_WING);
+            var duckNt = new Entity(name).SetTag(Constants.Tags.WING);
             var duck = duckNt.AddComponent(new Wing(new Mind(new AvianSoul {ply = ply}, true)));
             duck.body.pos = pos;
             duckNt.AddComponent<LogicInputController>();

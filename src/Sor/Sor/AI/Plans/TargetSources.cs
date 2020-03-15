@@ -24,7 +24,7 @@ namespace Sor.AI.Plans {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Approach approach, float approachRange, float reachBefore) : base(reachBefore) {
+        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind, reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;
         }
@@ -61,32 +61,5 @@ namespace Sor.AI.Plans {
         public abstract Vector2 getPosition();
 
         public Approach approach { get; }
-    }
-
-    public class FixedTargetSource : TargetSource {
-        private readonly Vector2 pos;
-
-        public FixedTargetSource(Vector2 pos, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
-            float before = 0) : base(approach, approachRange, before) {
-            this.pos = pos;
-        }
-
-        public override Vector2 getPosition() => pos;
-    }
-
-    public class EntityTargetSource : TargetSource {
-        public readonly Entity nt;
-
-        public EntityTargetSource(Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
-            float before = 0) : base(approach, approachRange, before) {
-            this.nt = nt;
-        }
-
-        public override bool valid() {
-            var val = base.valid();
-            return val && nt != null;
-        }
-
-        public override Vector2 getPosition() => nt.Position;
     }
 }

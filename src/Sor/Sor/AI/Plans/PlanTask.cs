@@ -2,10 +2,12 @@ using Nez;
 
 namespace Sor.AI.Plans {
     public abstract class PlanTask {
+        protected readonly Mind mind;
         public float failureTime = 0f;
 
-        public PlanTask(float reachBefore) {
-            this.failureTime = reachBefore;
+        public PlanTask(Mind mind, float reachBefore) {
+            this.mind = mind;
+            failureTime = reachBefore;
         }
         
         public virtual bool valid() {

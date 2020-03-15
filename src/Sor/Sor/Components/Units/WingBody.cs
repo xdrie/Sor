@@ -2,8 +2,10 @@ using System.Collections.Generic;
 using Glint.Physics;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using Sor.AI.Signals;
 using Sor.Components.Input;
+using Sor.Components.Items;
 using Sor.Components.Things;
 
 namespace Sor.Components.Units {
@@ -25,15 +27,20 @@ namespace Sor.Components.Units {
         public float baseDrag = Constants.Physics.DEF_BASE_DRAG;
         public float brakeDrag = Constants.Physics.DEF_BRAKE_DRAG;
         private const float VELOCITY_REDUCTION_EXP = 0.98f;
-        
+
         // - movement state
         public float boostCooldown = 0f;
         public bool boosting = false;
-        
+
         // - interaction
         public float laneFactor = 4f; // speed boost from touching lanes
         public float gravityFactor = 4000f;
-        
+        public float baseCapSpeed = 40f;
+
+        // - interaction state
+        public float shootCooldown = 0f;
+        public float shootCharge = 0f;
+
         // - physiology
         public float metabolicRate; // energy burn per-second
         private float boostDrainKg = 100; // boost drain per kg
@@ -63,7 +70,7 @@ namespace Sor.Components.Units {
 
         public override void Update() {
             base.Update();
-            
+
             // metabolism
             if (me.core.energy > 0) {
                 me.core.energy -= metabolicRate * Time.DeltaTime;
@@ -76,19 +83,42 @@ namespace Sor.Components.Units {
         }
 
         private void interaction() {
-            if (controller.tetherInput.IsPressed) {
-                var capEnergy = Constants.Mechanics.CAPSULE_SIZE;
-                var capSpeed = 40f;
+            if (controller.tetherInput.IsDown) {
+                // increase shoot charge
+                shootCharge += Time.DeltaTime;
+            }
+            if (shootCharge > 0 && controller.tetherInput.IsReleased) {
+                // clamp shoot charge
+                shootCharge = Mathf.Clamp(shootCharge, 0f, 2f);
+                var capEnergy = Constants.Mechanics.CAPSULE_SIZE * Mathf.Pow(1 + shootCharge, 2f);
+                var capSpeed = baseCapSpeed * Mathf.Pow(1 + shootCharge, 2f);
                 if (me.core.energy > capEnergy) {
                     me.core.energy -= capEnergy;
                     // shoot out a capsule
                     var capMotion = new Vector2(0, -capSpeed);
                     var capNt = Entity.Scene.CreateEntity("pod", Entity.Position)
-                        .SetTag(Constants.Tags.ENTITY_THING);
+                        .SetTag(Constants.Tags.THING);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
                     cap.launch(capEnergy, capMotion.rotate(angle));
+                }
+
+                shootCharge = 0; // reset charge
+            }
+
+            if (controller.fireInput.IsPressed) {
+                // check if entity has a gun
+                var shootEnergy = Constants.Mechanics.SHOOT_COST_PER_KG * mass;
+                var gun = Entity.GetComponent<Shooter>();
+                if (gun != null && Time.TotalTime > shootCooldown) {
+                    // ensure gun can fire
+                    if (me.core.energy > shootEnergy) {
+                        me.core.energy -= shootEnergy;
+                        gun.prepare();
+                        gun.animator.Play("fire", SpriteAnimator.LoopMode.Once);
+                        shootCooldown = Time.TotalTime + Constants.Mechanics.SHOOT_COOLDOWN;
+                    }
                 }
             }
         }
@@ -100,13 +130,13 @@ namespace Sor.Components.Units {
             mov.AdvancedCalculateMovement(ref calcMotion, moveCollisions);
             foreach (var result in moveCollisions) {
                 // collision with a wall
-                if (!boosting && result.Collider?.Tag == Constants.Colliders.COLLIDER_WALL) {
+                if (!boosting && result.Collider?.Tag == Constants.Colliders.WALL) {
                     // suck velocity from hitting the wall
                     velocity *= VELOCITY_REDUCTION_EXP;
                     motion -= result.MinimumTranslationVector;
                 }
                 // collision with another ship
-                else if (result.Collider?.Tag == Constants.Colliders.COLLIDER_SHIP) {
+                else if (result.Collider?.Tag == Constants.Colliders.SHIP) {
                     var hitShip = result.Collider.Entity.GetComponent<WingBody>();
                     // conserve momentum in the collision
                     var netMomentum = momentum + hitShip.momentum;
@@ -140,6 +170,9 @@ namespace Sor.Components.Units {
                 boosting = true;
                 thrustVal *= boostFactor; // multiply thrust power
                 maxVelocity = new Vector2(boostTopSpeed); // increase velocity cap
+                if (me.core.overloadedNess() > 0) { // boost bonus when overloaded
+                    maxVelocity *= Mathf.Sqrt(1 + me.core.overloadedNess());
+                }
                 if (gameContext.config.maxVfx) {
                     Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
                 }
@@ -148,8 +181,7 @@ namespace Sor.Components.Units {
                     boostRibbon.StartEmitting();
                     boostRibbon.Enabled = true;
                 }
-            }
-            else {
+            } else {
                 boosting = false;
                 maxVelocity = new Vector2(topSpeed); // reset velocity cap
                 if (boostRibbon.IsEmitting) {
@@ -166,8 +198,7 @@ namespace Sor.Components.Units {
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal * Time.DeltaTime);
                 velocity += thrustVec.rotate(angle);
-            }
-            else { // slowdown thrust
+            } else { // slowdown thrust
                 // float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 // velocity *= fac;
                 // var invVelocity = -velocity;
@@ -176,24 +207,44 @@ namespace Sor.Components.Units {
         }
 
         public void OnTriggerEnter(Collider other, Collider local) {
-            if (other.Tag == Constants.Colliders.COLLIDER_THING) {
-                var hitEntity = other.Entity;
-                if (hitEntity.HasComponent<Capsule>()) {
-                    var capsule = hitEntity.GetComponent<Capsule>();
-                    if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
-                        // apply the capsule
-                        var gotEnergy = capsule.energy;
-                        me.core.energy += gotEnergy;
-                        capsule.acquire(); // blow it up
-                        // send signal to mind
-                        if (me.mind.control) {
-                            me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
+            var hitEntity = other.Entity;
+            switch (other.Tag) {
+                case Constants.Colliders.THING: {
+                    if (hitEntity.HasComponent<Capsule>()) {
+                        var capsule = hitEntity.GetComponent<Capsule>();
+                        if (!capsule.acquired && Time.TotalTime > capsule.firstAvailableAt) {
+                            // apply the capsule
+                            var gotEnergy = capsule.energy;
+                            me.core.energy += gotEnergy;
+                            capsule.acquire(); // blow it up
+                            // send signal to mind
+                            if (me.mind.control) {
+                                me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
+                            }
                         }
                     }
+
+                    break;
+                }
+                case Constants.Colliders.SHOOT: {
+                    if (hitEntity.HasComponent<Shooter>()) {
+                        var shooter = hitEntity.GetComponent<Shooter>();
+                        if (shooter.firing) {
+                            // ouch
+                            me.core.energy -= Constants.Mechanics.SHOOT_DRAIN;
+                            me.core.clamp();
+                            // send signal to mind
+                            if (me.mind.control) {
+                                me.mind.signal(new ItemSignals.ShotSignal(shooter));
+                            }
+                        }
+                    }
+
+                    break;
                 }
             }
 
-            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
+            if (other.Tag == Constants.Colliders.LANE) {
                 // lanes multiply velocity
                 velocity *= laneFactor;
                 drag = Vector2.Zero;
@@ -222,7 +273,7 @@ namespace Sor.Components.Units {
         }
 
         public void OnTriggerExit(Collider other, Collider local) {
-            if (other.Tag == Constants.Colliders.COLLIDER_LANE) {
+            if (other.Tag == Constants.Colliders.LANE) {
                 drag = new Vector2(baseDrag);
             }
         }

@@ -14,6 +14,7 @@ using Sor.AI.Model;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
+using Sor.Components.Units;
 using Sor.Game.Map;
 using Sor.Util;
 
@@ -76,7 +77,7 @@ namespace Sor.AI.Systems {
                         var bean = seenBeans[0];
                         seenBeans.Remove(bean);
                         beanTimeAcc += timePerBean;
-                        newPlan.Add(new EntityTargetSource(bean.Entity, Approach.Precise, beanTimeAcc));
+                        newPlan.Add(new EntityTarget(mind, bean.Entity, Approach.Precise, beanTimeAcc));
                     } else if (node.matches(nameof(HungryBird.visitTree))) {
                         // plan to visit the nearest tree
                         // TODO: how is this done?
@@ -144,8 +145,8 @@ namespace Sor.AI.Systems {
                 var newPlan = new List<PlanTask>();
                 foreach (var pathNode in foundPath) {
                     var tmapPos = pathNode.pos.ToVector2();
-                    newPlan.Add(new FixedTargetSource(
-                        mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                    newPlan.Add(new FixedTarget(
+                        mind, mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
                         TargetSource.RANGE_DIRECT));
                 }
 
@@ -159,20 +160,37 @@ namespace Sor.AI.Systems {
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
             reasoner.addConsideration(exploreConsideration);
 
-            var defendConsideration = new ThresholdSumConsideration<Mind>(() => {
-                // defend action
+            // FIGHT of fight-or-flight
+            var fightConsideration = new ThresholdSumConsideration<Mind>(() => {
+                // fight threat nearby
                 // TODO: figure out the most "threatening" wing, delegate to goal planner
-                var tgtWing = state.seenWings.FirstOrDefault(
-                    x => state.getOpinion(x.mind) < MindConstants.OPINION_NEUTRAL);
-                if (tgtWing != null) {
-                    // reset targets
-                    // TODO: a much better way to have fight-or-flight
-                    state.setPlan(new[] {new EntityTargetSource(tgtWing.Entity)});
+                var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
+                if (threat != null) {
+                    // TODO: improve fighting/engagement, delegate to action planner
+                    // set the entity as our target
+                    // state.setPlan(new[] {new EntityTarget(mind, threat.Entity)});
+                    // run away
+                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
                 }
-            }, 0.8f, "defend");
-            defendConsideration.addAppraisal(new DefendAppraisals.NearbyThreat(mind));
-            defendConsideration.addAppraisal(new DefendAppraisals.ThreatFightable(mind));
-            reasoner.addConsideration(defendConsideration);
+            }, 0.8f, "fight");
+            fightConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
+            fightConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind));
+            reasoner.addConsideration(fightConsideration);
+
+            // FLIGHT of fight-or-flight
+            var fleeConsideration = new ThresholdConsideration<Mind>(() => {
+                // run away
+                var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
+                if (threat != null) {
+                    // TODO: get multiple threats to find the path to avoid as many as possible
+                    // set a task to "avoid" (get out of range of bird)
+                    // add avoid task
+                    state.setPlan(new[] {new AvoidEntity(mind, threat.Entity, TargetSource.RANGE_MED)});
+                }
+            }, 0.4f, "flee");
+            fleeConsideration.addAppraisal(new DefenseAppraisals.NearbyThreat(mind));
+            fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
+            reasoner.addConsideration(fleeConsideration);
 
             var socialConsideration = new ThresholdConsideration<Mind>(() => {
                 // socialize - become friends with nearby ducks
@@ -202,9 +220,9 @@ namespace Sor.AI.Systems {
                 foreach (var node in path) {
                     if (node.matches(nameof(SocializingBird.chase))) {
                         newPlan.Add(
-                            new EntityTargetSource(fren.Entity, Approach.Within, feedRange, goalFeedTime));
+                            new EntityTarget(mind, fren.Entity, Approach.Within, feedRange, goalFeedTime));
                     } else if (node.matches(nameof(SocializingBird.feed))) {
-                        newPlan.Add(new PlanFeed(fren.Entity, goalFeedTime));
+                        newPlan.Add(new PlanFeed(mind, fren.Entity, goalFeedTime));
                     }
                 }
 
@@ -242,6 +260,16 @@ namespace Sor.AI.Systems {
 
                     break;
                 }
+                case ItemSignals.ShotSignal sig: {
+                    var from = sig.gun.Entity.GetComponent<Wing>();
+                    if (from != null && from != mind.me) {
+                        // run a being shot interaction
+                        var interaction = new ShotInteraction(from, sig);
+                        interaction.run(mind.soul, from.mind.soul);
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -253,7 +281,9 @@ namespace Sor.AI.Systems {
             lock (state.seenWings) {
                 foreach (var wing in state.seenWings) {
                     var toWing = entity.Position - wing.Entity.Position;
-                    var toWingDist = toWing.Length();
+                    // subtract diag hitbox
+                    var hitboxRadSq = wing.hitbox.Width * wing.hitbox.Width + wing.hitbox.Height * wing.hitbox.Height;
+                    var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);
                     if (toWingDist <= NearbyInteraction.triggerRange) {
                         var interaction = new NearbyInteraction(toWingDist);
                         interaction.run(mind.soul, wing.mind.soul);

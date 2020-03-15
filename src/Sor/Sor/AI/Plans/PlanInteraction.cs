@@ -4,7 +4,7 @@ namespace Sor.AI.Plans {
     public abstract class PlanInteraction : PlanTask {
         public Entity[] interactees;
 
-        public PlanInteraction(Entity[] interactees, float before = 0) : base(before) {
+        public PlanInteraction(Mind mind, Entity[] interactees, float before = 0) : base(mind, before) {
             this.interactees = interactees;
         }
         
@@ -17,7 +17,7 @@ namespace Sor.AI.Plans {
     public class PlanFeed : PlanInteraction {
         public Entity feedTarget;
 
-        public PlanFeed(Entity feedTarget, float before = 0) : base(new[] {feedTarget}, before) {
+        public PlanFeed(Mind mind, Entity feedTarget, float before = 0) : base(mind, new[] {feedTarget}, before) {
             this.feedTarget = feedTarget;
         }
     }

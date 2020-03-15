@@ -20,10 +20,14 @@ namespace Sor.AI.Consid {
 
             public static Wing bestCandidate(Mind mind, int thresh) {
                 // TODO: de-prioritize ducks we're already chums with
-                var wings = mind.state.seenWings.MaxBy(
-                    x => mind.state.getOpinion(x.mind) > thresh);
-                if (!wings.Any()) return null;
-                return wings.First();
+                lock (mind.state.seenWings) {
+                    var wings = mind.state.seenWings
+                        .Where(x => mind.state.getOpinion(x.mind) > thresh) // above thresh
+                        .MaxBy(x => mind.state.getOpinion(x.mind)); // highest opinion
+                    if (!wings.Any()) return null;
+
+                    return wings.First();
+                }
             }
 
             public override float score() {

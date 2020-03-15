@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
 using Sor.AI.Plans;
 using Sor.Components.Units;
+using Sor.Game;
 using Sor.Util;
 
 namespace Sor.Components.Inspect {
@@ -62,7 +64,11 @@ namespace Sor.Components.Inspect {
                 if (mind.state.lastPlanTable != null) {
                     lock (mind.state.lastPlanTable) {
                         var first = false;
-                        foreach (var consid in mind.state.lastPlanTable.OrderByDescending(x => x.Value)) {
+                        var options = mind.state.lastPlanTable
+                            .OrderByDescending(x => x.Value).ToList();
+                        foreach (var consid in options) {
+                            // exclude zeroes
+                            // if (consid.Value.Approximately(0)) continue;
                             var sb = new StringBuilder();
                             if (!first) {
                                 sb.Append("> ");
@@ -71,7 +77,22 @@ namespace Sor.Components.Inspect {
                                 sb.Append("  ");
                             }
 
-                            sb.AppendLine($"{consid.Key.tag}: {consid.Value:n2}");
+                            // add consid nam and score
+                            sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
+                            if (SorDebug.aiTrace) {
+                                // add appraisals
+                                foreach (var appr in consid.Key.lastScores) {
+                                    var lowerCamelName = appr.Key.GetType().Name;
+                                    var nameBuilder = new StringBuilder();
+                                    nameBuilder.Append(lowerCamelName[0].ToString().ToLower());
+                                    nameBuilder.Append(lowerCamelName.Substring(1));
+                                    var apprName = StringUtils.abbreviate(nameBuilder.ToString(), 2);
+                                    sb.Append($" ({apprName}: {appr.Value:n2})");
+                                }
+                            }
+
+                            sb.AppendLine();
+
                             ind.appendLine(sb.ToString());
                         }
                     }
@@ -94,7 +115,7 @@ namespace Sor.Components.Inspect {
                                 var approachLoc = target.approachPosition(mind.me.body.pos);
                                 var sb = new StringBuilder();
                                 sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
-                                if (target is EntityTargetSource ets) {
+                                if (target is EntityTarget ets) {
                                     sb.Append($" {ets.nt.Name}");
                                 }
 

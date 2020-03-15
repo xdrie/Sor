@@ -20,7 +20,7 @@ namespace Sor.Components.Things {
         public const float developmentSpeed = 2f; // development speed is a ratio
         public const float fruitSpawnRange = 10f;
         public const float childRange = 40f;
-        public const float fruitValue = 800f;
+        public const float fruitBaseValue = 800f;
         
         public Tree() : base(Core.Content.LoadTexture("Data/sprites/tree.png"), 64, 64) {
             animator.AddAnimation("1", new[] {sprites[0]});
@@ -71,11 +71,11 @@ namespace Sor.Components.Things {
                 // spawn a fruit
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
                 var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset)
-                    .SetTag(Constants.Tags.ENTITY_THING);
+                    .SetTag(Constants.Tags.THING);
                 var fruit = capNt.AddComponent<Capsule>();
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
-                fruit.energy = Random.Range(fruitValue * 0.6f, fruitValue * 1.2f);
+                fruit.energy = Random.Range(fruitBaseValue * 0.6f, fruitBaseValue * 2.2f);
                 fruit.body.velocity = Vector2.Zero;
                 childFruits.Add(fruit);
                 fruits++;

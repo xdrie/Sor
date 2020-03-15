@@ -77,6 +77,7 @@ namespace Sor.AI {
                 while (plan.Count > 0) {
                     plan.TryDequeue(out var item);
                 }
+
                 foreach (var task in tasks) {
                     plan.Enqueue(task);
                 }
@@ -93,15 +94,17 @@ namespace Sor.AI {
 
         private void tickBoard() {
             var expiredItems = new List<string>();
-            foreach (var itemKvp in board) {
-                var item = itemKvp.Value;
-                if (item.expireTime > 0 && Time.DeltaTime > item.expireTime) {
-                    expiredItems.Add(itemKvp.Key);
+            lock (board) {
+                foreach (var itemKvp in board) {
+                    var item = itemKvp.Value;
+                    if (item.expireTime > 0 && Time.DeltaTime > item.expireTime) {
+                        expiredItems.Add(itemKvp.Key);
+                    }
                 }
-            }
 
-            foreach (var item in expiredItems) {
-                board.Remove(item);
+                foreach (var item in expiredItems) {
+                    board.Remove(item);
+                }
             }
         }
 

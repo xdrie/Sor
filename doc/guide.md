@@ -2,9 +2,14 @@
 # Sor // new player guide
 
 ## controls
+
+### movement
 + `DPAD` or `IJKL` - move
 + `SHIFT` - boost
 + `[2]` - launch capsule
+
+### platform
++ `F11` - fullscreen
 
 ## debug inspection
 

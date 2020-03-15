@@ -35,15 +35,18 @@ namespace Sor {
             public Color colYellow = new Color(190, 175, 91);
             public Color colOrange = new Color(189, 133, 91);
             public Color colRed = new Color(189, 91, 91);
+            
+            public Color colFire1 = new Color(255, 169, 15);
+            public Color colFire2 = new Color(224, 108, 70);
 
             public Color fgColor => paletteWhite;
             public Color bgColor => palettePurple;
             
-            public Color paletteWhite => palette[0];
-            public Color paletteGray => palette[1];
-            public Color paletteOrange => palette[2];
-            public Color paletteBrown => palette[3];
-            public Color palettePurple => palette[4];
+            public ref Color paletteWhite => ref palette[0];
+            public ref Color paletteGray => ref palette[1];
+            public ref Color paletteOrange => ref palette[2];
+            public ref Color paletteBrown => ref palette[3];
+            public ref Color palettePurple => ref palette[4];
         }
 
         public void loadContent() {

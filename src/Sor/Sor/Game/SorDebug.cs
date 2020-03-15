@@ -10,6 +10,9 @@ namespace Sor.Game {
 #if DEBUG
     public static class SorDebug {
         public static PlayScene play;
+        
+        // - debug display vars
+        public static bool aiTrace = false;
 
         [Command("g_energy", "adds energy to the player")]
         public static void Energy(float val) {
@@ -44,6 +47,11 @@ namespace Sor.Game {
             var wing = play.playContext.createWing(name, play.playContext.playerWing.Entity.Position, wingPly);
             play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");
+        }
+
+        [Command("d_aitrace", "toggles ai tracing in mind display")]
+        public static void AiTrace() {
+            aiTrace = !aiTrace;
         }
 
         public static void debugLog(string v) {
