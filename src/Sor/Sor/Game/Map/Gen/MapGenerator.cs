@@ -43,10 +43,14 @@ namespace Sor.Game.Map.Gen {
             });
             treeLevelDistr = new DiscreteProbabilityDistribution<int>(rng, new[] {
                 (0.2f, 1),
-                (0.4f, 2),
+                (0.2f, 2),
                 (0.2f, 3),
-                (0.1f, 4),
-                (0.1f, 5),
+                (0.05f, 4),
+                (0.05f, 5),
+                (0.06f, 6),
+                (0.04f, 7),
+                (0.03f, 8),
+                (0.02f, 9),
             });
         }
 
