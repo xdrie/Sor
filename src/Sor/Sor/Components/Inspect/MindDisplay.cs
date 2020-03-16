@@ -70,6 +70,7 @@ namespace Sor.Components.Inspect {
                             negative++;
                         }
                     }
+
                     ind.appendLine($"rel: +{positive} | -{negative} = {netOpi}");
                 }
 
@@ -96,7 +97,7 @@ namespace Sor.Components.Inspect {
 
                             // add consid nam and score
                             sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
-                            #if DEBUG
+#if DEBUG
                             if (SorDebug.aiTrace) {
                                 // add appraisals
                                 foreach (var appr in consid.Key.lastScores) {
@@ -108,7 +109,7 @@ namespace Sor.Components.Inspect {
                                     sb.Append($" ({apprName}: {appr.Value:n2})");
                                 }
                             }
-                            #endif
+#endif
 
                             sb.AppendLine();
 
@@ -117,37 +118,44 @@ namespace Sor.Components.Inspect {
                     }
                 }
 
+                void drawPosIndicator(Vector2 pos, Color col) {
+                    // draw indicator
+                    var indSize = 4f;
+                    batcher.DrawHollowRect(
+                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
+                        col, 1f);
+                }
+
                 lock (mind.state.plan) {
-                    if (mind.state.plan.Count > 0) {
-                        mind.state.plan.TryPeek(out var planTask);
-                        if (planTask is TargetSource target) {
-                            if (target.valid()) {
-                                void drawPosIndicator(Vector2 pos, Color col) {
-                                    // draw indicator
-                                    var indSize = 4f;
-                                    batcher.DrawHollowRect(
-                                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
-                                        col, 1f);
+                    var sb = new StringBuilder();
+                    var planAhead = 2;
+                    var nextInPlan = mind.state.plan.Take(planAhead);
+                    foreach (var planTask in nextInPlan) {
+                        if (planTask.valid()) {
+                            switch (planTask) {
+                                case TargetSource target: {
+                                    var targetLoc = target.getPosition();
+                                    var approachLoc = target.approachPosition(mind.me.body.pos);
+                                    sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                    if (target is EntityTarget ets) {
+                                        sb.Append($" {ets.nt.Name}");
+                                    }
+
+                                    sb.AppendLine();
+
+                                    // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
+                                    drawPosIndicator(targetLoc, Color.Yellow);
+                                    drawPosIndicator(approachLoc, Color.Blue);
+                                    break;
                                 }
-
-                                var targetLoc = target.getPosition();
-                                var approachLoc = target.approachPosition(mind.me.body.pos);
-                                var sb = new StringBuilder();
-                                sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
-                                if (target is EntityTarget ets) {
-                                    sb.Append($" {ets.nt.Name}");
-                                }
-
-                                ind.appendLine(sb.ToString());
-
-                                // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
-                                drawPosIndicator(targetLoc, Color.Yellow);
-                                drawPosIndicator(approachLoc, Color.Blue);
-
-                                ind.appendLine();
+                                case SingleInteraction inter:
+                                    sb.AppendLine($"{inter.GetType().Name} {inter.target.Name}");
+                                    break;
                             }
                         }
                     }
+
+                    ind.appendLine(sb.ToString());
                 }
 
                 ind.appendLine();

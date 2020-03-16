@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -24,7 +25,11 @@ namespace Sor.Util {
         public void appendLine(string line = "") => appendLine(line, defaultColor);
 
         public void appendLine(string line, Color color) {
-            lines.Add(new ColoredLine(line, color));
+            // properly process newlines
+            var sublines = line.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var subline in sublines) {
+                lines.Add(new ColoredLine(subline, color));   
+            }
         }
 
         public void drawTo(Batcher batcher, IFont font, Vector2 pos) {
