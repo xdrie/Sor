@@ -1,6 +1,8 @@
 using System.Linq;
 using Glint;
 using Glint.Util;
+using Microsoft.Xna.Framework;
+using Nez;
 using Nez.Console;
 using Sor.AI.Cogs;
 using Sor.Components.Units;
@@ -44,7 +46,9 @@ namespace Sor.Game {
         public static void Spawn(string name, float a = 0f, float s = 0f) {
             var wingPly = new BirdPersonality {A = a, S = s};
             // wingPly.generateRandom();
-            var wing = play.playContext.createWing(name, play.playContext.playerWing.Entity.Position, wingPly);
+            var spawnOffset = Vector2Ext.rotate(new Vector2(0, -120f), Random.NextFloat() * Mathf.PI * 2f);
+            var wing = play.playContext.createWing(name, 
+                play.playContext.playerWing.Entity.Position + spawnOffset, wingPly);
             play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");
         }
