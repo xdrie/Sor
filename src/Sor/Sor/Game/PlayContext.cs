@@ -125,9 +125,10 @@ namespace Sor.Game {
                         var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
                         var spawnPly = new BirdPersonality();
                         spawnPly.generateRandom();
-                        var bord = createWing($"b_{spawnedBirds}", spawnPos, spawnPly);
-
-                        bord.changeClass(birdClassDist.next());
+                        var bordClass = birdClassDist.next();
+                        var className = bordClass.ToString().ToLower().First();
+                        var bord = createWing($"b_{spawnedBirds}_{className}", spawnPos, spawnPly);
+                        bord.changeClass(bordClass);
                     }
                 }
 
