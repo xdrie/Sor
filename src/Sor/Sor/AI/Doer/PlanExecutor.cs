@@ -15,6 +15,9 @@ namespace Sor.AI.Doer {
         }
 
         public void process() {
+            // clear steer input
+            resetSteering();
+            
             var targetPosition = default(Vector2?);
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) { // go through goals until we find one to execute
@@ -39,8 +42,10 @@ namespace Sor.AI.Doer {
                         break;
                     case PlanInteraction inter: {
                         immediateGoal = true; // all interactions are immediate goals
-                        processInteraction(inter);
-                        mind.state.plan.TryDequeue(out var result); // dequeue handled interaction
+                        var handled = processInteraction(inter);
+                        if (handled) {
+                            mind.state.plan.TryDequeue(out var result); // dequeue handled interaction
+                        }
 
                         break;
                     }
@@ -53,43 +58,59 @@ namespace Sor.AI.Doer {
             }
         }
 
-        private void processInteraction(PlanInteraction inter) {
+        private bool processInteraction(PlanInteraction inter) {
             switch (inter) {
                 case PlanFeed interFeed: {
                     // ensure alignment
                     // TODO: follow target should better try to align
                     var dirToOther = interFeed.target.Position - mind.me.body.pos;
                     dirToOther.Normalize();
-                    // get facing dir
-                    var facingDir = new Vector2(GMathf.cos(mind.me.body.stdAngle),
-                        -GMathf.sin(mind.me.body.stdAngle));
-                    if (dirToOther.dot(facingDir) > 0.6f) { // make sure facing properly
+                    var turnTolerance = Mathf.PI * 0.05f;
+                    var angleRemaining = pilotToAngle(dirToOther.ScreenSpaceAngle(), turnTolerance);
+                    if (Math.Abs(angleRemaining) < turnTolerance) { // make sure facing properly
                         // feed
+                        // TODO: add capability for [HOLD 2s] etc.
                         mind.controller.tetherLogical.logicPressed = true;
+                        return true; // done
                     }
 
-                    break;
+                    return false; // not finished
                 }
                 case PlanAttack interAtk: {
                     // TODO: attempt to attack
 
-                    break;
+                    return true; // done
                 }
+                default:
+                    Global.log.writeLine(
+                        $"unknown planned interaction {inter.GetType().Name} could not be handled",
+                        GlintLogger.LogLevel.Error);
+                    return true;
             }
         }
 
-        private void pilotToPosition(Vector2 goal) {
+        private void resetSteering() {
+            mind.controller.moveDirectionLogical.LogicValue = Vector2.Zero;
+        }
+
+        /// <summary>
+        /// attempts to steer toward position
+        /// </summary>
+        /// <param name="goal"></param>
+        /// <returns>vector to target</returns>
+        private Vector2 pilotToPosition(Vector2 goal) {
             // figure out how to move to target
             var toTarget = goal - mind.me.body.pos;
-            var targetAngle = -GMathf.atan2(toTarget.Y, toTarget.X);
-            var myAngle = mind.me.body.stdAngle;
-            var turnTo = Mathf.DeltaAngleRadians(myAngle, targetAngle);
+            var targetAngle = toTarget.ScreenSpaceAngle();
+            var turnTolerance = 0.05f * GMathf.PI;
+            var remainingTurn = pilotToAngle(targetAngle, turnTolerance);
 
-            var moveX = 0;
             var moveY = 0;
 
-            if (Math.Abs(turnTo) < 0.05f * GMathf.PI) {
-                mind.me.body.angularVelocity *= 0.9f;
+            if (Math.Abs(remainingTurn) < turnTolerance) {
+                // we are facing the right way
+
+                mind.me.body.angularVelocity *= 0.9f; // cheat to help with angle
                 // mind.me.body.angle = -targetAngle + (GMathf.PI / 2);
 
                 var sinPi4 = 0.707106781187; // sin(pi/4)
@@ -126,15 +147,32 @@ namespace Sor.AI.Doer {
                 } else {
                     moveY = 1;
                 }
-            } else {
-                if (turnTo > 0) {
-                    moveX = -1;
-                } else if (turnTo < 0) {
-                    moveX = 1;
-                }
             }
 
-            mind.controller.moveDirectionLogical.LogicValue = new Vector2(moveX, moveY);
+            var steer = mind.controller.moveDirectionLogical.LogicValue;
+            mind.controller.moveDirectionLogical.LogicValue = new Vector2(steer.X, moveY);
+
+            return toTarget;
+        }
+
+        private float pilotToAngle(float targetAngle, float tolerance) {
+            var myAngle = mind.me.body.stdAngle;
+            // delta between current angle to target
+            var turn = Mathf.DeltaAngleRadians(myAngle, targetAngle);
+            if (Math.Abs(turn) > tolerance) {
+                var moveX = 0;
+
+                if (turn > 0) {
+                    moveX = -1;
+                } else if (turn < 0) {
+                    moveX = 1;
+                }
+
+                var steer = mind.controller.moveDirectionLogical.LogicValue;
+                mind.controller.moveDirectionLogical.LogicValue = new Vector2(moveX, steer.Y);
+            }
+
+            return turn;
         }
     }
 }

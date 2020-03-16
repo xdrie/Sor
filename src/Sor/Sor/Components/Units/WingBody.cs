@@ -101,7 +101,7 @@ namespace Sor.Components.Units {
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
                     cap.sender = me;
-                    cap.launch(capEnergy, capMotion.rotate(angle));
+                    cap.launch(capEnergy, capMotion.Rotate(angle));
                 }
 
                 shootCharge = 0; // reset charge
@@ -203,7 +203,7 @@ namespace Sor.Components.Units {
             // forward thrust
             if (thrustInput <= 0) {
                 var thrustVec = new Vector2(0, thrustInput * thrustVal * Time.DeltaTime);
-                velocity += thrustVec.rotate(angle);
+                velocity += thrustVec.Rotate(angle);
             } else { // slowdown thrust
                 // float fac = VELOCITY_REDUCTION_EXP + (1 - VELOCITY_REDUCTION_EXP) * (1 - thrustInput);
                 // velocity *= fac;
