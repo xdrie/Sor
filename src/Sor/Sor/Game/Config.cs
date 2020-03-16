@@ -15,6 +15,7 @@ namespace Sor.Game {
         public int generatedMapSize = 40;
         public bool enableWalls = false;
         public bool spawnBirds = true;
+        public bool invisible = false;
 
         public override void load() {
             base.load();
@@ -32,6 +33,7 @@ namespace Sor.Game {
             pr.bind(ref generatedMapSize, INTERNAL, rename(nameof(generatedMapSize)));
             pr.bind(ref enableWalls, INTERNAL, rename(nameof(enableWalls)));
             pr.bind(ref spawnBirds, INTERNAL, rename(nameof(spawnBirds)));
+            pr.bind(ref invisible, INTERNAL, rename(nameof(invisible)));
 #endif
         }
     }

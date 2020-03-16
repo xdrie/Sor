@@ -32,6 +32,7 @@ namespace Sor.Scenes {
 
         public PlayScene(PlayContext playContext) {
             this.playContext = playContext;
+            Core.Services.AddService(playContext);
             playContext.scene = this;
         }
 
@@ -188,6 +189,9 @@ namespace Sor.Scenes {
 
         public override void Unload() {
             base.Unload();
+            
+            // unload play context
+            Core.Services.RemoveService(typeof(PlayContext));
 
 #if DEBUG
             SorDebug.play = null;
