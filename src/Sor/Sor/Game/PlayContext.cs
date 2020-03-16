@@ -8,6 +8,7 @@ using Nez;
 using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
+using Sor.Components.Items;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game.Map;
@@ -68,7 +69,7 @@ namespace Sor.Game {
             gen.analyze();
             gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
             // log generated map
-            Glint.Global.log.writeLine(
+            Global.log.writeLine(
                 $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
                 GlintLogger.LogLevel.Trace);
             // TODO: ensure that the loaded map matches the saved map
@@ -90,28 +91,48 @@ namespace Sor.Game {
         }
 
         private void spawnBirds() {
-            // now, spawn a bunch of birds across the rooms
-            int spawnedBirds = 0;
-            var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
-            var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
-                (0.5f, Wing.WingClass.Wing),
-                (0.3f, Wing.WingClass.Beak),
-                (0.2f, Wing.WingClass.Predator)
-            });
-            foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
-                var roomBirdProb = 0.2f;
-                if (Random.Chance(roomBirdProb)) {
-                    spawnedBirds++;
-                    var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
-                    var spawnPly = new BirdPersonality();
-                    spawnPly.generateRandom();
-                    var bord = createWing($"b_{spawnedBirds}", spawnPos, spawnPly);
+            var player = createPlayer(new Vector2(200, 200));
+            player.Entity.AddComponent(new Shooter());
 
-                    bord.changeClass(birdClassDist.next());
+            if (NGame.context.config.spawnBirds) {
+                var unoPly = new BirdPersonality();
+                unoPly.generateNeutral();
+                var uno = createWing("uno", new Vector2(-140, 920), unoPly);
+                uno.changeClass(Wing.WingClass.Predator);
+
+                // a friendly bird
+                var frend = createWing("frend", new Vector2(-140, 20),
+                    new BirdPersonality {A = -0.8f, S = 0.7f});
+                // a second friendly bird
+                var fren2 = createWing("yii", new Vector2(400, -80),
+                    new BirdPersonality {A = -0.5f, S = 0.4f});
+                // a somewhat anxious bird
+                var anxious1 = createWing("ada", new Vector2(640, 920),
+                    new BirdPersonality {A = 0.6f, S = -0.2f});
+
+                // now, spawn a bunch of birds across the rooms
+                int spawnedBirds = 0;
+                var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
+                var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
+                    (0.5f, Wing.WingClass.Wing),
+                    (0.3f, Wing.WingClass.Beak),
+                    (0.2f, Wing.WingClass.Predator)
+                });
+                foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
+                    var roomBirdProb = 0.2f;
+                    if (Random.Chance(roomBirdProb)) {
+                        spawnedBirds++;
+                        var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                        var spawnPly = new BirdPersonality();
+                        spawnPly.generateRandom();
+                        var bord = createWing($"b_{spawnedBirds}", spawnPos, spawnPly);
+
+                        bord.changeClass(birdClassDist.next());
+                    }
                 }
-            }
 
-            Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+                Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+            }
         }
     }
 }

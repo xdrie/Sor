@@ -61,26 +61,6 @@ namespace Sor.Scenes {
             AddEntity(playContext.mapNt);
             gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
 
-            if (!playContext.rehydrated) { // freshly creating the scene
-                var player = playContext.createPlayer(new Vector2(200, 200));
-                player.Entity.AddComponent(new Shooter());
-
-                var unoPly = new BirdPersonality();
-                unoPly.generateNeutral();
-                var uno = playContext.createWing("uno", new Vector2(-140, 920), unoPly);
-                uno.changeClass(Wing.WingClass.Predator);
-
-                // a friendly bird
-                var frend = playContext.createWing("frend", new Vector2(-140, 20),
-                    new BirdPersonality {A = -0.8f, S = 0.7f});
-                // a second friendly bird
-                var fren2 = playContext.createWing("yii", new Vector2(400, -80),
-                    new BirdPersonality {A = -0.5f, S = 0.4f});
-                // a somewhat anxious bird
-                var anxious1 = playContext.createWing("ada", new Vector2(640, 920),
-                    new BirdPersonality {A = 0.6f, S = -0.2f});
-            }
-
             AddEntity(playContext.playerWing.Entity);
             foreach (var wing in playContext.createdWings) { // attach all wings
                 AddEntity(wing.Entity);

@@ -14,6 +14,7 @@ namespace Sor.Game {
         public bool cameraLockedRotation = false;
         public int generatedMapSize = 40;
         public bool enableWalls = false;
+        public bool spawnBirds = true;
 
         public override void load() {
             base.load();
@@ -30,6 +31,7 @@ namespace Sor.Game {
             pr.bind(ref cameraLockedRotation, INTERNAL, rename(nameof(cameraLockedRotation)));
             pr.bind(ref generatedMapSize, INTERNAL, rename(nameof(generatedMapSize)));
             pr.bind(ref enableWalls, INTERNAL, rename(nameof(enableWalls)));
+            pr.bind(ref spawnBirds, INTERNAL, rename(nameof(spawnBirds)));
 #endif
         }
     }
