@@ -136,7 +136,7 @@ namespace Sor.Components.Inspect {
                                 case TargetSource target: {
                                     var targetLoc = target.getPosition();
                                     var approachLoc = target.approachPosition(mind.me.body.pos);
-                                    sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                    sb.Append($" Target: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
                                     if (target is EntityTarget ets) {
                                         sb.Append($" {ets.nt.Name}");
                                     }
@@ -149,7 +149,7 @@ namespace Sor.Components.Inspect {
                                     break;
                                 }
                                 case SingleInteraction inter:
-                                    sb.AppendLine($"{inter.GetType().Name} {inter.target.Name}");
+                                    sb.AppendLine($" {inter.GetType().Name} {inter.target.Name}");
                                     break;
                             }
                         }
