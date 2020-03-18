@@ -2,7 +2,7 @@ using Glint.Config;
 using Glint.Util;
 
 namespace Sor.Game {
-    public class Config : GameConfigBase {
+    public class Config : GameConfig {
         public bool maxVfx = true; // enable all visual effects
         
         // debug config

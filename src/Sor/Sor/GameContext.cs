@@ -7,17 +7,9 @@ using Sor.Game;
 using Sor.Game.Map;
 
 namespace Sor {
-    public class GameContext : ContextBase {
-        public Assets assets = new Assets();
-        public Config config;
-        public override GameConfigBase baseConfig => config;
-        public GameData data;
+    public class GameContext : ContextBase<Config> {
+        public Assets assets { get; } = new Assets();
         public MapRepr map;
-
-        public GameContext(Config config) {
-            this.config = config;
-            this.data = new GameData(this);
-        }
 
         public class Assets {
             public BitmapFont font;
@@ -48,6 +40,8 @@ namespace Sor {
             public ref Color paletteBrown => ref palette[3];
             public ref Color palettePurple => ref palette[4];
         }
+        
+        public GameContext(Config config) : base(config) { }
 
         public void loadContent() {
             assets.font = Core.Content.LoadBitmapFont("Data/fonts/ua_squared.fnt");

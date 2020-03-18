@@ -6,11 +6,9 @@ using Sor.Game;
 using Sor.Scenes;
 
 namespace Sor {
-    public class NGame : RGameBase<Config, GameContext> {
+    public class NGame : RGameBase<GameContext, Config> {
         public const string GAME_TITLE = "Sor";
         public const string GAME_VERSION = "0.7.5.15-dev";
-
-        public static GameContext context => Services.GetService<GameContext>(); 
 
         public NGame(Config config) : base(config, new GameContext(config), GAME_TITLE, new Point(960, 540)) { }
 

@@ -5,7 +5,7 @@ namespace Sor.Game {
         public static PlayPersistable loadSave(PlayContext playContext) {
             var store = NGame.context.data.getStore();
             var pers = new PlayPersistable(playContext);
-            store.Load(GameData.TEST_SAVE, pers);
+            store.Load(GameData<Config>.TEST_SAVE, pers);
             return pers;
         }
     }

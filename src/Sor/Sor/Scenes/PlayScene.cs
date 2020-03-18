@@ -21,7 +21,7 @@ using Sor.Game.Map.Gen;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class PlayScene : BaseGameScene<GameContext> {
+    public class PlayScene : GameScene {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
@@ -104,7 +104,7 @@ namespace Sor.Scenes {
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
-            if (gameContext.config.cameraLockedRotation) {
+            if (NGame.config.cameraLockedRotation) {
                 cameraLockMode |= LockedCamera.LockMode.Rotation;
             }
 
@@ -201,7 +201,7 @@ namespace Sor.Scenes {
         public void saveGame() {
             var store = gameContext.data.getStore();
             if (!gameContext.config.clearData)
-                store.Save(GameData.TEST_SAVE, new PlayPersistable(playContext));
+                store.Save(GameData<Config>.TEST_SAVE, new PlayPersistable(playContext));
         }
     }
 }
