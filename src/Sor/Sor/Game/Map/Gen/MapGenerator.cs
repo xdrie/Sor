@@ -114,9 +114,9 @@ namespace Sor.Game.Map.Gen {
             var oldHeight = layer.Height;
             layer.Width = width;
             layer.Height = height;
-            // // adjust whole map size if necessary
-            // layer.Map.Width = Math.Max(layer.Map.Width, width);
-            // layer.Map.Height = Math.Max(layer.Map.Height, height);
+            // adjust whole map size if necessary
+            layer.Map.Width = Math.Max(layer.Map.Width, width);
+            layer.Map.Height = Math.Max(layer.Map.Height, height);
             var index = 0;
             // copy old gids
             var oldTiles = (TmxLayerTile[]) layer.Tiles.Clone();
@@ -404,16 +404,21 @@ namespace Sor.Game.Map.Gen {
 
         public void copyToTilemap(TmxMap map, bool createObjects) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
+            var features = map.GetLayer<TmxLayer>(MapLoader.LAYER_FEATURES);
             var nature = map.GetObjectGroup(MapLoader.LAYER_NATURE);
-            // clear/reset the map
-            // 1. clear the structure map
-            var srWidth = Math.Max((width + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Width);
-            var srHeight = Math.Max((height + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Height);
-            resizeTmxLayer(structure, srWidth, srHeight);
-            // clear all the tiles
+            // - clear/reset the map
+            // calculate the generated map size in tiles
+            var genWidth = Math.Max((width + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Width);
+            var genHeight = Math.Max((height + 1) * (CELL_TILE_SIZE + CELL_TILE_SPACING), map.Height);
+            // resize the structure and feature maps
+            resizeTmxLayer(structure, genWidth, genHeight);
+            resizeTmxLayer(features, genWidth, genHeight);
+            
+            // 3. clear all tiles (structure and features)
             for (int sy = 0; sy < structure.Height; sy++) {
                 for (int sx = 0; sx < structure.Width; sx++) {
                     structure.RemoveTile(sx, sy);
+                    features.RemoveTile(sx, sy);
                 }
             }
 
