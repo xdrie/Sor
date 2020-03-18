@@ -5,6 +5,7 @@ using Nez;
 using Nez.BitmapFonts;
 using Sor.Game;
 using Sor.Game.Map;
+using Sor.Util;
 
 namespace Sor {
     public class GameContext : ContextBase<Config> {
@@ -45,6 +46,7 @@ namespace Sor {
 
         public void loadContent() {
             assets.font = Core.Content.LoadBitmapFont("Data/fonts/ua_squared.fnt");
+            NameGenerator.load();
         }
     }
 }

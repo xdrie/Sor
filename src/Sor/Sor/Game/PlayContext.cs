@@ -14,6 +14,7 @@ using Sor.Components.Units;
 using Sor.Game.Map;
 using Sor.Game.Map.Gen;
 using Sor.Scenes;
+using Sor.Util;
 
 namespace Sor.Game {
     public class PlayContext {
@@ -127,7 +128,8 @@ namespace Sor.Game {
                         spawnPly.generateRandom();
                         var bordClass = birdClassDist.next();
                         var className = bordClass.ToString().ToLower().First();
-                        var bord = createWing($"bord_{spawnedBirds}_{className}", spawnPos, spawnPly);
+                        var nick = NameGenerator.next().ToLowerInvariant();
+                        var bord = createWing($"{nick} {className}", spawnPos, spawnPly);
                         bord.changeClass(bordClass);
                     }
                 }
