@@ -127,7 +127,7 @@ namespace Sor.Game {
                         spawnPly.generateRandom();
                         var bordClass = birdClassDist.next();
                         var className = bordClass.ToString().ToLower().First();
-                        var bord = createWing($"b_{spawnedBirds}_{className}", spawnPos, spawnPly);
+                        var bord = createWing($"bord_{spawnedBirds}_{className}", spawnPos, spawnPly);
                         bord.changeClass(bordClass);
                     }
                 }
