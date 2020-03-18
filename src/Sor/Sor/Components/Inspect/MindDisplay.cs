@@ -8,6 +8,7 @@ using Sor.AI;
 using Sor.AI.Plans;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Systems;
 using Sor.Util;
 
 namespace Sor.Components.Inspect {
@@ -137,15 +138,20 @@ namespace Sor.Components.Inspect {
                                     var targetLoc = target.getPosition();
                                     var approachLoc = target.approachPosition(mind.me.body.pos);
                                     sb.Append($" Target: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                    var targetColor = Color.Yellow; // color of target indicator
+                                    
+                                    // add extra annotation if target is entity
                                     if (target is EntityTarget ets) {
                                         sb.Append($" {ets.nt.Name}");
+                                        var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind);
+                                        var (_, disp) = PipsSystem.calculatePips(opinion);
+                                        targetColor = disp;
                                     }
 
                                     sb.AppendLine();
 
-                                    // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
-                                    drawPosIndicator(targetLoc, Color.Yellow);
-                                    drawPosIndicator(approachLoc, Color.Blue);
+                                    drawPosIndicator(targetLoc, targetColor);
+                                    drawPosIndicator(approachLoc, Color.LightBlue);
                                     break;
                                 }
                                 case SingleInteraction inter:
