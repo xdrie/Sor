@@ -8,7 +8,7 @@ using Nez.Tweens;
 using Sor.Components.UI;
 
 namespace Sor.Scenes {
-    public class IntroScene : BaseGameScene<GameContext> {
+    public class IntroScene : GameScene {
 #if DEBUG
         private const float intro_length = 0f;
 #else

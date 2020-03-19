@@ -34,7 +34,7 @@ namespace Sor.Systems {
             }
         }
 
-        private (int number, Color color) calculatePips(int opinion) {
+        public static (int number, Color color) calculatePips(int opinion) {
             var blocks = 0;
             var col = Color.Black;
             if (opinion < MindConstants.OPINION_HATE) {

@@ -2,7 +2,7 @@ using Glint.Config;
 using Glint.Util;
 
 namespace Sor.Game {
-    public class Config : GameConfigBase {
+    public class Config : GameConfig {
         public bool maxVfx = true; // enable all visual effects
         
         // debug config
@@ -14,6 +14,8 @@ namespace Sor.Game {
         public bool cameraLockedRotation = false;
         public int generatedMapSize = 40;
         public bool enableWalls = false;
+        public bool spawnBirds = true;
+        public bool invisible = false;
 
         public override void load() {
             base.load();
@@ -30,6 +32,8 @@ namespace Sor.Game {
             pr.bind(ref cameraLockedRotation, INTERNAL, rename(nameof(cameraLockedRotation)));
             pr.bind(ref generatedMapSize, INTERNAL, rename(nameof(generatedMapSize)));
             pr.bind(ref enableWalls, INTERNAL, rename(nameof(enableWalls)));
+            pr.bind(ref spawnBirds, INTERNAL, rename(nameof(spawnBirds)));
+            pr.bind(ref invisible, INTERNAL, rename(nameof(invisible)));
 #endif
         }
     }

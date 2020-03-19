@@ -6,6 +6,7 @@ using Glint;
 using Glint.Config;
 using Sor;
 using Sor.Game;
+
 #if !DEBUG
 using Glint.Util;
 #endif
@@ -47,9 +48,6 @@ namespace SorDk {
             try {
 #endif
             using (var game = new NGame(config)) {
-                #if DEBUG
-                GlintCore.GamePlatform.logSystemInformation();
-                #endif
                 game.Run();
             }
 #if !DEBUG

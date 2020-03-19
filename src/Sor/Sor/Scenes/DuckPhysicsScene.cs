@@ -12,7 +12,7 @@ using Sor.Components.Units;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class DuckPhysicsScene : BaseGameScene<GameContext> {
+    public class DuckPhysicsScene : GameScene {
         private Entity physicistDuck;
         private Entity playerNt;
         private const int renderlayer_ui_overlay = 1 << 30;

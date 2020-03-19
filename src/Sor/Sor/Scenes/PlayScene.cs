@@ -3,6 +3,7 @@ using Glint.Components.Camera;
 using Glint.Game;
 using Glint.Scenes;
 using Glint.Util;
+using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
@@ -20,7 +21,7 @@ using Sor.Game.Map.Gen;
 using Sor.Systems;
 
 namespace Sor.Scenes {
-    public class PlayScene : BaseGameScene<GameContext> {
+    public class PlayScene : GameScene {
         private const int renderlayer_backdrop = 65535;
         private const int renderlayer_ui_overlay = 1 << 30;
 
@@ -31,6 +32,7 @@ namespace Sor.Scenes {
 
         public PlayScene(PlayContext playContext) {
             this.playContext = playContext;
+            Core.Services.AddService(playContext);
             playContext.scene = this;
         }
 
@@ -56,26 +58,9 @@ namespace Sor.Scenes {
             base.OnStart();
 
             // - scene setup
-
-            if (!playContext.rehydrated) { // freshly creating the scene
-                var player = playContext.createPlayer(new Vector2(200, 200));
-                player.Entity.AddComponent(new Shooter());
-                
-                var unoPly = new BirdPersonality();
-                unoPly.generateNeutral();
-                var uno = playContext.createWing("uno", new Vector2(-140, 920), unoPly);
-                uno.changeClass(Wing.WingClass.Predator);
-
-                // a friendly bird
-                var frend = playContext.createWing("frend", new Vector2(-140, 20),
-                    new BirdPersonality {A = -0.8f, S = 0.7f});
-                // a second friendly bird
-                var fren2 = playContext.createWing("yii", new Vector2(400, -80),
-                    new BirdPersonality {A = -0.5f, S = 0.4f});
-                // a somewhat anxious bird
-                var anxious1 = playContext.createWing("ada", new Vector2(640, 920),
-                    new BirdPersonality {A = 0.6f, S = -0.2f});
-            }
+            // set up map
+            AddEntity(playContext.mapNt);
+            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
 
             AddEntity(playContext.playerWing.Entity);
             foreach (var wing in playContext.createdWings) { // attach all wings
@@ -89,10 +74,6 @@ namespace Sor.Scenes {
             }
 
             playContext.createdThings.Clear();
-
-            // set up map
-            AddEntity(playContext.mapNt);
-            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
 
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
             Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
@@ -123,7 +104,7 @@ namespace Sor.Scenes {
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
-            if (gameContext.config.cameraLockedRotation) {
+            if (NGame.config.cameraLockedRotation) {
                 cameraLockMode |= LockedCamera.LockMode.Rotation;
             }
 
@@ -208,6 +189,9 @@ namespace Sor.Scenes {
 
         public override void Unload() {
             base.Unload();
+            
+            // unload play context
+            Core.Services.RemoveService(typeof(PlayContext));
 
 #if DEBUG
             SorDebug.play = null;
@@ -217,7 +201,7 @@ namespace Sor.Scenes {
         public void saveGame() {
             var store = gameContext.data.getStore();
             if (!gameContext.config.clearData)
-                store.Save(GameData.TEST_SAVE, new PlayPersistable(playContext));
+                store.Save(GameData<Config>.TEST_SAVE, new PlayPersistable(playContext));
         }
     }
 }

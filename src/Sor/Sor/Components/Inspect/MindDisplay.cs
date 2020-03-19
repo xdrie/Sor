@@ -8,6 +8,7 @@ using Sor.AI;
 using Sor.AI.Plans;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Systems;
 using Sor.Util;
 
 namespace Sor.Components.Inspect {
@@ -56,6 +57,24 @@ namespace Sor.Components.Inspect {
                     ind.appendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 }
 
+                lock (mind.state.opinion) {
+                    var positive = 0;
+                    var negative = 0;
+                    var netOpi = 0;
+                    foreach (var op in mind.state.opinion) {
+                        var opVal = op.Value;
+                        var pos = opVal > MindConstants.OPINION_NEUTRAL;
+                        netOpi += opVal;
+                        if (pos) {
+                            positive++;
+                        } else {
+                            negative++;
+                        }
+                    }
+
+                    ind.appendLine($"rel: +{positive} | -{negative} = {netOpi}");
+                }
+
                 ind.appendLine($"ply: {mind.soul.ply}");
                 ind.appendLine($"emo: H:{mind.soul.emotions.happy:n2}, F:{mind.soul.emotions.fear:n2}");
 
@@ -79,7 +98,7 @@ namespace Sor.Components.Inspect {
 
                             // add consid nam and score
                             sb.Append($"{consid.Key.tag}: {consid.Value:n2}"); // add consid: score
-                            #if DEBUG
+#if DEBUG
                             if (SorDebug.aiTrace) {
                                 // add appraisals
                                 foreach (var appr in consid.Key.lastScores) {
@@ -91,7 +110,7 @@ namespace Sor.Components.Inspect {
                                     sb.Append($" ({apprName}: {appr.Value:n2})");
                                 }
                             }
-                            #endif
+#endif
 
                             sb.AppendLine();
 
@@ -100,37 +119,49 @@ namespace Sor.Components.Inspect {
                     }
                 }
 
+                void drawPosIndicator(Vector2 pos, Color col) {
+                    // draw indicator
+                    var indSize = 4f;
+                    batcher.DrawHollowRect(
+                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
+                        col, 1f);
+                }
+
                 lock (mind.state.plan) {
-                    if (mind.state.plan.Count > 0) {
-                        mind.state.plan.TryPeek(out var planTask);
-                        if (planTask is TargetSource target) {
-                            if (target.valid()) {
-                                void drawPosIndicator(Vector2 pos, Color col) {
-                                    // draw indicator
-                                    var indSize = 4f;
-                                    batcher.DrawHollowRect(
-                                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
-                                        col, 1f);
+                    var sb = new StringBuilder();
+                    var planAhead = 2;
+                    var nextInPlan = mind.state.plan.Take(planAhead);
+                    foreach (var planTask in nextInPlan) {
+                        if (planTask.valid()) {
+                            switch (planTask) {
+                                case TargetSource target: {
+                                    var targetLoc = target.getPosition();
+                                    var approachLoc = target.approachPosition(mind.me.body.pos);
+                                    sb.Append($" Target: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
+                                    var targetColor = Color.Yellow; // color of target indicator
+                                    
+                                    // add extra annotation if target is entity
+                                    if (target is EntityTarget ets) {
+                                        sb.Append($" {ets.nt.Name}");
+                                        var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind);
+                                        var (_, disp) = PipsSystem.calculatePips(opinion);
+                                        targetColor = disp;
+                                    }
+
+                                    sb.AppendLine();
+
+                                    drawPosIndicator(targetLoc, targetColor);
+                                    drawPosIndicator(approachLoc, Color.LightBlue);
+                                    break;
                                 }
-
-                                var targetLoc = target.getPosition();
-                                var approachLoc = target.approachPosition(mind.me.body.pos);
-                                var sb = new StringBuilder();
-                                sb.Append($"tgt: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
-                                if (target is EntityTarget ets) {
-                                    sb.Append($" {ets.nt.Name}");
-                                }
-
-                                ind.appendLine(sb.ToString());
-
-                                // var trackCol = new Color(150 + Nez.Random.NextInt(155), 150 + Nez.Random.NextInt(155), 0);
-                                drawPosIndicator(targetLoc, Color.Yellow);
-                                drawPosIndicator(approachLoc, Color.Blue);
-
-                                ind.appendLine();
+                                case SingleInteraction inter:
+                                    sb.AppendLine($" {inter.GetType().Name} {inter.target.Name}");
+                                    break;
                             }
                         }
                     }
+
+                    ind.appendLine(sb.ToString());
                 }
 
                 ind.appendLine();

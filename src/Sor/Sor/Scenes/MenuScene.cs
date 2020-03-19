@@ -16,7 +16,7 @@ using Sor.Components.UI;
 using Sor.Game;
 
 namespace Sor.Scenes {
-    public class MenuScene : BaseGameScene<GameContext> {
+    public class MenuScene : GameScene {
         public override void Initialize() {
             base.Initialize();
 

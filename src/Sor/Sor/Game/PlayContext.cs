@@ -1,16 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
+using Glint;
 using Glint.Util;
+using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Input;
+using Sor.Components.Items;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game.Map;
 using Sor.Game.Map.Gen;
 using Sor.Scenes;
+using Sor.Util;
 
 namespace Sor.Game {
     public class PlayContext {
@@ -60,12 +64,13 @@ namespace Sor.Game {
             if (mapgenSeed == 0) {
                 mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
             }
+
             var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
             gen.generate();
             gen.analyze();
             gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
             // log generated map
-            Glint.Global.log.writeLine(
+            Global.log.writeLine(
                 $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
                 GlintLogger.LogLevel.Trace);
             // TODO: ensure that the loaded map matches the saved map
@@ -73,12 +78,64 @@ namespace Sor.Game {
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
             mapLoader = new MapLoader(this, mapNt);
+
             // load map
             mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
 
         public void load() {
             loadMap();
+            if (!rehydrated) {
+                // fresh load
+                spawnBirds();
+            }
+        }
+
+        private void spawnBirds() {
+            var player = createPlayer(new Vector2(200, 200));
+            player.Entity.AddComponent(new Shooter());
+
+            if (NGame.context.config.spawnBirds) {
+                var unoPly = new BirdPersonality();
+                unoPly.generateNeutral();
+                var uno = createWing("uno", new Vector2(-140, 920), unoPly);
+                uno.changeClass(Wing.WingClass.Predator);
+
+                // a friendly bird
+                var frend = createWing("frend", new Vector2(-140, 20),
+                    new BirdPersonality {A = -0.8f, S = 0.7f});
+                // a second friendly bird
+                var fren2 = createWing("yii", new Vector2(400, -80),
+                    new BirdPersonality {A = -0.5f, S = 0.4f});
+                // a somewhat anxious bird
+                var anxious1 = createWing("ada", new Vector2(640, 920),
+                    new BirdPersonality {A = 0.6f, S = -0.2f});
+
+                // now, spawn a bunch of birds across the rooms
+                int spawnedBirds = 0;
+                var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
+                var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
+                    (0.5f, Wing.WingClass.Wing),
+                    (0.3f, Wing.WingClass.Beak),
+                    (0.2f, Wing.WingClass.Predator)
+                });
+                foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
+                    var roomBirdProb = 0.2f;
+                    if (Random.Chance(roomBirdProb)) {
+                        spawnedBirds++;
+                        var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                        var spawnPly = new BirdPersonality();
+                        spawnPly.generateRandom();
+                        var bordClass = birdClassDist.next();
+                        var className = bordClass.ToString().ToLower().First();
+                        var nick = NameGenerator.next().ToLowerInvariant();
+                        var bord = createWing($"{nick} {className}", spawnPos, spawnPly);
+                        bord.changeClass(bordClass);
+                    }
+                }
+
+                Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+            }
         }
     }
 }
