@@ -3,7 +3,7 @@ using Nez;
 using Nez.AI.Pathfinding;
 
 namespace Sor.Game.Map {
-    public class RoomGraph : IWeightedGraph<Map.Room> {
+    public class RoomGraph : IAstarGraph<Map.Room> {
         public readonly List<Map.Room> rooms;
 
         public RoomGraph(List<Map.Room> rooms) {
@@ -19,6 +19,10 @@ namespace Sor.Game.Map {
             // for now, base it on room center proximity
             var dist = PointExt.mhDist(from.center, to.center);
             return dist;
+        }
+
+        public int Heuristic(Map.Room node, Map.Room goal) {
+            return 0;
         }
     }
 }
