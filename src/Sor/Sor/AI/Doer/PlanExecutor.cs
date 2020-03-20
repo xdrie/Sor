@@ -49,10 +49,7 @@ namespace Sor.AI.Doer {
                         break;
                     case PlanInteraction inter: {
                         immediateGoal = true; // all interactions are immediate goals
-                        var handled = processInteraction(inter);
-                        if (handled) {
-                            mind.state.plan.TryDequeue(out var result); // dequeue handled interaction
-                        }
+                        processInteraction(inter);
 
                         break;
                     }
@@ -65,7 +62,7 @@ namespace Sor.AI.Doer {
             }
         }
 
-        private bool processInteraction(PlanInteraction inter) {
+        private void processInteraction(PlanInteraction inter) {
             switch (inter) {
                 case PlanFeed interFeed: {
                     // ensure alignment
@@ -78,21 +75,21 @@ namespace Sor.AI.Doer {
                         // feed
                         // TODO: add capability for [HOLD 2s] etc.
                         mind.controller.tetherLogical.logicPressed = true;
-                        return true; // done
+                        interFeed.markDone();
                     }
-
-                    return false; // not finished
+                    break;
                 }
                 case PlanAttack interAtk: {
                     // TODO: attempt to attack
 
-                    return true; // done
+                    interAtk.markDone();
+                    break;
                 }
                 default:
                     Global.log.writeLine(
                         $"unknown planned interaction {inter.GetType().Name} could not be handled",
                         GlintLogger.LogLevel.Error);
-                    return true;
+                    break;
             }
         }
 
