@@ -176,7 +176,7 @@ namespace Sor.AI.Doer {
             }
             else {
                 // cheat and snap angle
-                mind.me.body.stdAngle = targetAngle;
+                // mind.me.body.stdAngle = targetAngle;
             }
 
             return remainingAngle;
