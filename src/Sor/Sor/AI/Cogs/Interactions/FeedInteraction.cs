@@ -5,7 +5,7 @@ using Sor.AI.Signals;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
-    public class CapsuleFeedingInteraction : BirdInteraction {
+    public class FeedInteraction : BirdInteraction {
         private ItemSignals.CapsuleAcquiredSignal sig;
 
         struct Traits {
@@ -20,7 +20,7 @@ namespace Sor.AI.Cogs.Interactions {
             }
         }
 
-        public CapsuleFeedingInteraction(ItemSignals.CapsuleAcquiredSignal sig) {
+        public FeedInteraction(ItemSignals.CapsuleAcquiredSignal sig) {
             this.sig = sig;
         }
 
