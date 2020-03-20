@@ -41,7 +41,7 @@ namespace Sor.AI.Plans {
             return pos - toFrom;
         }
         
-        public bool closeEnoughApproach(Vector2 fromPos) {
+        private bool closeEnoughApproach(Vector2 fromPos) {
             var actualPos = getPosition();
             var approachPos = approachPosition(fromPos);
             var approachToFrom = approachPos - fromPos;
@@ -56,6 +56,14 @@ namespace Sor.AI.Plans {
                 default:
                     return false; // never
             }
+        }
+
+        public override Status status() {
+            var baseStatus = base.status();
+            if (baseStatus != Status.Ongoing) return baseStatus;
+
+            if (closeEnoughApproach(mind.me.body.pos)) return Status.Complete;
+            return Status.Ongoing;
         }
 
         public abstract Vector2 getPosition();

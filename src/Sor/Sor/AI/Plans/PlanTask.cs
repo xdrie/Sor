@@ -6,8 +6,21 @@ namespace Sor.AI.Plans {
         public float failureTime = 0f;
 
         public enum Status {
+            /// <summary>
+            /// task is still running
+            /// </summary>
             Ongoing,
+            /// <summary>
+            /// task completed successfully
+            /// </summary>
             Complete,
+            /// <summary>
+            /// task failed, but is optional
+            /// </summary>
+            OptionalFailed,
+            /// <summary>
+            /// task failed unrecoverably
+            /// </summary>
             Failed
         }
 

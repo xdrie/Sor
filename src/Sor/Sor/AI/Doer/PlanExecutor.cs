@@ -22,21 +22,28 @@ namespace Sor.AI.Doer {
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) { // go through goals until we find one to execute
                 mind.state.plan.TryPeek(out var nextTask);
-                // remove invalid goals
-                if (nextTask.status() != PlanTask.Status.Ongoing) {
-                    mind.state.plan.TryDequeue(out var result);
-                    continue;
+                // dequeue completed goals
+                var nextTaskStatus = nextTask.status();
+                bool continueWithPlan = true;
+                switch (nextTaskStatus) {
+                    case PlanTask.Status.Complete:
+                    case PlanTask.Status.OptionalFailed:
+                        // move on to the next task
+                        mind.state.plan.TryDequeue(out var result);
+                        continue;
+                    case PlanTask.Status.Failed:
+                        // a task failed
+                        continueWithPlan = false;
+                        Global.log.writeLine($"action plan task {nextTask} failed", GlintLogger.LogLevel.Trace);
+                        break;
                 }
+
+                if (!continueWithPlan) break;
 
                 switch (nextTask) {
                     case TargetSource nextTarget:
                         // - go to a target
                         // check closeness
-                        if (nextTarget.closeEnoughApproach(mind.me.body.pos)) {
-                            mind.state.plan.TryDequeue(out var result);
-                            continue;
-                        }
-
                         targetPosition = nextTarget.approachPosition(mind.me.body.pos);
                         immediateGoal = true; // goal acquired
                         break;
