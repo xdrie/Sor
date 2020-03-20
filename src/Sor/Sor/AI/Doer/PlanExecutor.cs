@@ -80,7 +80,7 @@ namespace Sor.AI.Doer {
                 }
                 case PlanAttack interAtk: {
                     // attack a target
-                    
+                    mind.controller.fireLogical.LogicPressed = true;
                     interAtk.markDone();
                     break;
                 }

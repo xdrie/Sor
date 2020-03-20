@@ -98,6 +98,7 @@ namespace Sor.Game {
             // a friendly bird
             var frend = createWing("frend", new Vector2(-140, 20),
                 new BirdPersonality {A = -0.8f, S = 0.7f});
+            frend.AddComponent(new Shooter()); // friend is armed
 
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
