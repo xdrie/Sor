@@ -26,7 +26,6 @@ namespace Sor.AI.Cogs.Interactions {
         }
 
         public override void runTwo(AvianSoul me, AvianSoul them) {
-            // i was shot by them
             var myTraits = new Traits(me);
 
             var opinionDelta = 0;
