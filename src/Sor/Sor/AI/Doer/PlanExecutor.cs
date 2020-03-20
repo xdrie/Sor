@@ -71,16 +71,16 @@ namespace Sor.AI.Doer {
         private void processInteraction(PlanInteraction inter) {
             switch (inter) {
                 case PlanFeed interFeed: {
-                    // feed
+                    // feed a target
                     // TODO: add capability for [HOLD 2s] etc.
-                    mind.controller.tetherLogical.logicPressed = true;
+                    mind.controller.tetherLogical.LogicPressed = true;
                     interFeed.markDone();
 
                     break;
                 }
                 case PlanAttack interAtk: {
-                    // TODO: attempt to attack
-
+                    // attack a target
+                    
                     interAtk.markDone();
                     break;
                 }
