@@ -94,16 +94,17 @@ namespace Sor.Game {
         private void spawnBirds() {
             var player = createPlayer(new Vector2(200, 200));
             player.Entity.AddComponent(new Shooter());
+            
+            // a friendly bird
+            var frend = createWing("frend", new Vector2(-140, 20),
+                new BirdPersonality {A = -0.8f, S = 0.7f});
 
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
                 var uno = createWing("uno", new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
-
-                // a friendly bird
-                var frend = createWing("frend", new Vector2(-140, 20),
-                    new BirdPersonality {A = -0.8f, S = 0.7f});
+                
                 // a second friendly bird
                 var fren2 = createWing("yii", new Vector2(400, -80),
                     new BirdPersonality {A = -0.5f, S = 0.4f});
