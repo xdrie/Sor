@@ -1,3 +1,4 @@
+using LunchLib.Calc;
 using LunchLib.Cogs;
 using Sor.AI.Signals;
 using Sor.Components.Units;
@@ -6,7 +7,7 @@ namespace Sor.AI.Cogs.Interactions {
     public class ShotInteraction : BirdInteraction {
         public Wing shooter;
         public PhysicalSignals.ShotSignal sig;
-        
+
         struct Traits {
             public static float[] vec_anger = {0.6f, 0.9f};
             public float anger;
@@ -28,9 +29,15 @@ namespace Sor.AI.Cogs.Interactions {
             // i was shot by them
             var myTraits = new Traits(me);
 
-            // we are ANGERY
-            // TODO: calculate anger amount from being shot
-            me.mind.state.addOpinion(them.mind, -40);
+            var opinionDelta = 0;
+
+            // we are angry, figure out how angry
+            var beingShotAnger = (int) TraitCalc.transform(-myTraits.anger, 
+                -40f, -5f, -40, 0f);
+
+            opinionDelta += beingShotAnger;
+
+            me.mind.state.addOpinion(them.mind, opinionDelta);
             me.emotions.spikeFear(1); // scary
         }
     }
