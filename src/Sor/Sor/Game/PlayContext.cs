@@ -111,30 +111,8 @@ namespace Sor.Game {
                 var anxious1 = createWing("ada", new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
-                // now, spawn a bunch of birds across the rooms
-                int spawnedBirds = 0;
-                var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
-                var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
-                    (0.5f, Wing.WingClass.Wing),
-                    (0.3f, Wing.WingClass.Beak),
-                    (0.2f, Wing.WingClass.Predator)
-                });
-                foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
-                    var roomBirdProb = 0.2f;
-                    if (Random.Chance(roomBirdProb)) {
-                        spawnedBirds++;
-                        var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
-                        var spawnPly = new BirdPersonality();
-                        spawnPly.generateRandom();
-                        var bordClass = birdClassDist.next();
-                        var className = bordClass.ToString().ToLower().First();
-                        var nick = NameGenerator.next().ToLowerInvariant();
-                        var bord = createWing($"{nick} {className}", spawnPos, spawnPly);
-                        bord.changeClass(bordClass);
-                    }
-                }
-
-                Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+                var gen = new BirdGenerator(this);
+                gen.spawnBirds();
             }
         }
     }
