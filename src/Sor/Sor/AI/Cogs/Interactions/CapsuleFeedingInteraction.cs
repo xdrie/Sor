@@ -2,6 +2,7 @@ using System;
 using LunchLib.Calc;
 using LunchLib.Cogs;
 using Sor.AI.Signals;
+using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs.Interactions {
     public class CapsuleFeedingInteraction : BirdInteraction {
@@ -38,13 +39,23 @@ namespace Sor.AI.Cogs.Interactions {
             var opinionDelta = 0;
 
             // calculate receptiveness to food
-            var foodReceptiveness = TraitCalc.transformTrait(myTraits.receptiveness,
+            // receptive (innate) [0, 1]
+            var innateFoodReceiptiveness = TraitCalc.transform(myTraits.receptiveness,
                 -0.4f, 1f, 0f, 1f);
+            // receptive (happy) [0, 0.5]
+            var happyFoodReceptiveness = TraitCalc.transform(me.emotions.happy,
+                -1.5f, 1f, 0f, 0.5f);
+
+            // receptive [0, 2]
+            var foodReceptiveness = GMathf.clamp(
+                innateFoodReceiptiveness + happyFoodReceptiveness,
+                0f, 2f
+            );
 
             opinionDelta += (int) (foodReceptiveness * foodValue);
 
             // food makes me happy!
-            me.emotions.spikeHappy(opinionDelta);
+            me.emotions.spikeHappy(GMathf.clamp(foodReceptiveness, 0, 0.8f));
 
             // add opinion to the one that fed me
             me.mind.state.addOpinion(giver.mind, opinionDelta);

@@ -39,13 +39,13 @@ namespace Sor.AI.Cogs.Interactions {
                 var maxWariness = 10f;
                 // [-4, 0]: long-distance wariness
                 var longDistanceWariness =
-                    (int) TraitCalc.transformTrait(-me.traits.wary, -4, 2, -4, 0);
+                    (int) TraitCalc.transform(-me.traits.wary, -4, 2, -4, 0);
                 // [-4, -1]: close distance wariness
                 var closeWariness = 0;
                 if (dist < closeDistance) {
                     // extreme caution
                     closeWariness =
-                        (int) TraitCalc.transformTrait(-me.traits.wary, -4, 0, -4, -1);
+                        (int) TraitCalc.transform(-me.traits.wary, -4, 0, -4, -1);
                 }
 
                 me.mind.state.setBoard("nearby fear",

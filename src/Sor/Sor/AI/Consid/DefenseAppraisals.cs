@@ -17,7 +17,7 @@ namespace Sor.AI.Consid {
             public static int threatThreshold(Mind mind) {
                 // threat threshold (min opinion to be threat) depends on personality
                 // threshold range: [-100, 70]
-                return (int) TraitCalc.transformTrait(mind.soul.traits.aggression,
+                return (int) TraitCalc.transform(mind.soul.traits.aggression,
                     -120, 70, -100, 70);
             }
 
