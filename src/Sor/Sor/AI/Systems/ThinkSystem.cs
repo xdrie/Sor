@@ -177,7 +177,7 @@ namespace Sor.AI.Systems {
                     // TODO: improve fighting/engagement, delegate to action planner
                     // follow and attack them
                     state.setPlan(new PlanTask[] {
-                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT) {align = true},
+                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_CLOSE) {align = true},
                         new PlanAttack(mind, threat.Entity),
                     });
                 }
