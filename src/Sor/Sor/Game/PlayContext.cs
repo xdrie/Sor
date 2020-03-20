@@ -19,6 +19,7 @@ using Sor.Util;
 namespace Sor.Game {
     public class PlayContext {
         public Wing playerWing;
+        public const string PLAYER_NAME = "player";
 
         public IEnumerable<Wing> wings =>
             scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
@@ -37,7 +38,7 @@ namespace Sor.Game {
         }
 
         public Wing createPlayer(Vector2 pos) {
-            var playerNt = new Entity("player").SetTag(Constants.Tags.WING);
+            var playerNt = new Entity(PlayContext.PLAYER_NAME).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
@@ -99,6 +100,11 @@ namespace Sor.Game {
             var frend = createWing("frend", new Vector2(-140, 20),
                 new BirdPersonality {A = -0.8f, S = 0.7f});
             frend.AddComponent(new Shooter()); // friend is armed
+            
+            // unfriendly bird
+            var enmy = createWing("enmy", new Vector2(120, 80),
+                new BirdPersonality {A = 0.8f, S = -0.7f});
+            enmy.AddComponent(new Shooter()); // enmy is armed
 
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();

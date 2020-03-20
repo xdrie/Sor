@@ -9,6 +9,7 @@ using Sor.AI.Plans;
 using Sor.Components.Input;
 using Sor.Components.Inspect;
 using Sor.Components.Units;
+using Sor.Game;
 using Sor.Systems;
 
 namespace Sor.Scenes {
@@ -30,7 +31,7 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            playerNt = CreateEntity("player", new Vector2(400, 400)).SetTag(Constants.Tags.WING);
+            playerNt = CreateEntity(PlayContext.PLAYER_NAME, new Vector2(400, 400)).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
