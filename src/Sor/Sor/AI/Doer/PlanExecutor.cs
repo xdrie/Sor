@@ -23,7 +23,7 @@ namespace Sor.AI.Doer {
             while (mind.state.plan.Count > 0 && !immediateGoal) { // go through goals until we find one to execute
                 mind.state.plan.TryPeek(out var nextTask);
                 // remove invalid goals
-                if (!nextTask.valid()) {
+                if (nextTask.status() != PlanTask.Status.Ongoing) {
                     mind.state.plan.TryDequeue(out var result);
                     continue;
                 }

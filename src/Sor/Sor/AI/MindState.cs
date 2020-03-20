@@ -70,7 +70,7 @@ namespace Sor.AI {
             return res;
         }
 
-        public bool isPlanValid => plan.Any(x => x.valid());
+        public bool isPlanValid => plan.Any(x => x.status() == PlanTask.Status.Ongoing);
 
         /// <summary>
         /// copy new plan to task plan

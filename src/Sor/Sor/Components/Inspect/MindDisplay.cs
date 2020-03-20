@@ -131,7 +131,7 @@ namespace Sor.Components.Inspect {
                 var planAhead = 2;
                 var nextInPlan = mind.state.plan.Take(planAhead);
                 foreach (var planTask in nextInPlan) {
-                    if (planTask.valid()) {
+                    if (planTask.status() == PlanTask.Status.Ongoing) {
                         switch (planTask) {
                             case TargetSource target: {
                                 var targetLoc = target.getPosition();

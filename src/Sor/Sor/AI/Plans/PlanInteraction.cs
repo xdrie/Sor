@@ -8,9 +8,9 @@ namespace Sor.AI.Plans {
             this.interactees = interactees;
         }
         
-        public override bool valid() {
+        public override Status status() {
             // TODO: validity checking on interactions
-            return true;
+            return Status.Ongoing;
         }
     }
 }
