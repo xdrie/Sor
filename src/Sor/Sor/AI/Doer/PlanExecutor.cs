@@ -17,10 +17,11 @@ namespace Sor.AI.Doer {
         public void process() {
             // clear steer input
             resetSteering();
-            
-            var targetPosition = default(Vector2?);
+
+            var navTargetSource = default(TargetSource);
             var immediateGoal = false; // whether we've obtained an immediate goal
-            while (mind.state.plan.Count > 0 && !immediateGoal) { // go through goals until we find one to execute
+            while (mind.state.plan.Count > 0 && !immediateGoal) {
+                // go through goals until we find one to execute
                 mind.state.plan.TryPeek(out var nextTask);
                 // dequeue completed goals
                 var nextTaskStatus = nextTask.status();
@@ -34,7 +35,9 @@ namespace Sor.AI.Doer {
                     case PlanTask.Status.Failed:
                         // a task failed
                         continueWithPlan = false;
-                        Global.log.writeLine($"action plan task {nextTask} failed ({mind.state.plan.Count} following canceled)", GlintLogger.LogLevel.Trace);
+                        Global.log.writeLine(
+                            $"action plan task {nextTask} failed ({mind.state.plan.Count} following canceled)",
+                            GlintLogger.LogLevel.Trace);
                         mind.state.clearPlan();
                         break;
                 }
@@ -44,8 +47,7 @@ namespace Sor.AI.Doer {
                 switch (nextTask) {
                     case TargetSource nextTarget:
                         // - go to a target
-                        // check closeness
-                        targetPosition = nextTarget.approachPosition(mind.me.body.pos);
+                        navTargetSource = nextTarget;
                         immediateGoal = true; // goal acquired
                         break;
                     case PlanInteraction inter: {
@@ -58,26 +60,23 @@ namespace Sor.AI.Doer {
             }
 
             // constant movement
-            if (targetPosition.HasValue) {
-                pilotToPosition(targetPosition.Value);
+            if (navTargetSource != null) {
+                // move to position
+                pilotToPosition(navTargetSource.approachPosition());
+                if (navTargetSource.align) {
+                    pilotToAngle(navTargetSource.getTargetAngle());
+                }
             }
         }
 
         private void processInteraction(PlanInteraction inter) {
             switch (inter) {
                 case PlanFeed interFeed: {
-                    // ensure alignment
-                    // TODO: follow target should better try to align
-                    var dirToOther = interFeed.target.Position - mind.me.body.pos;
-                    dirToOther.Normalize();
-                    var turnTolerance = Mathf.PI * 0.05f;
-                    var angleRemaining = pilotToAngle(dirToOther.ScreenSpaceAngle(), turnTolerance);
-                    if (Math.Abs(angleRemaining) < turnTolerance) { // make sure facing properly
-                        // feed
-                        // TODO: add capability for [HOLD 2s] etc.
-                        mind.controller.tetherLogical.logicPressed = true;
-                        interFeed.markDone();
-                    }
+                    // feed
+                    // TODO: add capability for [HOLD 2s] etc.
+                    mind.controller.tetherLogical.logicPressed = true;
+                    interFeed.markDone();
+
                     break;
                 }
                 case PlanAttack interAtk: {
@@ -107,12 +106,11 @@ namespace Sor.AI.Doer {
             // figure out how to move to target
             var toTarget = goal - mind.me.body.pos;
             var targetAngle = toTarget.ScreenSpaceAngle();
-            var turnTolerance = 0.05f * GMathf.PI;
-            var remainingTurn = pilotToAngle(targetAngle, turnTolerance);
+            var remainingTurn = pilotToAngle(targetAngle);
 
             var moveY = 0;
 
-            if (Math.Abs(remainingTurn) < turnTolerance) {
+            if (Math.Abs(remainingTurn) < TargetSource.AT_ANGLE) {
                 // we are facing the right way
 
                 mind.me.body.angularVelocity *= 0.9f; // cheat to help with angle
@@ -149,7 +147,8 @@ namespace Sor.AI.Doer {
                     // if (dGiv > dCritBs) {
                     //     controller.boostLogical.logicPressed = true;
                     // }
-                } else {
+                }
+                else {
                     moveY = 1;
                 }
             }
@@ -160,16 +159,16 @@ namespace Sor.AI.Doer {
             return toTarget;
         }
 
-        private float pilotToAngle(float targetAngle, float tolerance) {
-            var myAngle = mind.me.body.stdAngle;
+        private float pilotToAngle(float targetAngle) {
             // delta between current angle to target
-            var turn = Mathf.DeltaAngleRadians(myAngle, targetAngle);
-            if (Math.Abs(turn) > tolerance) {
+            var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, targetAngle);
+            if (Math.Abs(remainingAngle) > TargetSource.AT_ANGLE) {
                 var moveX = 0;
 
-                if (turn > 0) {
+                if (remainingAngle > 0) {
                     moveX = -1;
-                } else if (turn < 0) {
+                }
+                else if (remainingAngle < 0) {
                     moveX = 1;
                 }
 
@@ -177,7 +176,7 @@ namespace Sor.AI.Doer {
                 mind.controller.moveDirectionLogical.LogicValue = new Vector2(moveX, steer.Y);
             }
 
-            return turn;
+            return remainingAngle;
         }
     }
 }
