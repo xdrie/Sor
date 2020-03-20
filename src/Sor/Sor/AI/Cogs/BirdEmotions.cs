@@ -6,14 +6,10 @@ namespace Sor.AI.Cogs {
         public override float[] vec { get; } = {0f, 0f};
         public override float falloff => 0.9f;
 
-        public float fear {
-            get => vec[0];
-            set => vec[0] = value;
-        }
+        public ref float fear => ref vec[0];
+        public ref float happy => ref vec[1];
 
-        public float happy {
-            get => vec[1];
-            set => vec[1] = value;
-        }
+        public void spikeFear(float val) => spike(ref fear, val);
+        public void spikeHappy(float val) => spike(ref happy, val); 
     }
 }

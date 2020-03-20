@@ -55,7 +55,7 @@ namespace Sor.AI.Cogs.Interactions {
                 opinionDelta += warinessScore;
                 
                 // being in the presence of a threat is scary
-                me.emotions.fear = Math.Abs(warinessScore / maxWariness);
+                me.emotions.spikeFear(Math.Abs(warinessScore / maxWariness));
             }
 
             // clamp the opinion delta to the required range

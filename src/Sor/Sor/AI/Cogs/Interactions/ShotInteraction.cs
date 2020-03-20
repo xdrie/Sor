@@ -31,7 +31,7 @@ namespace Sor.AI.Cogs.Interactions {
             // we are ANGERY
             // TODO: calculate anger amount from being shot
             me.mind.state.addOpinion(them.mind, -40);
-            me.emotions.fear = 1; // scary
+            me.emotions.spikeFear(1); // scary
         }
     }
 }
