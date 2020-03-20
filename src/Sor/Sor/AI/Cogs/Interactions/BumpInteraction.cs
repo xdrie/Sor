@@ -13,6 +13,7 @@ namespace Sor.AI.Cogs.Interactions {
             
             // we don't like getting bumped
             me.mind.state.addOpinion(them.mind, -10);
+            me.emotions.fear = 0.4f; // somewhat scary
         }
     }
 }
