@@ -172,7 +172,7 @@ namespace Sor.AI.Systems {
                     // follow and attack them
                     state.setPlan(new PlanTask[] {
                         new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT),
-                        new PlanAttack(mind, entity),
+                        new PlanAttack(mind, threat.Entity),
                     });
                 }
             }, 0.8f, "fight");
