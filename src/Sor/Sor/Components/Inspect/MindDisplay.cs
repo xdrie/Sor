@@ -42,10 +42,19 @@ namespace Sor.Components.Inspect {
             get { return Entity.Scene.Camera.Bounds; }
         }
 
+        void drawIndicator(Batcher batcher, Vector2 pos, Color col, float size = 4f, float thickness = 1f) {
+            batcher.DrawHollowRect(
+                new RectangleF(pos.X - size, pos.Y - size, size * 2, size * 2),
+                col, thickness);
+        }
+
         public override void Render(Batcher batcher, Camera camera) {
             if (draw) {
                 // draw mind info representation
+                // highlight the inspected wing
+                drawIndicator(batcher, mind.me.body.pos, Color.White, 8f);
 
+                // text container for all display text
                 var ind = new ColoredTextBuilder(Color.White);
 
                 // draw basic mind state
@@ -116,14 +125,6 @@ namespace Sor.Components.Inspect {
                     ind.appendLine(considSb.ToString());
                 }
 
-                void drawPosIndicator(Vector2 pos, Color col) {
-                    // draw indicator
-                    var indSize = 4f;
-                    batcher.DrawHollowRect(
-                        new RectangleF(pos.X - indSize, pos.Y - indSize, indSize * 2, indSize * 2),
-                        col, 1f);
-                }
-
                 var planItems = mind.state.plan.ToList();
                 var planSb = new StringBuilder();
                 var planAhead = 2;
@@ -147,8 +148,8 @@ namespace Sor.Components.Inspect {
 
                                 planSb.AppendLine();
 
-                                drawPosIndicator(targetLoc, targetColor);
-                                drawPosIndicator(approachLoc, Color.LightBlue);
+                                drawIndicator(batcher, targetLoc, targetColor, 4f);
+                                drawIndicator(batcher, approachLoc, Color.LightBlue, 4f);
                                 break;
                             }
                             case SingleInteraction inter:
