@@ -62,7 +62,7 @@ namespace Sor.AI.Doer {
             if (navTargetSource != null) {
                 // move to position
                 pilotToPosition(navTargetSource.approachPosition());
-                if (navTargetSource.align) {
+                if (navTargetSource.align && navTargetSource.closeEnoughPosition()) {
                     pilotToAngle(navTargetSource.getTargetAngle());
                 }
             }

@@ -50,7 +50,7 @@ namespace Sor.AI.Plans {
             return dirToTarget.ScreenSpaceAngle();
         }
 
-        private bool closeEnoughPosition() {
+        public bool closeEnoughPosition() {
             var pos = mind.me.body.pos;
             var actualPos = getPosition();
             var approachPos = approachPosition();
