@@ -174,6 +174,10 @@ namespace Sor.AI.Doer {
                 var steer = mind.controller.moveDirectionLogical.LogicValue;
                 mind.controller.moveDirectionLogical.LogicValue = new Vector2(moveX, steer.Y);
             }
+            else {
+                // cheat and snap angle
+                mind.me.body.stdAngle = targetAngle;
+            }
 
             return remainingAngle;
         }
