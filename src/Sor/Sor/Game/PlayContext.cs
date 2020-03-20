@@ -42,7 +42,6 @@ namespace Sor.Game {
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
-            playerWing.changeClass(Wing.WingClass.Wing);
             playerWing.body.pos = pos;
             playerNt.AddComponent<PlayerInputController>();
             return playerWing;
