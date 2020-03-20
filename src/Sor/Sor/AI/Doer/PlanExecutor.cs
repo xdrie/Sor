@@ -4,7 +4,6 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
-using XNez.GUtils.Misc;
 
 namespace Sor.AI.Doer {
     public class PlanExecutor {
