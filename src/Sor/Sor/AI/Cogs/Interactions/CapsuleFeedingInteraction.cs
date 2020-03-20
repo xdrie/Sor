@@ -6,7 +6,6 @@ using Sor.AI.Signals;
 namespace Sor.AI.Cogs.Interactions {
     public class CapsuleFeedingInteraction : BirdInteraction {
         private ItemSignals.CapsuleAcquiredSignal sig;
-        private const int maxBonus = 40;
 
         struct Traits {
             public static float[] vec_receptiveness = {0.9f, -0.4f};
@@ -28,20 +27,27 @@ namespace Sor.AI.Cogs.Interactions {
             if (participants.Length != 2)
                 throw new ArgumentException("only two participants", nameof(participants));
             var me = participants[0]; // this should be "me"
-            var recptTraits = new Traits(me);
+            var myTraits = new Traits(me);
             var giver = participants[1]; // the one who gave me stuff
-            var giverTraits = new Traits(giver);
+
+            // food value [0, 40]
+            var maxFoodValue = 40;
+            var foodValue = (int) (sig.energy / 400f) * maxFoodValue;
 
             // calculate opinion delta
-            var opDel = (int) (sig.energy / 400f) * maxBonus;
-            // if receptive, add a bonus
-            var opScl = PerMath.twoSegment(opDel, recptTraits.receptiveness, 0f, 1.4f, true);
-            opDel = IntMath.clamp((int) (opDel * opScl), 0, maxBonus);
-            
+            var opinionDelta = 0;
+
+            // calculate receptiveness to food
+            var foodReceptiveness = TraitCalc.transformTrait(myTraits.receptiveness,
+                -0.4f, 1f, 0f, 1f);
+
+            opinionDelta += (int) (foodReceptiveness * foodValue);
+
             // food makes me happy!
-            me.emotions.happy = 1f;
-            
-            var giverOpi = me.mind.state.addOpinion(giver.mind, opDel);
+            me.emotions.spikeHappy(opinionDelta);
+
+            // add opinion to the one that fed me
+            me.mind.state.addOpinion(giver.mind, opinionDelta);
         }
     }
 }
