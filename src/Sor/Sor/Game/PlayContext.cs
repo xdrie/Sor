@@ -19,6 +19,7 @@ using Sor.Util;
 namespace Sor.Game {
     public class PlayContext {
         public Wing playerWing;
+        public const string PLAYER_NAME = "player";
 
         public IEnumerable<Wing> wings =>
             scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
@@ -37,7 +38,7 @@ namespace Sor.Game {
         }
 
         public Wing createPlayer(Vector2 pos) {
-            var playerNt = new Entity("player").SetTag(Constants.Tags.WING);
+            var playerNt = new Entity(PLAYER_NAME).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
@@ -94,16 +95,23 @@ namespace Sor.Game {
         private void spawnBirds() {
             var player = createPlayer(new Vector2(200, 200));
             player.Entity.AddComponent(new Shooter());
+            
+            // a friendly bird
+            var frend = createWing("frend", new Vector2(-140, 20),
+                new BirdPersonality {A = -0.8f, S = 0.7f});
+            frend.AddComponent(new Shooter()); // friend is armed
+            
+            // // unfriendly bird
+            // var enmy = createWing("enmy", new Vector2(120, 80),
+            //     new BirdPersonality {A = 0.8f, S = -0.7f});
+            // enmy.AddComponent(new Shooter()); // enmy is armed
 
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
                 var uno = createWing("uno", new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
-
-                // a friendly bird
-                var frend = createWing("frend", new Vector2(-140, 20),
-                    new BirdPersonality {A = -0.8f, S = 0.7f});
+                
                 // a second friendly bird
                 var fren2 = createWing("yii", new Vector2(400, -80),
                     new BirdPersonality {A = -0.5f, S = 0.4f});
@@ -111,30 +119,8 @@ namespace Sor.Game {
                 var anxious1 = createWing("ada", new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
-                // now, spawn a bunch of birds across the rooms
-                int spawnedBirds = 0;
-                var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
-                var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
-                    (0.5f, Wing.WingClass.Wing),
-                    (0.3f, Wing.WingClass.Beak),
-                    (0.2f, Wing.WingClass.Predator)
-                });
-                foreach (var room in mapLoader.mapRepr.roomGraph.rooms) {
-                    var roomBirdProb = 0.2f;
-                    if (Random.Chance(roomBirdProb)) {
-                        spawnedBirds++;
-                        var spawnPos = mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
-                        var spawnPly = new BirdPersonality();
-                        spawnPly.generateRandom();
-                        var bordClass = birdClassDist.next();
-                        var className = bordClass.ToString().ToLower().First();
-                        var nick = NameGenerator.next().ToLowerInvariant();
-                        var bord = createWing($"{nick} {className}", spawnPos, spawnPly);
-                        bord.changeClass(bordClass);
-                    }
-                }
-
-                Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+                var gen = new BirdGenerator(this);
+                gen.spawnBirds();
             }
         }
     }

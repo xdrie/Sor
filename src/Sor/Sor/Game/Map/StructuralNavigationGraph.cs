@@ -4,7 +4,7 @@ using Nez;
 using Nez.AI.Pathfinding;
 
 namespace Sor.Game.Map {
-    public class StructuralNavigationGraph : IWeightedGraph<StructuralNavigationGraph.Node> {
+    public class StructuralNavigationGraph : IAstarGraph<StructuralNavigationGraph.Node> {
         public const int DOOR_NODE_DIST = 2;
         public List<Node> nodes;
 
@@ -20,6 +20,10 @@ namespace Sor.Game.Map {
 
             public Node(Point pos) {
                 this.pos = pos;
+            }
+
+            public override string ToString() {
+                return $"Node({pos})";
             }
         }
         
@@ -46,6 +50,10 @@ namespace Sor.Game.Map {
             // for now, base it on room center proximity
             var dist = PointExt.mhDist(src.pos, dest.pos);
             return dist;
+        }
+
+        public int Heuristic(Node node, Node goal) {
+            return 0;
         }
     }
 }

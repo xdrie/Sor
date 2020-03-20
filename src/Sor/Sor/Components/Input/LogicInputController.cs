@@ -3,26 +3,29 @@ using Microsoft.Xna.Framework;
 
 namespace Sor.Components.Input {
     public class LogicInputController : InputController {
-        public VirtualJoystick.LogicJoystick moveDirectionLogical { get; } = new VirtualJoystick.LogicJoystick();
-        public VirtualButton.LogicButton interactLogical { get; } = new VirtualButton.LogicButton();
-        public VirtualButton.LogicButton tetherLogical { get; } = new VirtualButton.LogicButton();
-        public VirtualButton.LogicButton boostLogical { get; } = new VirtualButton.LogicButton();
+        public VirtualJoystick.LogicJoystick moveDirectionLogical;
+        public VirtualButton.LogicButton interactLogical;
+        public VirtualButton.LogicButton tetherLogical;
+        public VirtualButton.LogicButton boostLogical;
+        public VirtualButton.LogicButton fireLogical;
         
         public override void Initialize() {
             base.Initialize();
             
-            moveDirectionInput.Nodes.Add(moveDirectionLogical);
-            
-            interactInput.Nodes.Add(interactLogical);
-            tetherInput.Nodes.Add(tetherLogical);
-            boostInput.Nodes.Add(boostLogical);
+            moveDirectionLogical = moveDirectionInput.AddLogical();
+
+            interactLogical = interactInput.AddLogical();
+            tetherLogical = tetherInput.AddLogical();
+            boostLogical = boostInput.AddLogical();
+            fireLogical = fireInput.AddLogical();
         }
 
         public void zero() {
             moveDirectionLogical.LogicValue = Vector2.Zero;
-            interactLogical.logicPressed = false;
-            tetherLogical.logicPressed = false;
-            boostLogical.logicPressed = false;
+            interactLogical.LogicPressed = false;
+            tetherLogical.LogicPressed = false;
+            boostLogical.LogicPressed = false;
+            fireLogical.LogicPressed = false;
         }
     }
 }

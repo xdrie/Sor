@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Nez;
 
@@ -14,7 +15,9 @@ namespace Sor.AI.Plans {
 
     public abstract class TargetSource : PlanTask, ITargetSource {
         public float approachRange = 0;
-        
+        public bool align = false;
+
+        public const float AT_ANGLE = 0.05f * Mathf.PI;
         public const float AT_POSITION_SQ = 2f * 2f;
         public const float NEAR_POSITION_SQ = 60f * 60f;
 
@@ -24,28 +27,35 @@ namespace Sor.AI.Plans {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind, reachBefore) {
+        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind,
+            reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;
         }
 
-        public Vector2 approachPosition(Vector2 fromPos) {
+        public Vector2 approachPosition() {
             var pos = getPosition();
             // don't adjust precise approaches
             if (approach == Approach.Precise) return pos;
 
             // figure out the point along the way
-            var toFrom = pos - fromPos;
+            var toFrom = pos - mind.me.body.pos;
             toFrom.Normalize();
             toFrom *= approachRange;
             return pos - toFrom;
         }
-        
-        public bool closeEnoughApproach(Vector2 fromPos) {
+
+        public float getTargetAngle() {
+            var dirToTarget = Vector2Ext.Normalize(getPosition() - mind.me.body.pos);
+            return dirToTarget.ScreenSpaceAngle();
+        }
+
+        public bool closeEnoughPosition() {
+            var pos = mind.me.body.pos;
             var actualPos = getPosition();
-            var approachPos = approachPosition(fromPos);
-            var approachToFrom = approachPos - fromPos;
-            var actualToFrom = actualPos - fromPos;
+            var approachPos = approachPosition();
+            var approachToFrom = approachPos - pos;
+            var actualToFrom = actualPos - pos;
             switch (approach) {
                 case Approach.Precise:
                     return approachToFrom.LengthSquared() < AT_POSITION_SQ;
@@ -56,6 +66,26 @@ namespace Sor.AI.Plans {
                 default:
                     return false; // never
             }
+        }
+
+        private bool closeEnoughApproach() {
+            var positionCloseEnough = closeEnoughPosition(); // check position
+            if (positionCloseEnough) {
+                if (!align) return true;
+                // check alignment
+                var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, getTargetAngle());
+                return Math.Abs(remainingAngle) < AT_ANGLE;
+            }
+
+            return false;
+        }
+
+        public override Status status() {
+            var baseStatus = base.status();
+            if (baseStatus != Status.Ongoing) return baseStatus;
+
+            if (closeEnoughApproach()) return Status.Complete;
+            return Status.Ongoing;
         }
 
         public abstract Vector2 getPosition();

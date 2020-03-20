@@ -4,6 +4,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Console;
+using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Units;
 using Sor.Scenes;
@@ -17,9 +18,16 @@ namespace Sor.Game {
         public static bool aiTrace = false;
 
         [Command("g_energy", "adds energy to the player")]
-        public static void Energy(float val) {
-            play.playContext.playerWing.core.energy += val;
-            debugLog($"gave {val} energy to player");
+        public static void Energy(float val, string name) {
+            if (name == null) name = PlayContext.PLAYER_NAME;
+            var wing = play.playContext.wings.SingleOrDefault(x => x.name == name);
+            if (wing == null) {
+                debugLog($"no wing named {name} was found");
+                return;
+            }
+
+            wing.core.energy += val;
+            debugLog($"gave {val} energy to {name}");
         }
 
         [Command("g_class", "changes player wing class")]
@@ -32,7 +40,11 @@ namespace Sor.Game {
         [Command("g_list", "lists all wings")]
         public static void List() {
             var wings = play.playContext.wings.ToList();
-            debugLog($"{wings.Count} wings: {string.Join(",", wings.Select(x => x.name))}");
+            var nearbyWings = play.playContext.wings.Where(x =>
+                (x.body.pos - play.playContext.playerWing.body.pos).LengthSquared() <
+                MindConstants.SENSE_RANGE * MindConstants.SENSE_RANGE)
+                .ToList();
+            debugLog($"{wings.Count} wings ({nearbyWings.Count} nearby): {string.Join(",", wings.Select(x => x.name))}");
         }
 
         [Command("g_kill", "kills a wing")]

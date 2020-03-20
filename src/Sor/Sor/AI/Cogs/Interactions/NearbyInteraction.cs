@@ -1,3 +1,4 @@
+using System;
 using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -35,23 +36,26 @@ namespace Sor.AI.Cogs.Interactions {
             } else {
                 // TODO: take anxiety better into account
                 // calculate opinion-affecting factors
+                var maxWariness = 10f;
                 // [-4, 0]: long-distance wariness
                 var longDistanceWariness =
-                    (int) TraitCalc.transformTrait(-me.traits.wary, -4, 2, -4, 0);
+                    (int) TraitCalc.transform(-me.traits.wary, -4, 2, -4, 0);
                 // [-4, -1]: close distance wariness
                 var closeWariness = 0;
                 if (dist < closeDistance) {
                     // extreme caution
                     closeWariness =
-                        (int) TraitCalc.transformTrait(-me.traits.wary, -4, 0, -4, -1);
+                        (int) TraitCalc.transform(-me.traits.wary, -4, 0, -4, -1);
                 }
 
                 me.mind.state.setBoard("nearby fear",
                     new MindState.BoardItem($"L: {longDistanceWariness}, C: {closeWariness}", "interaction",
                         Color.Orange, Time.TotalTime + 1f));
-                opinionDelta = longDistanceWariness + closeWariness;
+                var warinessScore = longDistanceWariness + closeWariness;
+                opinionDelta += warinessScore;
+                
                 // being in the presence of a threat is scary
-                me.emotions.fear = 1;
+                me.emotions.spikeFear(Math.Abs(warinessScore / maxWariness));
             }
 
             // clamp the opinion delta to the required range

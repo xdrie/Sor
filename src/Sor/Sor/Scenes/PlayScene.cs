@@ -63,13 +63,15 @@ namespace Sor.Scenes {
             gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
 
             AddEntity(playContext.playerWing.Entity);
-            foreach (var wing in playContext.createdWings) { // attach all wings
+            foreach (var wing in playContext.createdWings) {
+                // attach all wings
                 AddEntity(wing.Entity);
             }
 
             playContext.createdWings.Clear();
 
-            foreach (var thing in playContext.createdThings) { // attach all things
+            foreach (var thing in playContext.createdThings) {
+                // attach all things
                 AddEntity(thing.Entity);
             }
 
@@ -82,8 +84,7 @@ namespace Sor.Scenes {
             const int hudPadding = 8;
             var statusBarSize = new Point(96, 12);
             var hud = CreateEntity("hud", new Vector2(DesignResolution.X - statusBarSize.X - hudPadding, hudPadding));
-            var energyIndicator = hud.AddComponent(new IndicatorBar(statusBarSize.X, statusBarSize.Y));
-            energyIndicator.setColors(new Color(204, 134, 73), new Color(115, 103, 92));
+            var energyIndicator = hud.AddComponent(new EnergyIndicator());
             energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
             energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
 
@@ -138,11 +139,26 @@ namespace Sor.Scenes {
 
                 if (InputUtils.IsControlDown()) {
                     Core.Instance.IsMouseVisible = true;
-                } else {
+                }
+                else {
                     Core.Instance.IsMouseVisible = false;
                 }
 
+                void removeInspectors() {
+                    foreach (var birdNt in FindEntitiesWithTag(Constants.Tags.WING)) {
+                        if (birdNt.HasComponent<MindDisplay>()) {
+                            birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
+                        }
+                    }
+                }
+
+                if (Input.RightMouseButtonPressed) {
+                    removeInspectors();
+                }
+
+                // attach inspector
                 if (Input.LeftMouseButtonPressed) {
+                    removeInspectors(); // remove any existing inspector
                     // find the nearest non-player bird and inspect
                     var nearest = default(Wing);
                     var nearestDist = double.MaxValue;
@@ -150,12 +166,9 @@ namespace Sor.Scenes {
                         var wing = birdNt.GetComponent<Wing>();
                         if (birdNt.HasComponent<PlayerInputController>())
                             continue;
-                        if (birdNt.HasComponent<MindDisplay>()) {
-                            birdNt.RemoveComponent<MindDisplay>(); // remove any existing inspectors
-                        }
 
                         var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                        var distSq = (birdNt.Position - mouseWp).LengthSquared();
+                        var distSq = (wing.body.pos - mouseWp).LengthSquared();
                         if (distSq < nearestDist) {
                             nearest = wing;
                             nearestDist = distSq;
@@ -189,7 +202,7 @@ namespace Sor.Scenes {
 
         public override void Unload() {
             base.Unload();
-            
+
             // unload play context
             Core.Services.RemoveService(typeof(PlayContext));
 

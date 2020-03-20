@@ -10,25 +10,27 @@ using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
-using Sor.Game;
 using Sor.Game.Map;
 
 namespace Sor.AI {
     public class MindState {
         public Mind mind;
+        public int ticks = 0;
 
         public MindState(Mind mind) {
             this.mind = mind;
         }
 
-        public List<Wing> seenWings = new List<Wing>(); // visible wings
-        public List<Thing> seenThings = new List<Thing>(); // visible things
+        public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
+        public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
-        public Dictionary<Consideration<Mind>, float> lastPlanTable;
         public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
-        public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
+        public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
+
+        public ConcurrentDictionary<Consideration<Mind>, float> lastPlanLog =
+            new ConcurrentDictionary<Consideration<Mind>, float>();
 
         public struct BoardItem {
             public string value;
@@ -68,48 +70,74 @@ namespace Sor.AI {
             return res;
         }
 
+        public bool isPlanValid => plan.Any(x => x.status() == PlanTask.Status.Ongoing);
+
         /// <summary>
         /// copy new plan to task plan
         /// </summary>
         /// <param name="tasks">new task list</param>
         public void setPlan(IEnumerable<PlanTask> tasks) {
-            lock (plan) {
-                while (plan.Count > 0) {
-                    plan.TryDequeue(out var item);
-                }
+            clearPlan();
 
-                foreach (var task in tasks) {
-                    plan.Enqueue(task);
-                }
+            foreach (var task in tasks) {
+                plan.Enqueue(task);
             }
         }
 
-        public bool isPlanValid => plan.Any(x => x.valid());
+        public void clearPlan() {
+            while (plan.Count > 0) {
+                plan.TryDequeue(out var item);
+            }
+        }
+
+        public bool hasNavPath => navPath != null && navPath.Count > 0;
+
+        public void setNavPath(List<StructuralNavigationGraph.Node> path) {
+            navPath = path;
+        }
 
         public void setBoard(string key, BoardItem item) {
-            lock (board) {
-                board[key] = item;
-            }
+            board[key] = item;
         }
 
         private void tickBoard() {
-            var expiredItems = new List<string>();
+            var expiredItemKeys = new List<string>();
             lock (board) {
                 foreach (var itemKvp in board) {
                     var item = itemKvp.Value;
                     if (item.expireTime > 0 && Time.DeltaTime > item.expireTime) {
-                        expiredItems.Add(itemKvp.Key);
+                        expiredItemKeys.Add(itemKvp.Key);
                     }
                 }
 
-                foreach (var item in expiredItems) {
-                    board.Remove(item);
+                foreach (var itemKey in expiredItemKeys) {
+                    board.TryRemove(itemKey, out var val);
                 }
             }
         }
 
         public void tick() {
-            tickBoard();
+            ticks++;
+            if (ticks % 10 == 0) {
+                tickBoard();
+            }
+        }
+
+        public void clearVision() {
+            while (!seenWings.IsEmpty) {
+                seenWings.TryTake(out var val);
+            }
+
+            while (!seenThings.IsEmpty) {
+                seenThings.TryTake(out var val);
+            }
+        }
+
+        public void updatePlanLog(Dictionary<Consideration<Mind>, float> resultTable) {
+            lastPlanLog.Clear();
+            foreach (var item in resultTable) {
+                lastPlanLog.TryAdd(item.Key, item.Value);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using Glint.Config;
 using Glint.Util;
+using Sor.Components.Units;
 
 namespace Sor.Game {
     public class Config : GameConfig {
@@ -8,7 +9,7 @@ namespace Sor.Game {
         // debug config
         public bool cheats = false;
         public bool logInteractions = false;
-        
+
         // - internal config
         public const string INTERNAL = "internal";
         public bool cameraLockedRotation = false;
@@ -16,6 +17,7 @@ namespace Sor.Game {
         public bool enableWalls = false;
         public bool spawnBirds = true;
         public bool invisible = false;
+        public int mindDisplayAhead = 3;
 
         public override void load() {
             base.load();
@@ -25,6 +27,7 @@ namespace Sor.Game {
 #if DEBUG // only load debug config in debug builds
             pr.bind(ref cheats, DEBUG, rename(nameof(cheats)));
             pr.bind(ref logInteractions, DEBUG, rename(nameof(logInteractions)));
+            pr.bind(ref mindDisplayAhead, DEBUG, rename(nameof(mindDisplayAhead)));
 #endif
             
 #if DEBUG

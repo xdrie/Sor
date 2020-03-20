@@ -18,23 +18,22 @@ namespace Sor.AI.Systems {
             // boxcast in radius
             var sensorCollResults = Physics.BoxcastBroadphase(sensorRec).ToList();
             var playContext = NGame.Services.GetService<PlayContext>();
-            lock (state.seenWings)
-            lock (state.seenThings) {
-                state.seenWings.Clear();
-                state.seenThings.Clear();
-                foreach (var sensorResult in sensorCollResults) {
-                    if (sensorResult.Entity == null) continue;
-                    var sensed = sensorResult.Entity;
-                    if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != entity) {
-                        if (NGame.context.config.invisible) {
-                            if (sensed.Name == playContext.playerWing.name) {
-                                continue; // make player invisible
-                            }
+
+            state.clearVision();
+            foreach (var sensorResult in sensorCollResults) {
+                if (sensorResult.Entity == null) continue;
+                var sensed = sensorResult.Entity;
+                if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != entity) {
+                    if (NGame.context.config.invisible) {
+                        if (sensed.Name == playContext.playerWing.name) {
+                            continue; // make player invisible
                         }
-                        state.seenWings.Add(sensed.GetComponent<Wing>());
-                    } else if (sensorResult.Tag == Constants.Colliders.THING) {
-                        state.seenThings.Add(sensed.GetComponent<Thing>());
                     }
+
+                    state.seenWings.Add(sensed.GetComponent<Wing>());
+                }
+                else if (sensorResult.Tag == Constants.Colliders.THING) {
+                    state.seenThings.Add(sensed.GetComponent<Thing>());
                 }
             }
         }
