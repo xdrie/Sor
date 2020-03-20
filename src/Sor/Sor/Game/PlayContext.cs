@@ -38,10 +38,11 @@ namespace Sor.Game {
         }
 
         public Wing createPlayer(Vector2 pos) {
-            var playerNt = new Entity(PlayContext.PLAYER_NAME).SetTag(Constants.Tags.WING);
+            var playerNt = new Entity(PLAYER_NAME).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
+            playerWing.changeClass(Wing.WingClass.Wing);
             playerWing.body.pos = pos;
             playerNt.AddComponent<PlayerInputController>();
             return playerWing;

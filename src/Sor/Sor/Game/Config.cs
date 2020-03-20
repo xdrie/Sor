@@ -1,5 +1,6 @@
 using Glint.Config;
 using Glint.Util;
+using Sor.Components.Units;
 
 namespace Sor.Game {
     public class Config : GameConfig {
@@ -8,7 +9,7 @@ namespace Sor.Game {
         // debug config
         public bool cheats = false;
         public bool logInteractions = false;
-        
+
         // - internal config
         public const string INTERNAL = "internal";
         public bool cameraLockedRotation = false;
