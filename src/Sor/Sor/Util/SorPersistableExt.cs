@@ -1,8 +1,10 @@
 using Glint.Physics;
 using Glint.Util;
 using Microsoft.Xna.Framework;
+using Nez;
 using Nez.Persistence.Binary;
 using Sor.AI.Cogs;
+using Sor.Components.Items;
 using Sor.Components.Units;
 
 namespace Sor.Util {
@@ -51,6 +53,7 @@ namespace Sor.Util {
             public Wing.WingClass wingClass;
             public float energy;
             public BirdPersonality ply;
+            public bool armed;
 
             public WingData() { }
 
@@ -59,6 +62,7 @@ namespace Sor.Util {
                 wingClass = wing.wingClass;
                 energy = wing.core.energy;
                 ply = wing.mind.soul.ply;
+                armed = wing.HasComponent<Shooter>();
             }
         }
 
@@ -68,6 +72,7 @@ namespace Sor.Util {
             w.Write((int) wd.wingClass);
             w.Write(wd.energy);
             w.writePersonality(wd.ply);
+            w.Write(wd.armed);
         }
 
         public static WingData readWingMeta(this IPersistableReader r) {
@@ -76,6 +81,7 @@ namespace Sor.Util {
             wd.wingClass = (Wing.WingClass) r.ReadInt();
             wd.energy = r.ReadFloat();
             wd.ply = r.readPersonality();
+            wd.armed = r.ReadBool();
             return wd;
         }
         

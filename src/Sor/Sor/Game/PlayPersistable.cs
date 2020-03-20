@@ -5,6 +5,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Persistence.Binary;
+using Sor.Components.Items;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Util;
@@ -53,6 +54,9 @@ namespace Sor.Game {
             player.mind.soul.ply = playerWd.ply;
             playerBodyData.copyTo(playContext.playerWing.body);
             player.changeClass(playerWd.wingClass);
+            if (playerWd.armed) {
+                player.AddComponent<Shooter>();
+            }
             wings.Add(playContext.playerWing);
 
             // load all wings
@@ -60,6 +64,9 @@ namespace Sor.Game {
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWingMeta();
                 var wing = playContext.createWing(wd.name, Vector2.Zero, wd.ply);
+                if (wd.armed) {
+                    wing.AddComponent<Shooter>();
+                }
                 var bd = rd.readBodyData();
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
