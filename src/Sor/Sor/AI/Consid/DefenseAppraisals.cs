@@ -59,6 +59,18 @@ namespace Sor.AI.Consid {
                 return (int) (score * weight);
             }
 
+            private float betterRatio(float adv, float dis) {
+                var res = 0f;
+                if (dis != 0f) {
+                    res = adv / dis;
+                }
+                else {
+                    res = GMathf.BILLION;
+                }
+
+                return res;
+            }
+
             public override float score() {
                 // determine how fightable nearby threats are
                 var threat = NearbyThreat.greatestThreat(context);
@@ -66,27 +78,23 @@ namespace Sor.AI.Consid {
 
                 // TODO: use better functions to map ratios to score
                 // 1. compare core sizes (ratio) -> transform [-40, 40]
-                var coreSizeRatio = context.me.core.designMax / threat.mind.me.core.designMax;
-                if (float.IsNaN(coreSizeRatio)) coreSizeRatio = GMathf.BILLION;
-                var coreSizeScore = scoreRatio(1 / coreSizeRatio, 20);
+                var coreSizeRatio = betterRatio(threat.mind.me.core.designMax, context.me.core.designMax);
+                var coreSizeScore = scoreRatio(coreSizeRatio, 20);
 
                 // 2. compare maneuverability (ratio) -> transform [-20, 20]
                 // if we're more maneuverable, it might not be worth fighting
-                var maneuverabilityRatio = context.me.body.turnPower / threat.mind.me.body.turnPower;
-                if (float.IsNaN(maneuverabilityRatio)) maneuverabilityRatio = GMathf.BILLION;
+                var maneuverabilityRatio = betterRatio(context.me.body.turnPower , threat.mind.me.body.turnPower);
                 var maneuScore = scoreRatio(maneuverabilityRatio, 20);
 
                 // 3. compare speed (ratio) -> transform [-40, 40]
                 // if we're faster, we want to fight less
-                var speedRatio = context.me.body.thrustPower / threat.mind.me.body.thrustPower;
-                if (float.IsNaN(speedRatio)) speedRatio = GMathf.BILLION;
+                var speedRatio = betterRatio(context.me.body.thrustPower, threat.mind.me.body.thrustPower);
                 var speedScore = scoreRatio(speedRatio, 30);
 
                 // 3. compare energy (ratio) -> transform [-40, 40]
                 // if we're faster, we want to fight less
-                var energyRatio = context.me.core.energy / threat.mind.me.core.energy;
-                if (float.IsNaN(energyRatio)) energyRatio = GMathf.BILLION;
-                var energyScore = scoreRatio(1 / energyRatio, 30);
+                var energyRatio = betterRatio(threat.mind.me.core.energy, context.me.core.energy);
+                var energyScore = scoreRatio(energyRatio, 30);
 
                 // 4. compare armed state
                 var threatWeaponMaxscore = 40;
