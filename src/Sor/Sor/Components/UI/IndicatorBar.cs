@@ -1,5 +1,4 @@
 using System;
-using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;

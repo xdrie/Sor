@@ -1,7 +1,6 @@
 using Glint;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Nez;
 using Sor.Game;
 using Sor.Scenes;
 

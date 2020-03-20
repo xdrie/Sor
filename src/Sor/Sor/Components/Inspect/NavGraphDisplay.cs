@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Nez;
-using Sor.Game.Map;
 
 namespace Sor.Components.Inspect {
 #if DEBUG

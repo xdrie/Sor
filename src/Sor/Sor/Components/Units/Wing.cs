@@ -1,7 +1,6 @@
 using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Nez;
-using Nez.Tweens;
 using Sor.AI;
 using Sor.Components.Things;
 using Sor.Components.UI;

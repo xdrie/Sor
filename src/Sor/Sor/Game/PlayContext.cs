@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Glint;
 using Glint.Util;
-using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -14,7 +13,6 @@ using Sor.Components.Units;
 using Sor.Game.Map;
 using Sor.Game.Map.Gen;
 using Sor.Scenes;
-using Sor.Util;
 
 namespace Sor.Game {
     public class PlayContext {

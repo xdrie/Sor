@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Glint;
-using Glint.Scenes;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;

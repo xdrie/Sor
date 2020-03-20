@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Nez;
 using Sor.Components.Units;
 
 namespace Sor.Components.UI {

@@ -1,5 +1,4 @@
 using Glint.Config;
-using Glint.Game;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.BitmapFonts;

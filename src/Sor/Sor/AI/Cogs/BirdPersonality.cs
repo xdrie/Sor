@@ -1,6 +1,4 @@
-using LunchLib.Calc;
 using LunchLib.Cogs;
-using XNez.GUtils.Misc;
 
 namespace Sor.AI.Cogs {
     public class BirdPersonality : Personality {

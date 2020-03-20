@@ -1,23 +1,17 @@
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
-using Glint.Scenes;
 using Glint.Util;
-using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;
 using Nez.Console;
 using Nez.Tweens;
-using Sor.AI.Cogs;
 using Sor.Components.Input;
 using Sor.Components.Inspect;
-using Sor.Components.Items;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
-using Sor.Game.Map;
-using Sor.Game.Map.Gen;
 using Sor.Systems;
 
 namespace Sor.Scenes {
