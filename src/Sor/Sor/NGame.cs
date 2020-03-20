@@ -8,7 +8,7 @@ using Sor.Scenes;
 namespace Sor {
     public class NGame : RGameBase<GameContext, Config> {
         public const string GAME_TITLE = "Sor";
-        public const string GAME_VERSION = "0.7.7.18";
+        public const string GAME_VERSION = "0.7.9";
 
         public NGame(Config config) : base(config, new GameContext(config), GAME_TITLE, new Point(960, 540)) { }
 

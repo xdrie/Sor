@@ -17,9 +17,16 @@ namespace Sor.Game {
         public static bool aiTrace = false;
 
         [Command("g_energy", "adds energy to the player")]
-        public static void Energy(float val) {
-            play.playContext.playerWing.core.energy += val;
-            debugLog($"gave {val} energy to player");
+        public static void Energy(float val, string name) {
+            if (name == null) name = PlayContext.PLAYER_NAME;
+            var wing = play.playContext.wings.SingleOrDefault(x => x.name == name);
+            if (wing == null) {
+                debugLog($"no wing named {name} was found");
+                return;
+            }
+
+            wing.core.energy += val;
+            debugLog($"gave {val} energy to {name}");
         }
 
         [Command("g_class", "changes player wing class")]
