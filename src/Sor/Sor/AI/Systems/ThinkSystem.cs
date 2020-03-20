@@ -177,7 +177,7 @@ namespace Sor.AI.Systems {
                     // TODO: improve fighting/engagement, delegate to action planner
                     // follow and attack them
                     state.setPlan(new PlanTask[] {
-                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT),
+                        new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_SHORT) {align = true},
                         new PlanAttack(mind, threat.Entity),
                     });
                 }
@@ -230,7 +230,8 @@ namespace Sor.AI.Systems {
                 foreach (var node in path) {
                     if (node.matches(nameof(SocializingBird.chase))) {
                         newPlan.Add(
-                            new EntityTarget(mind, fren.Entity, Approach.Within, feedRange, goalFeedTime));
+                            new EntityTarget(mind, fren.Entity, Approach.Within, feedRange, goalFeedTime) {align = true}
+                        );
                     }
                     else if (node.matches(nameof(SocializingBird.feed))) {
                         newPlan.Add(new PlanFeed(mind, fren.Entity, goalFeedTime));
