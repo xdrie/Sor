@@ -92,17 +92,18 @@ namespace Sor.Components.Inspect {
                 var optionScores = mind.state.lastPlanLog.ToList()
                     .OrderByDescending(x => x.Value)
                     .ToList();
-
+                
+                ind.appendLine("reasoner");
                 foreach (var consid in optionScores) {
+                    var considSb = new StringBuilder();
                     // exclude zeroes
                     // if (consid.Value.Approximately(0)) continue;
-                    var considSb = new StringBuilder();
                     if (!first) {
-                        considSb.Append("> ");
+                        considSb.Append(" > ");
                         first = true;
                     }
                     else {
-                        considSb.Append("  ");
+                        considSb.Append("   ");
                     }
 
                     // add consid nam and score
@@ -129,6 +130,7 @@ namespace Sor.Components.Inspect {
                 var planItems = mind.state.plan.ToList();
                 var planSb = new StringBuilder();
                 var planAhead = NGame.config.mindDisplayAhead;
+                planSb.AppendLine($"plan [{mind.state.plan.Count}]");
                 var nextInPlan = mind.state.plan.Take(planAhead);
                 foreach (var planTask in nextInPlan) {
                     if (planTask.status() == PlanTask.Status.Ongoing) {
