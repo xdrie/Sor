@@ -21,11 +21,11 @@ namespace Sor.AI {
             this.mind = mind;
         }
 
-        public List<Wing> seenWings = new List<Wing>(); // visible wings
-        public List<Thing> seenThings = new List<Thing>(); // visible things
+        public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
+        public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
-        public Dictionary<Consideration<Mind>, float> lastPlanTable;
+        public IDictionary<Consideration<Mind>, float> lastPlanTable;
         public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
@@ -69,7 +69,7 @@ namespace Sor.AI {
         }
 
         public bool isPlanValid => plan.Any(x => x.valid());
-        
+
         /// <summary>
         /// copy new plan to task plan
         /// </summary>
@@ -91,7 +91,7 @@ namespace Sor.AI {
         public void setNavPath(List<StructuralNavigationGraph.Node> path) {
             navPath = path;
         }
-        
+
         public void setBoard(string key, BoardItem item) {
             board[key] = item;
         }
@@ -114,6 +114,15 @@ namespace Sor.AI {
 
         public void tick() {
             tickBoard();
+        }
+
+        public void clearVision() {
+            while (!seenWings.IsEmpty) {
+                seenWings.TryTake(out var val);
+            }
+            while (!seenThings.IsEmpty) {
+                seenThings.TryTake(out var val);
+            }
         }
     }
 }
