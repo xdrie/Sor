@@ -25,10 +25,10 @@ namespace Sor.AI {
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
         public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
         public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
-        public IDictionary<Consideration<Mind>, float> lastPlanTable;
         public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
+        public ConcurrentDictionary<Consideration<Mind>, float> lastPlanLog;
 
         public struct BoardItem {
             public string value;
@@ -122,6 +122,13 @@ namespace Sor.AI {
             }
             while (!seenThings.IsEmpty) {
                 seenThings.TryTake(out var val);
+            }
+        }
+
+        public void updatePlanLog(Dictionary<Consideration<Mind>,float> resultTable) {
+            lastPlanLog.Clear();
+            foreach (var item in resultTable) {
+                lastPlanLog.TryAdd(item.Key, item.Value);
             }
         }
     }

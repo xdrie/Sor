@@ -24,14 +24,12 @@ namespace Sor.AI.Consid {
             public static Wing greatestThreat(Mind mind) {
                 // find the nearby duck with the lowest opinion
                 // TODO: allow tracking multiple threats
-                lock (mind.state.seenWings) {
-                    var wings = mind.state.seenWings
-                        .Where(x => mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
-                        .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
-                    if (!wings.Any()) return null;
+                var wings = mind.state.seenWings
+                    .Where(x => mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
+                    .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
+                if (!wings.Any()) return null;
 
-                    return wings.First();
-                }
+                return wings.First();
             }
 
             private float threateningNess(int opinionDelta) {
@@ -45,13 +43,11 @@ namespace Sor.AI.Consid {
             }
 
             public override float score() {
-                lock (context.state.seenWings) {
-                    var threatWing = greatestThreat(context);
-                    if (threatWing == null) return 0;
-                    var threatOpinion = context.state.getOpinion(threatWing.mind);
-                    var threatValue = threateningNess(threatOpinion - threatThreshold(context));
-                    return threatValue;
-                }
+                var threatWing = greatestThreat(context);
+                if (threatWing == null) return 0;
+                var threatOpinion = context.state.getOpinion(threatWing.mind);
+                var threatValue = threateningNess(threatOpinion - threatThreshold(context));
+                return threatValue;
             }
         }
 
@@ -91,7 +87,7 @@ namespace Sor.AI.Consid {
                 var energyRatio = context.me.core.energy / threat.mind.me.core.energy;
                 if (float.IsNaN(energyRatio)) energyRatio = GMathf.BILLION;
                 var energyScore = scoreRatio(1 / energyRatio, 30);
-                
+
                 // 4. compare armed state
                 var threatWeaponMaxscore = 40;
                 var threatWeapon = threat.mind.GetComponent<Shooter>();
@@ -99,7 +95,8 @@ namespace Sor.AI.Consid {
                 // if they're armed, set negative score
                 var armoryScore = threatWeapon == null ? 0 : -threatWeaponMaxscore;
                 // TODO: compare weapons
-                if (myWeapon != null) { // if i'm armed too
+                if (myWeapon != null) {
+                    // if i'm armed too
                     // then negate the score penalty
                     armoryScore += threatWeaponMaxscore;
                 }

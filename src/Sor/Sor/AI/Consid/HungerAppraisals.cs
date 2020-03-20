@@ -25,9 +25,7 @@ namespace Sor.AI.Consid {
                 // availability is based on nearby, known food items
                 // TODO: look around the map for trees, ranked by level
                 // for now, it is based on the existence of fruits nearby
-                lock (context.state.seenThings) {
-                    return context.state.seenThings.Any(x => x is Capsule) ? 1 : 0;
-                }
+                return context.state.seenThings.Any(x => x is Capsule) ? 1 : 0;
             }
         }
     }

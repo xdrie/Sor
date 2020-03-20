@@ -54,7 +54,8 @@ namespace Sor.AI.Systems {
             reasoner = new Reasoner<Mind>();
             reasoner.scoreType = Reasoner<Mind>.ScoreType.Normalized;
 
-            var eatConsideration = new ThresholdConsideration<Mind>(() => { // eat action
+            var eatConsideration = new ThresholdConsideration<Mind>(() => {
+                // eat action
                 var hungryPlanModel = new HungryBird();
                 var hungrySolver = new Solver<HungryBird>();
                 var seenBeans = state.seenThings.Where(x => x is Capsule).ToList();
@@ -65,7 +66,8 @@ namespace Sor.AI.Systems {
                 var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
                 var next = hungrySolver.Next(hungryPlanModel,
                     new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
-                if (next == null) { // planning failed
+                if (next == null) {
+                    // planning failed
                     return;
                 }
 
@@ -75,13 +77,15 @@ namespace Sor.AI.Systems {
                     // handle planning based on the node
                     var timePerBean = 5f;
                     var beanTimeAcc = Time.TotalTime;
-                    if (node.matches(nameof(HungryBird.eatBean))) { // plan eating the nearest bean
+                    if (node.matches(nameof(HungryBird.eatBean))) {
+                        // plan eating the nearest bean
                         // TODO: add the bean to the target entity queue
                         var bean = seenBeans[0];
                         seenBeans.Remove(bean);
                         beanTimeAcc += timePerBean;
                         newPlan.Add(new EntityTarget(mind, bean.Entity, Approach.Precise, beanTimeAcc));
-                    } else if (node.matches(nameof(HungryBird.visitTree))) {
+                    }
+                    else if (node.matches(nameof(HungryBird.visitTree))) {
                         // plan to visit the nearest tree
                         // TODO: how is this done?
                     }
@@ -127,7 +131,8 @@ namespace Sor.AI.Systems {
                         .Where(x => !(visited.ContainsKey(x) && visited[x]));
                     if (validLinks != null && validLinks.Any()) {
                         goalNode = validLinks.RandomSubset(1).SingleOrDefault();
-                    } else {
+                    }
+                    else {
                         break; // we could not walk any further
                     }
                 }
@@ -206,7 +211,8 @@ namespace Sor.AI.Systems {
                 var goalBrownies = 20;
                 var next = solver.Next(socialPlanModel,
                     new Goal<SocializingBird>(x => x.brownies > goalBrownies));
-                if (next == null) { // no plan could be found
+                if (next == null) {
+                    // no plan could be found
                     return;
                 }
 
@@ -219,7 +225,8 @@ namespace Sor.AI.Systems {
                     if (node.matches(nameof(SocializingBird.chase))) {
                         newPlan.Add(
                             new EntityTarget(mind, fren.Entity, Approach.Within, feedRange, goalFeedTime));
-                    } else if (node.matches(nameof(SocializingBird.feed))) {
+                    }
+                    else if (node.matches(nameof(SocializingBird.feed))) {
                         newPlan.Add(new PlanFeed(mind, fren.Entity, goalFeedTime));
                     }
                 }
@@ -236,14 +243,7 @@ namespace Sor.AI.Systems {
             // run the utility ai planner
             var resultTable = reasoner.execute();
             // store plan log
-            if (mind.state.lastPlanTable == null) {
-                // ReSharper disable once InconsistentlySynchronizedField - it is null
-                state.lastPlanTable = resultTable;
-            } else {
-                lock (mind.state.lastPlanTable) {
-                    state.lastPlanTable = resultTable;
-                }
-            }
+            state.updatePlanLog(resultTable);
 
             var chosen = reasoner.choose(resultTable); // pick the best-scored option
             chosen.action(); // execute the action
@@ -288,17 +288,15 @@ namespace Sor.AI.Systems {
         /// Think about visual data available to me.
         /// </summary>
         private void thinkVisual() {
-            // look at wings and their distances to me.
-            lock (state.seenWings) {
-                foreach (var wing in state.seenWings) {
-                    var toWing = entity.Position - wing.Entity.Position;
-                    // subtract diag hitbox
-                    var hitboxRadSq = wing.hitbox.Width * wing.hitbox.Width + wing.hitbox.Height * wing.hitbox.Height;
-                    var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);
-                    if (toWingDist <= NearbyInteraction.triggerRange) {
-                        var interaction = new NearbyInteraction(toWingDist);
-                        interaction.run(mind.soul, wing.mind.soul);
-                    }
+            // look at wings and their distances to me
+            foreach (var wing in state.seenWings) {
+                var toWing = entity.Position - wing.Entity.Position;
+                // subtract diag hitbox
+                var hitboxRadSq = wing.hitbox.Width * wing.hitbox.Width + wing.hitbox.Height * wing.hitbox.Height;
+                var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);
+                if (toWingDist <= NearbyInteraction.triggerRange) {
+                    var interaction = new NearbyInteraction(toWingDist);
+                    interaction.run(mind.soul, wing.mind.soul);
                 }
             }
         }

@@ -80,10 +80,10 @@ namespace Sor.Components.Inspect {
 
                 // draw plan table
                 // TODO: draw arrow in front of chosen
-                if (mind.state.lastPlanTable != null) {
-                    lock (mind.state.lastPlanTable) {
+                if (mind.state.lastPlanLog != null) {
+                    lock (mind.state.lastPlanLog) {
                         var first = false;
-                        var options = mind.state.lastPlanTable
+                        var options = mind.state.lastPlanLog
                             .OrderByDescending(x => x.Value).ToList();
                         foreach (var consid in options) {
                             // exclude zeroes
