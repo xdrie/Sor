@@ -70,7 +70,7 @@ namespace Sor.Components.Units {
             Beak = 2,
         }
 
-        public void changeClass(WingClass newClass) {
+        public void changeClass(WingClass newClass, bool refill = false) {
             wingClass = newClass;
             // set baseline properties
             // properly revert all changes, including transform positions and scales
@@ -123,8 +123,10 @@ namespace Sor.Components.Units {
             }
 
             // do common setup
-            if (core.ratio < 1f) {
-                core.fill();
+            if (refill) {
+                if (core.ratio < 1f) {
+                    core.fill();
+                }
             }
 
             Transform.SetLocalScale(scale);
@@ -140,7 +142,8 @@ namespace Sor.Components.Units {
                 ColorExt.Lerp(ref NGame.context.assets.paletteWhite, ref NGame.context.assets.paletteOrange,
                     out var targetCol, overload);
                 spriteRenderer.Color = targetCol;
-            } else {
+            }
+            else {
                 // reset sprite color
                 spriteRenderer.Color = NGame.context.assets.paletteWhite;
             }
