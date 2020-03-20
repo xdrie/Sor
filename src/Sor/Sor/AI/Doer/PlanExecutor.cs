@@ -21,7 +21,8 @@ namespace Sor.AI.Doer {
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) {
                 // go through goals until we find one to execute
-                mind.state.plan.TryPeek(out var nextTask);
+                var takeNextResult = mind.state.plan.TryPeek(out var nextTask);
+                if (!takeNextResult || nextTask == null) return; // tasks changed
                 // dequeue completed goals
                 var nextTaskStatus = nextTask.status();
                 bool continueWithPlan = true;
