@@ -138,8 +138,8 @@ namespace Sor.Components.Inspect {
                                 planSb.Append($" Target: ({targetLoc.X:n1}, {targetLoc.Y:n1})");
                                 var targetColor = Color.Yellow; // color of target indicator
 
-                                // add extra annotation if target is entity
-                                if (target is EntityTarget ets) {
+                                // add extra annotation if target is wing
+                                if (target is EntityTarget ets && ets.nt.HasComponent<Wing>()) {
                                     planSb.Append($" {ets.nt.Name}");
                                     var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind);
                                     var (_, disp) = PipsSystem.calculatePips(opinion);
