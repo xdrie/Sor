@@ -4,6 +4,7 @@ using System.Threading;
 using Activ.GOAP;
 using LunchLib.AI.Utility;
 using LunchLib.AI.Utility.Considerations;
+using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
 using Nez.AI.Pathfinding;
@@ -136,7 +137,7 @@ namespace Sor.AI.Systems {
                     }
                 }
 
-                var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
+                var foundPath = AStarPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) {
                     mind.state.setBoard("pathfind failed",
                         new MindState.BoardItem($"S: {nearestNode}, E: {goalNode}", "nav",
