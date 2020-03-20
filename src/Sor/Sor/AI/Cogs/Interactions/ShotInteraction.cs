@@ -33,8 +33,11 @@ namespace Sor.AI.Cogs.Interactions {
             // we are angry, figure out how angry
             var beingShotAnger = (int) TraitCalc.transform(-myTraits.anger, 
                 -40f, -5f, -40, 0f);
+            // fear exacerbates anger/annoyance
+            var fearMultiplier = TraitCalc.transform(me.emotions.fear,
+                -1f, 3f, 0f, 2f);
 
-            opinionDelta += beingShotAnger;
+            opinionDelta += (int) (beingShotAnger * fearMultiplier);
 
             me.mind.state.addOpinion(them.mind, opinionDelta);
             me.emotions.spikeFear(1); // scary

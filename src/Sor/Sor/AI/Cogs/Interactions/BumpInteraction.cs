@@ -28,10 +28,13 @@ namespace Sor.AI.Cogs.Interactions {
             var opinionDelta = 0;
             
             // being bumped annoys me
-            var beingShotAnger = (int) TraitCalc.transform(-myTraits.annoyed,
+            var bumpedAnnoyance = (int) TraitCalc.transform(-myTraits.annoyed,
                 -20f, 0f);
+            // fear exacerbates anger/annoyance
+            var fearMultiplier = TraitCalc.transform(me.emotions.fear,
+                -1f, 3f, 0f, 2f);
 
-            opinionDelta += beingShotAnger;
+            opinionDelta += (int) (bumpedAnnoyance * fearMultiplier);
             
             me.mind.state.addOpinion(them.mind, opinionDelta);
             me.emotions.spikeFear(0.4f); // somewhat scary
