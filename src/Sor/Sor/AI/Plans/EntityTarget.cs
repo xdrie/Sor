@@ -11,7 +11,8 @@ namespace Sor.AI.Plans {
         }
 
         public override Status status() {
-            if (base.status() == Status.Failed) return Status.Failed; // check base conditions
+            var baseStatus = base.status();
+            if (baseStatus != Status.Ongoing) return baseStatus;
             if (nt == null) return Status.Failed; // entity must not be null
             return Status.Ongoing;
         }

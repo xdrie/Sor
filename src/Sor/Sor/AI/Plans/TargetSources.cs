@@ -15,7 +15,7 @@ namespace Sor.AI.Plans {
     public abstract class TargetSource : PlanTask, ITargetSource {
         public float approachRange = 0;
         public bool align = false;
-        
+
         public const float AT_ANGLE = 0.05f * Mathf.PI;
         public const float AT_POSITION_SQ = 2f * 2f;
         public const float NEAR_POSITION_SQ = 60f * 60f;
@@ -26,7 +26,8 @@ namespace Sor.AI.Plans {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind, reachBefore) {
+        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind,
+            reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;
         }
@@ -65,13 +66,17 @@ namespace Sor.AI.Plans {
                     return false; // never
             }
         }
-        
+
         private bool closeEnoughApproach() {
-            var positionCloseEnough = closeEnoughPosition();  // check position
-            if (!align) return positionCloseEnough;
-            // check alignment
-            var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, getTargetAngle());
-            return remainingAngle < AT_ANGLE;
+            var positionCloseEnough = closeEnoughPosition(); // check position
+            if (positionCloseEnough) {
+                if (!align) return true;
+                // check alignment
+                var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, getTargetAngle());
+                return remainingAngle < AT_ANGLE;
+            }
+
+            return false;
         }
 
         public override Status status() {
