@@ -77,12 +77,16 @@ namespace Sor.AI {
         /// </summary>
         /// <param name="tasks">new task list</param>
         public void setPlan(IEnumerable<PlanTask> tasks) {
-            while (plan.Count > 0) {
-                plan.TryDequeue(out var item);
-            }
+            clearPlan();
 
             foreach (var task in tasks) {
                 plan.Enqueue(task);
+            }
+        }
+
+        public void clearPlan() {
+            while (plan.Count > 0) {
+                plan.TryDequeue(out var item);
             }
         }
 

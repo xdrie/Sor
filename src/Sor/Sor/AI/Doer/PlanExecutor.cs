@@ -34,7 +34,8 @@ namespace Sor.AI.Doer {
                     case PlanTask.Status.Failed:
                         // a task failed
                         continueWithPlan = false;
-                        Global.log.writeLine($"action plan task {nextTask} failed", GlintLogger.LogLevel.Trace);
+                        Global.log.writeLine($"action plan task {nextTask} failed ({mind.state.plan.Count} following canceled)", GlintLogger.LogLevel.Trace);
+                        mind.state.clearPlan();
                         break;
                 }
 
