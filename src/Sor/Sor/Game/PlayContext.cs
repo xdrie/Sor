@@ -101,10 +101,10 @@ namespace Sor.Game {
                 new BirdPersonality {A = -0.8f, S = 0.7f});
             frend.AddComponent(new Shooter()); // friend is armed
             
-            // unfriendly bird
-            var enmy = createWing("enmy", new Vector2(120, 80),
-                new BirdPersonality {A = 0.8f, S = -0.7f});
-            enmy.AddComponent(new Shooter()); // enmy is armed
+            // // unfriendly bird
+            // var enmy = createWing("enmy", new Vector2(120, 80),
+            //     new BirdPersonality {A = 0.8f, S = -0.7f});
+            // enmy.AddComponent(new Shooter()); // enmy is armed
 
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
