@@ -4,6 +4,7 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Console;
+using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Units;
 using Sor.Scenes;
@@ -39,7 +40,11 @@ namespace Sor.Game {
         [Command("g_list", "lists all wings")]
         public static void List() {
             var wings = play.playContext.wings.ToList();
-            debugLog($"{wings.Count} wings: {string.Join(",", wings.Select(x => x.name))}");
+            var nearbyWings = play.playContext.wings.Where(x =>
+                (x.body.pos - play.playContext.playerWing.body.pos).LengthSquared() <
+                MindConstants.SENSE_RANGE * MindConstants.SENSE_RANGE)
+                .ToList();
+            debugLog($"{wings.Count} wings ({nearbyWings.Count} nearby): {string.Join(",", wings.Select(x => x.name))}");
         }
 
         [Command("g_kill", "kills a wing")]
