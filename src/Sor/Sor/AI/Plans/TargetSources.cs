@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Nez;
 
@@ -73,7 +74,7 @@ namespace Sor.AI.Plans {
                 if (!align) return true;
                 // check alignment
                 var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, getTargetAngle());
-                return remainingAngle < AT_ANGLE;
+                return Math.Abs(remainingAngle) < AT_ANGLE;
             }
 
             return false;
