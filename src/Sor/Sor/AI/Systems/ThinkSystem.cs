@@ -138,7 +138,13 @@ namespace Sor.AI.Systems {
                 }
 
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
-                if (foundPath == null || !foundPath.Any()) return; // pathfind failed
+                if (foundPath == null || !foundPath.Any()) {
+                    mind.state.setBoard("pathfind failed",
+                        new MindState.BoardItem($"S: {nearestNode}, E: {goalNode}", "nav",
+                            Color.Red, Time.TotalTime + 1f));
+                    return; // pathfind failed
+                }
+
                 state.setNavPath(foundPath);
 
                 // TODO: actually use map knowledge to explore

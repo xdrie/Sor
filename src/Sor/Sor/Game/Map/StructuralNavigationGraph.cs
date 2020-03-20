@@ -21,6 +21,10 @@ namespace Sor.Game.Map {
             public Node(Point pos) {
                 this.pos = pos;
             }
+
+            public override string ToString() {
+                return $"Node({pos})";
+            }
         }
         
         public class RoomLink {
