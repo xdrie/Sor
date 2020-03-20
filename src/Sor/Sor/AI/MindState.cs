@@ -10,12 +10,12 @@ using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.Components.Things;
 using Sor.Components.Units;
-using Sor.Game;
 using Sor.Game.Map;
 
 namespace Sor.AI {
     public class MindState {
         public Mind mind;
+        public int ticks = 0;
 
         public MindState(Mind mind) {
             this.mind = mind;
@@ -28,7 +28,9 @@ namespace Sor.AI {
         public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
-        public ConcurrentDictionary<Consideration<Mind>, float> lastPlanLog;
+
+        public ConcurrentDictionary<Consideration<Mind>, float> lastPlanLog =
+            new ConcurrentDictionary<Consideration<Mind>, float>();
 
         public struct BoardItem {
             public string value;
@@ -75,14 +77,12 @@ namespace Sor.AI {
         /// </summary>
         /// <param name="tasks">new task list</param>
         public void setPlan(IEnumerable<PlanTask> tasks) {
-            lock (plan) {
-                while (plan.Count > 0) {
-                    plan.TryDequeue(out var item);
-                }
+            while (plan.Count > 0) {
+                plan.TryDequeue(out var item);
+            }
 
-                foreach (var task in tasks) {
-                    plan.Enqueue(task);
-                }
+            foreach (var task in tasks) {
+                plan.Enqueue(task);
             }
         }
 
@@ -113,19 +113,23 @@ namespace Sor.AI {
         }
 
         public void tick() {
-            tickBoard();
+            ticks++;
+            if (ticks % 10 == 0) {
+                tickBoard();
+            }
         }
 
         public void clearVision() {
             while (!seenWings.IsEmpty) {
                 seenWings.TryTake(out var val);
             }
+
             while (!seenThings.IsEmpty) {
                 seenThings.TryTake(out var val);
             }
         }
 
-        public void updatePlanLog(Dictionary<Consideration<Mind>,float> resultTable) {
+        public void updatePlanLog(Dictionary<Consideration<Mind>, float> resultTable) {
             lastPlanLog.Clear();
             foreach (var item in resultTable) {
                 lastPlanLog.TryAdd(item.Key, item.Value);
