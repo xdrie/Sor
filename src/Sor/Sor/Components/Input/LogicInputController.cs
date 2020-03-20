@@ -25,6 +25,7 @@ namespace Sor.Components.Input {
             interactLogical.LogicPressed = false;
             tetherLogical.LogicPressed = false;
             boostLogical.LogicPressed = false;
+            fireLogical.LogicPressed = false;
         }
     }
 }
