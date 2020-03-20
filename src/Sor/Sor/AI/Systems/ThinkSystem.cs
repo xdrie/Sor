@@ -97,11 +97,7 @@ namespace Sor.AI.Systems {
                 // explore action
                 // TODO: a more interesting/useful explore action
                 // don't pathfind if we already have a valid path
-                lock (state) {
-                    if (state.navPath != null) {
-                        if (state.isPlanValid) return;
-                    }
-                }
+                if (state.hasNavPath && state.isPlanValid) return;
 
                 // cancel if no map model
                 if (mind.gameCtx.map == null) return;
@@ -138,9 +134,7 @@ namespace Sor.AI.Systems {
 
                 var foundPath = WeightedPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) return; // pathfind failed
-                lock (state) {
-                    state.navPath = foundPath;
-                }
+                state.setNavPath(foundPath);
 
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map

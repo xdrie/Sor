@@ -28,7 +28,7 @@ namespace Sor.AI {
         public Dictionary<Consideration<Mind>, float> lastPlanTable;
         public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
-        public Dictionary<string, BoardItem> board = new Dictionary<string, BoardItem>();
+        public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
 
         public struct BoardItem {
             public string value;
@@ -68,6 +68,8 @@ namespace Sor.AI {
             return res;
         }
 
+        public bool isPlanValid => plan.Any(x => x.valid());
+        
         /// <summary>
         /// copy new plan to task plan
         /// </summary>
@@ -84,26 +86,28 @@ namespace Sor.AI {
             }
         }
 
-        public bool isPlanValid => plan.Any(x => x.valid());
+        public bool hasNavPath => navPath != null && navPath.Count > 0;
 
+        public void setNavPath(List<StructuralNavigationGraph.Node> path) {
+            navPath = path;
+        }
+        
         public void setBoard(string key, BoardItem item) {
-            lock (board) {
-                board[key] = item;
-            }
+            board[key] = item;
         }
 
         private void tickBoard() {
-            var expiredItems = new List<string>();
+            var expiredItemKeys = new List<string>();
             lock (board) {
                 foreach (var itemKvp in board) {
                     var item = itemKvp.Value;
                     if (item.expireTime > 0 && Time.DeltaTime > item.expireTime) {
-                        expiredItems.Add(itemKvp.Key);
+                        expiredItemKeys.Add(itemKvp.Key);
                     }
                 }
 
-                foreach (var item in expiredItems) {
-                    board.Remove(item);
+                foreach (var itemKey in expiredItemKeys) {
+                    board.TryRemove(itemKey, out var val);
                 }
             }
         }
