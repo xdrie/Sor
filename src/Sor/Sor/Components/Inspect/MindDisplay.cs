@@ -128,7 +128,7 @@ namespace Sor.Components.Inspect {
 
                 var planItems = mind.state.plan.ToList();
                 var planSb = new StringBuilder();
-                var planAhead = 2;
+                var planAhead = NGame.config.mindDisplayAhead;
                 var nextInPlan = mind.state.plan.Take(planAhead);
                 foreach (var planTask in nextInPlan) {
                     if (planTask.status() == PlanTask.Status.Ongoing) {

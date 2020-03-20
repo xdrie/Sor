@@ -16,6 +16,7 @@ namespace Sor.Game {
         public bool enableWalls = false;
         public bool spawnBirds = true;
         public bool invisible = false;
+        public int mindDisplayAhead = 3;
 
         public override void load() {
             base.load();
@@ -25,6 +26,7 @@ namespace Sor.Game {
 #if DEBUG // only load debug config in debug builds
             pr.bind(ref cheats, DEBUG, rename(nameof(cheats)));
             pr.bind(ref logInteractions, DEBUG, rename(nameof(logInteractions)));
+            pr.bind(ref mindDisplayAhead, DEBUG, rename(nameof(mindDisplayAhead)));
 #endif
             
 #if DEBUG
