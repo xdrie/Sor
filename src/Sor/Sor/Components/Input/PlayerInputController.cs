@@ -11,11 +11,13 @@ namespace Sor.Components.Input {
             moveTurnInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.Left, Keys.Right);
             moveTurnInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.J, Keys.L);
             moveTurnInput.AddGamePadLeftStickX(gamepadIndex);
+            moveTurnInput.AddGamePadDPadLeftRight(gamepadIndex);
             
             moveThrustInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.Up, Keys.Down);
             moveThrustInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.I, Keys.K);
             moveThrustInput.AddGamePadButtons(gamepadIndex, VirtualInput.OverlapBehavior.CancelOut,
                 Buttons.A, Buttons.LeftTrigger);
+            moveThrustInput.AddGamePadDPadUpDown(gamepadIndex);
             
             // // invert gamepad sticks to match virtual keyboard input
             // Nez.Input.GamePads[gamepadIndex].IsLeftStickVerticalInverted = true;
