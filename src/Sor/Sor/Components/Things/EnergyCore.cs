@@ -4,7 +4,7 @@ namespace Sor.Components.Things {
     /// <summary>
     /// Represents energy storage
     /// </summary>
-    public class EnergyCore : Component {
+    public class EnergyCore : Component, IUpdatable {
         public float energy;
         public float designMax;
         public float overloadThreshold = 1.4f;
@@ -24,6 +24,10 @@ namespace Sor.Components.Things {
             if (energy < 0f) {
                 energy = 0f;
             }
+        }
+
+        public void Update() {
+            clamp();
         }
     }
 }
