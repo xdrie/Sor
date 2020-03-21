@@ -160,11 +160,11 @@ namespace Sor.Components.Units {
 
         private void movement() {
             // apply turn input
-            var turnInput = controller.moveDirectionInput.Value.X;
+            var turnInput = controller.moveTurnInput.Value;
             angularVelocity += turnInput * turnPower;
 
             // get thrust input
-            var thrustInput = controller.moveDirectionInput.Value.Y;
+            var thrustInput = controller.moveThrustInput.Value;
             var thrustVal = thrustPower;
 
             // boost ribbon

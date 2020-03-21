@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework;
 
 namespace Sor.Components.Input {
     public class LogicInputController : InputController {
-        public VirtualJoystick.LogicJoystick moveDirectionLogical;
+        public VirtualAxis.LogicAxis moveTurnLogical;
+        public VirtualAxis.LogicAxis moveThrustLogical;
         public VirtualButton.LogicButton interactLogical;
         public VirtualButton.LogicButton tetherLogical;
         public VirtualButton.LogicButton boostLogical;
@@ -12,7 +13,8 @@ namespace Sor.Components.Input {
         public override void Initialize() {
             base.Initialize();
             
-            moveDirectionLogical = moveDirectionInput.AddLogical();
+            moveTurnLogical = moveTurnInput.AddLogical();
+            moveThrustLogical = moveThrustInput.AddLogical();
 
             interactLogical = interactInput.AddLogical();
             tetherLogical = tetherInput.AddLogical();
@@ -21,7 +23,8 @@ namespace Sor.Components.Input {
         }
 
         public void zero() {
-            moveDirectionLogical.LogicValue = Vector2.Zero;
+            moveTurnLogical.LogicValue = 0;
+            moveThrustLogical.LogicValue = 0;
             interactLogical.LogicPressed = false;
             tetherLogical.LogicPressed = false;
             boostLogical.LogicPressed = false;
