@@ -43,7 +43,7 @@ namespace Sor {
         
         public GameContext(Config config) : base(config) { }
 
-        public void loadContent() {
+        public override void loadContent() {
             assets.font = Core.Content.LoadBitmapFont("Data/fonts/ua_squared.fnt");
             NameGenerator.load();
         }

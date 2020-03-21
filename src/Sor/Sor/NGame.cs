@@ -1,6 +1,8 @@
 using Glint;
+using Glint.Branding;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Nez;
 using Sor.Game;
 using Sor.Scenes;
 
@@ -19,7 +21,9 @@ namespace Sor {
             // fixed timestep for physics updates
             IsFixedTimeStep = true;
 
-            Scene = new IntroScene();
+            Scene = new DevLogoScene<GameContext, Config, MenuScene>(
+                new DevLogoSprite(Content.LoadTexture("Data/img/devlogo.png"),
+                    32, 32));
         }
     }
 }
