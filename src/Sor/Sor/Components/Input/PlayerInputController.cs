@@ -15,7 +15,7 @@ namespace Sor.Components.Input {
             moveThrustInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.Up, Keys.Down);
             moveThrustInput.AddKeyboardKeys(VirtualInput.OverlapBehavior.CancelOut, Keys.I, Keys.K);
             moveThrustInput.AddGamePadButtons(gamepadIndex, VirtualInput.OverlapBehavior.CancelOut,
-                Buttons.RightTrigger, Buttons.LeftTrigger);
+                Buttons.A, Buttons.LeftTrigger);
             
             // // invert gamepad sticks to match virtual keyboard input
             // Nez.Input.GamePads[gamepadIndex].IsLeftStickVerticalInverted = true;
@@ -25,7 +25,7 @@ namespace Sor.Components.Input {
             interactInput.AddGamePadButton(gamepadIndex, Buttons.Y);
 
             boostInput.AddKeyboardKey(Keys.LeftShift);
-            boostInput.AddGamePadButton(0, Buttons.RightShoulder);
+            boostInput.AddGamePadButton(0, Buttons.RightTrigger);
 
             fireInput.AddKeyboardKey(Keys.Space);
             fireInput.AddGamePadButton(0, Buttons.B);
