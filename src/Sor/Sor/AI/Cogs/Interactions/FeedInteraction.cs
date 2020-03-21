@@ -37,6 +37,7 @@ namespace Sor.AI.Cogs.Interactions {
 
             // calculate opinion delta
             var opinionDelta = 0;
+            var currentOpinion = me.mind.state.getOpinion(giver.mind);
 
             // calculate receptiveness to food
             // receptive (innate) [0, 1]
@@ -52,7 +53,9 @@ namespace Sor.AI.Cogs.Interactions {
                 0f, 2f
             );
 
-            opinionDelta += (int) (foodReceptiveness * foodValue);
+            // significantly diminishing rewards, effectively capping around ~300
+            var foodOpinionWeight = LCurves.diminishingReturns(currentOpinion / 10f, 1f, 0.1f);
+            opinionDelta += (int) (foodReceptiveness * foodValue * foodOpinionWeight);
 
             // food makes me happy!
             me.emotions.spikeHappy(GMathf.clamp(foodReceptiveness, 0, 0.8f));
