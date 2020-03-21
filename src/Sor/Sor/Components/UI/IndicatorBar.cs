@@ -29,7 +29,7 @@ namespace Sor.Components.UI {
         public IndicatorBar(int width, int height) {
             this.width = width;
             this.height = height;
-            texture = Core.Content.LoadTexture("Data/ui/el/indicator_bar.png");
+            texture = Core.Content.LoadTexture("Data/ui/el/bar.png");
         }
 
         public override void Initialize() {
