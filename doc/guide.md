@@ -3,7 +3,6 @@
 
 ## controls
 
-### movement
 + `DPAD` or `IJKL` - move
 + `SHIFT` - boost
 + `[2]` - launch capsule
@@ -11,6 +10,13 @@
 
 ### platform
 + `F11` - fullscreen
+
+## tips
+
++ trees are spread all over the map, and larger trees grow energy beans; eat energy beans to replenish energy!
++ the colored pips underneath each bird represent their opinion of you. positive opinions are blue and green, neutral opinions are yellow, and negative opinions are orange and red.
++ feeding birds by launching capsules at them from a distance can help you make friends!
++ depending on their personalities, some birds may respond to your presence by eagerly trying to make friends by feeding you, and some may run away or even attack you
 
 ## debug inspection
 
