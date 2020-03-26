@@ -14,14 +14,16 @@ namespace Sor.Components.Things {
         public Wing sender = null;
         public Tree creator = null;
 
-        public const float lifetime = 20f;
+        public float lifetime;
         private const float tweenDur = 0.4f;
         private static Color fadeColor = new Color(100, 100, 200, 100);
         private static Color defColor = Color.White;
 
-        public Capsule() : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
-            animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});
+        public Capsule() : this(20f) { }
 
+        public Capsule(float lifetime = 20f) : base(Core.Content.LoadTexture("Data/sprites/nrg.png"), 16, 16) {
+            this.lifetime = lifetime;
+            animator.AddAnimation("default", new[] {sprites[0], sprites[1], sprites[2], sprites[3]});
             animator.Play("default");
         }
 
@@ -33,7 +35,8 @@ namespace Sor.Components.Things {
 
             body = Entity.AddComponent<CapsuleBody>();
             Entity.AddComponent(new BoxCollider(-8, -12, 8, 24) {Tag = Constants.Colliders.THING, IsTrigger = true});
-            Entity.AddComponent(new BoxCollider(-40, -40, 80, 80) {Tag = Constants.Mechanics.TRIGGER_GRAVITY, IsTrigger = true});
+            Entity.AddComponent(new BoxCollider(-40, -40, 80, 80)
+                {Tag = Constants.Mechanics.TRIGGER_GRAVITY, IsTrigger = true});
 
             // use slow updates
             UpdateInterval = 10;
