@@ -1,4 +1,3 @@
-using LunchLib.Cogs;
 using LunchLib.Cogs.Social;
 
 namespace Sor.AI.Cogs.Interactions {

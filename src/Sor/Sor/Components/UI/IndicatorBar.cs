@@ -1,5 +1,4 @@
 using System;
-using Glint.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
@@ -30,7 +29,7 @@ namespace Sor.Components.UI {
         public IndicatorBar(int width, int height) {
             this.width = width;
             this.height = height;
-            texture = Core.Content.LoadTexture("Data/ui/el/indicator_bar.png");
+            texture = Core.Content.LoadTexture("Data/ui/bar.png");
         }
 
         public override void Initialize() {

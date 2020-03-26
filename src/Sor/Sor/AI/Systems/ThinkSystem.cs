@@ -139,11 +139,15 @@ namespace Sor.AI.Systems {
 
                 var foundPath = AStarPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) {
-                    mind.state.setBoard("pathfind failed",
-                        new MindState.BoardItem($"S: {nearestNode}, E: {goalNode}", "nav",
-                            Color.Red, Time.TotalTime + 1f));
+                    mind.state.setBoard("pathfind",
+                        new MindState.BoardItem($"FAILED from S: {nearestNode}, E: {goalNode}", "nav",
+                            Color.Red));
                     return; // pathfind failed
                 }
+                
+                mind.state.setBoard("pathfind",
+                    new MindState.BoardItem($"SUCCESS from S: {nearestNode}, E: {goalNode}", "nav",
+                        Color.SeaGreen));
 
                 state.setNavPath(foundPath);
 

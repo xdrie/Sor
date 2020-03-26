@@ -52,7 +52,7 @@ namespace Sor.Game {
                     
                     // create the wing
                     var bord = playContext.createWing($"{nick} {className}", spawnPos, spawnPly);
-                    bord.changeClass(bordClass);
+                    bord.changeClass(bordClass, true);
                     
                     // equip the wing
                     var loadout = birdEquipmentDist.next();

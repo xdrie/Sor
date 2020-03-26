@@ -14,9 +14,6 @@ namespace Sor.AI.Doer {
         }
 
         public void process() {
-            // clear steer input
-            resetSteering();
-
             var navTargetSource = default(TargetSource);
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) {
@@ -93,10 +90,6 @@ namespace Sor.AI.Doer {
             }
         }
 
-        private void resetSteering() {
-            mind.controller.moveDirectionLogical.LogicValue = Vector2.Zero;
-        }
-
         /// <summary>
         /// attempts to steer toward position
         /// </summary>
@@ -108,7 +101,7 @@ namespace Sor.AI.Doer {
             var targetAngle = toTarget.ScreenSpaceAngle();
             var remainingTurn = pilotToAngle(targetAngle);
 
-            var moveY = 0;
+            var thrustInput = 0;
 
             if (Math.Abs(remainingTurn) < TargetSource.AT_ANGLE) {
                 // we are facing the right way
@@ -143,18 +136,17 @@ namespace Sor.AI.Doer {
                 mind.state.setBoard(nameof(dCrit), new MindState.BoardItem($"{dCrit:n2}", "mov"));
 
                 if (dGiv > dCrit) {
-                    moveY = -1;
+                    thrustInput = -1;
                     // if (dGiv > dCritBs) {
                     //     controller.boostLogical.logicPressed = true;
                     // }
                 }
                 else {
-                    moveY = 1;
+                    thrustInput = 1;
                 }
             }
 
-            var steer = mind.controller.moveDirectionLogical.LogicValue;
-            mind.controller.moveDirectionLogical.LogicValue = new Vector2(steer.X, moveY);
+            mind.controller.moveThrustLogical.LogicValue = thrustInput;
 
             return toTarget;
         }
@@ -163,17 +155,16 @@ namespace Sor.AI.Doer {
             // delta between current angle to target
             var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, targetAngle);
             if (Math.Abs(remainingAngle) > TargetSource.AT_ANGLE) {
-                var moveX = 0;
+                var turnInput = 0;
 
                 if (remainingAngle > 0) {
-                    moveX = -1;
+                    turnInput = -1;
                 }
                 else if (remainingAngle < 0) {
-                    moveX = 1;
+                    turnInput = 1;
                 }
 
-                var steer = mind.controller.moveDirectionLogical.LogicValue;
-                mind.controller.moveDirectionLogical.LogicValue = new Vector2(moveX, steer.Y);
+                mind.controller.moveTurnLogical.LogicValue = turnInput;
             }
             else {
                 // cheat and snap angle

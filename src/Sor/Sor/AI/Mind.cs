@@ -3,16 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Glint;
 using Glint.Util;
-using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Cogs;
 using Sor.AI.Doer;
-using Sor.AI.Plans;
 using Sor.AI.Signals;
 using Sor.AI.Systems;
 using Sor.Components.Input;
 using Sor.Components.Units;
-using XNez.GUtils.Misc;
 
 namespace Sor.AI {
     /// <summary>

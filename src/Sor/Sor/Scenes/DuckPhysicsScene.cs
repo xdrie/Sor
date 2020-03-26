@@ -1,5 +1,4 @@
 using Glint.Components.Camera;
-using Glint.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;

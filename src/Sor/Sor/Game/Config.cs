@@ -1,6 +1,4 @@
 using Glint.Config;
-using Glint.Util;
-using Sor.Components.Units;
 
 namespace Sor.Game {
     public class Config : GameConfig {

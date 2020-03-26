@@ -33,7 +33,7 @@ namespace Sor.Game {
         [Command("g_class", "changes player wing class")]
         public static void Class(int newClass) {
             var val = (Wing.WingClass) newClass;
-            play.playContext.playerWing.changeClass(val);
+            play.playContext.playerWing.changeClass(val, true);
             debugLog($"changed player class to {val}");
         }
 
