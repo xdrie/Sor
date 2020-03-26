@@ -16,6 +16,7 @@ namespace Sor.Game {
         public bool spawnBirds = true;
         public bool invisible = false;
         public int mindDisplayAhead = 3;
+        public bool generateMap = true;
 
         public override void load() {
             base.load();
@@ -35,6 +36,7 @@ namespace Sor.Game {
             pr.bind(ref enableWalls, INTERNAL, rename(nameof(enableWalls)));
             pr.bind(ref spawnBirds, INTERNAL, rename(nameof(spawnBirds)));
             pr.bind(ref invisible, INTERNAL, rename(nameof(invisible)));
+            pr.bind(ref generateMap, INTERNAL, rename(nameof(generateMap)));
 #endif
         }
     }

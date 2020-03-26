@@ -17,7 +17,7 @@ namespace Sor.Components.Things {
         public float fruitTimer = 0f;
         
         public const float ripeningTime = 0.4f;
-        public const float developmentSpeed = 2f; // development speed is a ratio
+        public const float developmentSpeed = 2f; // development speed is a ratio, more means faster
         public const float fruitSpawnRange = 10f;
         public const float childRange = 40f;
         public const float fruitBaseValue = 800f;
@@ -43,20 +43,27 @@ namespace Sor.Components.Things {
         }
 
         public void updateStage() {
-            animator.Play(stage.ToString());
+            // check if there is an animation for the next stage
+            var stageAnim = stage.ToString();
+            if (animator.Animations.ContainsKey(stageAnim)) {
+                animator.Play(stageAnim);
+            }
             growthTimer = Time.TotalTime + 60f * (1f / developmentSpeed) * stage; // time until next growth
             switch (stage) {
-                case 7:
+                case 6:
                     maxFruits = 1;
                     break;
-                case 8:
-                    maxFruits = 2;
-                    break;
-                case 9:
+                case 7:
                     maxFruits = 3;
                     break;
+                case 8:
+                    maxFruits = 6;
+                    break;
+                case 9:
+                    maxFruits = 9;
+                    break;
                 case 10:
-                    maxFruits = 5;
+                    maxFruits = 14;
                     break;
                 default:
                     maxFruits = 0;
@@ -72,7 +79,7 @@ namespace Sor.Components.Things {
                 var fruitOffset = Random.Range(new Vector2(-fruitSpawnRange), new Vector2(fruitSpawnRange));
                 var capNt = Entity.Scene.CreateEntity(null, Entity.Position + fruitOffset)
                     .SetTag(Constants.Tags.THING);
-                var fruit = capNt.AddComponent<Capsule>();
+                var fruit = capNt.AddComponent(new Capsule(40f));
                 fruit.firstAvailableAt = Time.TotalTime + ripeningTime;
                 fruit.creator = this;
                 fruit.energy = Random.Range(fruitBaseValue * 0.6f, fruitBaseValue * 2.2f);
@@ -80,7 +87,7 @@ namespace Sor.Components.Things {
                 childFruits.Add(fruit);
                 fruits++;
                 
-                fruitTimer = Time.TotalTime + developmentSpeed * 10f;
+                fruitTimer = Time.TotalTime + Random.Range(developmentSpeed * 0.8f, developmentSpeed * 2f);
             }
 
             // update existing fruits
@@ -104,6 +111,7 @@ namespace Sor.Components.Things {
             growthTimer -= developmentSpeed * growthPoints * 10f;
             if (Time.TotalTime > growthTimer) {
                 stage++; // upgrade stage
+                if (stage > 10) stage = 10; // clamp to max stage
                 updateStage();
             }
         }
