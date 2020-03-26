@@ -17,7 +17,7 @@ namespace Sor.Components.Things {
         public float fruitTimer = 0f;
         
         public const float ripeningTime = 0.4f;
-        public const float developmentSpeed = 2f; // development speed is a ratio
+        public const float developmentSpeed = 2f; // development speed is a ratio, more means faster
         public const float fruitSpawnRange = 10f;
         public const float childRange = 40f;
         public const float fruitBaseValue = 800f;
@@ -50,17 +50,20 @@ namespace Sor.Components.Things {
             }
             growthTimer = Time.TotalTime + 60f * (1f / developmentSpeed) * stage; // time until next growth
             switch (stage) {
-                case 7:
+                case 6:
                     maxFruits = 1;
                     break;
-                case 8:
-                    maxFruits = 2;
-                    break;
-                case 9:
+                case 7:
                     maxFruits = 3;
                     break;
+                case 8:
+                    maxFruits = 6;
+                    break;
+                case 9:
+                    maxFruits = 9;
+                    break;
                 case 10:
-                    maxFruits = 5;
+                    maxFruits = 14;
                     break;
                 default:
                     maxFruits = 0;
