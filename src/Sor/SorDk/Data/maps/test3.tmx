@@ -27,7 +27,7 @@
   </object>
   <object id="7" name="tree 5" type="tree" x="1472" y="80" width="16" height="16">
    <properties>
-    <property name="stage" type="int" value="3"/>
+    <property name="stage" type="int" value="10"/>
    </properties>
   </object>
  </objectgroup>
