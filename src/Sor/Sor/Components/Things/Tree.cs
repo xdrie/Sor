@@ -43,7 +43,11 @@ namespace Sor.Components.Things {
         }
 
         public void updateStage() {
-            animator.Play(stage.ToString());
+            // check if there is an animation for the next stage
+            var stageAnim = stage.ToString();
+            if (animator.Animations.ContainsKey(stageAnim)) {
+                animator.Play(stageAnim);
+            }
             growthTimer = Time.TotalTime + 60f * (1f / developmentSpeed) * stage; // time until next growth
             switch (stage) {
                 case 7:
