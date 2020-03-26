@@ -87,7 +87,7 @@ namespace Sor.Components.Things {
                 childFruits.Add(fruit);
                 fruits++;
                 
-                fruitTimer = Time.TotalTime + developmentSpeed * 10f;
+                fruitTimer = Time.TotalTime + developmentSpeed * 2f;
             }
 
             // update existing fruits
@@ -111,6 +111,7 @@ namespace Sor.Components.Things {
             growthTimer -= developmentSpeed * growthPoints * 10f;
             if (Time.TotalTime > growthTimer) {
                 stage++; // upgrade stage
+                if (stage > 10) stage = 10; // clamp to max stage
                 updateStage();
             }
         }
