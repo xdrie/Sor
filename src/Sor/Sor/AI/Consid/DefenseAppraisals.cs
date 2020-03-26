@@ -26,9 +26,8 @@ namespace Sor.AI.Consid {
                 var wings = mind.state.seenWings
                     .Where(x => mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
                     .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
-                if (!wings.Any()) return null;
 
-                return wings.First();
+                return wings.FirstOrDefault();
             }
 
             private float threateningNess(int opinionDelta) {
