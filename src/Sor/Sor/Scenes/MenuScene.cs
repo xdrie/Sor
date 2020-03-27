@@ -24,7 +24,7 @@ namespace Sor.Scenes {
             var ui = CreateEntity("ui");
 
             // display game version
-            var versionStr = NGame.GAME_VERSION;
+            var versionStr = Config.GAME_VERSION;
             #if DEBUG
             versionStr += " [DEBUG]";
             #endif
