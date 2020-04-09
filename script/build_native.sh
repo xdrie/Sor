@@ -10,12 +10,6 @@ export CppCompilerAndLinker=clang
 # arguments
 FRAMEWORK=netcoreapp3.1
 TARGET=$1
-PACK=0
-if [ -n "$2" ] && [ "$2" = "pack" ]; then
-    echo "setting PACK=1"
-    PACK=1
-    PROPS="$PROPS /p:PackBinary=1"
-fi
 
 # platform
 PROJECT=Sor
@@ -35,20 +29,7 @@ fi
 # tool options
 STRIP_BINARY=0
 UPX_COMPRESS=0
-WARP_BIN=$(pwd)/builds/warp-packer
-WARP_COMPRESS=1
-WARP_ARCH=$TARGET
 NATIVES_PATH=$(pwd)/natives
-
-# correct architecture names for warp
-if [[ $TARGET == win* ]];
-then
-    WARP_ARCH=windows-x64
-fi
-if [[ $TARGET == osx* ]];
-then
-    WARP_ARCH=macos-x64
-fi
 
 # outputs
 PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/Game/Config.cs | head -1 | cut -d \" -f2)
@@ -58,7 +39,10 @@ if [ -z "${REVISION}" ]; then
     REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
 ARCNAME="${PROJECT}_$TARGET-v$REVISION"
-ARTIFACT="builds/$ARCNAME.$ARCTYPE"
+ARTIFACT_DIR="builds"
+ARTIFACT="$ARTIFACT_DIR/$ARCNAME.$ARCTYPE"
+
+mkdir -p $ARTIFACT_DIR
 
 echo "release builder script [target $TARGET/$FRAMEWORK]"
 echo "ART: $ARTIFACT"
@@ -77,40 +61,30 @@ STAGING=${PUBLISH}_staging
 A_BINARY="./$PROJECT_DIR/$STAGING/$BINARY"
 echo "target: [$A_BINARY]"
 
-if [[ $PACK -eq 1 ]];
+# create the staging dir
+cp -r ${PUBLISH} ${STAGING}
+
+# === Preparation
+# make all necessary modifications to published files here.
+
+cd ${STAGING}
+
+if [[ $STRIP_BINARY -eq 1 ]];
 then
-    if [[ $WARP_COMPRESS -eq 1 ]];
-    then
-        mkdir -p ${STAGING}
-        echo "running WARP tool..."
-        $WARP_BIN --arch $WARP_ARCH --input_dir $PUBLISH --exec $BINARY --output "$STAGING/$BINARY"
-
-        echo "copying natives..."
-        cp $NATIVES_PATH/* $STAGING/
-    else
-        cp -r ${PUBLISH} ${STAGING}
-    fi
-else
-    cp -r ${PUBLISH} ${STAGING}
-
-    cd ${STAGING}
-
-    if [[ $STRIP_BINARY -eq 1 ]];
-    then
-        echo "stripping binary '$BIN_NAME'..."
-        strip $BIN_NAME
-    fi
-
-    echo "cleaning misc files..."
-    rm -rf *.pdb
-
-    if [[ $UPX_COMPRESS -eq 1 ]];
-    then
-        echo "compressing binary with UPX..."
-        upx --lzma $BIN_NAME
-    fi
-
+    echo "stripping binary '$BIN_NAME'..."
+    strip $BIN_NAME
 fi
+
+echo "cleaning misc files..."
+rm -rf *.pdb
+
+if [[ $UPX_COMPRESS -eq 1 ]];
+then
+    echo "compressing binary with UPX..."
+    upx --lzma $BIN_NAME
+fi
+
+# --
 
 popd # return to build root
 
@@ -118,7 +92,6 @@ popd # return to build root
 echo "checking output bin:"
 ls -lah $A_BINARY
 
-mkdir -p builds/
 echo "compressing to $ARTIFACT..."
 if [[ $ARCTYPE == "7z" ]];
 then
