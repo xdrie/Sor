@@ -11,6 +11,11 @@ export CppCompilerAndLinker=clang
 FRAMEWORK=netcoreapp3.1
 TARGET=$1
 
+if [[ -z $TARGET ]]; then
+    echo "usage: ./build_native <target>"
+    exit 2
+fi
+
 # platform
 PROJECT=Sor
 PROJECT_RUNNER=${PROJECT}Dk
@@ -27,8 +32,8 @@ else
 fi
 
 # tool options
-STRIP_BINARY=0
-UPX_COMPRESS=0
+USE_STRIP=${USE_STRIP:-0}
+USE_UPX=${USE_UPX:-0}
 NATIVES_PATH=$(pwd)/natives
 
 # outputs
@@ -48,7 +53,7 @@ echo "release builder script [target $TARGET/$FRAMEWORK]"
 echo "ART: $ARTIFACT"
 echo "REV: $REVISION"
 
-PROPS="/p:CoreRTMode=Default"
+# PROPS="/p:CoreRTMode=Default"
 PUBLISH_ARGS="-c Release -f $FRAMEWORK -r $TARGET ${PROPS}"
 echo "running native compile (${PUBLISH_ARGS})..."
 cd $PROJECT_DIR
@@ -70,7 +75,7 @@ cp -r ${PUBLISH} ${STAGING}
 
 cd ${STAGING}
 
-if [[ $STRIP_BINARY -eq 1 ]];
+if [[ $USE_STRIP -eq 1 ]];
 then
     echo "stripping binary '$BIN_NAME'..."
     strip $BIN_NAME
@@ -79,7 +84,7 @@ fi
 echo "cleaning misc files..."
 rm -rf *.pdb
 
-if [[ $UPX_COMPRESS -eq 1 ]];
+if [[ $USE_UPX -eq 1 ]];
 then
     echo "compressing binary with UPX..."
     upx --lzma $BIN_NAME
