@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e
 
 MGPKG=$(ls ~/.nuget/packages/monogame.framework.desktopgl.core/ | tail -n1)

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 set -e
 
 pushd .
@@ -49,7 +51,7 @@ then
 fi
 
 # outputs
-PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/NGame.cs | cut -d \" -f2)
+PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/Game/Config.cs | head -1 | cut -d \" -f2)
 REVISION=$(git tag -l --points-at HEAD)
 GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
