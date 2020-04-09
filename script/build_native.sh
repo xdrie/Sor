@@ -22,19 +22,19 @@ PROJECT_RUNNER=${PROJECT}Dk
 PROJECT_DIR=src/$PROJECT/$PROJECT_RUNNER
 BIN_NAME=$PROJECT_RUNNER
 BINARY=$BIN_NAME
-if [[ $TARGET == win* ]];
-then
+if [[ $TARGET == win* ]]; then
     BINARY=$BIN_NAME.exe
     ARCTYPE="7z"
 else
     BINARY=$BIN_NAME
     ARCTYPE="tar.xz"
 fi
-
-# tool options
-USE_STRIP=${USE_STRIP:-0}
-USE_UPX=${USE_UPX:-0}
 NATIVES_PATH=$(pwd)/natives
+
+# builder options
+USE_CORERT=${USE_CORERT:-0}
+USE_UPX=${USE_UPX:-0}
+USE_STRIP=$USE_UPX
 
 # outputs
 PARSE_VERSION=$(grep 'GAME_VERSION' ./src/$PROJECT/$PROJECT/Game/Config.cs | head -1 | cut -d \" -f2)
@@ -49,12 +49,24 @@ ARTIFACT="$ARTIFACT_DIR/$ARCNAME.$ARCTYPE"
 
 mkdir -p $ARTIFACT_DIR
 
-echo "release builder script [target $TARGET/$FRAMEWORK]"
+# banner
+echo "== MGCORE[native] release builder =="
+echo "================================"
+echo "target: $TARGET/$FRAMEWORK"
+echo "options: (USE_CORERT: $USE_CORERT) (USE_UPX: $USE_UPX)"
 echo "ART: $ARTIFACT"
 echo "REV: $REVISION"
+echo ""
 
-# PROPS="/p:CoreRTMode=Default"
+# set up build args
+PROPS=""
+if [[ $USE_CORERT -eq 1 ]]; then
+    PROPS="/p:CoreRTMode=Default"
+fi
+
 PUBLISH_ARGS="-c Release -f $FRAMEWORK -r $TARGET ${PROPS}"
+
+# native compile
 echo "running native compile (${PUBLISH_ARGS})..."
 cd $PROJECT_DIR
 dotnet publish ${PROJECT_RUNNER}.csproj ${PUBLISH_ARGS}
@@ -75,8 +87,7 @@ cp -r ${PUBLISH} ${STAGING}
 
 cd ${STAGING}
 
-if [[ $USE_STRIP -eq 1 ]];
-then
+if [[ $USE_STRIP -eq 1 ]]; then
     echo "stripping binary '$BIN_NAME'..."
     strip $BIN_NAME
 fi
@@ -84,8 +95,7 @@ fi
 echo "cleaning misc files..."
 rm -rf *.pdb
 
-if [[ $USE_UPX -eq 1 ]];
-then
+if [[ $USE_UPX -eq 1 ]]; then
     echo "compressing binary with UPX..."
     upx --lzma $BIN_NAME
 fi
@@ -99,11 +109,9 @@ echo "checking output bin:"
 ls -lah $A_BINARY
 
 echo "compressing to $ARTIFACT..."
-if [[ $ARCTYPE == "7z" ]];
-then
+if [[ $ARCTYPE == "7z" ]]; then
     7z a $ARTIFACT "./$PROJECT_DIR/${STAGING}/*"
-elif [[ $ARCTYPE == "tar.xz" ]];
-then
+elif [[ $ARCTYPE == "tar.xz" ]]; then
     tar --transform "s/^publish_staging/$ARCNAME/" -cJvf $ARTIFACT -C "$PROJECT_DIR/bin/Release/$FRAMEWORK/$TARGET/" publish_staging
 fi
 
