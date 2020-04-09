@@ -5,16 +5,9 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     </PropertyGroup>
-    
-    <PropertyGroup Condition="'$(PackBinary)' == '1'">
-        <PublishTrimmed>true</PublishTrimmed>
-<!--        <PublishReadyToRun>true</PublishReadyToRun>-->
-        <PublishReadyToRunShowWarnings>true</PublishReadyToRunShowWarnings>
-        <PublishSingleFile>true</PublishSingleFile>
-    </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Sor\Sor.csproj" />
+        <ProjectReference Include="..\Sor\Sor.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,6 +19,21 @@
         <EmbeddedResource Include="Icon.ico" />
         <EmbeddedResource Include="Icon.bmp" />
         <EmbeddedResource Include="Icon.png" />
+    </ItemGroup>
+
+    <!-- Native Compilation Modes -->
+
+    <ItemGroup Condition="'$(Mode)' != ''">
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Mode)' == 'CoreRT-Moderate'">
+        <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
+        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <RdXmlFile Include="rd.xml" />
     </ItemGroup>
 
 </Project>
