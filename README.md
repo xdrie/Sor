@@ -19,7 +19,6 @@ the game supports running on both .net core and mono. after using build scripts,
 pull the source submodules first
 ```sh
 git submodule update --init --recursive # update submodules
-./script/get_natives.sh # get native libraries
 ```
 
 ### native build
