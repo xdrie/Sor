@@ -23,13 +23,17 @@ git submodule update --init --recursive # update submodules
 
 ### native build
 ```sh
-./script/build_native_release.sh <runtime> # ex. one of linux-x64, osx-x64, win-x64
+./script/build_native.sh <runtime> # ex. one of linux-x64, osx-x64, win-x64
 ```
 this will drop an archive in `builds/` when completed.
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
-#### pack
-a packer can optionally be used to clean up and minify output bundles. use `./scripts/get_tools.sh` to fetch tools, then pass the `pack` argument to the native build script. set `WARP_COMPRESS=1` before the command to optimize with warp. when using warp build, make sure natives are bundled because it seems to be iffy with native libraries.
+#### experimental: CoreRT build
+
+optionally, [CoreRT](https://github.com/dotnet/corert) can be used to create a native binary. It produces significantly smaller file sizes and creates a much neater output; however it is highly experimental and unsupported. to tell the native builder to use CoreRT:
+```sh
+USE_CORERT=1 USE_UPX=1 ./script/build_native.sh <runtime> # uses CoreRT and UPX to build a native binary
+```
 
 ## license
 
