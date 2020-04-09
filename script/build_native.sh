@@ -48,7 +48,8 @@ echo "release builder script [target $TARGET/$FRAMEWORK]"
 echo "ART: $ARTIFACT"
 echo "REV: $REVISION"
 
-PUBLISH_ARGS="${PROPS} -f $FRAMEWORK -r $TARGET -c Release"
+PROPS="/p:CoreRTMode=Default"
+PUBLISH_ARGS="-c Release -f $FRAMEWORK -r $TARGET ${PROPS}"
 echo "running native compile (${PUBLISH_ARGS})..."
 cd $PROJECT_DIR
 dotnet publish ${PROJECT_RUNNER}.csproj ${PUBLISH_ARGS}
