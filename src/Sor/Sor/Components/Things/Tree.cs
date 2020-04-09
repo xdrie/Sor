@@ -87,7 +87,7 @@ namespace Sor.Components.Things {
                 childFruits.Add(fruit);
                 fruits++;
                 
-                fruitTimer = Time.TotalTime + developmentSpeed * 2f;
+                fruitTimer = Time.TotalTime + Random.Range(1.4f, 3.4f) * developmentSpeed;
             }
 
             // update existing fruits
