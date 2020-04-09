@@ -4,7 +4,7 @@
 set -e
 
 # banner
-echo "== Adrie's MGCORE build script =="
+echo "== MGCORE build script =="
 echo "================================"
 echo ""
 echo ""

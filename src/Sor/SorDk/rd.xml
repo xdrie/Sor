@@ -1,0 +1,11 @@
+<Directives>
+    <Application>
+        <!-- <Assembly Name="mscorlib" /> -->
+        <!--
+        <Assembly Name="MonoGame.Framework">
+        </Assembly>
+        <Assembly Name="mscorlib" />
+        -->
+    </Application>
+</Directives>
+
