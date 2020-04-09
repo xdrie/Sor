@@ -23,8 +23,9 @@ git submodule update --init --recursive # update submodules
 
 ### native build
 ```sh
-./script/build_native_release.sh <runtime> # ex. linux-x64
+./script/build_native_release.sh <runtime> # ex. one of linux-x64, osx-x64, win-x64
 ```
+this will drop an archive in `builds/` when completed.
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
 #### pack
