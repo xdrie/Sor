@@ -16,6 +16,11 @@ namespace SorDk {
         public const string conf = "game.conf";
 
         static void Main(string[] args) {
+#if CORERT
+            // CoreRT switch
+            AppContext.SetSwitch("Switch.System.Reflection.Assembly.SimulatedLocationInBaseDirectory", true);
+#endif
+
             var banner = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.banner.txt");
             using (var sr = new StreamReader(banner)) {
                 Console.WriteLine(sr.ReadToEnd());
@@ -35,9 +40,11 @@ namespace SorDk {
 
             // load configuration
 #if DEBUG
-            var defaultConf = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.dbg.conf");
+            var defaultConf = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream($"{nameof(SorDk)}.Res.game.dbg.conf");
 #else
-            var defaultConf = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
+            var defaultConf =
+ Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
 #endif
             var configHelper = new ConfigHelper<Config>();
             configHelper.ensureDefaultConfig(conf, defaultConf);
