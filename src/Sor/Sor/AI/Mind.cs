@@ -34,7 +34,8 @@ namespace Sor.AI {
         public Mind() : this(null, true) { }
 
         public Mind(AvianSoul soul, bool control) {
-            if (soul == null) { // generate a new soul
+            if (soul == null) {
+                // generate a new soul
                 this.soul = new AvianSoul(this);
                 this.soul.ply.generateRandom(); // randomize its personality
                 Global.log.writeLine($"generated soul with personality {this.soul.ply}", GlintLogger.LogLevel.Trace);
@@ -71,8 +72,10 @@ namespace Sor.AI {
                 thinkSystem = new ThinkSystem(this, 0.4f, cts.Token);
 
                 // start processing tasks
-                consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
-                
+                if (NGame.context.config.threadPoolAi) {
+                    consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
+                }
+
                 // set up plan executor
                 planExecutor = new PlanExecutor(this);
             }
@@ -80,22 +83,25 @@ namespace Sor.AI {
 
         public async Task consciousnessAsync(CancellationToken tok) {
             while (!tok.IsCancellationRequested) {
-                try {
-                    think(); // think based on information and make plans
-                }
-                catch (Exception e) {
-                    // log exceptions in think
-                    Global.log.writeLine(e.ToString(), GlintLogger.LogLevel.Error);
-                }
+                think();
 
                 await Task.Delay(consciousnessSleep, tok);
             }
         }
 
-        public void Update() { // Sense-Think-Act AI
+        public void Update() {
+            // Sense-Think-Act AI
             if (control) {
                 sense(); // sense the world around
                 act(); // carry out decisions();
+                if (!NGame.context.config.threadPoolAi && consciousnessTask == null) {
+                    var msPassed = (int) (Time.DeltaTime * 1000);
+                    var thinkModulus = consciousnessSleep / msPassed;
+                    if (Time.FrameCount % thinkModulus == 0) {
+                        // synchronous think
+                        think();
+                    }
+                }
             }
 
             // update state information
@@ -121,7 +127,14 @@ namespace Sor.AI {
         }
 
         private void think() {
-            thinkSystem.tick();
+            // think based on information and make plans
+            try {
+                thinkSystem.tick();
+            }
+            catch (Exception e) {
+                // log exceptions in think
+                Global.log.writeLine(e.ToString(), GlintLogger.LogLevel.Error);
+            }
         }
 
         private void sense() {

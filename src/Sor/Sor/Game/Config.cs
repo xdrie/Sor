@@ -23,6 +23,7 @@ namespace Sor.Game {
         public bool invisible = false;
         public int mindDisplayAhead = 3;
         public bool generateMap = true;
+        public bool threadPoolAi = true; 
 
         public override void load() {
             base.load();
@@ -43,6 +44,7 @@ namespace Sor.Game {
             pr.bind(ref spawnBirds, INTERNAL, rename(nameof(spawnBirds)));
             pr.bind(ref invisible, INTERNAL, rename(nameof(invisible)));
             pr.bind(ref generateMap, INTERNAL, rename(nameof(generateMap)));
+            pr.bind(ref threadPoolAi, INTERNAL, rename(nameof(threadPoolAi)));
 #endif
         }
     }
