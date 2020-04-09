@@ -7,33 +7,37 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Sor\Sor.csproj" />
+        <ProjectReference Include="..\Sor\Sor.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
-        <EmbeddedResource Include="Res/**/*" />
+        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest"/>
+        <EmbeddedResource Include="Res/**/*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Icon.ico" />
-        <EmbeddedResource Include="Icon.bmp" />
-        <EmbeddedResource Include="Icon.png" />
+        <EmbeddedResource Include="Icon.ico"/>
+        <EmbeddedResource Include="Icon.bmp"/>
+        <EmbeddedResource Include="Icon.png"/>
     </ItemGroup>
 
     <!-- Native Compilation Modes -->
 
-    <ItemGroup Condition="'$(Mode)' != ''">
-        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
+    <ItemGroup Condition="'$(CoreRTMode)' != ''">
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*"/>
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(Mode)' == 'CoreRT-Moderate'">
+    <PropertyGroup Condition="'$(CoreRTMode)' != ''">
+        <DefineConstants>$(DefineConstants);CORERT</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(CoreRTMode)' == 'Moderate'">
         <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
         <IlcOptimizationPreference>Size</IlcOptimizationPreference>
     </PropertyGroup>
 
     <ItemGroup>
-        <RdXmlFile Include="rd.xml" />
+        <RdXmlFile Include="rd.xml"/>
     </ItemGroup>
 
 </Project>
