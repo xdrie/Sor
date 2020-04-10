@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Glint;
 using Glint.Config;
+using Glint.Platform;
 using Sor;
 using Sor.Game;
 
@@ -17,8 +18,7 @@ namespace SorDk {
 
         static void Main(string[] args) {
 #if CORERT
-            // CoreRT switch
-            AppContext.SetSwitch("Switch.System.Reflection.Assembly.SimulatedLocationInBaseDirectory", true);
+            DesktopPlatform.setupCoreRTSupport();
 #endif
 
             var banner = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.banner.txt");
