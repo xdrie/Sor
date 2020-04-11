@@ -110,8 +110,12 @@ namespace Sor.Scenes {
             }
 
             var followCamera =
-                Camera.Entity.AddComponent(new LockedCamera(playContext.playerWing.Entity, Camera, cameraLockMode));
-            followCamera.AddComponent<CameraShake>();
+                // Camera.Entity.AddComponent(new LockedCamera(playContext.playerWing.Entity, Camera, cameraLockMode));
+                Camera.Entity.AddComponent(new FollowCamera(playContext.playerWing.Entity,
+                    FollowCamera.CameraStyle.LockOn));
+            followCamera.FollowLerp = 0.3f;
+            followCamera.RoundPosition = false;
+            Camera.AddComponent<CameraShake>();
             Camera.SetMaximumZoom(2f);
             Camera.SetMinimumZoom(0.5f);
             // Camera.SetZoom(-1f);
