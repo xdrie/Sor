@@ -17,6 +17,7 @@ using Sor.Systems;
 
 namespace Sor.Scenes {
     public class PlayScene : GameScene {
+        private const int renderlayer_above = -256;
         private const int renderlayer_map = 512;
         private const int renderlayer_overlay = 1 << 30;
 
@@ -49,7 +50,7 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
 
             // update main renderer
-            mainRenderer.RenderLayers.Add(renderlayer_map);
+            mainRenderer.RenderLayers.AddRange(new[] {renderlayer_map, renderlayer_above});
         }
 
         public override void OnStart() {
@@ -62,9 +63,13 @@ namespace Sor.Scenes {
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
-            AddEntity(playContext.playerWing.Entity);
+            // attach player
+            var player = playContext.playerWing;
+            AddEntity(player.Entity);
+            player.animator.RenderLayer = renderlayer_above;
+
+            // attach all wings
             foreach (var wing in playContext.createdWings) {
-                // attach all wings
                 AddEntity(wing.Entity);
             }
 
