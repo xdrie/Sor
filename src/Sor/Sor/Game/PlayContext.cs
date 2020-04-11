@@ -99,11 +99,18 @@ namespace Sor.Game {
         }
 
         private void spawnBirds() {
-            var player = createPlayer(new Vector2(200, 200));
+            var spawn = new Vector2(200, 200);
+            if (NGame.config.generateMap) {
+                var mapBounds = mapLoader.mapRepr.tmxMap.TileToWorldPosition(new Vector2(mapLoader.mapRepr.tmxMap.Width,
+                    mapLoader.mapRepr.tmxMap.Height));
+                spawn = new Vector2(Random.NextFloat() * mapBounds.X, Random.NextFloat() * mapBounds.Y);
+            }
+
+            var player = createPlayer(spawn);
             player.Entity.AddComponent(new Shooter());
 
             // a friendly bird
-            var frend = createWing("frend", new Vector2(-140, 20),
+            var frend = createWing("frend", spawn + new Vector2(-140, 20),
                 new BirdPersonality {A = -0.8f, S = 0.7f});
             frend.AddComponent(new Shooter()); // friend is armed
 
@@ -115,14 +122,14 @@ namespace Sor.Game {
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
-                var uno = createWing("uno", new Vector2(-140, 920), unoPly);
+                var uno = createWing("uno", spawn + new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
 
                 // a second friendly bird
-                var fren2 = createWing("yii", new Vector2(400, -80),
+                var fren2 = createWing("yii", spawn + new Vector2(400, -80),
                     new BirdPersonality {A = -0.5f, S = 0.4f});
                 // a somewhat anxious bird
-                var anxious1 = createWing("ada", new Vector2(640, 920),
+                var anxious1 = createWing("ada", spawn + new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
                 var gen = new BirdGenerator(this);
