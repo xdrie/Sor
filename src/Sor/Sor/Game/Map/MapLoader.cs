@@ -21,6 +21,7 @@ namespace Sor.Game.Map {
 
         public const string LAYER_STRUCTURE = "structure";
         public const string LAYER_FEATURES = "features";
+        public const string LAYER_BACKDROP = "backdrop";
         public const string LAYER_NATURE = "nature";
         public const string TILESET_WORLD = "world_tiles";
         public const string OBJECT_TREE = "tree";

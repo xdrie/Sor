@@ -8,6 +8,7 @@ using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;
+using Random = Nez.Random;
 
 namespace Sor.Game.Map.Gen {
     public class MapGenerator {
@@ -93,7 +94,8 @@ namespace Sor.Game.Map.Gen {
 
                     // check validity
                     var newRoomRect = new Rectangle(sx, sy, roomW, roomH);
-                    if (sy + roomH > height || sx + roomW > width) { // ensure bounds
+                    if (sy + roomH > height || sx + roomW > width) {
+                        // ensure bounds
                         continue;
                     }
 
@@ -131,7 +133,8 @@ namespace Sor.Game.Map.Gen {
                 if (oldTile != null) {
                     gid = oldTile.Gid;
                     layer.Tiles[index] = new TmxLayerTile(layer.Map, (uint) gid, i, j);
-                } else {
+                }
+                else {
                     layer.Tiles[index] = null;
                 }
 
@@ -289,38 +292,46 @@ namespace Sor.Game.Map.Gen {
                 GlintLogger.LogLevel.Trace);
 
             // set walls
-            for (var sx = ulp.X + 1; sx < brp.X; sx++) { // upper wall
+            for (var sx = ulp.X + 1; sx < brp.X; sx++) {
+                // upper wall
                 structure.SetTile(pickTile(structure.Map, sx, ulp.Y, Map.TileKind.Wall, Map.TileOri.Up));
             }
 
-            for (var sy = ulp.Y + 1; sy < brp.Y; sy++) { // right wall
+            for (var sy = ulp.Y + 1; sy < brp.Y; sy++) {
+                // right wall
                 structure.SetTile(pickTile(structure.Map, brp.X, sy, Map.TileKind.Wall, Map.TileOri.Right));
             }
 
-            for (var sx = brp.X - 1; sx > ulp.X; sx--) { // lower wall
+            for (var sx = brp.X - 1; sx > ulp.X; sx--) {
+                // lower wall
                 structure.SetTile(pickTile(structure.Map, sx, brp.Y, Map.TileKind.Wall, Map.TileOri.Down));
             }
 
-            for (var sy = brp.Y - 1; sy > ulp.Y; sy--) { // left wall
+            for (var sy = brp.Y - 1; sy > ulp.Y; sy--) {
+                // left wall
                 structure.SetTile(pickTile(structure.Map, ulp.X, sy, Map.TileKind.Wall, Map.TileOri.Left));
             }
 
             // carve doors for all links
             foreach (var link in room.links) {
                 var linkDirection = default(Direction);
-                if (link.center.X > room.center.X) { // right link
+                if (link.center.X > room.center.X) {
+                    // right link
                     linkDirection = Direction.Right;
                 }
 
-                if (link.center.Y > room.center.Y) { // down link
+                if (link.center.Y > room.center.Y) {
+                    // down link
                     linkDirection = Direction.Down;
                 }
 
-                if (link.center.X < room.center.X) { // left link
+                if (link.center.X < room.center.X) {
+                    // left link
                     linkDirection = Direction.Left;
                 }
 
-                if (link.center.Y < room.center.Y) { // up link
+                if (link.center.Y < room.center.Y) {
+                    // up link
                     linkDirection = Direction.Up;
                 }
 
@@ -367,6 +378,25 @@ namespace Sor.Game.Map.Gen {
             }
         }
 
+        private void createBackdrop(TmxLayer backdrop) {
+            var tileset = backdrop.Map.Tilesets[backdrop.Name];
+            var skip = (tileset.TileWidth / backdrop.Map.TileWidth) / 2;
+            for (int sy = 0; sy < backdrop.Height; sy += skip) {
+                for (int sx = 0; sx < backdrop.Width; sx += skip) {
+                    var rnd = rng.next();
+                    var tileId = rnd % tileset.TileCount;
+                    var f1 = (rnd & 0b0001) > 0;
+                    var f2 = (rnd & 0b0010) > 0;
+                    var f3 = (rnd & 0b0100) > 0;
+                    var tile = new TmxLayerTile(backdrop.Map, (uint) (tileset.FirstGid + tileId), sx, sy);
+                    tile.HorizontalFlip = f1;
+                    tile.VerticalFlip = f2;
+                    tile.DiagonalFlip = f3;
+                    backdrop.SetTile(tile);
+                }
+            }
+        }
+
         private void placeTree(TmxObjectGroup nature, Map.Room room, int stage) {
             // 1. pick a random spot in the room
             var placePoint = new Point(
@@ -405,6 +435,7 @@ namespace Sor.Game.Map.Gen {
         public void copyToTilemap(TmxMap map, bool createObjects) {
             var structure = map.GetLayer<TmxLayer>(MapLoader.LAYER_STRUCTURE);
             var features = map.GetLayer<TmxLayer>(MapLoader.LAYER_FEATURES);
+            var backdrop = map.GetLayer<TmxLayer>(MapLoader.LAYER_BACKDROP);
             var nature = map.GetObjectGroup(MapLoader.LAYER_NATURE);
             // - clear/reset the map
             // calculate the generated map size in tiles
@@ -413,12 +444,14 @@ namespace Sor.Game.Map.Gen {
             // resize the structure and feature maps
             resizeTmxLayer(structure, genWidth, genHeight);
             resizeTmxLayer(features, genWidth, genHeight);
-            
-            // 3. clear all tiles (structure and features)
+            resizeTmxLayer(backdrop, genWidth, genHeight);
+
+            // 3. clear all tiles
             for (int sy = 0; sy < structure.Height; sy++) {
                 for (int sx = 0; sx < structure.Width; sx++) {
                     structure.RemoveTile(sx, sy);
                     features.RemoveTile(sx, sy);
+                    backdrop.RemoveTile(sx, sy);
                 }
             }
 
@@ -430,6 +463,9 @@ namespace Sor.Game.Map.Gen {
                 // render the room to tiles
                 createRoom(structure, room);
             }
+
+            // fill in backdrop
+            createBackdrop(backdrop);
 
             if (createObjects) {
                 // create objects
