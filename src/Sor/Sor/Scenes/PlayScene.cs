@@ -185,7 +185,7 @@ namespace Sor.Scenes {
                     if (nearest != null) {
                         Global.log.writeLine($"selected mind_inspect on {nearest.name}",
                             GlintLogger.LogLevel.Information);
-                        nearest?.AddComponent(new MindDisplay(player, true));
+                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }
 
