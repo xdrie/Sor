@@ -1,3 +1,4 @@
+using System.Linq;
 using Glint;
 using Glint.Components.Camera;
 using Glint.Game;
@@ -16,8 +17,8 @@ using Sor.Systems;
 
 namespace Sor.Scenes {
     public class PlayScene : GameScene {
-        private const int renderlayer_backdrop = 65535;
-        private const int renderlayer_ui_overlay = 1 << 30;
+        private const int renderlayer_map = 512;
+        private const int renderlayer_overlay = 1 << 30;
 
         public bool showingHelp;
         public const float showHelpTime = 4f;
@@ -44,8 +45,11 @@ namespace Sor.Scenes {
 
             // add fixed renderer
             var fixedRenderer =
-                AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
+                AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_overlay));
             fixedRenderer.ShouldDebugRender = false;
+
+            // update main renderer
+            mainRenderer.RenderLayers.Add(renderlayer_map);
         }
 
         public override void OnStart() {
@@ -55,6 +59,8 @@ namespace Sor.Scenes {
             // set up map
             AddEntity(playContext.mapNt);
             gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+            var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
+            mapRenderer.RenderLayer = renderlayer_map;
 
             AddEntity(playContext.playerWing.Entity);
             foreach (var wing in playContext.createdWings) {
@@ -79,13 +85,13 @@ namespace Sor.Scenes {
             var statusBarSize = new Point(96, 12);
             var hud = CreateEntity("hud", new Vector2(DesignResolution.X - statusBarSize.X - hudPadding, hudPadding));
             var energyIndicator = hud.AddComponent(new EnergyIndicator());
-            energyIndicator.spriteRenderer.RenderLayer = renderlayer_ui_overlay;
-            energyIndicator.backdropRenderer.RenderLayer = renderlayer_ui_overlay;
+            energyIndicator.spriteRenderer.RenderLayer = renderlayer_overlay;
+            energyIndicator.backdropRenderer.RenderLayer = renderlayer_overlay;
 
             var notifMsgNt = CreateEntity("notif", new Vector2(24f, 24f));
             var notifyMsg = notifMsgNt.AddComponent(new TextComponent(gameContext.assets.font, "welcome", Vector2.Zero,
                 gameContext.assets.fgColor));
-            notifyMsg.RenderLayer = renderlayer_ui_overlay;
+            notifyMsg.RenderLayer = renderlayer_overlay;
             var tw = notifyMsg.TweenColorTo(Color.Transparent, 0.4f)
                 .SetEaseType(EaseType.CubicIn).SetDelay(1f)
                 .SetCompletionHandler(_ => {
@@ -113,7 +119,7 @@ namespace Sor.Scenes {
 #if DEBUG
             // draw nav graph (only visible in debug render)
             var navGraphDisplay = CreateEntity("navgraph_display");
-            navGraphDisplay.AddComponent(new NavGraphDisplay(FindEntity("map").GetComponent<TiledMapRenderer>()));
+            navGraphDisplay.AddComponent(new NavGraphDisplay(mapRenderer));
 #endif
         }
 
