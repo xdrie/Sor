@@ -76,12 +76,12 @@ namespace Sor.Game {
                     GlintLogger.LogLevel.Trace);
             }
             else {
-                mapAsset = Core.Content.LoadTiledMap("Data/maps/test3.tmx");
+                mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");
             }
             // TODO: ensure that the loaded map matches the saved map
             mapNt = new Entity("map");
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
-            mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES);
+            mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES, MapLoader.LAYER_BACKDROP);
             mapLoader = new MapLoader(this, mapNt);
 
             // load map
