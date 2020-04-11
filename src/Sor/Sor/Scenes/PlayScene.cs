@@ -62,9 +62,12 @@ namespace Sor.Scenes {
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
-            AddEntity(playContext.playerWing.Entity);
+            // attach player
+            var player = playContext.playerWing;
+            AddEntity(player.Entity);
+            
+            // attach all wings
             foreach (var wing in playContext.createdWings) {
-                // attach all wings
                 AddEntity(wing.Entity);
             }
 
@@ -99,9 +102,9 @@ namespace Sor.Scenes {
                 });
             tw.Start();
 
-            var hudSystem = AddEntityProcessor(new HudSystem(playContext.playerWing, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(player, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(playContext.playerWing));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(player));
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
@@ -110,8 +113,8 @@ namespace Sor.Scenes {
             }
 
             var followCamera =
-                // Camera.Entity.AddComponent(new LockedCamera(playContext.playerWing.Entity, Camera, cameraLockMode));
-                Camera.Entity.AddComponent(new FollowCamera(playContext.playerWing.Entity,
+                // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
+                Camera.Entity.AddComponent(new FollowCamera(player.Entity,
                     FollowCamera.CameraStyle.LockOn));
             followCamera.FollowLerp = 0.3f;
             followCamera.RoundPosition = false;
@@ -182,7 +185,7 @@ namespace Sor.Scenes {
                     if (nearest != null) {
                         Global.log.writeLine($"selected mind_inspect on {nearest.name}",
                             GlintLogger.LogLevel.Information);
-                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
+                        nearest?.AddComponent(new MindDisplay(player, true));
                     }
                 }
 
