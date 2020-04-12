@@ -1,8 +1,10 @@
+using System;
 using Glint.Physics;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Persistence.Binary;
+using Sor.AI;
 using Sor.AI.Cogs;
 using Sor.Components.Items;
 using Sor.Components.Units;
@@ -15,7 +17,8 @@ namespace Sor.Util {
             public float angle;
             public float angularVelocity;
 
-            public BodyData() {}
+            public BodyData() { }
+
             public BodyData(KinBody body) {
                 pos = body.pos;
                 velocity = body.velocity;
@@ -30,7 +33,7 @@ namespace Sor.Util {
                 body.angularVelocity = angularVelocity;
             }
         }
-        
+
         public static void writeBody(this IPersistableWriter w, KinBody body) {
             var bodyData = new BodyData(body);
             w.Write(bodyData.pos);
@@ -84,7 +87,7 @@ namespace Sor.Util {
             wd.armed = r.ReadBool();
             return wd;
         }
-        
+
         public static void writePersonality(this IPersistableWriter w, BirdPersonality ply) {
             w.Write(ply.A);
             w.Write(ply.S);
@@ -95,6 +98,14 @@ namespace Sor.Util {
             ply.A = r.ReadFloat();
             ply.S = r.ReadFloat();
             return ply;
+        }
+
+        public static void writeWingMemory(this IPersistableWriter w, Mind mind) {
+            throw new NotImplementedException();
+        }
+
+        public static void readWingMemory(this IPersistableReader r, Mind mind) {
+            throw new NotImplementedException();
         }
     }
 }

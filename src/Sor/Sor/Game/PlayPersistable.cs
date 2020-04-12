@@ -68,6 +68,7 @@ namespace Sor.Game {
                     wing.AddComponent<Shooter>();
                 }
                 var bd = rd.readBodyData();
+                rd.readWingMemory(wing.mind);
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
@@ -112,6 +113,7 @@ namespace Sor.Game {
                 var wing = wingNt.GetComponent<Wing>();
                 wr.writeWingMeta(wing);
                 wr.writeBody(wing.body);
+                wr.writeWingMemory(wing.mind);
             }
 
             // save world things
