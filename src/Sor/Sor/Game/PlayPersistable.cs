@@ -15,7 +15,7 @@ namespace Sor.Game {
         public PlayContext playContext;
 
         public bool loaded = false;
-        public const int version = 3;
+        public const int version = 4;
         public const float timeAdvance = 30f; // time to advance when loading
 
         // helper values
