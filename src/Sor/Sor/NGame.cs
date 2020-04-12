@@ -8,7 +8,7 @@ using Sor.Scenes;
 
 namespace Sor {
     public class NGame : RGameBase<GameContext, Config> {
-        public NGame(Config config) : base(config, new Point(960, 540)) { }
+        public NGame(Config config) : base(config, new GameContext(config), new Point(960, 540)) { }
 
         protected override void Initialize() {
             base.Initialize();
