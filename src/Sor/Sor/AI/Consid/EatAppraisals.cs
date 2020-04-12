@@ -1,10 +1,11 @@
 using System.Linq;
 using LunchLib.AI.Utility;
+using Nez;
 using Sor.Components.Things;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
-    public static class HungerAppraisals {
+    public static class EatAppraisals {
         public class Hunger : Appraisal<Mind> {
             public Hunger(Mind context) : base(context) { }
 
@@ -13,8 +14,10 @@ namespace Sor.AI.Consid {
                 // let E be energy percentage (energy / max energy), clamp01
                 // y = (1 - E)^2
                 var energyCore = context.Entity.GetComponent<EnergyCore>();
-                var invEnergyPerc = 1 - GMathf.clamp01(energyCore.ratio);
-                return GMathf.sqrt(invEnergyPerc * invEnergyPerc);
+                var satiation = 2f; // 200% food
+                var ratioSatiation = energyCore.energy / (energyCore.designMax * satiation);
+                var invEnergyPerc = 1 - Mathf.Clamp01(ratioSatiation);
+                return GMathf.pow(invEnergyPerc, 1.4f);
             }
         }
 
