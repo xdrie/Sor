@@ -28,11 +28,10 @@ namespace Sor.Game {
 
         public void Recover(IPersistableReader rd) {
             loaded = true;
-            Global.log.writeLine($"{nameof(PlayPersistable)}::recover called", Logger.Verbosity.Information);
+            Global.log.info($"{nameof(PlayPersistable)}::recover called");
             var readVersion = rd.ReadInt();
             if (version != readVersion) {
-                Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})",
-                    Logger.Verbosity.Error);
+                Global.log.err($"save file version mismatch (got {readVersion}, expected {version})");
             }
 
             // load game time
@@ -40,7 +39,7 @@ namespace Sor.Game {
             
             // load map seed
             playContext.mapgenSeed = rd.ReadInt();
-            Global.log.writeLine($"loaded mapgen seed: {playContext.mapgenSeed}", Logger.Verbosity.Trace);
+            Global.log.trace($"loaded mapgen seed: {playContext.mapgenSeed}");
             
             // set rehydrated flag
             playContext.rehydrated = true;
@@ -71,7 +70,7 @@ namespace Sor.Game {
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
-                Global.log.writeLine($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}", Logger.Verbosity.Trace);
+                Global.log.trace($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}");
             }
 
             // load world things
@@ -90,7 +89,7 @@ namespace Sor.Game {
         }
 
         public void Persist(IPersistableWriter wr) {
-            Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", Logger.Verbosity.Information);
+            Global.log.info($"{nameof(PlayPersistable)}::persist called");
             wr.Write(version); // save file version
 
             // save game time

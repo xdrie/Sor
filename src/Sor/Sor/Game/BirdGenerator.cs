@@ -64,7 +64,7 @@ namespace Sor.Game {
                 }
             }
 
-            Global.log.writeLine($"spawned {spawnedBirds} birds across the map", Logger.Verbosity.Trace);
+            Global.log.trace($"spawned {spawnedBirds} birds across the map");
         }
     }
 }

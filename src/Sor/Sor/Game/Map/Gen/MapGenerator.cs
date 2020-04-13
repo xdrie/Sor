@@ -288,8 +288,7 @@ namespace Sor.Game.Map.Gen {
             var blCorner = pickTile(structure.Map, blp.X, blp.Y, Map.TileKind.Corner, Map.TileOri.DownLeft);
             structure.SetTile(blCorner);
 
-            Global.log.writeLine($"room tilegen from ul:{ulp}, ur:{urp}, br:{brp}, bl:{blp}",
-                Logger.Verbosity.Trace);
+            Global.log.trace($"room tilegen from ul:{ulp}, ur:{urp}, br:{brp}, bl:{blp}");
 
             // set walls
             for (var sx = ulp.X + 1; sx < brp.X; sx++) {

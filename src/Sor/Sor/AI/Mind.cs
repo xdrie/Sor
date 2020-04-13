@@ -38,7 +38,7 @@ namespace Sor.AI {
                 // generate a new soul
                 this.soul = new AvianSoul(this);
                 this.soul.ply.generateRandom(); // randomize its personality
-                Global.log.writeLine($"generated soul with personality {this.soul.ply}", Logger.Verbosity.Trace);
+                Global.log.trace($"generated soul with personality {this.soul.ply}");
             }
 
             this.soul = soul;
@@ -133,7 +133,7 @@ namespace Sor.AI {
             }
             catch (Exception e) {
                 // log exceptions in think
-                Global.log.writeLine(e.ToString(), Logger.Verbosity.Error);
+                Global.log.err($"error thinking: {e}");
             }
         }
 
