@@ -28,11 +28,11 @@ namespace Sor.Game {
 
         public void Recover(IPersistableReader rd) {
             loaded = true;
-            Global.log.writeLine($"{nameof(PlayPersistable)}::recover called", GlintLogger.LogLevel.Information);
+            Global.log.writeLine($"{nameof(PlayPersistable)}::recover called", Logger.Verbosity.Information);
             var readVersion = rd.ReadInt();
             if (version != readVersion) {
                 Global.log.writeLine($"save file version mismatch (got {readVersion}, expected {version})",
-                    GlintLogger.LogLevel.Error);
+                    Logger.Verbosity.Error);
             }
 
             // load game time
@@ -40,7 +40,7 @@ namespace Sor.Game {
             
             // load map seed
             playContext.mapgenSeed = rd.ReadInt();
-            Global.log.writeLine($"loaded mapgen seed: {playContext.mapgenSeed}", GlintLogger.LogLevel.Trace);
+            Global.log.writeLine($"loaded mapgen seed: {playContext.mapgenSeed}", Logger.Verbosity.Trace);
             
             // set rehydrated flag
             playContext.rehydrated = true;
@@ -71,7 +71,7 @@ namespace Sor.Game {
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
-                Global.log.writeLine($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}", GlintLogger.LogLevel.Trace);
+                Global.log.writeLine($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}", Logger.Verbosity.Trace);
             }
 
             // load world things
@@ -90,7 +90,7 @@ namespace Sor.Game {
         }
 
         public void Persist(IPersistableWriter wr) {
-            Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", GlintLogger.LogLevel.Information);
+            Global.log.writeLine($"{nameof(PlayPersistable)}::persist called", Logger.Verbosity.Information);
             wr.Write(version); // save file version
 
             // save game time

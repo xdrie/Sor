@@ -81,7 +81,7 @@ namespace Sor.Scenes {
             playContext.createdThings.Clear();
 
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
-            Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
+            Global.log.writeLine($"play scene {status}", Logger.Verbosity.Information);
 
             // - hud
             const int hudPadding = 8;
@@ -184,7 +184,7 @@ namespace Sor.Scenes {
 
                     if (nearest != null) {
                         Global.log.writeLine($"selected mind_inspect on {nearest.name}",
-                            GlintLogger.LogLevel.Information);
+                            Logger.Verbosity.Information);
                         nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }

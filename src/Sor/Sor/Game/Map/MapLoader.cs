@@ -56,7 +56,7 @@ namespace Sor.Game.Map {
                 loadNature();
             }
 
-            Global.log.writeLine("loaded data from map", GlintLogger.LogLevel.Information);
+            Global.log.writeLine("loaded data from map", Logger.Verbosity.Information);
         }
 
         private void loadNature() {
@@ -72,7 +72,7 @@ namespace Sor.Game.Map {
                     nt.Position = new Vector2(th.X, th.Y);
                     var tree = nt.AddComponent(new Tree {stage = treeStage});
                     playContext.addThing(tree);
-                    Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", GlintLogger.LogLevel.Trace);
+                    Global.log.writeLine($"tree L{treeStage}: ({nt.Name}, {nt.Position})", Logger.Verbosity.Trace);
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace Sor.Game.Map {
 
                         rooms.Add(room);
                         Global.log.writeLine($"room ul:{room.ul}, dr{room.dr}, doors:{room.doors.Count})",
-                            GlintLogger.LogLevel.Trace);
+                            Logger.Verbosity.Trace);
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace Sor.Game.Map {
                             room.links.Add(otherRoom);
                             Global.log.writeLine(
                                 $"room link [dist: {distScanned}] from Room[@{room.center}] to Room[@{otherRoom.center}]",
-                                GlintLogger.LogLevel.Trace);
+                                Logger.Verbosity.Trace);
                             break;
                         }
                     }

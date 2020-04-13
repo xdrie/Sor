@@ -73,7 +73,7 @@ namespace Sor.Game {
                 // log generated map
                 Global.log.writeLine(
                     $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
-                    GlintLogger.LogLevel.Trace);
+                    Logger.Verbosity.Trace);
             }
             else {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");

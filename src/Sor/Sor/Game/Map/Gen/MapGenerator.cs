@@ -289,7 +289,7 @@ namespace Sor.Game.Map.Gen {
             structure.SetTile(blCorner);
 
             Global.log.writeLine($"room tilegen from ul:{ulp}, ur:{urp}, br:{brp}, bl:{blp}",
-                GlintLogger.LogLevel.Trace);
+                Logger.Verbosity.Trace);
 
             // set walls
             for (var sx = ulp.X + 1; sx < brp.X; sx++) {
