@@ -58,6 +58,10 @@ namespace Sor.Components.Things {
                 maxVelocity = new Vector2(maxLinearFloat);
                 velocity = Random.Range(new Vector2(-randomLinearFloat), new Vector2(randomLinearFloat));
             }
+
+            protected override void applyMotion(Vector2 posDelta) {
+                mov.ApplyMovement(posDelta);
+            }
         }
 
         public void acquire() {
