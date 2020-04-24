@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Nez;
-using Sor.Game;
 
 namespace Sor.Test {
     public class TestScene : Scene {
@@ -8,6 +7,8 @@ namespace Sor.Test {
             base.Initialize();
 
             ClearColor = Color.RosyBrown;
+            SetDesignResolution(960, 540, SceneResolutionPolicy.ShowAllPixelPerfect);
+            Screen.SetSize(960, 540);
         }
 
         public override void OnStart() {
@@ -16,7 +17,7 @@ namespace Sor.Test {
             // test text
             var ui = CreateEntity("ui");
             ui.AddComponent(new TextComponent(Graphics.Instance.BitmapFont,
-                $"test text! this is running v{Config.GAME_VERSION}\nabcdefghijklmnopqrstuvwxyz0123456789", new Vector2(20, 20),
+                $"test text! this is running v0.7.19\nabcdefghijklmnopqrstuvwxyz0123456789", new Vector2(20, 20),
                 Color.White));
         }
     }
