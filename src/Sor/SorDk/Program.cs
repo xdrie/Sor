@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Glint;
 using Glint.Config;
+using Glint.Diagnostics;
 using Glint.Platform;
 using Sor;
 using Sor.Game;
@@ -34,7 +35,9 @@ namespace SorDk {
 #if DEBUG
             // check MAIM (MAintenance IMmediate access) mode
             if (args.Length > 0 && args[0] == "maim") {
-                Maim.launch(args.Skip(1).ToList());
+                var prompt = new MaimPrompt(args.Skip(1));
+                Maim.install(prompt);
+                prompt.launch();
                 return;
             }
 #endif
