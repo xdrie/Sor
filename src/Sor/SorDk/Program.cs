@@ -51,7 +51,7 @@ namespace SorDk {
  Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
 #endif
             var configHelper = new ConfigHelper<Config>();
-            var confPath = Path.Join(Global.baseDir, conf);
+            var confPath = Path.Combine(Global.baseDir, conf);
             configHelper.ensureDefaultConfig(confPath, defaultConf);
             var confStr = File.ReadAllText(confPath);
             var config = configHelper.load(confStr, args); // load and parse config
