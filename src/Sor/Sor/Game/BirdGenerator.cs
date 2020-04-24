@@ -64,7 +64,7 @@ namespace Sor.Game {
                 }
             }
 
-            Global.log.writeLine($"spawned {spawnedBirds} birds across the map", GlintLogger.LogLevel.Trace);
+            Global.log.trace($"spawned {spawnedBirds} birds across the map");
         }
     }
 }

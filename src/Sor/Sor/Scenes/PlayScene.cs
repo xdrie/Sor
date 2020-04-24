@@ -83,7 +83,7 @@ namespace Sor.Scenes {
             playContext.createdThings.Clear();
 
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
-            Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
+            Global.log.info($"play scene {status}");
 
             // - hud
             const int hudPadding = 8;
@@ -104,9 +104,9 @@ namespace Sor.Scenes {
                 });
             tw.Start();
 
-            var hudSystem = AddEntityProcessor(new HudSystem(playContext.playerWing, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(player, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(playContext.playerWing));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(player));
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
@@ -115,8 +115,12 @@ namespace Sor.Scenes {
             }
 
             var followCamera =
-                Camera.Entity.AddComponent(new LockedCamera(playContext.playerWing.Entity, Camera, cameraLockMode));
-            followCamera.AddComponent<CameraShake>();
+                // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
+                Camera.Entity.AddComponent(new FollowCamera(player.Entity,
+                    FollowCamera.CameraStyle.LockOn));
+            followCamera.FollowLerp = 0.3f;
+            followCamera.RoundPosition = false;
+            Camera.AddComponent<CameraShake>();
             Camera.SetMaximumZoom(2f);
             Camera.SetMinimumZoom(0.5f);
             // Camera.SetZoom(-1f);
@@ -181,8 +185,7 @@ namespace Sor.Scenes {
                     }
 
                     if (nearest != null) {
-                        Global.log.writeLine($"selected mind_inspect on {nearest.name}",
-                            GlintLogger.LogLevel.Information);
+                        Global.log.info($"selected mind_inspect on {nearest.name}");
                         nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }
@@ -218,7 +221,7 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            if (!gameContext.config.clearData)
+            if (gameContext.config.persist)
                 store.Save(GameData<Config>.TEST_SAVE, new PlayPersistable(playContext));
         }
     }

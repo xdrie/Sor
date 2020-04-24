@@ -74,7 +74,7 @@ namespace Sor.Game {
 
         public static void debugLog(string v) {
             DebugConsole.Instance.Log(v);
-            Global.log.writeLine(v, GlintLogger.LogLevel.Information);
+            Global.log.info(v);
         }
     }
 #endif

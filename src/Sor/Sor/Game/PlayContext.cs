@@ -71,9 +71,8 @@ namespace Sor.Game {
                 gen.analyze();
                 gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
                 // log generated map
-                Global.log.writeLine(
-                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
-                    GlintLogger.LogLevel.Trace);
+                Global.log.trace(
+                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
             }
             else {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");

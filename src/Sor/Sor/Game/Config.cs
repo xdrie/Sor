@@ -3,7 +3,7 @@ using Glint.Config;
 namespace Sor.Game {
     public class Config : GameConfig {
         public const string GAME_TITLE = "Sor";
-        public const string GAME_VERSION = "0.7.16";
+        public const string GAME_VERSION = "0.7.19";
         
         public override string title => GAME_TITLE;
         public override string version => GAME_VERSION;

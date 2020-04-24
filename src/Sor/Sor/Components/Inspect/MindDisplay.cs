@@ -111,7 +111,7 @@ namespace Sor.Components.Inspect {
 #if DEBUG
                     if (SorDebug.aiTrace) {
                         // add appraisals
-                        foreach (var appr in consid.Key.lastScores) {
+                        foreach (var appr in consid.Key.lastScores.ToList()) {
                             var lowerCamelName = appr.Key.GetType().Name;
                             var nameBuilder = new StringBuilder();
                             nameBuilder.Append(lowerCamelName[0].ToString().ToLower());

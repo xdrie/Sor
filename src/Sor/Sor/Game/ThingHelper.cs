@@ -103,13 +103,13 @@ namespace Sor.Game {
                 }
                 default:
                     // unrecognized thing
-                    Global.log.writeLine("unrecognized thing kind", GlintLogger.LogLevel.Error);
+                    Global.log.err("unrecognized thing kind");
                     res = null;
                     break;
             }
 
             if (res != null) {
-                Global.log.writeLine($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}", GlintLogger.LogLevel.Trace);
+                Global.log.trace($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}");
             }
             return res; // yee
         }
