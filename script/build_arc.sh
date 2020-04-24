@@ -110,18 +110,26 @@ fi
 
 popd # return to build root
 
+STAGING_PATH="./$PROJECT_DIR/${STAGING}"
+
+# optionally, copy natives
+if [ -d "natives" ]; then
+    echo "copying natives..."
+    cp natives/* $STAGING_PATH/
+fi
+
 # check the binary
 echo "checking output bin:"
 ls -lah $A_BINARY
 
 echo "compressing to $ARTIFACT..."
 if [[ $ARCTYPE == "7z" ]]; then
-    7z a $ARTIFACT "./$PROJECT_DIR/${STAGING}/*"
+    7z a $ARTIFACT "$STAGING_PATH/*"
 elif [[ $ARCTYPE == "tar.xz" ]]; then
     tar --transform "s/^publish_staging/$ARCNAME/" -cJvf $ARTIFACT -C "$PROJECT_DIR/bin/Release/$FRAMEWORK/$TARGET/" publish_staging
 fi
 
 echo "cleaning publish_staging..."
-rm -r "$PROJECT_DIR/${STAGING}"
+rm -r "$STAGING_PATH"
 
 echo "release built!"
