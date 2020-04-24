@@ -61,7 +61,7 @@ namespace SorDk {
 #if !DEBUG
         }
         catch (Exception ex) {
-            Global.log.writeLine($"fatal error: {ex}", GlintLogger.LogLevel.Critical);
+            Global.log.crit($"fatal error: {ex}");
             throw;
         }
 #endif
