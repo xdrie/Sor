@@ -5,10 +5,8 @@ using System.Reflection;
 using Glint;
 using Glint.Config;
 using Glint.Diagnostics;
-using Glint.Platform;
 using Sor;
 using Sor.Game;
-using Sor.Test;
 
 #if !DEBUG
 using Glint.Util;

@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using Glint;
 using Glint.Diagnostics;
-using Glint.Platform;
 using Sor.Game.Map.Gen;
-using Sor.Test;
+using Random = Nez.Random;
 
 namespace SorDk {
 #if DEBUG
@@ -15,14 +12,15 @@ namespace SorDk {
         }
 
         private static void renderTest(string[] obj) {
-            using (var game = new TestGame()) {
-                game.Run();
-            }
+            // using (var game = new TestGame()) {
+            //     game.Run();
+            // }
+            throw new NotImplementedException();
         }
 
         public static void mapGeneratorTests(string[] args) {
             var mapSize = 16;
-            var gen = new MapGenerator(mapSize, mapSize, Nez.Random.RNG.Next(int.MinValue, int.MaxValue));
+            var gen = new MapGenerator(mapSize, mapSize, Random.RNG.Next(int.MinValue, int.MaxValue));
             gen.generate();
             // debug print the grid
             Console.WriteLine("--grid");
