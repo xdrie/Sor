@@ -8,17 +8,13 @@ using Glint.Diagnostics;
 using Sor;
 using Sor.Game;
 
-#if !DEBUG
-using Glint.Util;
-#endif
-
 namespace SorDk {
     class Program {
         public const string conf = "game.conf";
 
         static void Main(string[] args) {
 #if CORERT
-            DesktopPlatform.setupCoreRTSupport();
+            Glint.Platform.DesktopPlatform.setupCoreRTSupport();
 #endif
 
             var banner = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.banner.txt");
@@ -45,8 +41,8 @@ namespace SorDk {
             var defaultConf = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream($"{nameof(SorDk)}.Res.game.dbg.conf");
 #else
-            var defaultConf =
- Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
+            var defaultConf = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
 #endif
             var configHelper = new ConfigHelper<Config>();
             var confPath = Path.Combine(Global.baseDir, conf);
@@ -63,7 +59,7 @@ namespace SorDk {
 #if !DEBUG
         }
         catch (Exception ex) {
-            Global.log.crit($"fatal error: {ex}");
+            Glint.Global.log.crit($"fatal error: {ex}");
             throw;
         }
 #endif
