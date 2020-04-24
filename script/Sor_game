@@ -2,4 +2,5 @@
 
 # little script to run Sor with Mono
 DIR="$(cd "$(dirname "$0")" && pwd)"
-LD_LIBRARY_PATH=".:$LD_LIBRARY_PATH" mono $DIR/SorDk.exe
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$PWD"
+mono $DIR/SorDk.exe
