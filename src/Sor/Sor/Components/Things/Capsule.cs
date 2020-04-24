@@ -60,7 +60,9 @@ namespace Sor.Components.Things {
             }
 
             protected override void applyMotion(Vector2 posDelta) {
-                mov.ApplyMovement(posDelta);
+                // mov.ApplyMovement(posDelta);
+                // update position directly, without updating triggers
+                Entity.LocalPosition += posDelta;
             }
         }
 
