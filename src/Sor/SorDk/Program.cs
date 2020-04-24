@@ -7,6 +7,7 @@ using Glint.Config;
 using Glint.Platform;
 using Sor;
 using Sor.Game;
+using Sor.Test;
 
 #if !DEBUG
 using Glint.Util;
@@ -55,7 +56,7 @@ namespace SorDk {
 #if !DEBUG
             try {
 #endif
-            using (var game = new NGame(config)) {
+            using (var game = new TestGame()) {
                 game.Run();
             }
 #if !DEBUG
