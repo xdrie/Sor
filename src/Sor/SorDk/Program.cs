@@ -56,7 +56,7 @@ namespace SorDk {
 #if !DEBUG
             try {
 #endif
-            using (var game = new TestGame()) {
+            using (var game = new NGame(config)) {
                 game.Run();
             }
 #if !DEBUG
