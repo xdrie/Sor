@@ -8,7 +8,6 @@ namespace Sor.Test {
             base.Initialize();
 
             ClearColor = Color.RosyBrown;
-            NGame.context.loadContent();
         }
 
         public override void OnStart() {
@@ -16,7 +15,7 @@ namespace Sor.Test {
 
             // test text
             var ui = CreateEntity("ui");
-            ui.AddComponent(new TextComponent(NGame.context.assets.font,
+            ui.AddComponent(new TextComponent(Graphics.Instance.BitmapFont,
                 $"test text! this is running v{Config.GAME_VERSION}\nabcdefghijklmnopqrstuvwxyz0123456789", new Vector2(20, 20),
                 Color.White));
         }

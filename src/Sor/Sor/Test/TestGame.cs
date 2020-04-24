@@ -8,7 +8,6 @@ namespace Sor.Test {
         protected override void Initialize() {
             base.Initialize();
 
-            Services.AddService(new GameContext(new Config()));
             Scene = new TestScene();
         }
     }
