@@ -8,7 +8,7 @@ pushd .
 export CppCompilerAndLinker=clang
 
 # arguments
-FRAMEWORK=netcoreapp3.1
+FRAMEWORK=${FRAMEWORK:-netcoreapp3.1}
 TARGET=$1
 
 if [[ -z $TARGET ]]; then
