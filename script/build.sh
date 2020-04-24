@@ -37,4 +37,4 @@ popd # go back
 
 # build project
 echo "building project..."
-dotnet build -f $FRAMEWORK $PROJ
+dotnet build -c Release -f $FRAMEWORK $PROJ
