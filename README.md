@@ -32,10 +32,8 @@ run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the tar
 
 targeting mono can allow the built release to be cross-platform and run on any platform with Mono.
 ```sh
-# optional, bundles native libraries
-./script/get_natives.sh
-# build archive for mono
-FRAMEWORK=net48 CHANNEL=mono ./script/build_arc.sh win-x64
+./script/get_natives.sh # optional, bundles native libraries
+FRAMEWORK=net48 CHANNEL=mono ./script/build_arc.sh win-x64 # build archive for mono
 ```
 
 #### experimental: CoreRT build
