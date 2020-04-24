@@ -28,6 +28,13 @@ git submodule update --init --recursive # update submodules
 this will drop an archive in `builds/` when completed.
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
 
+#### experimental: Mono build
+
+targeting mono can allow the built release to be cross-platform and run on any platform with Mono.
+```sh
+FRAMEWORK=net48 CHANNEL=mono ./script/build_native.sh win-x64
+```
+
 #### experimental: CoreRT build
 
 optionally, [CoreRT](https://github.com/dotnet/corert) can be used to create a native binary. It produces significantly smaller file sizes and creates a much neater output; however it is highly experimental and unsupported. to tell the native builder to use CoreRT:

@@ -8,8 +8,9 @@ pushd .
 export CppCompilerAndLinker=clang
 
 # arguments
-FRAMEWORK=${FRAMEWORK:-netcoreapp3.1}
-TARGET=$1
+TARGET=$1 # target platform
+FRAMEWORK=${FRAMEWORK:-netcoreapp3.1} # target framework
+RID=${RID:-1} # pass the RID to build
 
 if [[ -z $TARGET ]]; then
     echo "usage: ./build_native <target>"
@@ -43,7 +44,8 @@ GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
     REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="${PROJECT}_$TARGET-v$REVISION"
+CHANNEL=${CHANNEL:-$TARGET}
+ARCNAME="${PROJECT}_$CHANNEL-v$REVISION"
 ARTIFACT_DIR="builds"
 ARTIFACT="$ARTIFACT_DIR/$ARCNAME.$ARCTYPE"
 
@@ -64,7 +66,11 @@ if [[ $USE_CORERT -eq 1 ]]; then
     PROPS="/p:CoreRTMode=Default"
 fi
 
-PUBLISH_ARGS="-c Release -f $FRAMEWORK -r $TARGET ${PROPS}"
+BUILD_OPTS=""
+if [[ $RID -eq 1 ]]; then
+    BUILD_OPTS="$BUILD_OPTS -r $TARGET"
+fi
+PUBLISH_ARGS="-c Release -f $FRAMEWORK ${BUILD_OPTS} ${PROPS}"
 
 # native compile
 echo "running native compile (${PUBLISH_ARGS})..."
