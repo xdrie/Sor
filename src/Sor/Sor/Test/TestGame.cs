@@ -1,5 +1,4 @@
 using Nez;
-using Sor.Game;
 
 namespace Sor.Test {
     public class TestGame : Core {
