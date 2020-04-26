@@ -58,5 +58,9 @@ namespace Sor {
             public const float SML_THRUST_POWER = 210f;
             public const float SML_BOOST_TOP_SPEED = 640f;
         }
+
+        public static class Game {
+            public const string TEST_SAVE = "test0.sav";
+        }
     }
 }
