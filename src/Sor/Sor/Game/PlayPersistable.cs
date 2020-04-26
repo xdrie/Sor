@@ -14,9 +14,8 @@ namespace Sor.Game {
     public class PlayPersistable : IPersistable {
         public PlayContext playContext;
 
-        public bool loaded = false;
         public const int version = 4;
-        public const float timeAdvance = 30f; // time to advance when loading
+        public const float SAVE_TIME_ADVANCE = 30f; // time to advance when loading
 
         // helper values
         public List<Wing> wings = new List<Wing>();
@@ -27,22 +26,21 @@ namespace Sor.Game {
         }
 
         public void Recover(IPersistableReader rd) {
-            loaded = true;
             Global.log.info($"{nameof(PlayPersistable)}::recover called");
+
+            // verify save file version
             var readVersion = rd.ReadInt();
             if (version != readVersion) {
                 Global.log.err($"save file version mismatch (got {readVersion}, expected {version})");
             }
 
+            playContext.rehydrated = true; // indicate that this play context is rehydrated
             // load game time
-            Time.TotalTime = rd.ReadFloat() + timeAdvance;
-            
+            Time.TotalTime = rd.ReadFloat() + SAVE_TIME_ADVANCE;
+
             // load map seed
             playContext.mapgenSeed = rd.ReadInt();
             Global.log.trace($"loaded mapgen seed: {playContext.mapgenSeed}");
-            
-            // set rehydrated flag
-            playContext.rehydrated = true;
 
             // read player
             var playerWd = rd.readWingMeta();
@@ -56,6 +54,7 @@ namespace Sor.Game {
             if (playerWd.armed) {
                 player.AddComponent<Shooter>();
             }
+
             wings.Add(playContext.playerWing);
 
             // load all wings
@@ -66,12 +65,14 @@ namespace Sor.Game {
                 if (wd.armed) {
                     wing.AddComponent<Shooter>();
                 }
+
                 var bd = rd.readBodyData();
                 rd.readWingMemory(wing.mind);
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 wings.Add(wing);
-                Global.log.trace($"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}");
+                Global.log.trace(
+                    $"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}");
             }
 
             // load world things
@@ -80,7 +81,8 @@ namespace Sor.Game {
                 var thingHelper = new ThingHelper(this);
                 // load and inflate thing
                 var thing = thingHelper.loadThing(rd);
-                if (thing != null) { // thing might not be loadedF
+                if (thing != null) {
+                    // thing might not be loadedF
                     // tag entity as thing
                     thing.Entity.SetTag(Constants.Tags.THING);
                     // add to context
@@ -95,7 +97,7 @@ namespace Sor.Game {
 
             // save game time
             wr.Write(Time.TotalTime);
-            
+
             // save map seed
             wr.Write(playContext.mapgenSeed);
 
