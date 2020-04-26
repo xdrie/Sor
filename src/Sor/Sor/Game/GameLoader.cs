@@ -1,3 +1,5 @@
+using Sor.Game.Save;
+
 namespace Sor.Game {
     public static class GameLoader {
         public static PlayPersistable loadSave(PlayContext playContext) {

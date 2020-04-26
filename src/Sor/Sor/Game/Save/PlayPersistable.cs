@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Glint;
-using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Persistence.Binary;
@@ -10,7 +9,7 @@ using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Util;
 
-namespace Sor.Game {
+namespace Sor.Game.Save {
     public class PlayPersistable : IPersistable {
         public PlayContext playContext;
 
@@ -78,7 +77,7 @@ namespace Sor.Game {
             // load world things
             var thingCount = rd.ReadInt();
             for (var i = 0; i < thingCount; i++) {
-                var thingHelper = new ThingHelper(this);
+                var thingHelper = new ThingPersistenceHelper(this);
                 // load and inflate thing
                 var thing = thingHelper.loadThing(rd);
                 if (thing != null) {
@@ -136,7 +135,7 @@ namespace Sor.Game {
             var saveThingList = new List<Thing>();
             saveThingList.AddRange(treeList);
             saveThingList.AddRange(capList);
-            var thingHelper = new ThingHelper(this);
+            var thingHelper = new ThingPersistenceHelper(this);
             foreach (var thing in saveThingList) {
                 var kind = thingHelper.classify(thing);
                 thingHelper.saveThing(wr, thing);

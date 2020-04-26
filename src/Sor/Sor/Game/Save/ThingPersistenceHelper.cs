@@ -5,9 +5,9 @@ using Nez.Persistence.Binary;
 using Sor.Components.Things;
 using Sor.Util;
 
-namespace Sor.Game {
-    public class ThingHelper {
-        private PlayPersistable pers;
+namespace Sor.Game.Save {
+    public class ThingPersistenceHelper {
+        private PlayPersistable per;
 
         public enum ThingKind {
             Unknown,
@@ -15,8 +15,8 @@ namespace Sor.Game {
             Tree
         }
 
-        public ThingHelper(PlayPersistable pers) {
-            this.pers = pers;
+        public ThingPersistenceHelper(PlayPersistable per) {
+            this.per = per;
         }
 
         public ThingKind classify(Thing thing) {
@@ -70,14 +70,14 @@ namespace Sor.Game {
                     cap.despawnAt = rd.ReadFloat();
                     var senderName = rd.ReadString();
                     if (!string.IsNullOrWhiteSpace(senderName)) {
-                        cap.sender = pers.wings.Find(x => x.name == senderName);
+                        cap.sender = per.wings.Find(x => x.name == senderName);
                     }
 
                     var treeBark = rd.ReadString();
                     if (!string.IsNullOrWhiteSpace(treeBark)) {
-                        cap.creator = pers.trees.Find(x => x.bark == treeBark);
+                        cap.creator = per.trees.Find(x => x.bark == treeBark);
                     }
-                    
+
                     // if acquired then throw away
                     if (cap.acquired) {
                         cap = null; // ick
@@ -97,7 +97,7 @@ namespace Sor.Game {
                     tree.bark = rd.ReadString();
 
                     tree.updateStage();
-                    pers.trees.Add(tree); // add tree to working list
+                    per.trees.Add(tree); // add tree to working list
                     res = tree;
                     break;
                 }
@@ -111,6 +111,7 @@ namespace Sor.Game {
             if (res != null) {
                 Global.log.trace($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}");
             }
+
             return res; // yee
         }
     }
