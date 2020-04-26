@@ -23,16 +23,24 @@ git submodule update --init --recursive # update submodules
 
 ### native build
 ```sh
-./script/build_native.sh <runtime> # ex. one of linux-x64, osx-x64, win-x64
+./script/build_arc.sh <runtime> # ex. one of linux-x64, osx-x64, win-x64
 ```
 this will drop an archive in `builds/` when completed.
 run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the target system and are completely self-contained.
+
+#### experimental: Mono build
+
+targeting mono can allow the built release to be cross-platform and run on any platform with Mono.
+```sh
+./script/get_natives.sh # optional, bundles native libraries
+FRAMEWORK=net48 CHANNEL=mono ./script/build_arc.sh win-x64 # build archive for mono
+```
 
 #### experimental: CoreRT build
 
 optionally, [CoreRT](https://github.com/dotnet/corert) can be used to create a native binary. It produces significantly smaller file sizes and creates a much neater output; however it is highly experimental and unsupported. to tell the native builder to use CoreRT:
 ```sh
-USE_CORERT=1 USE_UPX=1 ./script/build_native.sh <runtime> # uses CoreRT and UPX to build a native binary
+USE_CORERT=1 USE_UPX=1 ./script/build_arc.sh <runtime> # uses CoreRT and UPX to build a native binary
 ```
 
 ## license

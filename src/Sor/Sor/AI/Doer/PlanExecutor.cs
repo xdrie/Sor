@@ -32,9 +32,8 @@ namespace Sor.AI.Doer {
                     case PlanTask.Status.Failed:
                         // a task failed
                         continueWithPlan = false;
-                        Global.log.writeLine(
-                            $"action plan task {nextTask} failed ({mind.state.plan.Count} following canceled)",
-                            GlintLogger.LogLevel.Trace);
+                        Global.log.trace(
+                            $"action plan task {nextTask} failed ({mind.state.plan.Count} following canceled)");
                         mind.state.clearPlan();
                         break;
                 }
@@ -83,9 +82,8 @@ namespace Sor.AI.Doer {
                     break;
                 }
                 default:
-                    Global.log.writeLine(
-                        $"unknown planned interaction {inter.GetType().Name} could not be handled",
-                        GlintLogger.LogLevel.Error);
+                    Global.log.err(
+                        $"unknown planned interaction {inter.GetType().Name} could not be handled");
                     break;
             }
         }

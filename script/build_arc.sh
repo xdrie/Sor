@@ -8,8 +8,9 @@ pushd .
 export CppCompilerAndLinker=clang
 
 # arguments
-FRAMEWORK=netcoreapp3.1
-TARGET=$1
+TARGET=$1 # target platform
+FRAMEWORK=${FRAMEWORK:-netcoreapp3.1} # target framework
+RID=${RID:-1} # pass the RID to build
 
 if [[ -z $TARGET ]]; then
     echo "usage: ./build_native <target>"
@@ -43,7 +44,8 @@ GIT_REVISION=$(git rev-parse --short HEAD)
 if [ -z "${REVISION}" ]; then
     REVISION="${PARSE_VERSION}_${GIT_REVISION}"
 fi
-ARCNAME="${PROJECT}_$TARGET-v$REVISION"
+CHANNEL=${CHANNEL:-$TARGET}
+ARCNAME="${PROJECT}_$CHANNEL-v$REVISION"
 ARTIFACT_DIR="builds"
 ARTIFACT="$ARTIFACT_DIR/$ARCNAME.$ARCTYPE"
 
@@ -64,7 +66,11 @@ if [[ $USE_CORERT -eq 1 ]]; then
     PROPS="/p:CoreRTMode=Default"
 fi
 
-PUBLISH_ARGS="-c Release -f $FRAMEWORK -r $TARGET ${PROPS}"
+BUILD_OPTS=""
+if [[ $RID -eq 1 ]]; then
+    BUILD_OPTS="$BUILD_OPTS -r $TARGET"
+fi
+PUBLISH_ARGS="-c Release -f $FRAMEWORK ${BUILD_OPTS} ${PROPS}"
 
 # native compile
 echo "running native compile (${PUBLISH_ARGS})..."
@@ -104,18 +110,26 @@ fi
 
 popd # return to build root
 
+STAGING_PATH="./$PROJECT_DIR/${STAGING}"
+
+# optionally, copy natives
+if [ -d "natives" ]; then
+    echo "copying natives..."
+    cp natives/* $STAGING_PATH/
+fi
+
 # check the binary
 echo "checking output bin:"
 ls -lah $A_BINARY
 
 echo "compressing to $ARTIFACT..."
 if [[ $ARCTYPE == "7z" ]]; then
-    7z a $ARTIFACT "./$PROJECT_DIR/${STAGING}/*"
+    7z a $ARTIFACT "$STAGING_PATH/*"
 elif [[ $ARCTYPE == "tar.xz" ]]; then
     tar --transform "s/^publish_staging/$ARCNAME/" -cJvf $ARTIFACT -C "$PROJECT_DIR/bin/Release/$FRAMEWORK/$TARGET/" publish_staging
 fi
 
 echo "cleaning publish_staging..."
-rm -r "$PROJECT_DIR/${STAGING}"
+rm -r "$STAGING_PATH"
 
 echo "release built!"

@@ -4,13 +4,9 @@ using System.Linq;
 using System.Reflection;
 using Glint;
 using Glint.Config;
-using Glint.Platform;
+using Glint.Diagnostics;
 using Sor;
 using Sor.Game;
-
-#if !DEBUG
-using Glint.Util;
-#endif
 
 namespace SorDk {
     class Program {
@@ -18,7 +14,7 @@ namespace SorDk {
 
         static void Main(string[] args) {
 #if CORERT
-            DesktopPlatform.setupCoreRTSupport();
+            Glint.Platform.DesktopPlatform.setupCoreRTSupport();
 #endif
 
             var banner = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.banner.txt");
@@ -33,7 +29,9 @@ namespace SorDk {
 #if DEBUG
             // check MAIM (MAintenance IMmediate access) mode
             if (args.Length > 0 && args[0] == "maim") {
-                Maim.launch(args.Skip(1).ToList());
+                var prompt = new MaimPrompt(args.Skip(1));
+                Maim.install(prompt);
+                prompt.launch();
                 return;
             }
 #endif
@@ -43,12 +41,13 @@ namespace SorDk {
             var defaultConf = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream($"{nameof(SorDk)}.Res.game.dbg.conf");
 #else
-            var defaultConf =
- Assembly.GetExecutingAssembly().GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
+            var defaultConf = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream($"{nameof(SorDk)}.Res.game.conf");
 #endif
             var configHelper = new ConfigHelper<Config>();
-            configHelper.ensureDefaultConfig(conf, defaultConf);
-            var confStr = File.ReadAllText(Path.Join(Global.baseDir, conf));
+            var confPath = Path.Combine(Global.baseDir, conf);
+            configHelper.ensureDefaultConfig(confPath, defaultConf);
+            var confStr = File.ReadAllText(confPath);
             var config = configHelper.load(confStr, args); // load and parse config
             // run in crash-cradle (only if NOT debug)
 #if !DEBUG
@@ -60,7 +59,7 @@ namespace SorDk {
 #if !DEBUG
         }
         catch (Exception ex) {
-            Global.log.writeLine($"fatal error: {ex}", GlintLogger.LogLevel.Critical);
+            Glint.Global.log.crit($"fatal error: {ex}");
             throw;
         }
 #endif

@@ -16,6 +16,9 @@ using Sor.Game.Map.Gen;
 using Sor.Scenes;
 
 namespace Sor.Game {
+    /// <summary>
+    /// Represents all the state information of an in-progress game
+    /// </summary>
     public class PlayContext {
         public Wing playerWing;
         public const string PLAYER_NAME = "player";
@@ -71,9 +74,8 @@ namespace Sor.Game {
                 gen.analyze();
                 gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
                 // log generated map
-                Global.log.writeLine(
-                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}",
-                    GlintLogger.LogLevel.Trace);
+                Global.log.trace(
+                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
             }
             else {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");

@@ -92,9 +92,9 @@ namespace Sor.AI.Systems {
                 }
 
                 state.setPlan(newPlan);
-            }, 0.6f, "eat");
-            eatConsideration.addAppraisal(new HungerAppraisals.Hunger(mind)); // 0-1
-            eatConsideration.addAppraisal(new HungerAppraisals.FoodAvailability(mind)); //0-1
+            }, 0.3f, "eat");
+            eatConsideration.addAppraisal(new EatAppraisals.Hunger(mind)); // 0-1
+            eatConsideration.addAppraisal(new EatAppraisals.FoodAvailability(mind)); //0-1
             reasoner.addConsideration(eatConsideration);
 
             var exploreConsideration = new SumConsideration<Mind>(() => {

@@ -17,6 +17,7 @@ using Sor.Systems;
 
 namespace Sor.Scenes {
     public class PlayScene : GameScene {
+        private const int renderlayer_above = -256;
         private const int renderlayer_map = 512;
         private const int renderlayer_overlay = 1 << 30;
 
@@ -49,7 +50,7 @@ namespace Sor.Scenes {
             fixedRenderer.ShouldDebugRender = false;
 
             // update main renderer
-            mainRenderer.RenderLayers.Add(renderlayer_map);
+            mainRenderer.RenderLayers.AddRange(new[] {renderlayer_map, renderlayer_above});
         }
 
         public override void OnStart() {
@@ -65,7 +66,8 @@ namespace Sor.Scenes {
             // attach player
             var player = playContext.playerWing;
             AddEntity(player.Entity);
-            
+            player.animator.RenderLayer = renderlayer_above;
+
             // attach all wings
             foreach (var wing in playContext.createdWings) {
                 AddEntity(wing.Entity);
@@ -81,7 +83,7 @@ namespace Sor.Scenes {
             playContext.createdThings.Clear();
 
             var status = playContext.rehydrated ? "rehydrated" : "freshly created";
-            Global.log.writeLine($"play scene {status}", GlintLogger.LogLevel.Information);
+            Global.log.info($"play scene {status}");
 
             // - hud
             const int hudPadding = 8;
@@ -183,8 +185,7 @@ namespace Sor.Scenes {
                     }
 
                     if (nearest != null) {
-                        Global.log.writeLine($"selected mind_inspect on {nearest.name}",
-                            GlintLogger.LogLevel.Information);
+                        Global.log.info($"selected mind_inspect on {nearest.name}");
                         nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
                     }
                 }
@@ -220,7 +221,7 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            if (!gameContext.config.clearData)
+            if (gameContext.config.persist)
                 store.Save(GameData<Config>.TEST_SAVE, new PlayPersistable(playContext));
         }
     }

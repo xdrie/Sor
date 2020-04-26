@@ -63,8 +63,7 @@ namespace Sor.AI {
             var res = opi + val;
             opinion[they] = res;
             if (mind.inspected && NGame.context.config.logInteractions) {
-                Global.log.writeLine($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})",
-                    GlintLogger.LogLevel.Trace);
+                Global.log.trace($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})");
             }
 
             return res;

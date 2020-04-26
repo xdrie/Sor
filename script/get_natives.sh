@@ -11,3 +11,6 @@ mkdir -p natives
 cp -rv ~/.nuget/packages/monogame.framework.desktopgl.core/$MGPKG/runtimes/win-x64/native/* natives/
 cp -rv ~/.nuget/packages/monogame.framework.desktopgl.core/$MGPKG/runtimes/linux-x64/native/* natives/
 cp -rv ~/.nuget/packages/monogame.framework.desktopgl.core/$MGPKG/runtimes/osx/native/* natives/
+
+# add runner script
+cp script/*_game natives/
