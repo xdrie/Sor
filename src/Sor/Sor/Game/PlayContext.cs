@@ -16,6 +16,9 @@ using Sor.Game.Map.Gen;
 using Sor.Scenes;
 
 namespace Sor.Game {
+    /// <summary>
+    /// Represents all the state information of an in-progress game
+    /// </summary>
     public class PlayContext {
         public Wing playerWing;
         public const string PLAYER_NAME = "player";
