@@ -60,7 +60,7 @@ namespace Sor {
         }
 
         public static class Game {
-            public const string TEST_SAVE = "test0.sav";
+            public const string GAME_SLOT_0 = "game0.sav";
         }
     }
 }

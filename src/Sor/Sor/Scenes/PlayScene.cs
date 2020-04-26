@@ -221,8 +221,11 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            if (gameContext.config.persist)
-                store.Save(Constants.Game.TEST_SAVE, new PlayPersistable(playContext));
+            if (gameContext.config.persist) {
+                // save the play context
+                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(playContext));
+                // TODO: save the experience, etc. data in another persistable
+            }
         }
     }
 }
