@@ -49,6 +49,7 @@ namespace Sor.Game {
             playerSoul.ply.generateNeutral();
             var mind = new Mind(playerSoul, false);
             player = createWing(Constants.Game.PLAYER_NAME, pos, mind);
+            player.AddComponent(new PlayerInputController(0));
             return player;
         }
 
