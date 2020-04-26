@@ -59,24 +59,37 @@ namespace Sor.Game {
             return wing;
         }
 
+        public IEnumerable<Wing> findAllWings() =>
+            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
+
+        #region Loading and Scene setup
+
+        public void load() {
+            loadMap();
+            if (!rehydrated) {
+                // fresh load
+                createEcosystem();
+            }
+        }
+
         private void loadMap() {
             // TODO: figure out whether we're creating a new map or restoring (does it matter if we seed the rng)
             var mapAsset = default(TmxMap);
             if (NGame.context.config.generateMap) {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-                var genMapSize = NGame.context.config.generatedMapSize;
+                var mapSize = NGame.context.config.generatedMapSize;
                 // var genMapSize = 16;
                 if (mapgenSeed == 0) {
                     mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
                 }
 
-                var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
+                var gen = new MapGenerator(mapSize, mapSize, mapgenSeed);
                 gen.generate();
                 gen.analyze();
                 gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
                 // log generated map
                 Global.log.trace(
-                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
+                    $"generated map of size {mapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
             }
             else {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");
@@ -93,15 +106,7 @@ namespace Sor.Game {
             mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
 
-        public void load() {
-            loadMap();
-            if (!rehydrated) {
-                // fresh load
-                spawnBirds();
-            }
-        }
-
-        private void spawnBirds() {
+        private void createEcosystem() {
             var spawn = new Vector2(200, 200);
             if (NGame.config.generateMap) {
                 var mapBounds = mapLoader.mapRepr.tmxMap.TileToWorldPosition(new Vector2(mapLoader.mapRepr.tmxMap.Width,
@@ -109,8 +114,8 @@ namespace Sor.Game {
                 spawn = new Vector2(Random.NextFloat() * mapBounds.X, Random.NextFloat() * mapBounds.Y);
             }
 
-            var player = createPlayer(spawn);
-            player.Entity.AddComponent(new Shooter());
+            player = createPlayer(spawn);
+            player.Entity.AddComponent(new Shooter()); // arm the player
 
             // a friendly bird
             var frend = createNpcWing("frend", spawn + new Vector2(-140, 20),
@@ -140,7 +145,6 @@ namespace Sor.Game {
             }
         }
 
-        public IEnumerable<Wing> findAllWings() =>
-            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
+        #endregion
     }
 }
