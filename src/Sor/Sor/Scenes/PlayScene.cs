@@ -64,14 +64,10 @@ namespace Sor.Scenes {
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
-            // attach player
-            var player = state.player;
-            AddEntity(player.Entity);
-            player.animator.RenderLayer = renderlayer_above;
-
             // attach all wings
             foreach (var wing in state.wings) {
                 AddEntity(wing.Entity);
+                wing.animator.RenderLayer = renderlayer_above;
             }
 
             state.wings.Clear();
@@ -105,9 +101,9 @@ namespace Sor.Scenes {
                 });
             tw.Start();
 
-            var hudSystem = AddEntityProcessor(new HudSystem(player, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(state.player, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(player));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(state.player));
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
@@ -117,8 +113,8 @@ namespace Sor.Scenes {
 
             var followCamera =
                 // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
-                Camera.Entity.AddComponent(new FollowCamera(player.Entity,
-                    FollowCamera.CameraStyle.LockOn));
+                Camera.Entity.AddComponent(
+                    new FollowCamera(state.player.Entity, FollowCamera.CameraStyle.LockOn));
             followCamera.FollowLerp = 0.3f;
             followCamera.RoundPosition = false;
             Camera.AddComponent<CameraShake>();
