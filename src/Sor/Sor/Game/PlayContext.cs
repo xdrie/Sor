@@ -20,8 +20,7 @@ namespace Sor.Game {
     /// Represents all the state information of an in-progress game
     /// </summary>
     public class PlayContext {
-        public Wing playerWing;
-        public const string PLAYER_NAME = "player";
+        public Wing player;
 
         public IEnumerable<Wing> wings =>
             scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
@@ -39,23 +38,27 @@ namespace Sor.Game {
             createdThings.Add(thing);
         }
 
-        public Wing createPlayer(Vector2 pos) {
-            var playerNt = new Entity(PLAYER_NAME).SetTag(Constants.Tags.WING);
-            var playerSoul = new AvianSoul();
-            playerSoul.ply.generateNeutral();
-            playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
-            playerWing.body.pos = pos;
-            playerNt.AddComponent<PlayerInputController>();
-            return playerWing;
+        public Wing createWing(string name, Vector2 pos, Mind mind) {
+            var wingNt = new Entity(name).SetTag(Constants.Tags.WING);
+            var wing = wingNt.AddComponent(new Wing(mind));
+            wing.body.pos = pos;
+            createdWings.Add(wing);
+            return wing;
         }
 
-        public Wing createWing(string name, Vector2 pos, BirdPersonality ply) {
-            var duckNt = new Entity(name).SetTag(Constants.Tags.WING);
-            var duck = duckNt.AddComponent(new Wing(new Mind(new AvianSoul {ply = ply}, true)));
-            duck.body.pos = pos;
-            duckNt.AddComponent<LogicInputController>();
-            createdWings.Add(duck);
-            return duck;
+        public Wing createPlayer(Vector2 pos) {
+            var playerSoul = new AvianSoul();
+            playerSoul.ply.generateNeutral();
+            var mind = new Mind(playerSoul, false);
+            player = createWing(Constants.Game.PLAYER_NAME, pos, mind);
+            return player;
+        }
+
+        public Wing createNpcWing(string name, Vector2 pos, BirdPersonality ply) {
+            var mind = new Mind(new AvianSoul {ply = ply}, true);
+            var wing = createWing(name, pos, mind);
+            wing.AddComponent<LogicInputController>();
+            return wing;
         }
 
         private void loadMap() {
@@ -112,7 +115,7 @@ namespace Sor.Game {
             player.Entity.AddComponent(new Shooter());
 
             // a friendly bird
-            var frend = createWing("frend", spawn + new Vector2(-140, 20),
+            var frend = createNpcWing("frend", spawn + new Vector2(-140, 20),
                 new BirdPersonality {A = -0.8f, S = 0.7f});
             frend.AddComponent(new Shooter()); // friend is armed
 
@@ -124,14 +127,14 @@ namespace Sor.Game {
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
-                var uno = createWing("uno", spawn + new Vector2(-140, 920), unoPly);
+                var uno = createNpcWing("uno", spawn + new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
 
                 // a second friendly bird
-                var fren2 = createWing("yii", spawn + new Vector2(400, -80),
+                var fren2 = createNpcWing("yii", spawn + new Vector2(400, -80),
                     new BirdPersonality {A = -0.5f, S = 0.4f});
                 // a somewhat anxious bird
-                var anxious1 = createWing("ada", spawn + new Vector2(640, 920),
+                var anxious1 = createNpcWing("ada", spawn + new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
                 var gen = new BirdGenerator(this);

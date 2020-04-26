@@ -53,13 +53,13 @@ namespace Sor.Game.Save {
                 player.AddComponent<Shooter>();
             }
 
-            wings.Add(playContext.playerWing);
+            wings.Add(playContext.player);
 
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWing();
-                var wing = playContext.createWing(wd.name, Vector2.Zero, wd.ply);
+                var wing = playContext.createNpcWing(wd.name, Vector2.Zero, wd.ply);
                 if (wd.armed) {
                     wing.AddComponent<Shooter>();
                 }
@@ -100,12 +100,12 @@ namespace Sor.Game.Save {
             wr.Write(playContext.mapgenSeed);
 
             // save player
-            wr.writeWingMeta(playContext.playerWing);
-            wr.writeBody(playContext.playerWing.body);
+            wr.writeWingMeta(playContext.player);
+            wr.writeBody(playContext.player.body);
 
             // save all other wings
             var wingsToSave = playContext.scene.FindEntitiesWithTag(Constants.Tags.WING)
-                .Where(x => x != playContext.playerWing.Entity)
+                .Where(x => x != playContext.player.Entity)
                 .ToList();
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {

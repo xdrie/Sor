@@ -25,12 +25,12 @@ namespace Sor.Scenes {
         public bool showingHelp;
         public const float showHelpTime = 4f;
 
-        public PlayContext playContext;
+        public PlayContext state;
 
-        public PlayScene(PlayContext playContext) {
-            this.playContext = playContext;
-            Core.Services.AddService(playContext);
-            playContext.scene = this;
+        public PlayScene(PlayContext state) {
+            this.state = state;
+            Core.Services.AddService(state);
+            state.scene = this;
         }
 
         public override void Initialize() {
@@ -59,31 +59,31 @@ namespace Sor.Scenes {
 
             // - scene setup
             // set up map
-            AddEntity(playContext.mapNt);
-            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+            AddEntity(state.mapNt);
+            gameContext.map = state.mapLoader.mapRepr; // copy map representation
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
             // attach player
-            var player = playContext.playerWing;
+            var player = state.player;
             AddEntity(player.Entity);
             player.animator.RenderLayer = renderlayer_above;
 
             // attach all wings
-            foreach (var wing in playContext.createdWings) {
+            foreach (var wing in state.createdWings) {
                 AddEntity(wing.Entity);
             }
 
-            playContext.createdWings.Clear();
+            state.createdWings.Clear();
 
-            foreach (var thing in playContext.createdThings) {
+            foreach (var thing in state.createdThings) {
                 // attach all things
                 AddEntity(thing.Entity);
             }
 
-            playContext.createdThings.Clear();
+            state.createdThings.Clear();
 
-            var status = playContext.rehydrated ? "rehydrated" : "freshly created";
+            var status = state.rehydrated ? "rehydrated" : "freshly created";
             Global.log.info($"play scene {status}");
 
             // - hud
@@ -187,7 +187,7 @@ namespace Sor.Scenes {
 
                     if (nearest != null) {
                         Global.log.info($"selected mind_inspect on {nearest.name}");
-                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
+                        nearest?.AddComponent(new MindDisplay(state.player, true));
                     }
                 }
 
@@ -224,7 +224,7 @@ namespace Sor.Scenes {
             var store = gameContext.data.getStore();
             if (gameContext.config.persist) {
                 // save the play context
-                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(playContext));
+                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(state));
                 // TODO: save the experience, etc. data in another persistable
             }
         }

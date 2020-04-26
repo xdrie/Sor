@@ -51,7 +51,7 @@ namespace Sor.Game {
                     var nick = NameGenerator.next().ToLowerInvariant();
                     
                     // create the wing
-                    var bord = playContext.createWing($"{nick} {className}", spawnPos, spawnPly);
+                    var bord = playContext.createNpcWing($"{nick} {className}", spawnPos, spawnPly);
                     bord.changeClass(bordClass, true);
                     
                     // equip the wing
