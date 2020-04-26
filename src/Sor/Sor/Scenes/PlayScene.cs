@@ -25,9 +25,9 @@ namespace Sor.Scenes {
         public bool showingHelp;
         public const float showHelpTime = 4f;
 
-        public PlayContext state;
+        public PlayState state;
 
-        public PlayScene(PlayContext state) {
+        public PlayScene(PlayState state) {
             this.state = state;
             Core.Services.AddService(state);
             state.scene = this;
@@ -213,7 +213,7 @@ namespace Sor.Scenes {
             base.Unload();
 
             // unload play context
-            Core.Services.RemoveService(typeof(PlayContext));
+            Core.Services.RemoveService(typeof(PlayState));
 
 #if DEBUG
             SorDebug.play = null;

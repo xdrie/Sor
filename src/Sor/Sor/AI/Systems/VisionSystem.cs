@@ -17,7 +17,7 @@ namespace Sor.AI.Systems {
         protected override void process() {
             // boxcast in radius
             var sensorCollResults = Physics.BoxcastBroadphase(sensorRec).ToList();
-            var playContext = NGame.Services.GetService<PlayContext>();
+            var playContext = NGame.Services.GetService<PlayState>();
 
             state.clearVision();
             foreach (var sensorResult in sensorCollResults) {

@@ -19,7 +19,7 @@ namespace Sor.Game {
     /// <summary>
     /// Represents all the state information of an in-progress game
     /// </summary>
-    public class PlayContext {
+    public class PlayState {
         public Wing player;
 
         public IEnumerable<Wing> wings =>

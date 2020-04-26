@@ -100,7 +100,7 @@ namespace Sor.Scenes {
                             var wait = addWait();
                             wait.Play("load");
                             fadeUiSprite(bordWhRen);
-                            var playContext = new PlayContext(); // empty play context
+                            var playContext = new PlayState(); // empty play context
                             // run load game on a worker thread
                             await Task.Run(() => {
                                 GameLoader.loadSave(playContext); // load from save

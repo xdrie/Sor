@@ -10,7 +10,7 @@ using Sor.Util;
 
 namespace Sor.Game.Map {
     public class MapLoader {
-        private readonly PlayContext playContext;
+        private readonly PlayState _playState;
         private readonly Entity mapEntity;
         private TmxLayer structure;
         private TmxLayer features;
@@ -30,8 +30,8 @@ namespace Sor.Game.Map {
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
-        public MapLoader(PlayContext playContext, Entity mapEntity) {
-            this.playContext = playContext;
+        public MapLoader(PlayState playState, Entity mapEntity) {
+            this._playState = playState;
             this.mapEntity = mapEntity;
         }
 
@@ -71,7 +71,7 @@ namespace Sor.Game.Map {
                         .SetTag(Constants.Tags.THING);
                     nt.Position = new Vector2(th.X, th.Y);
                     var tree = nt.AddComponent(new Tree {stage = treeStage});
-                    playContext.addThing(tree);
+                    _playState.addThing(tree);
                     Global.log.trace($"tree L{treeStage}: ({nt.Name}, {nt.Position})");
                 }
             }
