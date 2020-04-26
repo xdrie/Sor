@@ -62,7 +62,7 @@ namespace Sor.Game.Save {
                     var cap = nt.AddComponent(new Capsule());
                     cap.acquired = rd.ReadBool();
                     // read body
-                    var bodyData = rd.readBodyData();
+                    var bodyData = rd.readBody();
                     bodyData.copyTo(cap.body);
                     // read other capsule info
                     cap.energy = rd.ReadFloat();

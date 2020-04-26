@@ -42,13 +42,12 @@ namespace Sor.Game.Save {
             Global.log.trace($"loaded mapgen seed: {playContext.mapgenSeed}");
 
             // read player
-            var playerWd = rd.readWingMeta();
-            var playerBodyData = rd.readBodyData();
-            var player = playContext.createPlayer(playerBodyData.pos);
-            player.name = playerWd.name;
+            var playerWd = rd.readWing();
+            var playerBodyData = rd.readBody();
+            var player = playContext.createPlayer(Vector2.Zero);
             player.core.energy = playerWd.energy;
             player.mind.soul.ply = playerWd.ply;
-            playerBodyData.copyTo(playContext.playerWing.body);
+            playerBodyData.copyTo(player.body);
             player.changeClass(playerWd.wingClass);
             if (playerWd.armed) {
                 player.AddComponent<Shooter>();
@@ -59,13 +58,13 @@ namespace Sor.Game.Save {
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
-                var wd = rd.readWingMeta();
+                var wd = rd.readWing();
                 var wing = playContext.createWing(wd.name, Vector2.Zero, wd.ply);
                 if (wd.armed) {
                     wing.AddComponent<Shooter>();
                 }
 
-                var bd = rd.readBodyData();
+                var bd = rd.readBody();
                 rd.readWingMemory(wing.mind);
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);

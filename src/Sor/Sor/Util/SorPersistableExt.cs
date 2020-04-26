@@ -42,7 +42,7 @@ namespace Sor.Util {
             w.Write(bodyData.angularVelocity);
         }
 
-        public static BodyData readBodyData(this IPersistableReader r) {
+        public static BodyData readBody(this IPersistableReader r) {
             var bodyData = new BodyData();
             bodyData.pos = r.ReadVec2();
             bodyData.velocity = r.ReadVec2();
@@ -78,7 +78,7 @@ namespace Sor.Util {
             w.Write(wd.armed);
         }
 
-        public static WingData readWingMeta(this IPersistableReader r) {
+        public static WingData readWing(this IPersistableReader r) {
             var wd = new WingData();
             wd.name = r.ReadString();
             wd.wingClass = (Wing.WingClass) r.ReadInt();
