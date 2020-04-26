@@ -1,3 +1,4 @@
+using System.Linq;
 using Glint;
 using Glint.Util;
 using Nez;
@@ -70,12 +71,14 @@ namespace Sor.Game.Save {
                     cap.despawnAt = rd.ReadFloat();
                     var senderName = rd.ReadString();
                     if (!string.IsNullOrWhiteSpace(senderName)) {
-                        cap.sender = per.wings.Find(x => x.name == senderName);
+                        cap.sender = per.state.wings.Find(x => x.name == senderName);
                     }
 
                     var treeBark = rd.ReadString();
                     if (!string.IsNullOrWhiteSpace(treeBark)) {
-                        cap.creator = per.trees.Find(x => x.bark == treeBark);
+                        cap.creator = per.state.things.Where(x => x is Tree)
+                            .Cast<Tree>()
+                            .Single(x => x.bark == treeBark);
                     }
 
                     // if acquired then throw away
@@ -97,7 +100,7 @@ namespace Sor.Game.Save {
                     tree.bark = rd.ReadString();
 
                     tree.updateStage();
-                    per.trees.Add(tree); // add tree to working list
+                    per.state.addThing(tree); // add tree to working list
                     res = tree;
                     break;
                 }

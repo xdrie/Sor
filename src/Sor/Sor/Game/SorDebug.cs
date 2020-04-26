@@ -20,7 +20,7 @@ namespace Sor.Game {
         [Command("g_energy", "adds energy to the player")]
         public static void Energy(float val, string name) {
             if (name == null) name = play.state.player.name;
-            var wing = play.state.wings.SingleOrDefault(x => x.name == name);
+            var wing = play.state.findAllWings().SingleOrDefault(x => x.name == name);
             if (wing == null) {
                 debugLog($"no wing named {name} was found");
                 return;
@@ -39,8 +39,8 @@ namespace Sor.Game {
 
         [Command("g_list", "lists all wings")]
         public static void List() {
-            var wings = play.state.wings.ToList();
-            var nearbyWings = play.state.wings.Where(x =>
+            var wings = play.state.findAllWings().ToList();
+            var nearbyWings = play.state.findAllWings().Where(x =>
                     x != play.state.player &&
                     ((x.body.pos - play.state.player.body.pos).LengthSquared() <
                      MindConstants.SENSE_RANGE * MindConstants.SENSE_RANGE))

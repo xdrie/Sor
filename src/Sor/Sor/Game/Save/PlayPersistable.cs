@@ -16,10 +16,6 @@ namespace Sor.Game.Save {
         public const int version = 4;
         public const float SAVE_TIME_ADVANCE = 30f; // time to advance when loading
 
-        // helper values
-        public List<Wing> wings = new List<Wing>();
-        public List<Tree> trees = new List<Tree>();
-
         public PlayPersistable(PlayState state) {
             this.state = state;
         }
@@ -53,8 +49,6 @@ namespace Sor.Game.Save {
                 player.AddComponent<Shooter>();
             }
 
-            wings.Add(state.player);
-
             // load all wings
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
@@ -68,7 +62,6 @@ namespace Sor.Game.Save {
                 rd.readWingMemory(wing.mind);
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
-                wings.Add(wing);
                 Global.log.trace(
                     $"rehydrated wing {wing.name}, pos{wing.body.pos.RoundToPoint()}, ply{wing.mind.soul.ply}");
             }

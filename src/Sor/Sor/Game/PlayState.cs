@@ -22,11 +22,9 @@ namespace Sor.Game {
     public class PlayState {
         public Wing player;
 
-        public IEnumerable<Wing> wings =>
-            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
+        public List<Wing> wings = new List<Wing>();
+        public List<Thing> things = new List<Thing>();
 
-        public List<Wing> createdWings = new List<Wing>();
-        public List<Thing> createdThings = new List<Thing>();
         public Entity mapNt;
         public int mapgenSeed = 0;
         public bool rehydrated = false;
@@ -35,14 +33,14 @@ namespace Sor.Game {
         public MapLoader mapLoader;
 
         public void addThing(Thing thing) {
-            createdThings.Add(thing);
+            things.Add(thing);
         }
 
         public Wing createWing(string name, Vector2 pos, Mind mind) {
             var wingNt = new Entity(name).SetTag(Constants.Tags.WING);
             var wing = wingNt.AddComponent(new Wing(mind));
             wing.body.pos = pos;
-            createdWings.Add(wing);
+            wings.Add(wing);
             return wing;
         }
 
@@ -141,5 +139,8 @@ namespace Sor.Game {
                 gen.spawnBirds();
             }
         }
+
+        public IEnumerable<Wing> findAllWings() =>
+            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
     }
 }

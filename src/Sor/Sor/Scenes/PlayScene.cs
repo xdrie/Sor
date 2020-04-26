@@ -70,18 +70,18 @@ namespace Sor.Scenes {
             player.animator.RenderLayer = renderlayer_above;
 
             // attach all wings
-            foreach (var wing in state.createdWings) {
+            foreach (var wing in state.wings) {
                 AddEntity(wing.Entity);
             }
 
-            state.createdWings.Clear();
+            state.wings.Clear();
 
-            foreach (var thing in state.createdThings) {
+            foreach (var thing in state.things) {
                 // attach all things
                 AddEntity(thing.Entity);
             }
 
-            state.createdThings.Clear();
+            state.things.Clear();
 
             var status = state.rehydrated ? "rehydrated" : "freshly created";
             Global.log.info($"play scene {status}");
