@@ -6,7 +6,7 @@ using Sor.Components.Things;
 using Sor.Components.UI;
 
 namespace Sor.Components.Units {
-    public class Wing : GAnimatedSprite, IUpdatable {
+    public class Wing : Thing, IUpdatable {
         public WingBody body;
         public Mind mind;
         public BoxCollider hitbox;

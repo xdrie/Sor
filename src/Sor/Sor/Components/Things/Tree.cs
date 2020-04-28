@@ -8,7 +8,6 @@ namespace Sor.Components.Things {
     public class Tree : Thing, IUpdatable {
         public int stage = 1;
         public int harvest = 0;
-        public string bark = Guid.NewGuid().ToString("B");
 
         public int fruits = 0;
         public List<Capsule> childFruits = new List<Capsule>();

@@ -2,6 +2,7 @@ using System.Linq;
 using Glint;
 using Glint.Util;
 using Nez;
+using Nez.Persistence;
 using Nez.Persistence.Binary;
 using Sor.Components.Things;
 using Sor.Util;
@@ -28,6 +29,7 @@ namespace Sor.Game.Save {
 
         public void saveThing(IPersistableWriter wr, Thing thing) {
             wr.Write((int) classify(thing));
+            wr.Write(thing.uid);
             switch (thing) {
                 case Capsule cap: {
                     // write status
@@ -39,7 +41,7 @@ namespace Sor.Game.Save {
                     wr.Write(cap.firstAvailableAt);
                     wr.Write(cap.despawnAt);
                     wr.Write(cap.sender?.name ?? string.Empty);
-                    wr.Write(cap.creator?.bark ?? string.Empty);
+                    wr.Write(cap.creator?.uid ?? default);
                     break;
                 }
                 case Tree tree: {
@@ -47,7 +49,6 @@ namespace Sor.Game.Save {
                     wr.Write(tree.Transform.Position);
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
-                    wr.Write(tree.bark);
 
                     break;
                 }
@@ -57,6 +58,7 @@ namespace Sor.Game.Save {
         public Thing loadThing(IPersistableReader rd) {
             var kind = (ThingKind) rd.ReadInt();
             var res = default(Thing);
+            var uid = rd.ReadLong();
             switch (kind) {
                 case ThingKind.Capsule: {
                     var nt = new Entity("cap");
@@ -74,11 +76,11 @@ namespace Sor.Game.Save {
                         cap.sender = per.state.wings.Find(x => x.name == senderName);
                     }
 
-                    var treeBark = rd.ReadString();
-                    if (!string.IsNullOrWhiteSpace(treeBark)) {
+                    var creatorUid = rd.ReadLong();
+                    if (creatorUid > 0) {
                         cap.creator = per.state.things.Where(x => x is Tree)
                             .Cast<Tree>()
-                            .Single(x => x.bark == treeBark);
+                            .Single(x => x.uid == creatorUid);
                     }
 
                     // if acquired then throw away
@@ -97,7 +99,7 @@ namespace Sor.Game.Save {
                     tree.Entity.Position = rd.ReadVec2();
                     tree.stage = rd.ReadInt();
                     tree.harvest = rd.ReadInt();
-                    tree.bark = rd.ReadString();
+                    tree.uid = uid;
 
                     tree.updateStage();
                     per.state.addThing(tree); // add tree to working list
