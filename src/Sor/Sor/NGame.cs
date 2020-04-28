@@ -15,9 +15,11 @@ namespace Sor {
 
             DefaultSamplerState = SamplerState.PointClamp;
 
-            // fixed timestep for physics updates
-            IsFixedTimeStep = true;
-            Graphics.Instance.Batcher.ShouldRoundDestinations = false;
+            if (!Headless) {
+                // fixed timestep for physics updates
+                IsFixedTimeStep = true;
+                Graphics.Instance.Batcher.ShouldRoundDestinations = false;
+            }
 
             Scene = new DevLogoScene<GameContext, Config, MenuScene>(
                 new DevLogoSprite(Content.LoadTexture("Data/img/devlogo.png"),
