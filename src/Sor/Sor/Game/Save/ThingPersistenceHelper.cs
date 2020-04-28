@@ -2,7 +2,6 @@ using System.Linq;
 using Glint;
 using Glint.Util;
 using Nez;
-using Nez.Persistence;
 using Nez.Persistence.Binary;
 using Sor.Components.Things;
 using Sor.Util;
@@ -28,7 +27,8 @@ namespace Sor.Game.Save {
         }
 
         public void saveThing(IPersistableWriter wr, Thing thing) {
-            wr.Write((int) classify(thing));
+            var kindId = (int) classify(thing);
+            wr.Write(kindId);
             wr.Write(thing.uid);
             switch (thing) {
                 case Capsule cap: {
@@ -40,7 +40,7 @@ namespace Sor.Game.Save {
                     wr.Write(cap.energy);
                     wr.Write(cap.firstAvailableAt);
                     wr.Write(cap.despawnAt);
-                    wr.Write(cap.sender?.name ?? string.Empty);
+                    wr.Write(cap.sender?.uid ?? default);
                     wr.Write(cap.creator?.uid ?? default);
                     break;
                 }
@@ -49,7 +49,7 @@ namespace Sor.Game.Save {
                     wr.Write(tree.Transform.Position);
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
-
+            
                     break;
                 }
             }
@@ -71,27 +71,27 @@ namespace Sor.Game.Save {
                     cap.energy = rd.ReadFloat();
                     cap.firstAvailableAt = rd.ReadFloat();
                     cap.despawnAt = rd.ReadFloat();
-                    var senderName = rd.ReadString();
-                    if (!string.IsNullOrWhiteSpace(senderName)) {
-                        cap.sender = per.state.wings.Find(x => x.name == senderName);
+                    var senderUid = rd.ReadLong();
+                    if (senderUid != 0) {
+                        cap.sender = per.state.wings.Single(x => x.uid == senderUid);
                     }
-
+            
                     var creatorUid = rd.ReadLong();
                     if (creatorUid > 0) {
                         cap.creator = per.state.things.Where(x => x is Tree)
                             .Cast<Tree>()
                             .Single(x => x.uid == creatorUid);
                     }
-
+            
                     // if acquired then throw away
                     if (cap.acquired) {
                         cap = null; // ick
                     }
-
+            
                     res = cap;
                     break;
                 }
-
+            
                 case ThingKind.Tree: {
                     var nt = new Entity("tree");
                     var tree = nt.AddComponent(new Tree());
@@ -100,7 +100,7 @@ namespace Sor.Game.Save {
                     tree.stage = rd.ReadInt();
                     tree.harvest = rd.ReadInt();
                     tree.uid = uid;
-
+            
                     tree.updateStage();
                     per.state.addThing(tree); // add tree to working list
                     res = tree;
@@ -108,11 +108,11 @@ namespace Sor.Game.Save {
                 }
                 default:
                     // unrecognized thing
-                    Global.log.err("unrecognized thing kind");
+                    Global.log.err($"unrecognized thing kind: {kind}");
                     res = null;
                     break;
             }
-
+            
             if (res != null) {
                 Global.log.trace($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}");
             }

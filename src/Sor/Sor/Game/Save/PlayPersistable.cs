@@ -129,7 +129,7 @@ namespace Sor.Game.Save {
             saveThingList.AddRange(capList);
             var thingHelper = new ThingPersistenceHelper(this);
             foreach (var thing in saveThingList) {
-                var kind = thingHelper.classify(thing);
+                // var kind = thingHelper.classify(thing);
                 thingHelper.saveThing(wr, thing);
             }
         }
