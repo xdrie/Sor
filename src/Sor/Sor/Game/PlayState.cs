@@ -19,15 +19,12 @@ namespace Sor.Game {
     /// <summary>
     /// Represents all the state information of an in-progress game
     /// </summary>
-    public class PlayContext {
-        public Wing playerWing;
-        public const string PLAYER_NAME = "player";
+    public class PlayState {
+        public Wing player;
 
-        public IEnumerable<Wing> wings =>
-            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
+        public List<Wing> wings = new List<Wing>();
+        public List<Thing> things = new List<Thing>();
 
-        public List<Wing> createdWings = new List<Wing>();
-        public List<Thing> createdThings = new List<Thing>();
         public Entity mapNt;
         public int mapgenSeed = 0;
         public bool rehydrated = false;
@@ -36,26 +33,44 @@ namespace Sor.Game {
         public MapLoader mapLoader;
 
         public void addThing(Thing thing) {
-            createdThings.Add(thing);
+            things.Add(thing);
+        }
+
+        public Wing createWing(string name, Vector2 pos, Mind mind) {
+            var wingNt = new Entity(name).SetTag(Constants.Tags.WING);
+            var wing = wingNt.AddComponent(new Wing(mind));
+            wing.body.pos = pos;
+            wings.Add(wing);
+            return wing;
         }
 
         public Wing createPlayer(Vector2 pos) {
-            var playerNt = new Entity(PLAYER_NAME).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
-            playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
-            playerWing.body.pos = pos;
-            playerNt.AddComponent<PlayerInputController>();
-            return playerWing;
+            var mind = new Mind(playerSoul, false);
+            player = createWing(Constants.Game.PLAYER_NAME, pos, mind);
+            player.AddComponent(new PlayerInputController(0));
+            return player;
         }
 
-        public Wing createWing(string name, Vector2 pos, BirdPersonality ply) {
-            var duckNt = new Entity(name).SetTag(Constants.Tags.WING);
-            var duck = duckNt.AddComponent(new Wing(new Mind(new AvianSoul {ply = ply}, true)));
-            duck.body.pos = pos;
-            duckNt.AddComponent<LogicInputController>();
-            createdWings.Add(duck);
-            return duck;
+        public Wing createNpcWing(string name, Vector2 pos, BirdPersonality ply) {
+            var mind = new Mind(new AvianSoul {ply = ply}, true);
+            var wing = createWing(name, pos, mind);
+            wing.AddComponent<LogicInputController>();
+            return wing;
+        }
+
+        public IEnumerable<Wing> findAllWings() =>
+            scene.FindEntitiesWithTag(Constants.Tags.WING).Select(x => x.GetComponent<Wing>());
+
+        #region Loading and Scene setup
+
+        public void load() {
+            loadMap();
+            if (!rehydrated) {
+                // fresh load
+                createEcosystem();
+            }
         }
 
         private void loadMap() {
@@ -63,19 +78,19 @@ namespace Sor.Game {
             var mapAsset = default(TmxMap);
             if (NGame.context.config.generateMap) {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/base.tmx");
-                var genMapSize = NGame.context.config.generatedMapSize;
+                var mapSize = NGame.context.config.generatedMapSize;
                 // var genMapSize = 16;
                 if (mapgenSeed == 0) {
                     mapgenSeed = Random.RNG.Next(int.MinValue, int.MaxValue);
                 }
 
-                var gen = new MapGenerator(genMapSize, genMapSize, mapgenSeed);
+                var gen = new MapGenerator(mapSize, mapSize, mapgenSeed);
                 gen.generate();
                 gen.analyze();
                 gen.copyToTilemap(mapAsset, createObjects: !rehydrated);
                 // log generated map
                 Global.log.trace(
-                    $"generated map of size {genMapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
+                    $"generated map of size {mapSize}, with {gen.roomRects.Count} rects:\n{gen.dumpGrid()}");
             }
             else {
                 mapAsset = Core.Content.LoadTiledMap("Data/maps/test4.tmx");
@@ -92,15 +107,7 @@ namespace Sor.Game {
             mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
 
-        public void load() {
-            loadMap();
-            if (!rehydrated) {
-                // fresh load
-                spawnBirds();
-            }
-        }
-
-        private void spawnBirds() {
+        private void createEcosystem() {
             var spawn = new Vector2(200, 200);
             if (NGame.config.generateMap) {
                 var mapBounds = mapLoader.mapRepr.tmxMap.TileToWorldPosition(new Vector2(mapLoader.mapRepr.tmxMap.Width,
@@ -108,11 +115,11 @@ namespace Sor.Game {
                 spawn = new Vector2(Random.NextFloat() * mapBounds.X, Random.NextFloat() * mapBounds.Y);
             }
 
-            var player = createPlayer(spawn);
-            player.Entity.AddComponent(new Shooter());
+            player = createPlayer(spawn);
+            player.Entity.AddComponent(new Shooter()); // arm the player
 
             // a friendly bird
-            var frend = createWing("frend", spawn + new Vector2(-140, 20),
+            var frend = createNpcWing("frend", spawn + new Vector2(-140, 20),
                 new BirdPersonality {A = -0.8f, S = 0.7f});
             frend.AddComponent(new Shooter()); // friend is armed
 
@@ -124,19 +131,21 @@ namespace Sor.Game {
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
-                var uno = createWing("uno", spawn + new Vector2(-140, 920), unoPly);
+                var uno = createNpcWing("uno", spawn + new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
 
                 // a second friendly bird
-                var fren2 = createWing("yii", spawn + new Vector2(400, -80),
+                var fren2 = createNpcWing("yii", spawn + new Vector2(400, -80),
                     new BirdPersonality {A = -0.5f, S = 0.4f});
                 // a somewhat anxious bird
-                var anxious1 = createWing("ada", spawn + new Vector2(640, 920),
+                var anxious1 = createNpcWing("ada", spawn + new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
                 var gen = new BirdGenerator(this);
                 gen.spawnBirds();
             }
         }
+
+        #endregion
     }
 }

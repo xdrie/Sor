@@ -19,7 +19,7 @@ namespace Sor.Game {
         public bool cameraLockedRotation = false;
         public int generatedMapSize = 40;
         public bool enableWalls = false;
-        public bool spawnBirds = true;
+        public bool spawnBirds = true; // whether all the randomized environmental birds should spawn
         public bool invisible = false;
         public int mindDisplayAhead = 3;
         public bool generateMap = true;

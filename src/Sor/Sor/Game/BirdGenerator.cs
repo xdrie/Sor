@@ -10,7 +10,7 @@ using Sor.Util;
 
 namespace Sor.Game {
     public class BirdGenerator {
-        private readonly PlayContext playContext;
+        private readonly PlayState state;
 
         public enum BirdEquipment {
             Bare,
@@ -19,8 +19,8 @@ namespace Sor.Game {
             Equip3,
         }
 
-        public BirdGenerator(PlayContext playContext) {
-            this.playContext = playContext;
+        public BirdGenerator(PlayState state) {
+            this.state = state;
         }
 
         public void spawnBirds() {
@@ -32,28 +32,28 @@ namespace Sor.Game {
                 (0.3f, Wing.WingClass.Beak),
                 (0.2f, Wing.WingClass.Predator)
             });
-            var birdEquipmentDist = new DiscreteProbabilityDistribution<BirdEquipment>(birdSpawnRng, new [] {
+            var birdEquipmentDist = new DiscreteProbabilityDistribution<BirdEquipment>(birdSpawnRng, new[] {
                 (0.7f, BirdEquipment.Bare),
                 (0.3f, BirdEquipment.Equip1)
             });
-            foreach (var room in playContext.mapLoader.mapRepr.roomGraph.rooms) {
+            foreach (var room in state.mapLoader.mapRepr.roomGraph.rooms) {
                 var roomBirdProb = 0.2f;
                 if (Random.Chance(roomBirdProb)) {
                     spawnedBirds++;
-                    
+
                     // generate spawn attributes
-                    var spawnPos = playContext.mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                    var spawnPos = state.mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
                     var spawnPly = new BirdPersonality();
                     spawnPly.generateRandom();
-                    
+
                     var bordClass = birdClassDist.next();
                     var className = bordClass.ToString().ToLower().First();
                     var nick = NameGenerator.next().ToLowerInvariant();
-                    
+
                     // create the wing
-                    var bord = playContext.createWing($"{nick} {className}", spawnPos, spawnPly);
+                    var bord = state.createNpcWing($"{nick} {className}", spawnPos, spawnPly);
                     bord.changeClass(bordClass, true);
-                    
+
                     // equip the wing
                     var loadout = birdEquipmentDist.next();
                     switch (loadout) {

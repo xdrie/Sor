@@ -19,8 +19,8 @@ namespace Sor.Game {
 
         [Command("g_energy", "adds energy to the player")]
         public static void Energy(float val, string name) {
-            if (name == null) name = PlayContext.PLAYER_NAME;
-            var wing = play.playContext.wings.SingleOrDefault(x => x.name == name);
+            if (name == null) name = play.state.player.name;
+            var wing = play.state.findAllWings().SingleOrDefault(x => x.name == name);
             if (wing == null) {
                 debugLog($"no wing named {name} was found");
                 return;
@@ -33,16 +33,16 @@ namespace Sor.Game {
         [Command("g_class", "changes player wing class")]
         public static void Class(int newClass) {
             var val = (Wing.WingClass) newClass;
-            play.playContext.playerWing.changeClass(val, true);
+            play.state.player.changeClass(val, true);
             debugLog($"changed player class to {val}");
         }
 
         [Command("g_list", "lists all wings")]
         public static void List() {
-            var wings = play.playContext.wings.ToList();
-            var nearbyWings = play.playContext.wings.Where(x =>
-                    x != play.playContext.playerWing &&
-                    ((x.body.pos - play.playContext.playerWing.body.pos).LengthSquared() <
+            var wings = play.state.findAllWings().ToList();
+            var nearbyWings = play.state.findAllWings().Where(x =>
+                    x != play.state.player &&
+                    ((x.body.pos - play.state.player.body.pos).LengthSquared() <
                      MindConstants.SENSE_RANGE * MindConstants.SENSE_RANGE))
                 .ToList();
             debugLog(
@@ -61,8 +61,8 @@ namespace Sor.Game {
             var wingPly = new BirdPersonality {A = a, S = s};
             // wingPly.generateRandom();
             var spawnOffset = Vector2Ext.Rotate(new Vector2(0, -120f), Random.NextFloat() * Mathf.PI * 2f);
-            var wing = play.playContext.createWing(name,
-                play.playContext.playerWing.Entity.Position + spawnOffset, wingPly);
+            var wing = play.state.createNpcWing(name,
+                play.state.player.Entity.Position + spawnOffset, wingPly);
             play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");
         }

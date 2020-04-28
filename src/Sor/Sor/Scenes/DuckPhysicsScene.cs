@@ -30,7 +30,7 @@ namespace Sor.Scenes {
                 AddRenderer(new ScreenSpaceRenderer(1023, renderlayer_ui_overlay));
             fixedRenderer.ShouldDebugRender = false;
 
-            playerNt = CreateEntity(PlayContext.PLAYER_NAME, new Vector2(400, 400)).SetTag(Constants.Tags.WING);
+            playerNt = CreateEntity(Constants.Game.PLAYER_NAME, new Vector2(400, 400)).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));

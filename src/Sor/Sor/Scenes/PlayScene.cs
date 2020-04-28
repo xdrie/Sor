@@ -13,6 +13,7 @@ using Sor.Components.Inspect;
 using Sor.Components.UI;
 using Sor.Components.Units;
 using Sor.Game;
+using Sor.Game.Save;
 using Sor.Systems;
 
 namespace Sor.Scenes {
@@ -24,12 +25,12 @@ namespace Sor.Scenes {
         public bool showingHelp;
         public const float showHelpTime = 4f;
 
-        public PlayContext playContext;
+        public PlayState state;
 
-        public PlayScene(PlayContext playContext) {
-            this.playContext = playContext;
-            Core.Services.AddService(playContext);
-            playContext.scene = this;
+        public PlayScene(PlayState state) {
+            this.state = state;
+            Core.Services.AddService(state);
+            state.scene = this;
         }
 
         public override void Initialize() {
@@ -58,31 +59,27 @@ namespace Sor.Scenes {
 
             // - scene setup
             // set up map
-            AddEntity(playContext.mapNt);
-            gameContext.map = playContext.mapLoader.mapRepr; // copy map representation
+            AddEntity(state.mapNt);
+            gameContext.map = state.mapLoader.mapRepr; // copy map representation
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
-            // attach player
-            var player = playContext.playerWing;
-            AddEntity(player.Entity);
-            player.animator.RenderLayer = renderlayer_above;
-
             // attach all wings
-            foreach (var wing in playContext.createdWings) {
+            foreach (var wing in state.wings) {
                 AddEntity(wing.Entity);
+                wing.animator.RenderLayer = renderlayer_above;
             }
 
-            playContext.createdWings.Clear();
+            state.wings.Clear();
 
-            foreach (var thing in playContext.createdThings) {
+            foreach (var thing in state.things) {
                 // attach all things
                 AddEntity(thing.Entity);
             }
 
-            playContext.createdThings.Clear();
+            state.things.Clear();
 
-            var status = playContext.rehydrated ? "rehydrated" : "freshly created";
+            var status = state.rehydrated ? "rehydrated" : "freshly created";
             Global.log.info($"play scene {status}");
 
             // - hud
@@ -104,9 +101,9 @@ namespace Sor.Scenes {
                 });
             tw.Start();
 
-            var hudSystem = AddEntityProcessor(new HudSystem(player, hud));
+            var hudSystem = AddEntityProcessor(new HudSystem(state.player, hud));
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
-            var pipsSystem = AddEntityProcessor(new PipsSystem(player));
+            var pipsSystem = AddEntityProcessor(new PipsSystem(state.player));
 
             // add component to make Camera follow the player
             var cameraLockMode = LockedCamera.LockMode.Position;
@@ -116,8 +113,8 @@ namespace Sor.Scenes {
 
             var followCamera =
                 // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
-                Camera.Entity.AddComponent(new FollowCamera(player.Entity,
-                    FollowCamera.CameraStyle.LockOn));
+                Camera.Entity.AddComponent(
+                    new FollowCamera(state.player.Entity, FollowCamera.CameraStyle.LockOn));
             followCamera.FollowLerp = 0.3f;
             followCamera.RoundPosition = false;
             Camera.AddComponent<CameraShake>();
@@ -186,7 +183,7 @@ namespace Sor.Scenes {
 
                     if (nearest != null) {
                         Global.log.info($"selected mind_inspect on {nearest.name}");
-                        nearest?.AddComponent(new MindDisplay(playContext.playerWing, true));
+                        nearest?.AddComponent(new MindDisplay(state.player, true));
                     }
                 }
 
@@ -212,7 +209,7 @@ namespace Sor.Scenes {
             base.Unload();
 
             // unload play context
-            Core.Services.RemoveService(typeof(PlayContext));
+            Core.Services.RemoveService(typeof(PlayState));
 
 #if DEBUG
             SorDebug.play = null;
@@ -221,8 +218,11 @@ namespace Sor.Scenes {
 
         public void saveGame() {
             var store = gameContext.data.getStore();
-            if (gameContext.config.persist)
-                store.Save(GameData<Config>.TEST_SAVE, new PlayPersistable(playContext));
+            if (gameContext.config.persist) {
+                // save the play context
+                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(state));
+                // TODO: save the experience, etc. data in another persistable
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Sor.AI.Systems {
         protected override void process() {
             // boxcast in radius
             var sensorCollResults = Physics.BoxcastBroadphase(sensorRec).ToList();
-            var playContext = NGame.Services.GetService<PlayContext>();
+            var playContext = NGame.Services.GetService<PlayState>();
 
             state.clearVision();
             foreach (var sensorResult in sensorCollResults) {
@@ -25,7 +25,7 @@ namespace Sor.AI.Systems {
                 var sensed = sensorResult.Entity;
                 if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != entity) {
                     if (NGame.context.config.invisible) {
-                        if (sensed.Name == playContext.playerWing.name) {
+                        if (sensed.Name == playContext.player.name) {
                             continue; // make player invisible
                         }
                     }

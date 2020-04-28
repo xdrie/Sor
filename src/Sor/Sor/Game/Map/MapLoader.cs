@@ -10,7 +10,7 @@ using Sor.Util;
 
 namespace Sor.Game.Map {
     public class MapLoader {
-        private readonly PlayContext playContext;
+        private readonly PlayState state;
         private readonly Entity mapEntity;
         private TmxLayer structure;
         private TmxLayer features;
@@ -30,8 +30,8 @@ namespace Sor.Game.Map {
         public const int WALL_BORDER = 4;
         public const int ROOM_LINK_DIST = 40;
 
-        public MapLoader(PlayContext playContext, Entity mapEntity) {
-            this.playContext = playContext;
+        public MapLoader(PlayState state, Entity mapEntity) {
+            this.state = state;
             this.mapEntity = mapEntity;
         }
 
@@ -71,7 +71,7 @@ namespace Sor.Game.Map {
                         .SetTag(Constants.Tags.THING);
                     nt.Position = new Vector2(th.X, th.Y);
                     var tree = nt.AddComponent(new Tree {stage = treeStage});
-                    playContext.addThing(tree);
+                    state.addThing(tree);
                     Global.log.trace($"tree L{treeStage}: ({nt.Name}, {nt.Position})");
                 }
             }
@@ -120,7 +120,8 @@ namespace Sor.Game.Map {
                                     scanFirst = default;
                                     scanOpen = 0;
                                 }
-                            } else {
+                            }
+                            else {
                                 if (scanOpen == 0) {
                                     // start the count
                                     scanFirst = p;
@@ -134,7 +135,8 @@ namespace Sor.Game.Map {
                         var ulTile = tile;
                         var urTile = default(TmxLayerTile);
                         var rightEdge = -1;
-                        for (int sx = leftEdge; sx < structure.Width; sx++) { // pass left-to-right along top
+                        for (int sx = leftEdge; sx < structure.Width; sx++) {
+                            // pass left-to-right along top
                             var scTile = structure.GetTile(sx, topEdge);
                             updateScan(scTile, new Point(sx, topEdge), Direction.Up);
                             if (scTile == null) continue;
@@ -148,7 +150,8 @@ namespace Sor.Game.Map {
                         if (urTile == null) break;
                         var drTile = default(TmxLayerTile);
                         var downEdge = -1;
-                        for (int sy = topEdge; sy < structure.Height; sy++) { // pass top-to-bottom along right
+                        for (int sy = topEdge; sy < structure.Height; sy++) {
+                            // pass top-to-bottom along right
                             var scTile = structure.GetTile(rightEdge, sy);
                             updateScan(scTile, new Point(rightEdge, sy), Direction.Right);
                             if (scTile == null) continue;
@@ -161,7 +164,8 @@ namespace Sor.Game.Map {
 
                         if (drTile == null) break;
                         var dlTile = default(TmxLayerTile);
-                        for (int sx = rightEdge; sx >= 0; sx--) { // pass right-to left along down
+                        for (int sx = rightEdge; sx >= 0; sx--) {
+                            // pass right-to left along down
                             var scTile = structure.GetTile(sx, downEdge);
                             updateScan(scTile, new Point(sx, downEdge), Direction.Down);
                             if (scTile == null) continue;
@@ -174,11 +178,13 @@ namespace Sor.Game.Map {
                         if (dlTile == null) break;
 
                         // finally, check the left side
-                        for (int sy = downEdge; sy >= 0; sy--) { // pass down-to-top along left
+                        for (int sy = downEdge; sy >= 0; sy--) {
+                            // pass down-to-top along left
                             var scTile = structure.GetTile(leftEdge, sy);
                             updateScan(scTile, new Point(leftEdge, sy), Direction.Left);
                             if (scTile == null) continue;
-                            if (ori(scTile) == Map.TileOri.UpLeft) { // we found her again
+                            if (ori(scTile) == Map.TileOri.UpLeft) {
+                                // we found her again
                                 break;
                             }
                         }
@@ -186,7 +192,8 @@ namespace Sor.Game.Map {
                         // all 4 corners have been found, create a room
                         var room = new Map.Room(new Point(leftEdge, topEdge), new Point(rightEdge, downEdge));
                         room.doors = openings;
-                        foreach (var door in openings) { // set local room of all doors
+                        foreach (var door in openings) {
+                            // set local room of all doors
                             door.roomLocal = room;
                         }
 
@@ -263,7 +270,8 @@ namespace Sor.Game.Map {
                 var rectLeft = new Vector2(rect.Left, rect.Top + rect.Height / 2);
                 var corrTilePos = map.WorldToTilePosition(rectCenter);
                 var corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
-                if (corrTile == null) { // if center isn't found, check left
+                if (corrTile == null) {
+                    // if center isn't found, check left
                     corrTilePos = map.WorldToTilePosition(rectLeft);
                     corrTile = structure.GetTile(corrTilePos.X, corrTilePos.Y);
                 }
@@ -328,7 +336,8 @@ namespace Sor.Game.Map {
                     case Direction.Left:
                         return Map.TileOri.Down;
                 }
-            } else if (tk == Map.TileKind.Corner) {
+            }
+            else if (tk == Map.TileKind.Corner) {
                 switch (dir) {
                     case Direction.Up:
                         return Map.TileOri.DownLeft;
