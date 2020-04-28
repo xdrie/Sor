@@ -59,7 +59,7 @@ namespace Sor.Game.Save {
                 }
 
                 var bd = rd.readBody();
-                rd.readWingMemory(wing.mind);
+                // rd.readWingMemory(wing.mind);
                 bd.copyTo(wing.body);
                 wing.changeClass(wd.wingClass);
                 Global.log.trace(
@@ -105,7 +105,7 @@ namespace Sor.Game.Save {
                 var wing = wingNt.GetComponent<Wing>();
                 wr.writeWingMeta(wing);
                 wr.writeBody(wing.body);
-                wr.writeWingMemory(wing.mind);
+                // wr.writeWingMemory(wing.mind);
             }
 
             // save world things
