@@ -1,8 +1,5 @@
-using System.Linq;
 using Glint;
 using Glint.Components.Camera;
-using Glint.Game;
-using Glint.Util;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Nez;

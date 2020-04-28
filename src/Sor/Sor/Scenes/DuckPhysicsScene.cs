@@ -34,7 +34,7 @@ namespace Sor.Scenes {
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
             var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
-            playerNt.AddComponent<PlayerInputController>();
+            playerNt.AddComponent(new PlayerInputController(0));
 
             // set up scene things
             physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.WING);
