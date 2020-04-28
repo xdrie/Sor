@@ -1,9 +1,11 @@
 using Glint.Sprites;
+using LunchLib.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
 using Sor.Components.Things;
 using Sor.Components.UI;
+using XNez.GUtils.Misc;
 
 namespace Sor.Components.Units {
     public class Wing : GAnimatedSprite, IUpdatable {
@@ -74,33 +76,34 @@ namespace Sor.Components.Units {
             // set baseline properties
             // properly revert all changes, including transform positions and scales
             var scale = 1f;
+            var fitness = Distribution.normalRand(1f, 0.15f);
             // TODO: other classes are still very experimental!!
             switch (newClass) {
                 case WingClass.Wing:
                     scale = 1f;
 
                     // this should always be the defaults
-                    body.mass = Constants.Physics.DEF_MASS;
+                    body.mass = Constants.Physics.DEF_MASS * fitness;
 
-                    body.turnPower = Constants.Physics.DEF_TURN_POWER;
-                    body.thrustPower = Constants.Physics.DEF_THRUST_POWER;
-                    body.topSpeed = Constants.Physics.DEF_TOP_SPEED;
-                    body.boostTopSpeed = Constants.Physics.DEF_BOOST_TOP_SPEED;
+                    body.turnPower = Constants.Physics.DEF_TURN_POWER * fitness;
+                    body.thrustPower = Constants.Physics.DEF_THRUST_POWER * fitness;
+                    body.topSpeed = Constants.Physics.DEF_TOP_SPEED * fitness;
+                    body.boostTopSpeed = Constants.Physics.DEF_BOOST_TOP_SPEED * fitness;
                     body.recalculateValues();
 
-                    core.designMax = 10_000;
+                    core.designMax = 10_000 * fitness;
 
                     break;
                 case WingClass.Predator: {
                     scale = 2f;
 
-                    body.mass = Constants.Physics.BIG_MASS;
+                    body.mass = Constants.Physics.BIG_MASS * fitness;
 
-                    body.turnPower = Constants.Physics.BIG_TURN_POWER;
-                    body.thrustPower = Constants.Physics.BIG_THRUST_POWER;
-                    body.boostTopSpeed = Constants.Physics.BIG_BOOST_TOP_SPEED;
+                    body.turnPower = Constants.Physics.BIG_TURN_POWER * fitness;
+                    body.thrustPower = Constants.Physics.BIG_THRUST_POWER * fitness;
+                    body.boostTopSpeed = Constants.Physics.BIG_BOOST_TOP_SPEED * fitness;
 
-                    core.designMax = 60_000;
+                    core.designMax = 60_000 * fitness;
 
                     body.recalculateValues();
                     break;
@@ -108,13 +111,13 @@ namespace Sor.Components.Units {
                 case WingClass.Beak: {
                     scale = 0.5f;
 
-                    body.mass = Constants.Physics.SML_MASS;
+                    body.mass = Constants.Physics.SML_MASS * fitness;
 
-                    body.turnPower = Constants.Physics.SML_TURN_POWER;
-                    body.thrustPower = Constants.Physics.SML_THRUST_POWER;
-                    body.boostTopSpeed = Constants.Physics.SML_BOOST_TOP_SPEED;
+                    body.turnPower = Constants.Physics.SML_TURN_POWER * fitness;
+                    body.thrustPower = Constants.Physics.SML_THRUST_POWER * fitness;
+                    body.boostTopSpeed = Constants.Physics.SML_BOOST_TOP_SPEED * fitness;
 
-                    core.designMax = 5_000;
+                    core.designMax = 5_000 * fitness;
 
                     body.recalculateValues();
                     break;
