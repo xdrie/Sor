@@ -41,6 +41,7 @@ namespace Sor.Game.Save {
             var playerWd = rd.readWing();
             var playerBodyData = rd.readBody();
             var player = state.createPlayer(Vector2.Zero);
+            player.uid = playerWd.uid;
             player.core.energy = playerWd.energy;
             player.mind.soul.ply = playerWd.ply;
             playerBodyData.copyTo(player.body);
@@ -54,6 +55,7 @@ namespace Sor.Game.Save {
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWing();
                 var wing = state.createNpcWing(wd.name, Vector2.Zero, wd.ply);
+                wing.uid = wd.uid;
                 if (wd.armed) {
                     wing.AddComponent<Shooter>();
                 }
@@ -102,7 +104,7 @@ namespace Sor.Game.Save {
             wr.Write(state.mapgenSeed);
 
             // save player
-            wr.writeWingMeta(state.player);
+            wr.writeWing(state.player);
             wr.writeBody(state.player.body);
 
             // save all other wings
@@ -112,7 +114,7 @@ namespace Sor.Game.Save {
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {
                 var wing = wingNt.GetComponent<Wing>();
-                wr.writeWingMeta(wing);
+                wr.writeWing(wing);
                 wr.writeBody(wing.body);
                 // wr.writeWingMemory(wing.mind);
             }

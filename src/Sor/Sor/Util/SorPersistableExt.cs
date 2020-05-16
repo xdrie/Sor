@@ -52,6 +52,7 @@ namespace Sor.Util {
         }
 
         public class WingData {
+            public long uid;
             public string name;
             public Wing.WingClass wingClass;
             public float energy;
@@ -61,6 +62,7 @@ namespace Sor.Util {
             public WingData() { }
 
             public WingData(Wing wing) {
+                uid = wing.uid;
                 name = wing.name;
                 wingClass = wing.wingClass;
                 energy = wing.core.energy;
@@ -69,8 +71,9 @@ namespace Sor.Util {
             }
         }
 
-        public static void writeWingMeta(this IPersistableWriter w, Wing wing) {
+        public static void writeWing(this IPersistableWriter w, Wing wing) {
             var wd = new WingData(wing);
+            w.Write(wing.uid);
             w.Write(wd.name);
             w.Write((int) wd.wingClass);
             w.Write(wd.energy);
@@ -80,6 +83,7 @@ namespace Sor.Util {
 
         public static WingData readWing(this IPersistableReader r) {
             var wd = new WingData();
+            wd.uid = r.ReadLong();
             wd.name = r.ReadString();
             wd.wingClass = (Wing.WingClass) r.ReadInt();
             wd.energy = r.ReadFloat();

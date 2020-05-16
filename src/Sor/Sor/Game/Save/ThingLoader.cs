@@ -35,6 +35,11 @@ namespace Sor.Game.Save {
             this.per = per;
         }
 
+        /// <summary>
+        /// get a numerical type identifier for the thing
+        /// </summary>
+        /// <param name="thing"></param>
+        /// <returns></returns>
         public ThingKind classify(Thing thing) {
             if (thing is Capsule) return ThingKind.Capsule;
             if (thing is Tree) return ThingKind.Tree;
@@ -43,8 +48,10 @@ namespace Sor.Game.Save {
 
         public void saveThing(IPersistableWriter wr, Thing thing) {
             var kindId = (int) classify(thing);
+            // thing header
             wr.Write(kindId);
             wr.Write(thing.uid);
+            // thing data
             switch (thing) {
                 case Capsule cap: {
                     // write status
@@ -110,7 +117,6 @@ namespace Sor.Game.Save {
                     tree.uid = uid;
 
                     tree.updateStage();
-                    per.state.addThing(tree); // add tree to working list
                     res = tree;
                     break;
                 }
@@ -145,9 +151,8 @@ namespace Sor.Game.Save {
 
                         // load tree ref
                         if (load.creatorUid > 0) {
-                            cap.creator = per.state.things.Where(x => x is Tree)
-                                .Cast<Tree>()
-                                .Single(x => x.uid == load.creatorUid);
+                            cap.creator = (Tree) loads.Select(x => x.instance)
+                                .Single(x => (x as Tree)?.uid == load.creatorUid);
                         }
 
                         break;
