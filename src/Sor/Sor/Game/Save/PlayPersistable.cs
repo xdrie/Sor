@@ -68,17 +68,26 @@ namespace Sor.Game.Save {
 
             // load world things
             var thingCount = rd.ReadInt();
+            var thingHelper = new ThingPersistenceHelper(this);
+            var loadedThings = new List<ThingPersistenceHelper.LoadedThing>();
             for (var i = 0; i < thingCount; i++) {
-                var thingHelper = new ThingPersistenceHelper(this);
                 // load and inflate thing
-                var thing = thingHelper.loadThing(rd);
-                if (thing != null) {
-                    // thing might not be loadedF
-                    // tag entity as thing
-                    thing.Entity.SetTag(Constants.Tags.THING);
-                    // add to context
-                    state.addThing(thing);
+                var load = thingHelper.loadThing(rd);
+                if (load != null) {
+                    loadedThings.Add(load);
                 }
+                else {
+                    Global.log.err("attempted to load thing, but it was NULL");
+                }
+            }
+
+            // now resolve all things
+            var resolvedThings = thingHelper.resolveThings(loadedThings);
+            foreach (var thing in resolvedThings) {
+                // add to context
+                state.addThing(thing);
+                // tag entity as thing
+                thing.Entity.SetTag(Constants.Tags.THING);
             }
         }
 

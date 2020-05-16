@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Glint;
 using Glint.Util;
@@ -9,6 +10,13 @@ using Sor.Util;
 namespace Sor.Game.Save {
     public class ThingPersistenceHelper {
         private PlayPersistable per;
+
+        public class LoadedThing : Loaded<Thing> {
+            public LoadedThing(Thing instance) : base(instance) { }
+
+            public long senderUid;
+            public long creatorUid;
+        }
 
         public enum ThingKind {
             Unknown,
@@ -49,16 +57,18 @@ namespace Sor.Game.Save {
                     wr.Write(tree.Transform.Position);
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
-            
+
                     break;
                 }
             }
         }
 
-        public Thing loadThing(IPersistableReader rd) {
+        public LoadedThing loadThing(IPersistableReader rd) {
             var kind = (ThingKind) rd.ReadInt();
             var res = default(Thing);
             var uid = rd.ReadLong();
+            var senderUid = default(long);
+            var creatorUid = default(long);
             switch (kind) {
                 case ThingKind.Capsule: {
                     var nt = new Entity("cap");
@@ -71,27 +81,18 @@ namespace Sor.Game.Save {
                     cap.energy = rd.ReadFloat();
                     cap.firstAvailableAt = rd.ReadFloat();
                     cap.despawnAt = rd.ReadFloat();
-                    var senderUid = rd.ReadLong();
-                    if (senderUid != 0) {
-                        cap.sender = per.state.wings.Single(x => x.uid == senderUid);
-                    }
-            
-                    var creatorUid = rd.ReadLong();
-                    if (creatorUid > 0) {
-                        cap.creator = per.state.things.Where(x => x is Tree)
-                            .Cast<Tree>()
-                            .Single(x => x.uid == creatorUid);
-                    }
-            
+                    senderUid = rd.ReadLong();
+                    creatorUid = rd.ReadLong();
+
                     // if acquired then throw away
                     if (cap.acquired) {
                         cap = null; // ick
                     }
-            
+
                     res = cap;
                     break;
                 }
-            
+
                 case ThingKind.Tree: {
                     var nt = new Entity("tree");
                     var tree = nt.AddComponent(new Tree());
@@ -100,7 +101,7 @@ namespace Sor.Game.Save {
                     tree.stage = rd.ReadInt();
                     tree.harvest = rd.ReadInt();
                     tree.uid = uid;
-            
+
                     tree.updateStage();
                     per.state.addThing(tree); // add tree to working list
                     res = tree;
@@ -112,12 +113,43 @@ namespace Sor.Game.Save {
                     res = null;
                     break;
             }
-            
+
             if (res != null) {
                 Global.log.trace($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}");
             }
 
-            return res; // yee
+            var loadedThing = new LoadedThing(res) {
+                senderUid = senderUid,
+                creatorUid = creatorUid
+            };
+            return loadedThing; // yee
+        }
+
+        public List<Thing> resolveThings(IEnumerable<LoadedThing> loads) {
+            var things = new List<Thing>();
+            foreach (var load in loads) {
+                // process the load...
+                switch (load.instance) {
+                    case Capsule cap:
+                        // load wing ref
+                        if (load.senderUid > 0) {
+                            cap.sender = per.state.wings.Single(x => x.uid == load.senderUid);
+                        }
+
+                        // load tree ref
+                        if (load.creatorUid > 0) {
+                            cap.creator = per.state.things.Where(x => x is Tree)
+                                .Cast<Tree>()
+                                .Single(x => x.uid == load.creatorUid);
+                        }
+
+                        break;
+                }
+                // now add it to the finished list
+                things.Add(load.instance);
+            }
+
+            return things;
         }
     }
 }
