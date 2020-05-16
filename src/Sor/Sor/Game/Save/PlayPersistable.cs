@@ -68,8 +68,8 @@ namespace Sor.Game.Save {
 
             // load world things
             var thingCount = rd.ReadInt();
-            var thingHelper = new ThingPersistenceHelper(this);
-            var loadedThings = new List<ThingPersistenceHelper.LoadedThing>();
+            var thingHelper = new ThingLoader(this);
+            var loadedThings = new List<ThingLoader.LoadedThing>();
             for (var i = 0; i < thingCount; i++) {
                 // load and inflate thing
                 var load = thingHelper.loadThing(rd);
@@ -136,7 +136,7 @@ namespace Sor.Game.Save {
             var saveThingList = new List<Thing>();
             saveThingList.AddRange(treeList);
             saveThingList.AddRange(capList);
-            var thingHelper = new ThingPersistenceHelper(this);
+            var thingHelper = new ThingLoader(this);
             foreach (var thing in saveThingList) {
                 // var kind = thingHelper.classify(thing);
                 thingHelper.saveThing(wr, thing);

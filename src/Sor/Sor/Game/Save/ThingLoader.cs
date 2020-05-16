@@ -8,23 +8,30 @@ using Sor.Components.Things;
 using Sor.Util;
 
 namespace Sor.Game.Save {
-    public class ThingPersistenceHelper {
+    public class ThingLoader {
         private PlayPersistable per;
-
-        public class LoadedThing : Loaded<Thing> {
-            public LoadedThing(Thing instance) : base(instance) { }
-
-            public long senderUid;
-            public long creatorUid;
-        }
-
+        
         public enum ThingKind {
             Unknown,
             Capsule,
             Tree
         }
 
-        public ThingPersistenceHelper(PlayPersistable per) {
+        public class LoadedThing : Loaded<Thing> {
+            public LoadedThing(Thing instance) : base(instance) { }
+
+            /// <summary>
+            /// the one that last interacted with the thing
+            /// </summary>
+            public long interactorUid;
+            
+            /// <summary>
+            /// the one that created the thing
+            /// </summary>
+            public long creatorUid;
+        }
+
+        public ThingLoader(PlayPersistable per) {
             this.per = per;
         }
 
@@ -48,12 +55,12 @@ namespace Sor.Game.Save {
                     wr.Write(cap.energy);
                     wr.Write(cap.firstAvailableAt);
                     wr.Write(cap.despawnAt);
-                    wr.Write(cap.sender?.uid ?? default);
+                    wr.Write(cap.interactor?.uid ?? default);
                     wr.Write(cap.creator?.uid ?? default);
                     break;
                 }
                 case Tree tree: {
-                    // TODO: too lazy to store fruit refs
+                    // we don't store fruit refs
                     wr.Write(tree.Transform.Position);
                     wr.Write(tree.stage);
                     wr.Write(tree.harvest);
@@ -119,7 +126,7 @@ namespace Sor.Game.Save {
             }
 
             var loadedThing = new LoadedThing(res) {
-                senderUid = senderUid,
+                interactorUid = senderUid,
                 creatorUid = creatorUid
             };
             return loadedThing; // yee
@@ -132,8 +139,8 @@ namespace Sor.Game.Save {
                 switch (load.instance) {
                     case Capsule cap:
                         // load wing ref
-                        if (load.senderUid > 0) {
-                            cap.sender = per.state.wings.Single(x => x.uid == load.senderUid);
+                        if (load.interactorUid > 0) {
+                            cap.interactor = per.state.wings.Single(x => x.uid == load.interactorUid);
                         }
 
                         // load tree ref

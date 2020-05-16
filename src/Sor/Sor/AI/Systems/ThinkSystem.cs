@@ -263,7 +263,7 @@ namespace Sor.AI.Systems {
         private void processSignal(MindSignal result) {
             switch (result) {
                 case ItemSignals.CapsuleAcquiredSignal sig: {
-                    var from = sig.cap.sender;
+                    var from = sig.cap.interactor;
                     if (from != null && from != mind.me) {
                         // run a feeding interaction
                         var interaction = new FeedInteraction(sig);

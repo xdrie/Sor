@@ -100,7 +100,7 @@ namespace Sor.Components.Units {
                         .SetTag(Constants.Tags.THING);
                     var cap = capNt.AddComponent<Capsule>();
                     cap.firstAvailableAt = Time.TotalTime + 1f;
-                    cap.sender = me;
+                    cap.interactor = me;
                     cap.launch(capEnergy, capMotion.Rotate(angle));
                 }
 

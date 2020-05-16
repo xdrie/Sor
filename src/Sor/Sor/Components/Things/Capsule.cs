@@ -11,7 +11,7 @@ namespace Sor.Components.Things {
         public float despawnAt = 0;
 
         public CapsuleBody body;
-        public Wing sender = null;
+        public Wing interactor = null;
         public Tree creator = null;
 
         public const float lifetime = 20f;
