@@ -13,7 +13,7 @@ namespace Sor.Game.Save {
     public class PlayPersistable : IPersistable {
         public PlayState state;
 
-        public const int version = 4;
+        public const int version = 5;
         public const float SAVE_TIME_ADVANCE = 30f; // time to advance when loading
 
         public PlayPersistable(PlayState state) {
