@@ -103,11 +103,11 @@ namespace Sor.Scenes {
             var pipsSystem = AddEntityProcessor(new PipsSystem(state.player));
 
             // add component to make Camera follow the player
-            var cameraLockMode = LockedCamera.LockMode.Position;
-            if (NGame.config.cameraLockedRotation) {
-                cameraLockMode |= LockedCamera.LockMode.Rotation;
-            }
-
+            
+            // var cameraLockMode = LockedCamera.LockMode.Position;
+            // if (NGame.config.cameraLockedRotation) {
+            //     cameraLockMode |= LockedCamera.LockMode.Rotation;
+            // }
             var followCamera =
                 // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
                 Camera.Entity.AddComponent(
