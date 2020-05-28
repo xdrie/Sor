@@ -277,27 +277,21 @@ namespace Sor.Game.Map {
                 }
 
                 var corrDirection = tileDirection(corrTile);
-                var adjCollider = default(Rectangle);
                 // adjust collider based on direction
-                switch (corrDirection) {
-                    case Direction.Up: // left wall
-                        adjCollider = new Rectangle(rect.X, rect.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
-                            rect.Height + map.TileWidth - WALL_BORDER);
-                        break;
-                    case Direction.Right: // top wall
-                        adjCollider = new Rectangle(rect.X, rect.Y, rect.Width, WALL_BORDER);
-                        break;
-                    case Direction.Down: // right wall
-                        adjCollider = new Rectangle(rect.X + map.TileWidth - WALL_BORDER,
-                            rect.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
-                            rect.Height + map.TileWidth - WALL_BORDER);
-                        break;
-                    case Direction.Left: // down wall
-                        adjCollider = new Rectangle(rect.X - map.TileWidth + WALL_BORDER,
-                            rect.Y + map.TileWidth - WALL_BORDER,
-                            rect.Width + map.TileWidth - WALL_BORDER + map.TileWidth - WALL_BORDER, WALL_BORDER);
-                        break;
-                }
+                var adjCollider = corrDirection switch {
+                    Direction.Up => // left wall
+                    new Rectangle(rect.X, rect.Y - map.TileWidth + WALL_BORDER, WALL_BORDER,
+                        rect.Height + map.TileWidth - WALL_BORDER),
+                    Direction.Right => // top wall
+                    new Rectangle(rect.X, rect.Y, rect.Width, WALL_BORDER),
+                    Direction.Down => // right wall
+                    new Rectangle(rect.X + map.TileWidth - WALL_BORDER, rect.Y - map.TileWidth + WALL_BORDER,
+                        WALL_BORDER, rect.Height + map.TileWidth - WALL_BORDER),
+                    Direction.Left => // down wall
+                    new Rectangle(rect.X - map.TileWidth + WALL_BORDER, rect.Y + map.TileWidth - WALL_BORDER,
+                        rect.Width + map.TileWidth - WALL_BORDER + map.TileWidth - WALL_BORDER, WALL_BORDER),
+                    _ => default(Rectangle)
+                };
 
                 adjustedColliders.Add(adjCollider);
             }

@@ -48,26 +48,14 @@ namespace Sor.Components.Things {
                 animator.Play(stageAnim);
             }
             growthTimer = Time.TotalTime + 60f * (1f / developmentSpeed) * stage; // time until next growth
-            switch (stage) {
-                case 6:
-                    maxFruits = 1;
-                    break;
-                case 7:
-                    maxFruits = 3;
-                    break;
-                case 8:
-                    maxFruits = 6;
-                    break;
-                case 9:
-                    maxFruits = 9;
-                    break;
-                case 10:
-                    maxFruits = 14;
-                    break;
-                default:
-                    maxFruits = 0;
-                    break;
-            }
+            maxFruits = stage switch {
+                6 => 1,
+                7 => 3,
+                8 => 6,
+                9 => 9,
+                10 => 14,
+                _ => 0
+            };
         }
 
         public void Update() {

@@ -197,45 +197,25 @@ namespace Sor.Game.Map.Gen {
         }
 
         private static TmxLayerTile pickTile(TmxMap map, int x, int y, Map.TileKind kind, Map.TileOri ori) {
-            var tid = 0U;
-            switch (kind) {
-                case Map.TileKind.Corner:
-                    tid = 3;
-                    break;
-                case Map.TileKind.Wall:
-                    tid = 2;
-                    break;
-            }
+            var tid = kind switch {
+                Map.TileKind.Corner => 3U,
+                Map.TileKind.Wall => 2U,
+                _ => 0U
+            };
 
             var tile = new TmxLayerTile(map, tid, x, y);
 
-            var tileDir = default(Direction);
-            switch (ori) {
-                case Map.TileOri.Left:
-                    tileDir = Direction.Up;
-                    break;
-                case Map.TileOri.Up:
-                    tileDir = Direction.Right;
-                    break;
-                case Map.TileOri.Right:
-                    tileDir = Direction.Down;
-                    break;
-                case Map.TileOri.Down:
-                    tileDir = Direction.Left;
-                    break;
-                case Map.TileOri.UpLeft:
-                    tileDir = Direction.Right;
-                    break;
-                case Map.TileOri.UpRight:
-                    tileDir = Direction.Down;
-                    break;
-                case Map.TileOri.DownRight:
-                    tileDir = Direction.Left;
-                    break;
-                case Map.TileOri.DownLeft:
-                    tileDir = Direction.Up;
-                    break;
-            }
+            var tileDir = ori switch {
+                Map.TileOri.Left => Direction.Up,
+                Map.TileOri.Up => Direction.Right,
+                Map.TileOri.Right => Direction.Down,
+                Map.TileOri.Down => Direction.Left,
+                Map.TileOri.UpLeft => Direction.Right,
+                Map.TileOri.UpRight => Direction.Down,
+                Map.TileOri.DownRight => Direction.Left,
+                Map.TileOri.DownLeft => Direction.Up,
+                _ => default(Direction)
+            };
 
             // now, map tile dir to flips
             switch (tileDir) {
