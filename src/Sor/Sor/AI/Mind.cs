@@ -102,7 +102,7 @@ namespace Sor.AI {
             if (control) {
                 sense(); // sense the world around
                 act(); // carry out decisions();
-                
+
                 // if thread-pooled AI is disabled, do synchronous consciousness
                 if (!NGame.context.config.threadPoolAi && consciousnessTask == null) {
                     var msPassed = (int) (Time.DeltaTime * 1000);
@@ -122,7 +122,9 @@ namespace Sor.AI {
 
             if (control) {
                 // stop processing tasks
-                conciousnessCancel.Cancel();
+                if (consciousnessTask != null) {
+                    conciousnessCancel.Cancel();
+                }
             }
         }
 
