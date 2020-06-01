@@ -1,5 +1,5 @@
 using System;
-using DuckMind.Calc;
+using Ducia.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using XNez.GUtils.Misc;
@@ -7,7 +7,7 @@ using XNez.GUtils.Misc;
 namespace Sor.AI.Cogs.Interactions {
     public class NearbyInteraction : BirdInteraction {
         private float dist;
-        public const float triggerRange = Constants.Mind.SENSE_RANGE / 4;
+        public const float triggerRange = Constants.DuckMind.SENSE_RANGE / 4;
         private const float closeDistance = 40f;
 
         public NearbyInteraction(float dist) {
@@ -28,7 +28,7 @@ namespace Sor.AI.Cogs.Interactions {
             var maxOpinionDelta = 4; // range [-4, 4]
             var opinionDelta = 0;
             var currentOpinion = me.mind.state.getOpinion(them.mind);
-            if (currentOpinion > Constants.Mind.OPINION_ALLY) {
+            if (currentOpinion > Constants.DuckMind.OPINION_ALLY) {
                 // we're friends, we should have a positive opinion
                 // this is based on both anxiety and sociability.
                 // TODO: positive opinion from being near friends
@@ -49,7 +49,7 @@ namespace Sor.AI.Cogs.Interactions {
                 }
 
                 me.mind.state.setBoard("nearby fear",
-                    new MindState.BoardItem($"L: {longDistanceWariness}, C: {closeWariness}", "interaction",
+                    new DuckMindState.BoardItem($"L: {longDistanceWariness}, C: {closeWariness}", "interaction",
                         Color.Orange, Time.TotalTime + 1f));
                 var warinessScore = longDistanceWariness + closeWariness;
                 opinionDelta += warinessScore;

@@ -27,7 +27,7 @@ namespace Sor.AI.Plans {
         public const float RANGE_MED = 150f;
         public const float RANGE_LONG = 400f;
 
-        public TargetSource(Mind mind, Approach approach, float approachRange, float reachBefore) : base(mind,
+        public TargetSource(DuckMind mind, Approach approach, float approachRange, float reachBefore) : base(mind,
             reachBefore) {
             this.approach = approach;
             this.approachRange = approachRange;

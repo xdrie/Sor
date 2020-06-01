@@ -5,7 +5,7 @@ namespace Sor.AI.Plans {
     public class EntityTarget : TargetSource {
         public readonly Entity nt;
 
-        public EntityTarget(Mind mind, Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
+        public EntityTarget(DuckMind mind, Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
             float before = 0) : base(mind, approach, approachRange, before) {
             this.nt = nt;
         }

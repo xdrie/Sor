@@ -1,5 +1,5 @@
 using Glint.Sprites;
-using DuckMind.Calc;
+using Ducia.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -10,7 +10,7 @@ using XNez.GUtils.Misc;
 namespace Sor.Components.Units {
     public class Wing : Thing, IUpdatable {
         public WingBody body;
-        public Mind mind;
+        public DuckMind mind;
         public BoxCollider hitbox;
         public EnergyCore core;
         public Pips pips;
@@ -18,7 +18,7 @@ namespace Sor.Components.Units {
         public string name;
         public WingClass wingClass = WingClass.Wing;
 
-        public Wing(Mind mind) : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) {
+        public Wing(DuckMind mind) : base(Core.Content.LoadTexture("Data/sprites/ship.png"), 64, 64) {
             this.mind = mind;
         }
 

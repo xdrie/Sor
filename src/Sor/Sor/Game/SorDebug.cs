@@ -43,7 +43,7 @@ namespace Sor.Game {
             var nearbyWings = play.state.findAllWings().Where(x =>
                     x != play.state.player &&
                     ((x.body.pos - play.state.player.body.pos).LengthSquared() <
-                     Constants.Mind.SENSE_RANGE * Constants.Mind.SENSE_RANGE))
+                     Constants.DuckMind.SENSE_RANGE * Constants.DuckMind.SENSE_RANGE))
                 .ToList();
             debugLog(
                 $"{wings.Count} wings ({nearbyWings.Count} nearby): {string.Join(",", wings.Select(x => x.name))}");

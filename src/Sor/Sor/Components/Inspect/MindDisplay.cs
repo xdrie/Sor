@@ -14,7 +14,7 @@ using Sor.Util;
 namespace Sor.Components.Inspect {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Wing player;
-        private Mind mind;
+        private DuckMind mind;
         private Wing wing;
         private Color textCol = Core.Services.GetService<GameContext>().assets.fgColor;
         private bool draw;
@@ -27,7 +27,7 @@ namespace Sor.Components.Inspect {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            mind = Entity.GetComponent<Mind>();
+            mind = Entity.GetComponent<DuckMind>();
             mind.inspected = true; // enable trace debug
             wing = mind.me;
         }
@@ -72,7 +72,7 @@ namespace Sor.Components.Inspect {
                 var netOpi = 0;
                 foreach (var op in opinionTable) {
                     var opVal = op.Value;
-                    var pos = opVal > Constants.Mind.OPINION_NEUTRAL;
+                    var pos = opVal > Constants.DuckMind.OPINION_NEUTRAL;
                     netOpi += opVal;
                     if (pos) {
                         positive++;
@@ -171,10 +171,10 @@ namespace Sor.Components.Inspect {
                 var orderedBoardItems =
                     boardItems.OrderBy(x => x.Value.tag)
                         .ToArray();
-                var taggedItems = new Dictionary<string, List<(string, MindState.BoardItem)>>();
+                var taggedItems = new Dictionary<string, List<(string, DuckMindState.BoardItem)>>();
                 foreach (var groupedBoardItem in orderedBoardItems) {
                     if (!taggedItems.ContainsKey(groupedBoardItem.Value.tag)) {
-                        taggedItems[groupedBoardItem.Value.tag] = new List<(string, MindState.BoardItem)>();
+                        taggedItems[groupedBoardItem.Value.tag] = new List<(string, DuckMindState.BoardItem)>();
                     }
 
                     taggedItems[groupedBoardItem.Value.tag]
@@ -195,22 +195,22 @@ namespace Sor.Components.Inspect {
         }
 
         private string opinionTag(int opinion) {
-            if (opinion <= Constants.Mind.OPINION_DESPISE) {
+            if (opinion <= Constants.DuckMind.OPINION_DESPISE) {
                 return "despise";
             }
-            else if (opinion <= Constants.Mind.OPINION_HATE && opinion > Constants.Mind.OPINION_DESPISE) {
+            else if (opinion <= Constants.DuckMind.OPINION_HATE && opinion > Constants.DuckMind.OPINION_DESPISE) {
                 return "hate";
             }
-            else if (opinion > Constants.Mind.OPINION_HATE && opinion < Constants.Mind.OPINION_ALLY) {
+            else if (opinion > Constants.DuckMind.OPINION_HATE && opinion < Constants.DuckMind.OPINION_ALLY) {
                 return "wary"; // in the middle: wary
             }
-            else if (opinion >= Constants.Mind.OPINION_ALLY && opinion < Constants.Mind.OPINION_FRIEND) {
+            else if (opinion >= Constants.DuckMind.OPINION_ALLY && opinion < Constants.DuckMind.OPINION_FRIEND) {
                 return "ally";
             }
-            else if (opinion >= Constants.Mind.OPINION_FRIEND && opinion < Constants.Mind.OPINION_KIN) {
+            else if (opinion >= Constants.DuckMind.OPINION_FRIEND && opinion < Constants.DuckMind.OPINION_KIN) {
                 return "friend";
             }
-            else if (opinion >= Constants.Mind.OPINION_KIN) {
+            else if (opinion >= Constants.DuckMind.OPINION_KIN) {
                 return "kin";
             }
             else {

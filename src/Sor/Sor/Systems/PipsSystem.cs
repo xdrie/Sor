@@ -8,7 +8,7 @@ namespace Sor.Systems {
     public class PipsSystem : EntityProcessingSystem {
         private Wing player;
 
-        public PipsSystem(Wing player) : base(new Matcher().All(typeof(Mind))) {
+        public PipsSystem(Wing player) : base(new Matcher().All(typeof(DuckMind))) {
             this.player = player;
         }
 
@@ -37,20 +37,20 @@ namespace Sor.Systems {
         public static (int number, Color color) calculatePips(int opinion) {
             var blocks = 0;
             var col = Color.Black;
-            if (opinion < Constants.Mind.OPINION_HATE) {
-                blocks = Constants.Mind.OPINION_HATE - opinion;
+            if (opinion < Constants.DuckMind.OPINION_HATE) {
+                blocks = Constants.DuckMind.OPINION_HATE - opinion;
                 col = Pips.red;
-            } else if (opinion <= Constants.Mind.OPINION_WARY) {
-                blocks = Constants.Mind.OPINION_WARY - opinion;
+            } else if (opinion <= Constants.DuckMind.OPINION_WARY) {
+                blocks = Constants.DuckMind.OPINION_WARY - opinion;
                 col = Pips.orange;
-            } else if (opinion <= Constants.Mind.OPINION_ALLY) {
-                blocks = opinion + Constants.Mind.OPINION_ALLY;
+            } else if (opinion <= Constants.DuckMind.OPINION_ALLY) {
+                blocks = opinion + Constants.DuckMind.OPINION_ALLY;
                 col = Pips.yellow;
-            } else if (opinion <= Constants.Mind.OPINION_FRIEND) {
-                blocks = opinion - Constants.Mind.OPINION_ALLY;
+            } else if (opinion <= Constants.DuckMind.OPINION_FRIEND) {
+                blocks = opinion - Constants.DuckMind.OPINION_ALLY;
                 col = Pips.blue;
             } else {
-                blocks = opinion - Constants.Mind.OPINION_FRIEND;
+                blocks = opinion - Constants.DuckMind.OPINION_FRIEND;
                 col = Pips.green;
             }
 

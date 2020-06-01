@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glint", "..\..\lib\Glint\sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNez.GUtils", "..\..\lib\Glint\src\XNez.GUtils\XNez.GUtils.csproj", "{5F97EB05-8923-4696-9119-FB11CF8232A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuckMind", "..\..\lib\DuckMind\src\DuckMind\DuckMind\DuckMind.csproj", "{6061AB6D-D723-422E-86C7-FB980F966D73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ducia", "..\..\lib\DuckMind\src\DuckMind\Ducia\Ducia.csproj", "{6061AB6D-D723-422E-86C7-FB980F966D73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

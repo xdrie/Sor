@@ -1,4 +1,4 @@
-using DuckMind.Cogs;
+using Ducia.Cogs;
 
 namespace Sor.AI.Cogs {
     public class BirdEmotions : Emotions {

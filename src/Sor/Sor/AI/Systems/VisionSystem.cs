@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading;
+using Ducia.Layer1;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Things;
@@ -7,11 +8,11 @@ using Sor.Components.Units;
 using Sor.Game;
 
 namespace Sor.AI.Systems {
-    public class VisionSystem : MindSystem {
-        private Vector2 senseVec => new Vector2(Constants.Mind.SENSE_RANGE);
+    public class VisionSystem : DuckMindSystem {
+        private Vector2 senseVec => new Vector2(Constants.DuckMind.SENSE_RANGE);
         public RectangleF sensorRec => new RectangleF(entity.Position - senseVec / 2, senseVec);
 
-        public VisionSystem(Mind mind, float refresh, CancellationToken cancelToken) :
+        public VisionSystem(DuckMind mind, float refresh, CancellationToken cancelToken) :
             base(mind, refresh, cancelToken) { }
 
         protected override void process() {

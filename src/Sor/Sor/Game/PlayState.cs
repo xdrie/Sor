@@ -43,7 +43,7 @@ namespace Sor.Game {
         /// <param name="pos"></param>
         /// <param name="mind"></param>
         /// <returns></returns>
-        public Wing createWing(string name, Vector2 pos, Mind mind) {
+        public Wing createWing(string name, Vector2 pos, DuckMind mind) {
             var wingNt = new Entity(name).SetTag(Constants.Tags.WING);
             var wing = wingNt.AddComponent(new Wing(mind));
             wing.body.pos = pos;
@@ -59,7 +59,7 @@ namespace Sor.Game {
         public Wing createPlayer(Vector2 pos) {
             var playerSoul = new AvianSoul();
             playerSoul.ply = BirdPersonality.makeNeutral();
-            var mind = new Mind(playerSoul, false);
+            var mind = new DuckMind(playerSoul, false);
             player = createWing(Constants.Game.PLAYER_NAME, pos, mind);
             player.AddComponent(new PlayerInputController(0));
             return player;
@@ -73,7 +73,7 @@ namespace Sor.Game {
         /// <param name="ply"></param>
         /// <returns></returns>
         public Wing createNpcWing(string name, Vector2 pos, BirdPersonality ply) {
-            var mind = new Mind(new AvianSoul {ply = ply}, true);
+            var mind = new DuckMind(new AvianSoul {ply = ply}, true);
             var wing = createWing(name, pos, mind);
             wing.AddComponent<LogicInputController>();
             return wing;

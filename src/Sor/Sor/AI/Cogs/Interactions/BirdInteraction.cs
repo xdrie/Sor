@@ -1,4 +1,4 @@
-using DuckMind.Cogs.Social;
+using Ducia.Cogs.Social;
 
 namespace Sor.AI.Cogs.Interactions {
     public abstract class BirdInteraction : Interaction<AvianSoul, BirdPersonality, BirdTraits, BirdEmotions> {

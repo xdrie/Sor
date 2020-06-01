@@ -67,7 +67,7 @@ namespace Sor {
             public const string GAME_SLOT_0 = "game0.sav";
         }
 
-        public static class Mind {
+        public static class DuckMind {
             public const int SENSE_RANGE = 800;
 
             public const float AT_POSITION_SQ = 2f * 2f;

@@ -5,7 +5,7 @@ namespace Sor.AI.Plans {
         public Entity[] interactees;
         private bool done = false;
 
-        public PlanInteraction(Mind mind, Entity[] interactees, float before = 0) : base(mind, before) {
+        public PlanInteraction(DuckMind mind, Entity[] interactees, float before = 0) : base(mind, before) {
             this.interactees = interactees;
         }
         

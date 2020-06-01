@@ -1,13 +1,13 @@
 using System.Linq;
-using DuckMind.Framework.Utility;
+using Ducia.Framework.Utility;
 using Nez;
 using Sor.Components.Things;
 using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
     public static class EatAppraisals {
-        public class Hunger : Appraisal<Mind> {
-            public Hunger(Mind context) : base(context) { }
+        public class Hunger : Appraisal<DuckMind> {
+            public Hunger(DuckMind context) : base(context) { }
 
             public override float score() {
                 // hunger score is based on the necessity of more energy.
@@ -21,8 +21,8 @@ namespace Sor.AI.Consid {
             }
         }
 
-        public class FoodAvailability : Appraisal<Mind> {
-            public FoodAvailability(Mind context) : base(context) { }
+        public class FoodAvailability : Appraisal<DuckMind> {
+            public FoodAvailability(DuckMind context) : base(context) { }
 
             public override float score() {
                 // availability is based on nearby, known food items

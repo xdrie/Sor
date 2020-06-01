@@ -1,6 +1,6 @@
 using System.Linq;
-using DuckMind.Framework.Utility;
-using DuckMind.Calc;
+using Ducia.Framework.Utility;
+using Ducia.Calc;
 using Microsoft.Xna.Framework;
 using MoreLinq;
 using Nez;
@@ -10,17 +10,17 @@ using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
     public static class DefenseAppraisals {
-        public class NearbyThreat : Appraisal<Mind> {
-            public NearbyThreat(Mind context) : base(context) { }
+        public class NearbyThreat : Appraisal<DuckMind> {
+            public NearbyThreat(DuckMind context) : base(context) { }
 
-            public static int threatThreshold(Mind mind) {
+            public static int threatThreshold(DuckMind mind) {
                 // threat threshold (min opinion to be threat) depends on personality
                 // threshold range: [-100, 70]
                 return (int) TraitCalc.transform(mind.soul.traits.aggression,
                     -120, 70, -100, 70);
             }
 
-            public static Wing greatestThreat(Mind mind) {
+            public static Wing greatestThreat(DuckMind mind) {
                 // find the nearby duck with the lowest opinion
                 // TODO: allow tracking multiple threats
                 var wings = mind.state.seenWings
@@ -49,8 +49,8 @@ namespace Sor.AI.Consid {
             }
         }
 
-        public class ThreatFightable : Appraisal<Mind> {
-            public ThreatFightable(Mind context) : base(context) { }
+        public class ThreatFightable : Appraisal<DuckMind> {
+            public ThreatFightable(DuckMind context) : base(context) { }
 
             private int scoreRatio(float ratio, int weight) {
                 var score = LCurves.ratioAdvantage(ratio, 1.2f);
@@ -111,7 +111,7 @@ namespace Sor.AI.Consid {
                 var score = coreSizeScore + maneuScore + speedScore + energyScore + armoryScore;
 
                 context.state.setBoard("judged threat",
-                    new MindState.BoardItem($"E:{energyScore}, C:{coreSizeScore}, M:{maneuScore}, S:{speedScore}",
+                    new DuckMindState.BoardItem($"E:{energyScore}, C:{coreSizeScore}, M:{maneuScore}, S:{speedScore}",
                         "interaction",
                         Color.Orange, Time.TotalTime + 1f));
 

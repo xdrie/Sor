@@ -3,7 +3,7 @@ using Nez;
 
 namespace Sor.AI.Plans {
     public class AvoidEntity : EntityTarget {
-        public AvoidEntity(Mind mind, Entity nt, float approachRange = RANGE_DIRECT, float before = 0)
+        public AvoidEntity(DuckMind mind, Entity nt, float approachRange = RANGE_DIRECT, float before = 0)
             : base(mind, nt, Approach.Precise, approachRange, before) { }
 
         public override Vector2 getPosition() {

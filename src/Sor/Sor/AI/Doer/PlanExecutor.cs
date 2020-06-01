@@ -7,9 +7,9 @@ using Sor.AI.Plans;
 
 namespace Sor.AI.Doer {
     public class PlanExecutor {
-        private readonly Mind mind;
+        private readonly DuckMind mind;
 
-        public PlanExecutor(Mind mind) {
+        public PlanExecutor(DuckMind mind) {
             this.mind = mind;
         }
 
@@ -130,8 +130,8 @@ namespace Sor.AI.Doer {
                 var dCritBs = dCrit * 1.1f;
 
                 // update board
-                mind.state.setBoard(nameof(dGiv), new MindState.BoardItem($"{dGiv:n2}", "mov"));
-                mind.state.setBoard(nameof(dCrit), new MindState.BoardItem($"{dCrit:n2}", "mov"));
+                mind.state.setBoard(nameof(dGiv), new DuckMindState.BoardItem($"{dGiv:n2}", "mov"));
+                mind.state.setBoard(nameof(dCrit), new DuckMindState.BoardItem($"{dCrit:n2}", "mov"));
 
                 if (dGiv > dCrit) {
                     thrustInput = -1;

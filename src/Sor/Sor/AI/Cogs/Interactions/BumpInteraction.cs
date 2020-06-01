@@ -1,5 +1,5 @@
-using DuckMind.Calc;
-using DuckMind.Cogs;
+using Ducia.Calc;
+using Ducia.Cogs;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Cogs.Interactions {

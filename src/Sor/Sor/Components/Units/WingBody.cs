@@ -148,7 +148,7 @@ namespace Sor.Components.Units {
                     motion -= result.MinimumTranslationVector;
                     
                     // send signal to mind
-                    if (me.mind.control) {
+                    if (me.mind.active) {
                         me.mind.signal(new PhysicalSignals.BumpSignal(hitShip.me, impactMomentum));
                     }
                 }
@@ -224,7 +224,7 @@ namespace Sor.Components.Units {
                             me.core.energy += gotEnergy;
                             capsule.acquire(); // blow it up
                             // send signal to mind
-                            if (me.mind.control) {
+                            if (me.mind.active) {
                                 me.mind.signal(new ItemSignals.CapsuleAcquiredSignal(capsule, gotEnergy));
                             }
                         }
@@ -240,7 +240,7 @@ namespace Sor.Components.Units {
                             me.core.energy -= Constants.Mechanics.SHOOT_DRAIN;
                             me.core.clamp();
                             // send signal to mind
-                            if (me.mind.control) {
+                            if (me.mind.active) {
                                 me.mind.signal(new PhysicalSignals.ShotSignal(shooter));
                             }
                         }

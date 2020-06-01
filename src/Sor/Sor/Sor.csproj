@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\lib\DuckMind\src\DuckMind\DuckMind\DuckMind.csproj" />
+      <ProjectReference Include="..\..\..\lib\DuckMind\src\DuckMind\Ducia\Ducia.csproj" />
       <ProjectReference Include="..\..\..\lib\Glint\src\Glint\Glint.csproj" />
       <ProjectReference Include="..\..\..\lib\XNez\Nez.Portable\XNez.csproj" />
     </ItemGroup>

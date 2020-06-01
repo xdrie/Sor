@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Activ.GOAP;
-using DuckMind.Framework.Utility;
-using DuckMind.Framework.Utility.Considerations;
+using Ducia.Framework.Utility;
+using Ducia.Framework.Utility.Considerations;
+using Ducia.Layer1;
 using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
@@ -19,11 +20,11 @@ using Sor.Game.Map;
 using Sor.Util;
 
 namespace Sor.AI.Systems {
-    public class ThinkSystem : MindSystem {
+    public class ThinkSystem : DuckMindSystem {
         private int maxSignalsPerThink = 40;
-        private Reasoner<Mind> reasoner;
+        private Reasoner<DuckMind> reasoner;
 
-        public ThinkSystem(Mind mind, float refresh, CancellationToken cancelToken) :
+        public ThinkSystem(DuckMind mind, float refresh, CancellationToken cancelToken) :
             base(mind, refresh, cancelToken) {
             createReasoner();
         }
@@ -39,9 +40,6 @@ namespace Sor.AI.Systems {
                 if (processedSignals > maxSignalsPerThink) break;
             }
 
-            // update soul systems
-            mind.soul.tick();
-
             // look at mind information
             thinkVisual();
 
@@ -51,10 +49,10 @@ namespace Sor.AI.Systems {
 
         private void createReasoner() {
             // create utility planner
-            reasoner = new Reasoner<Mind>();
-            reasoner.scoreType = Reasoner<Mind>.ScoreType.Normalized;
+            reasoner = new Reasoner<DuckMind>();
+            reasoner.scoreType = Reasoner<DuckMind>.ScoreType.Normalized;
 
-            var eatConsideration = new ThresholdConsideration<Mind>(() => {
+            var eatConsideration = new ThresholdConsideration<DuckMind>(() => {
                 // eat action
                 var hungryPlanModel = new HungryBird();
                 var hungrySolver = new Solver<HungryBird>();
@@ -97,7 +95,7 @@ namespace Sor.AI.Systems {
             eatConsideration.addAppraisal(new EatAppraisals.FoodAvailability(mind)); //0-1
             reasoner.addConsideration(eatConsideration);
 
-            var exploreConsideration = new SumConsideration<Mind>(() => {
+            var exploreConsideration = new SumConsideration<DuckMind>(() => {
                 // explore action
                 // TODO: a more interesting/useful explore action
                 // don't pathfind if we already have a valid path
@@ -140,13 +138,13 @@ namespace Sor.AI.Systems {
                 var foundPath = AStarPathfinder.Search(NGame.context.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) {
                     mind.state.setBoard("pathfind",
-                        new MindState.BoardItem($"FAILED from S: {nearestNode}, E: {goalNode}", "nav",
+                        new DuckMindState.BoardItem($"FAILED from S: {nearestNode}, E: {goalNode}", "nav",
                             Color.Red));
                     return; // pathfind failed
                 }
                 
                 mind.state.setBoard("pathfind",
-                    new MindState.BoardItem($"SUCCESS from S: {nearestNode}, E: {goalNode}", "nav",
+                    new DuckMindState.BoardItem($"SUCCESS from S: {nearestNode}, E: {goalNode}", "nav",
                         Color.SeaGreen));
 
                 state.setNavPath(foundPath);
@@ -166,14 +164,14 @@ namespace Sor.AI.Systems {
 
                 var nextPt = foundPath.First().pos;
                 state.setBoard("exp",
-                    new MindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path"));
+                    new DuckMindState.BoardItem($"({nextPt.X}, {nextPt.Y} path[{foundPath.Count}])", "path"));
             }, "explore");
             exploreConsideration.addAppraisal(new ExploreAppraisals.ExplorationTendency(mind));
             exploreConsideration.addAppraisal(new ExploreAppraisals.Unexplored(mind));
             reasoner.addConsideration(exploreConsideration);
 
             // FIGHT of fight-or-flight
-            var fightConsideration = new ThresholdSumConsideration<Mind>(() => {
+            var fightConsideration = new ThresholdSumConsideration<DuckMind>(() => {
                 // fight threat nearby
                 // TODO: figure out the most "threatening" wing, delegate to goal planner
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
@@ -191,7 +189,7 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(fightConsideration);
 
             // FLIGHT of fight-or-flight
-            var fleeConsideration = new ThresholdConsideration<Mind>(() => {
+            var fleeConsideration = new ThresholdConsideration<DuckMind>(() => {
                 // run away
                 var threat = DefenseAppraisals.NearbyThreat.greatestThreat(mind);
                 if (threat != null) {
@@ -205,7 +203,7 @@ namespace Sor.AI.Systems {
             fleeConsideration.addAppraisal(new DefenseAppraisals.ThreatFightable(mind).inverse());
             reasoner.addConsideration(fleeConsideration);
 
-            var socialConsideration = new ThresholdConsideration<Mind>(() => {
+            var socialConsideration = new ThresholdConsideration<DuckMind>(() => {
                 // socialize - become friends with nearby ducks
                 var thresh = SocialAppraisals.NearbyPotentialAllies.opinionThreshold(mind);
                 var fren = SocialAppraisals.NearbyPotentialAllies.bestCandidate(mind, thresh);

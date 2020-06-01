@@ -2,7 +2,7 @@ using Nez;
 
 namespace Sor.AI.Plans {
     public abstract class PlanTask {
-        protected readonly Mind mind;
+        protected readonly DuckMind mind;
         public float failureTime = 0f;
 
         public enum Status {
@@ -24,7 +24,7 @@ namespace Sor.AI.Plans {
             Failed
         }
 
-        public PlanTask(Mind mind, float reachBefore) {
+        public PlanTask(DuckMind mind, float reachBefore) {
             this.mind = mind;
             failureTime = reachBefore;
         }

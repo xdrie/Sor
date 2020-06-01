@@ -104,11 +104,11 @@ namespace Sor.Util {
             return ply;
         }
 
-        public static void writeWingMemory(this IPersistableWriter w, Mind mind) {
+        public static void writeWingMemory(this IPersistableWriter w, DuckMind mind) {
             throw new NotImplementedException();
         }
 
-        public static void readWingMemory(this IPersistableReader r, Mind mind) {
+        public static void readWingMemory(this IPersistableReader r, DuckMind mind) {
             throw new NotImplementedException();
         }
     }

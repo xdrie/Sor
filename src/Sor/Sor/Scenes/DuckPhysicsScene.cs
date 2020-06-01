@@ -33,14 +33,14 @@ namespace Sor.Scenes {
             playerNt = CreateEntity(Constants.Game.PLAYER_NAME, new Vector2(400, 400)).SetTag(Constants.Tags.WING);
             var playerSoul = new AvianSoul();
             playerSoul.ply = BirdPersonality.makeNeutral();
-            var playerWing = playerNt.AddComponent(new Wing(new Mind(playerSoul, false)));
+            var playerWing = playerNt.AddComponent(new Wing(new DuckMind(playerSoul, false)));
             playerNt.AddComponent(new PlayerInputController(0));
 
             // set up scene things
             physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.WING);
             var physicistPersonality = new BirdPersonality {A = 0.8f, S = -0.4f};
             var physicistSoul = new AvianSoul {ply = physicistPersonality};
-            var duckWing = physicistDuck.AddComponent(new Wing(new Mind(physicistSoul, true)));
+            var duckWing = physicistDuck.AddComponent(new Wing(new DuckMind(physicistSoul, true)));
             physicistDuck.AddComponent<LogicInputController>();
             physicistDuck.AddComponent(new MindDisplay(playerWing, true));
             duckWing.core.energy = 1000f;
