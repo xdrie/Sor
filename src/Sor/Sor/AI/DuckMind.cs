@@ -21,9 +21,9 @@ namespace Sor.AI {
             cognitiveSystems.Add(new ThinkSystem(this, 0.4f, cancelToken.Token));
         }
 
-        public override void Initialize() {
-            base.Initialize();
-
+        public override void OnAddedToEntity() {
+            base.OnAddedToEntity();
+            
             // load components
             state.me = Entity.GetComponent<Wing>();
             state.controller = Entity.GetComponent<LogicInputController>();
