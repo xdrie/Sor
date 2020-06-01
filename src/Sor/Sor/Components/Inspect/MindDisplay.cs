@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ducia.Layer3;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -155,7 +156,7 @@ namespace Sor.Components.Inspect {
                                 drawIndicator(batcher, approachPos, Color.LightBlue, 4f);
                                 break;
                             }
-                            case SingleInteraction inter:
+                            case SingleInteraction<DuckMind> inter:
                                 planSb.AppendLine($" {inter.GetType().Name} {inter.target.Name}");
                                 break;
                         }

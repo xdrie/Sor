@@ -5,6 +5,7 @@ using Glint;
 using Glint.Util;
 using Ducia.Framework.Utility.Considerations;
 using Ducia.Layer1;
+using Ducia.Layer3;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
@@ -25,7 +26,7 @@ namespace Sor.AI {
         public ConcurrentDictionary<Wing, int>
             opinion = new ConcurrentDictionary<Wing, int>(); // opinions of others
 
-        public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
+        public ConcurrentQueue<PlanTask<DuckMind>> plan = new ConcurrentQueue<PlanTask<DuckMind>>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
 
@@ -75,7 +76,7 @@ namespace Sor.AI {
         /// copy new plan to task plan
         /// </summary>
         /// <param name="tasks">new task list</param>
-        public void setPlan(IEnumerable<PlanTask> tasks) {
+        public void setPlan(IEnumerable<PlanTask<DuckMind>> tasks) {
             clearPlan();
 
             foreach (var task in tasks) {

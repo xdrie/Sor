@@ -5,6 +5,7 @@ using Activ.GOAP;
 using Ducia.Framework.Utility;
 using Ducia.Framework.Utility.Considerations;
 using Ducia.Layer1;
+using Ducia.Layer3;
 using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
@@ -69,7 +70,7 @@ namespace Sor.AI.Systems {
                     return;
                 }
 
-                var newPlan = new List<PlanTask>();
+                var newPlan = new List<PlanTask<DuckMind>>();
                 var path = next.Path();
                 foreach (var node in path) {
                     // handle planning based on the node
@@ -152,7 +153,7 @@ namespace Sor.AI.Systems {
                 // TODO: actually use map knowledge to explore
                 // queue the points of the map
 
-                var newPlan = new List<PlanTask>();
+                var newPlan = new List<PlanTask<DuckMind>>();
                 foreach (var pathNode in foundPath) {
                     var tmapPos = pathNode.pos.ToVector2();
                     newPlan.Add(new FixedTarget(
@@ -178,7 +179,7 @@ namespace Sor.AI.Systems {
                 if (threat != null) {
                     // TODO: improve fighting/engagement, delegate to action planner
                     // follow and attack them
-                    state.setPlan(new PlanTask[] {
+                    state.setPlan(new PlanTask<DuckMind>[] {
                         new EntityTarget(mind, threat.Entity, Approach.Within, TargetSource.RANGE_CLOSE) {align = true},
                         new PlanAttack(mind, threat.Entity),
                     });
@@ -225,7 +226,7 @@ namespace Sor.AI.Systems {
                 }
 
                 // translate the action plan to tasks
-                var newPlan = new List<PlanTask>();
+                var newPlan = new List<PlanTask<DuckMind>>();
                 var feedTime = 10f;
                 var goalFeedTime = Time.TotalTime + feedTime;
                 var path = next.Path();

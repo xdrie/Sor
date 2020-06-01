@@ -1,4 +1,5 @@
 using System;
+using Ducia.Layer3;
 using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;
@@ -46,7 +47,7 @@ namespace Sor.AI.Doer {
                         navTargetSource = nextTarget;
                         immediateGoal = true; // goal acquired
                         break;
-                    case PlanInteraction inter: {
+                    case PlanInteraction<DuckMind> inter: {
                         immediateGoal = true; // all interactions are immediate goals
                         processInteraction(inter);
 
@@ -65,7 +66,7 @@ namespace Sor.AI.Doer {
             }
         }
 
-        private void processInteraction(PlanInteraction inter) {
+        private void processInteraction(PlanInteraction<DuckMind> inter) {
             switch (inter) {
                 case PlanFeed interFeed: {
                     // feed a target

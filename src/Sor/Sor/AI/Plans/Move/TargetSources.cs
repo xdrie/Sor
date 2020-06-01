@@ -1,4 +1,5 @@
 using System;
+using Ducia.Layer3;
 using Microsoft.Xna.Framework;
 using Nez;
 
@@ -13,7 +14,7 @@ namespace Sor.AI.Plans {
         Within,
     }
 
-    public abstract class TargetSource : PlanTask, ITargetSource {
+    public abstract class TargetSource : PlanTask<DuckMind>, ITargetSource {
         public float approachRange = 0;
         public bool align = false;
 
