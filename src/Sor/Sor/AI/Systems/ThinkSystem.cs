@@ -5,6 +5,7 @@ using Activ.GOAP;
 using Ducia;
 using Ducia.Framework.Utility;
 using Ducia.Framework.Utility.Considerations;
+using Ducia.Systems;
 using Microsoft.Xna.Framework;
 using MoreLinq.Extensions;
 using Nez;
@@ -20,31 +21,12 @@ using Sor.Game.Map;
 using Sor.Util;
 
 namespace Sor.AI.Systems {
-    public class ThinkSystem : DuckMindSystem {
-        private int maxSignalsPerThink = 40;
+    public class ThinkSystem : PlannerSystem<DuckMind, DuckMindState> {
         private Reasoner<DuckMind> reasoner;
 
         public ThinkSystem(DuckMind mind, float refresh, CancellationToken cancelToken) :
             base(mind, refresh, cancelToken) {
             createReasoner();
-        }
-
-        protected override void process() {
-            // look at signals
-            var processedSignals = 0;
-            while (state.signalQueue.TryDequeue(out var signal)) {
-                // process the signal
-                processSignal(signal);
-
-                processedSignals++;
-                if (processedSignals > maxSignalsPerThink) break;
-            }
-
-            // look at mind information
-            thinkVisual();
-
-            // figure out plans
-            makePlans();
         }
 
         private void createReasoner() {
@@ -114,7 +96,8 @@ namespace Sor.AI.Systems {
                 // get the nearest room
                 var nearestRoom =
                     NGame.context.map.roomGraph.rooms.MinBy(x =>
-                            (mind.state.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                            (mind.state.me.body.pos -
+                             NGame.context.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
                             .LengthSquared())
                         .First();
                 // TODO: navigate by room, not by node
@@ -142,7 +125,7 @@ namespace Sor.AI.Systems {
                             Color.Red));
                     return; // pathfind failed
                 }
-                
+
                 mind.state.setBoard("pathfind",
                     new DuckMindState.BoardItem($"SUCCESS from S: {nearestNode}, E: {goalNode}", "nav",
                         Color.SeaGreen));
@@ -248,7 +231,7 @@ namespace Sor.AI.Systems {
             reasoner.addConsideration(socialConsideration);
         }
 
-        private void makePlans() {
+        protected override void makePlans() {
             // run the utility ai planner
             var resultTable = reasoner.execute();
             // store plan log
@@ -258,7 +241,7 @@ namespace Sor.AI.Systems {
             chosen.action(); // execute the action
         }
 
-        private void processSignal(MindSignal result) {
+        protected override bool processSignal(MindSignal result) {
             switch (result) {
                 case ItemSignals.CapsuleAcquiredSignal sig: {
                     var from = sig.cap.interactor;
@@ -268,7 +251,7 @@ namespace Sor.AI.Systems {
                         interaction.run(mind, from.mind);
                     }
 
-                    break;
+                    return true;
                 }
                 case PhysicalSignals.ShotSignal sig: {
                     var from = sig.gun.Entity.GetComponent<Wing>();
@@ -278,7 +261,7 @@ namespace Sor.AI.Systems {
                         interaction.run(mind, from.mind);
                     }
 
-                    break;
+                    return true;
                 }
                 case PhysicalSignals.BumpSignal sig: {
                     var from = sig.wing;
@@ -288,15 +271,15 @@ namespace Sor.AI.Systems {
                         interaction.run(mind, from.mind);
                     }
 
-                    break;
+                    return true;
                 }
+
+                default:
+                    return false;
             }
         }
 
-        /// <summary>
-        /// Think about visual data available to me.
-        /// </summary>
-        private void thinkVisual() {
+        protected override void processSenses() {
             // look at wings and their distances to me
             foreach (var wing in state.seenWings) {
                 var toWing = entity.Position - wing.Entity.Position;
