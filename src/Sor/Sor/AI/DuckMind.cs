@@ -15,10 +15,6 @@ namespace Sor.AI {
         public DuckMind(AvianSoul soul, bool control) : base(new DuckMindState()) {
             this.control = control;
             this.soul = soul;
-
-            // set up systems
-            sensorySystems.Add(new VisionSystem(this, 0.4f, cancelToken.Token));
-            cognitiveSystems.Add(new ThinkSystem(this, 0.4f, cancelToken.Token));
         }
 
         public override void OnAddedToEntity() {
@@ -30,6 +26,10 @@ namespace Sor.AI {
 
             // set up plan executor
             planExecutor = new PlanExecutor(this);
+            
+            // set up systems
+            sensorySystems.Add(new VisionSystem(this, 0.4f, cancelToken.Token));
+            cognitiveSystems.Add(new ThinkSystem(this, 0.4f, cancelToken.Token));
         }
 
         protected override void think() {
