@@ -41,7 +41,8 @@ namespace Sor.AI {
             GAssert.Ensure(soul != null);
 
             this.soul = soul;
-            this.soul.mind = this;
+            this.soul.mind = this; // link the soul to this MIND
+            
             // run calc on the soul
             this.soul.recalculate();
             this.control = control;
