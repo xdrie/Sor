@@ -14,7 +14,7 @@ namespace Sor.AI.Consid {
             public static int opinionThreshold(Mind mind) {
                 var prospective = mind.soul.traits.sociability > 0.6f;
                 var thresh =
-                    prospective ? MindConstants.OPINION_NEUTRAL - 50 : MindConstants.OPINION_NEUTRAL;
+                    prospective ? Constants.Mind.OPINION_NEUTRAL - 50 : Constants.Mind.OPINION_NEUTRAL;
                 return thresh;
             }
 
@@ -34,7 +34,7 @@ namespace Sor.AI.Consid {
                 if (candidate == null) return 0;
                 // scale from 0-100
                 return GMathf.map01clamp01(context.state.getOpinion(candidate.mind),
-                    thresh, MindConstants.OPINION_ALLY);
+                    thresh, Constants.Mind.OPINION_ALLY);
             }
         }
 

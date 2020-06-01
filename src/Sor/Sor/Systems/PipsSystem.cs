@@ -37,20 +37,20 @@ namespace Sor.Systems {
         public static (int number, Color color) calculatePips(int opinion) {
             var blocks = 0;
             var col = Color.Black;
-            if (opinion < MindConstants.OPINION_HATE) {
-                blocks = MindConstants.OPINION_HATE - opinion;
+            if (opinion < Constants.Mind.OPINION_HATE) {
+                blocks = Constants.Mind.OPINION_HATE - opinion;
                 col = Pips.red;
-            } else if (opinion <= MindConstants.OPINION_WARY) {
-                blocks = MindConstants.OPINION_WARY - opinion;
+            } else if (opinion <= Constants.Mind.OPINION_WARY) {
+                blocks = Constants.Mind.OPINION_WARY - opinion;
                 col = Pips.orange;
-            } else if (opinion <= MindConstants.OPINION_ALLY) {
-                blocks = opinion + MindConstants.OPINION_ALLY;
+            } else if (opinion <= Constants.Mind.OPINION_ALLY) {
+                blocks = opinion + Constants.Mind.OPINION_ALLY;
                 col = Pips.yellow;
-            } else if (opinion <= MindConstants.OPINION_FRIEND) {
-                blocks = opinion - MindConstants.OPINION_ALLY;
+            } else if (opinion <= Constants.Mind.OPINION_FRIEND) {
+                blocks = opinion - Constants.Mind.OPINION_ALLY;
                 col = Pips.blue;
             } else {
-                blocks = opinion - MindConstants.OPINION_FRIEND;
+                blocks = opinion - Constants.Mind.OPINION_FRIEND;
                 col = Pips.green;
             }
 

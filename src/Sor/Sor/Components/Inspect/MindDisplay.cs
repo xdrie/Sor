@@ -72,7 +72,7 @@ namespace Sor.Components.Inspect {
                 var netOpi = 0;
                 foreach (var op in opinionTable) {
                     var opVal = op.Value;
-                    var pos = opVal > MindConstants.OPINION_NEUTRAL;
+                    var pos = opVal > Constants.Mind.OPINION_NEUTRAL;
                     netOpi += opVal;
                     if (pos) {
                         positive++;
@@ -195,22 +195,22 @@ namespace Sor.Components.Inspect {
         }
 
         private string opinionTag(int opinion) {
-            if (opinion <= MindConstants.OPINION_DESPISE) {
+            if (opinion <= Constants.Mind.OPINION_DESPISE) {
                 return "despise";
             }
-            else if (opinion <= MindConstants.OPINION_HATE && opinion > MindConstants.OPINION_DESPISE) {
+            else if (opinion <= Constants.Mind.OPINION_HATE && opinion > Constants.Mind.OPINION_DESPISE) {
                 return "hate";
             }
-            else if (opinion > MindConstants.OPINION_HATE && opinion < MindConstants.OPINION_ALLY) {
+            else if (opinion > Constants.Mind.OPINION_HATE && opinion < Constants.Mind.OPINION_ALLY) {
                 return "wary"; // in the middle: wary
             }
-            else if (opinion >= MindConstants.OPINION_ALLY && opinion < MindConstants.OPINION_FRIEND) {
+            else if (opinion >= Constants.Mind.OPINION_ALLY && opinion < Constants.Mind.OPINION_FRIEND) {
                 return "ally";
             }
-            else if (opinion >= MindConstants.OPINION_FRIEND && opinion < MindConstants.OPINION_KIN) {
+            else if (opinion >= Constants.Mind.OPINION_FRIEND && opinion < Constants.Mind.OPINION_KIN) {
                 return "friend";
             }
-            else if (opinion >= MindConstants.OPINION_KIN) {
+            else if (opinion >= Constants.Mind.OPINION_KIN) {
                 return "kin";
             }
             else {

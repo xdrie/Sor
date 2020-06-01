@@ -7,7 +7,7 @@ using XNez.GUtils.Misc;
 namespace Sor.AI.Cogs.Interactions {
     public class NearbyInteraction : BirdInteraction {
         private float dist;
-        public const float triggerRange = MindConstants.SENSE_RANGE / 4;
+        public const float triggerRange = Constants.Mind.SENSE_RANGE / 4;
         private const float closeDistance = 40f;
 
         public NearbyInteraction(float dist) {
@@ -28,7 +28,7 @@ namespace Sor.AI.Cogs.Interactions {
             var maxOpinionDelta = 4; // range [-4, 4]
             var opinionDelta = 0;
             var currentOpinion = me.mind.state.getOpinion(them.mind);
-            if (currentOpinion > MindConstants.OPINION_ALLY) {
+            if (currentOpinion > Constants.Mind.OPINION_ALLY) {
                 // we're friends, we should have a positive opinion
                 // this is based on both anxiety and sociability.
                 // TODO: positive opinion from being near friends
