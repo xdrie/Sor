@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
+using Sor.Components.Input;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game.Map;
@@ -16,6 +17,12 @@ using Sor.Game.Map;
 namespace Sor.AI {
     public class DuckMindState : MindState {
         public Wing me;
+        public LogicInputController controller;
+
+        public DuckMindState() {
+            // TODO: figure out how to set the wing
+        }
+        
         public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
 
@@ -60,7 +67,7 @@ namespace Sor.AI {
             var res = opi + val;
             opinion[they] = res;
             // if (mind.inspected && NGame.context.config.logInteractions) {
-            //     Global.log.trace($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})");
+            //     Global.log.trace($"({mind.state.me.name}) added {val} opinion for {they.me.name} (total {res})");
             // }
 
             return res;

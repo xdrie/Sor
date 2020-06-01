@@ -23,7 +23,7 @@ namespace Sor.Systems {
                     wing.pips.enable();
                     // get opinion of player
                     if (wing.mind != null) {
-                        var playerOpinion = wing.mind.state.getOpinion(player.mind);
+                        var playerOpinion = wing.mind.state.getOpinion(player.mind.state.me);
                         (var pipCount, var pipColor) = calculatePips(playerOpinion);
                         if (pipCount > 5) pipCount = 5;
                         wing.pips.setPips(pipCount, pipColor);

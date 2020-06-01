@@ -61,7 +61,7 @@ namespace Sor.AI.Systems {
                 hungryPlanModel.nearbyBeans = seenBeans.Count;
 
                 // TODO: tweak this so it syncs up with the reasoner selecting the objective
-                var targetSatiety = state.mind.me.body.metabolicRate * 15f; // 15 seconds of food
+                var targetSatiety = state.me.body.metabolicRate * 15f; // 15 seconds of food
                 var next = hungrySolver.Next(hungryPlanModel,
                     new Goal<HungryBird>(x => x.satiety > targetSatiety, null));
                 if (next == null) {
@@ -108,13 +108,13 @@ namespace Sor.AI.Systems {
                 // attempt to pathfind using the structural navigation graph
                 // get the nearest node
                 var nearestNode = NGame.context.map.sng.nodes.MinBy(x =>
-                        (mind.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.pos.ToVector2()))
+                        (mind.state.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.pos.ToVector2()))
                         .LengthSquared())
                     .First();
                 // get the nearest room
                 var nearestRoom =
                     NGame.context.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                            (mind.state.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
                             .LengthSquared())
                         .First();
                 // TODO: navigate by room, not by node
@@ -213,7 +213,7 @@ namespace Sor.AI.Systems {
                 // update the model
                 socialPlanModel.energyBudget = SocialAppraisals.FriendBudget.budget(mind);
                 var feedRange = TargetSource.RANGE_SHORT;
-                socialPlanModel.withinDist = (fren.body.pos - mind.me.body.pos).LengthSquared() < feedRange;
+                socialPlanModel.withinDist = (fren.body.pos - mind.state.me.body.pos).LengthSquared() < feedRange;
 
                 // solve the model and get action plan
                 var goalBrownies = 20;
@@ -262,30 +262,30 @@ namespace Sor.AI.Systems {
             switch (result) {
                 case ItemSignals.CapsuleAcquiredSignal sig: {
                     var from = sig.cap.interactor;
-                    if (from != null && from != mind.me) {
+                    if (from != null && from != mind.state.me) {
                         // run a feeding interaction
                         var interaction = new FeedInteraction(sig);
-                        interaction.run(mind.soul, from.mind.soul);
+                        interaction.run(mind, from.mind);
                     }
 
                     break;
                 }
                 case PhysicalSignals.ShotSignal sig: {
                     var from = sig.gun.Entity.GetComponent<Wing>();
-                    if (from != null && from != mind.me) {
+                    if (from != null && from != mind.state.me) {
                         // run a being shot interaction
                         var interaction = new ShotInteraction(from, sig);
-                        interaction.run(mind.soul, from.mind.soul);
+                        interaction.run(mind, from.mind);
                     }
 
                     break;
                 }
                 case PhysicalSignals.BumpSignal sig: {
                     var from = sig.wing;
-                    if (from != null && from != mind.me) {
+                    if (from != null && from != mind.state.me) {
                         // run an interaction for being bumped
                         var interaction = new BumpInteraction(sig);
-                        interaction.run(mind.soul, from.mind.soul);
+                        interaction.run(mind, from.mind);
                     }
 
                     break;
@@ -305,7 +305,7 @@ namespace Sor.AI.Systems {
                 var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);
                 if (toWingDist <= NearbyInteraction.triggerRange) {
                     var interaction = new NearbyInteraction(toWingDist);
-                    interaction.run(mind.soul, wing.mind.soul);
+                    interaction.run(mind, wing.mind);
                 }
             }
         }

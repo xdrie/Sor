@@ -21,8 +21,8 @@ namespace Sor.AI.Consid {
             public static Wing bestCandidate(DuckMind mind, int thresh) {
                 // TODO: de-prioritize ducks we're already chums with
                 var wings = mind.state.seenWings
-                    .Where(x => mind.state.getOpinion(x.mind) > thresh) // above thresh
-                    .MaxBy(x => mind.state.getOpinion(x.mind)); // highest opinion
+                    .Where(x => mind.state.getOpinion(x.mind.state.me) > thresh) // above thresh
+                    .MaxBy(x => mind.state.getOpinion(x.mind.state.me)); // highest opinion
                 if (!wings.Any()) return null;
 
                 return wings.First();
@@ -33,7 +33,7 @@ namespace Sor.AI.Consid {
                 var candidate = bestCandidate(context, thresh);
                 if (candidate == null) return 0;
                 // scale from 0-100
-                return GMathf.map01clamp01(context.state.getOpinion(candidate.mind),
+                return GMathf.map01clamp01(context.state.getOpinion(candidate.mind.state.me),
                     thresh, Constants.DuckMind.OPINION_ALLY);
             }
         }
@@ -54,7 +54,7 @@ namespace Sor.AI.Consid {
             public FriendBudget(DuckMind context) : base(context) { }
 
             public static float budget(DuckMind mind) {
-                return mind.me.core.energy - mind.me.core.designMax * 0.8f;
+                return mind.state.me.core.energy - mind.state.me.core.designMax * 0.8f;
             }
 
             public override float score() {

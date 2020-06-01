@@ -29,7 +29,7 @@ namespace Sor.Components.Inspect {
 
             mind = Entity.GetComponent<DuckMind>();
             mind.inspected = true; // enable trace debug
-            wing = mind.me;
+            wing = mind.state.me;
         }
 
         public override void OnRemovedFromEntity() {
@@ -52,7 +52,7 @@ namespace Sor.Components.Inspect {
             if (draw) {
                 // draw mind info representation
                 // highlight the inspected wing
-                drawIndicator(batcher, mind.me.body.pos, Color.White, 8f);
+                drawIndicator(batcher, mind.state.me.body.pos, Color.White, 8f);
 
                 // text container for all display text
                 var ind = new ColoredTextBuilder(Color.White);
@@ -62,7 +62,7 @@ namespace Sor.Components.Inspect {
                 ind.appendLine($"energy: {wing.core.ratio:n2}");
                 ind.appendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 if (player != null) {
-                    var plOpinion = mind.state.getOpinion(player.mind);
+                    var plOpinion = mind.state.getOpinion(player.mind.state.me);
                     ind.appendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 }
 
@@ -144,7 +144,7 @@ namespace Sor.Components.Inspect {
                                 // add extra annotation if target is wing
                                 if (target is EntityTarget ets && ets.nt.HasComponent<Wing>()) {
                                     planSb.Append($" {ets.nt.Name}");
-                                    var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind);
+                                    var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind.state.me);
                                     var (_, disp) = PipsSystem.calculatePips(opinion);
                                     targetColor = disp;
                                 }
@@ -221,9 +221,9 @@ namespace Sor.Components.Inspect {
         public override void DebugRender(Batcher batcher) {
             base.DebugRender(batcher);
 
-            // sensor rect
-            batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
-                mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
+            // // sensor rect
+            // batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
+            //     mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
         }
 
         public void Update() {

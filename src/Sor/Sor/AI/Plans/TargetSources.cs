@@ -39,19 +39,19 @@ namespace Sor.AI.Plans {
             if (approach == Approach.Precise) return pos;
 
             // figure out the point along the way
-            var toFrom = pos - mind.me.body.pos;
+            var toFrom = pos - mind.state.me.body.pos;
             toFrom.Normalize();
             toFrom *= approachRange;
             return pos - toFrom;
         }
 
         public float getTargetAngle() {
-            var dirToTarget = Vector2Ext.Normalize(getPosition() - mind.me.body.pos);
+            var dirToTarget = Vector2Ext.Normalize(getPosition() - mind.state.me.body.pos);
             return dirToTarget.ScreenSpaceAngle();
         }
 
         public bool closeEnoughPosition() {
-            var pos = mind.me.body.pos;
+            var pos = mind.state.me.body.pos;
             var actualPos = getPosition();
             var approachPos = approachPosition();
             var approachToFrom = approachPos - pos;
@@ -73,7 +73,7 @@ namespace Sor.AI.Plans {
             if (positionCloseEnough) {
                 if (!align) return true;
                 // check alignment
-                var remainingAngle = Mathf.DeltaAngleRadians(mind.me.body.stdAngle, getTargetAngle());
+                var remainingAngle = Mathf.DeltaAngleRadians(mind.state.me.body.stdAngle, getTargetAngle());
                 return Math.Abs(remainingAngle) < AT_ANGLE;
             }
 

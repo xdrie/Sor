@@ -22,8 +22,8 @@ namespace Sor.AI.Cogs.Interactions {
             this.sig = sig;
         }
 
-        public override void runTwo(AvianSoul me, AvianSoul them) {
-            var myTraits = new Traits(me);
+        public override void runTwo(DuckMind me, DuckMind them) {
+            var myTraits = new Traits(me.soul);
 
             var opinionDelta = 0;
             
@@ -31,13 +31,13 @@ namespace Sor.AI.Cogs.Interactions {
             var bumpedAnnoyance = (int) TraitCalc.transform(-myTraits.annoyed,
                 -20f, 0f);
             // fear exacerbates anger/annoyance
-            var fearMultiplier = TraitCalc.transform(me.emotions.fear,
+            var fearMultiplier = TraitCalc.transform(me.soul.emotions.fear,
                 -1f, 3f, 0f, 2f);
 
             opinionDelta += (int) (bumpedAnnoyance * fearMultiplier);
             
-            me.mind.state.addOpinion(them.mind, opinionDelta);
-            me.emotions.spikeFear(0.4f); // somewhat scary
+            me.state.addOpinion(them.state.me, opinionDelta);
+            me.soul.emotions.spikeFear(0.4f); // somewhat scary
         }
     }
 }
