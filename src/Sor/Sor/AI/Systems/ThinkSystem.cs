@@ -104,24 +104,24 @@ namespace Sor.AI.Systems {
                 if (state.hasNavPath && state.isPlanValid) return;
 
                 // cancel if no map model
-                if (mind.gameCtx.map == null) return;
+                if (NGame.context.map == null) return;
 
                 // attempt to do a room-to-room pathfind
                 // attempt to pathfind using the structural navigation graph
                 // get the nearest node
-                var nearestNode = mind.gameCtx.map.sng.nodes.MinBy(x =>
-                        (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.pos.ToVector2()))
+                var nearestNode = NGame.context.map.sng.nodes.MinBy(x =>
+                        (mind.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.pos.ToVector2()))
                         .LengthSquared())
                     .First();
                 // get the nearest room
                 var nearestRoom =
-                    mind.gameCtx.map.roomGraph.rooms.MinBy(x =>
-                            (mind.me.body.pos - mind.gameCtx.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
+                    NGame.context.map.roomGraph.rooms.MinBy(x =>
+                            (mind.me.body.pos - NGame.context.map.tmxMap.TileToWorldPosition(x.center.ToVector2()))
                             .LengthSquared())
                         .First();
                 // TODO: navigate by room, not by node
                 // choose a goal room by randomly walking the graph
-                // var goalNode = mind.gameCtx.map.sng.nodes.Single(x => x.room == goalRoom);
+                // var goalNode = NGame.context.map.sng.nodes.Single(x => x.room == goalRoom);
                 var goalNode = nearestNode;
                 var visited = new Dictionary<StructuralNavigationGraph.Node, bool>();
                 var walkDist = 6;
@@ -137,7 +137,7 @@ namespace Sor.AI.Systems {
                     }
                 }
 
-                var foundPath = AStarPathfinder.Search(mind.gameCtx.map.sng, nearestNode, goalNode);
+                var foundPath = AStarPathfinder.Search(NGame.context.map.sng, nearestNode, goalNode);
                 if (foundPath == null || !foundPath.Any()) {
                     mind.state.setBoard("pathfind",
                         new MindState.BoardItem($"FAILED from S: {nearestNode}, E: {goalNode}", "nav",
@@ -158,7 +158,7 @@ namespace Sor.AI.Systems {
                 foreach (var pathNode in foundPath) {
                     var tmapPos = pathNode.pos.ToVector2();
                     newPlan.Add(new FixedTarget(
-                        mind, mind.gameCtx.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
+                        mind, NGame.context.map.tmxMap.TileToWorldPosition(tmapPos), Approach.Within,
                         TargetSource.RANGE_DIRECT));
                 }
 
