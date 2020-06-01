@@ -36,6 +36,13 @@ namespace Sor.Game {
             things.Add(thing);
         }
 
+        /// <summary>
+        /// create a wing and add it to the list
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pos"></param>
+        /// <param name="mind"></param>
+        /// <returns></returns>
         public Wing createWing(string name, Vector2 pos, Mind mind) {
             var wingNt = new Entity(name).SetTag(Constants.Tags.WING);
             var wing = wingNt.AddComponent(new Wing(mind));
@@ -44,6 +51,11 @@ namespace Sor.Game {
             return wing;
         }
 
+        /// <summary>
+        /// instantiate the player wing and add components
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public Wing createPlayer(Vector2 pos) {
             var playerSoul = new AvianSoul();
             playerSoul.ply.generateNeutral();
@@ -53,6 +65,13 @@ namespace Sor.Game {
             return player;
         }
 
+        /// <summary>
+        /// create an NPC (autonomous/ai-controlled) wing
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pos"></param>
+        /// <param name="ply"></param>
+        /// <returns></returns>
         public Wing createNpcWing(string name, Vector2 pos, BirdPersonality ply) {
             var mind = new Mind(new AvianSoul {ply = ply}, true);
             var wing = createWing(name, pos, mind);
