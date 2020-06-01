@@ -21,6 +21,7 @@ namespace Sor.AI {
         /// whether the mind is able to control the wing's action
         /// </summary>
         public bool control;
+
         public MindState state;
         public LogicInputController controller;
         public Wing me;
@@ -42,7 +43,7 @@ namespace Sor.AI {
 
             this.soul = soul;
             this.soul.mind = this; // link the soul to this MIND
-            
+
             // run calc on the soul
             this.soul.recalculate();
             this.control = control;
@@ -73,7 +74,7 @@ namespace Sor.AI {
 
                 // start processing tasks
                 if (NGame.context.config.threadPoolAi) {
-                    consciousnessTask = Task.Run(async () => await consciousnessAsync(conciousnessCancel.Token));
+                    consciousnessTask = Task.Run(async () => await consciousnessAsync(cts.Token), cts.Token);
                 }
 
                 // set up plan executor
@@ -81,9 +82,16 @@ namespace Sor.AI {
             }
         }
 
+        /// <summary>
+        /// step the consciousness. one unit of thinking.
+        /// </summary>
+        private void consciousnessStep() {
+            think();
+        }
+
         public async Task consciousnessAsync(CancellationToken tok) {
             while (!tok.IsCancellationRequested) {
-                think();
+                consciousnessStep();
 
                 await Task.Delay(consciousnessSleep, tok);
             }
@@ -94,12 +102,13 @@ namespace Sor.AI {
             if (control) {
                 sense(); // sense the world around
                 act(); // carry out decisions();
+                
+                // if thread-pooled AI is disabled, do synchronous consciousness
                 if (!NGame.context.config.threadPoolAi && consciousnessTask == null) {
                     var msPassed = (int) (Time.DeltaTime * 1000);
                     var thinkModulus = consciousnessSleep / msPassed;
                     if (Time.FrameCount % thinkModulus == 0) {
-                        // synchronous think
-                        think();
+                        consciousnessStep();
                     }
                 }
             }
