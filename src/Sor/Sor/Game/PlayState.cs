@@ -126,6 +126,9 @@ namespace Sor.Game {
             mapLoader.load(mapAsset, createObjects: !rehydrated);
         }
 
+        /// <summary>
+        /// create and set up the ecosystem (living members) of the scene
+        /// </summary>
         private void createEcosystem() {
             var spawn = new Vector2(200, 200);
             if (NGame.config.generateMap) {
@@ -147,6 +150,7 @@ namespace Sor.Game {
             //     new BirdPersonality {A = 0.8f, S = -0.7f});
             // enmy.AddComponent(new Shooter()); // enmy is armed
 
+            // if spawning is enabled, create additional birds
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
                 unoPly.generateNeutral();
@@ -160,6 +164,7 @@ namespace Sor.Game {
                 var anxious1 = createNpcWing("ada", spawn + new Vector2(640, 920),
                     new BirdPersonality {A = 0.6f, S = -0.2f});
 
+                // generate random birds spread across the map
                 var gen = new BirdGenerator(this);
                 gen.spawnBirds();
             }

@@ -17,6 +17,9 @@ namespace Sor.Game.Map {
         private TmxObjectGroup nature;
         private TmxTileset worldTileset;
         private TmxMap map;
+        /// <summary>
+        /// analyzed data-structure representing a comprehended map
+        /// </summary>
         public MapRepr mapRepr;
 
         public const string LAYER_STRUCTURE = "structure";

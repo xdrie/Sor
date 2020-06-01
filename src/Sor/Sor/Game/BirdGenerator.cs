@@ -23,8 +23,10 @@ namespace Sor.Game {
             this.state = state;
         }
 
+        /// <summary>
+        /// create a whole bunch of birds across the map rooms
+        /// </summary>
         public void spawnBirds() {
-            // now, spawn a bunch of birds across the rooms
             int spawnedBirds = 0;
             var birdSpawnRng = new Rng(Random.NextInt(int.MaxValue));
             var birdClassDist = new DiscreteProbabilityDistribution<Wing.WingClass>(birdSpawnRng, new[] {
