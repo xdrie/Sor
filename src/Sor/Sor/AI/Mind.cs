@@ -13,10 +13,14 @@ using Sor.Components.Units;
 
 namespace Sor.AI {
     /// <summary>
-    /// represents the consciousness of a Wing
+    /// represents the consciousness of a Wing.
+    /// it can fully control the thoughts and actions of a bird.
     /// </summary>
     public class Mind : Component, IUpdatable {
-        public bool control; // whether the mind is in control
+        /// <summary>
+        /// whether the mind is able to control the wing's action
+        /// </summary>
+        public bool control;
         public MindState state;
         public LogicInputController controller;
         public Wing me;
