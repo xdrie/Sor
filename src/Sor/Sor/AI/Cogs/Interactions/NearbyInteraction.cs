@@ -1,5 +1,5 @@
 using System;
-using LunchLib.Calc;
+using DuckMind.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using XNez.GUtils.Misc;

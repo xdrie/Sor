@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Glint;
 using Glint.Util;
-using LunchLib.AI.Utility.Considerations;
+using DuckMind.Framework.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;

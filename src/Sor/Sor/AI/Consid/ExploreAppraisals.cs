@@ -1,4 +1,4 @@
-using LunchLib.AI.Utility;
+using DuckMind.Framework.Utility;
 using Sor.AI.Cogs;
 
 namespace Sor.AI.Consid {

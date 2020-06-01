@@ -1,4 +1,4 @@
-using LunchLib.Cogs;
+using DuckMind.Cogs;
 
 namespace Sor.AI.Cogs {
     public class BirdTraits : Traits<BirdPersonality> {

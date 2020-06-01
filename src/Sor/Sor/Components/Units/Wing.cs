@@ -1,5 +1,5 @@
 using Glint.Sprites;
-using LunchLib.Calc;
+using DuckMind.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;

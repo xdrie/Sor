@@ -1,5 +1,5 @@
-using LunchLib.Calc;
-using LunchLib.Cogs;
+using DuckMind.Calc;
+using DuckMind.Cogs;
 using Sor.AI.Signals;
 
 namespace Sor.AI.Cogs.Interactions {

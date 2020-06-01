@@ -1,6 +1,6 @@
 using System;
-using LunchLib.Calc;
-using LunchLib.Cogs;
+using DuckMind.Calc;
+using DuckMind.Cogs;
 using Sor.AI.Signals;
 using XNez.GUtils.Misc;
 

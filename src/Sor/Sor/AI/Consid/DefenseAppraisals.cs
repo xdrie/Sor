@@ -1,6 +1,6 @@
 using System.Linq;
-using LunchLib.AI.Utility;
-using LunchLib.Calc;
+using DuckMind.Framework.Utility;
+using DuckMind.Calc;
 using Microsoft.Xna.Framework;
 using MoreLinq;
 using Nez;

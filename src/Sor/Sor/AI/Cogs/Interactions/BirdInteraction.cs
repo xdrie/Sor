@@ -1,4 +1,4 @@
-using LunchLib.Cogs.Social;
+using DuckMind.Cogs.Social;
 
 namespace Sor.AI.Cogs.Interactions {
     public abstract class BirdInteraction : Interaction<AvianSoul, BirdPersonality, BirdTraits, BirdEmotions> {

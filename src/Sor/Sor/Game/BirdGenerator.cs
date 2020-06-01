@@ -1,7 +1,7 @@
 using System.Linq;
 using Glint;
 using Glint.Util;
-using LunchLib.Calc;
+using DuckMind.Calc;
 using Nez;
 using Sor.AI.Cogs;
 using Sor.Components.Items;

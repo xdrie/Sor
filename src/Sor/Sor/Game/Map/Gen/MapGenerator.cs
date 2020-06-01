@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Glint;
 using Glint.Util;
-using LunchLib.Calc;
+using DuckMind.Calc;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Tiled;

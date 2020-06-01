@@ -1,5 +1,5 @@
 using System.Linq;
-using LunchLib.AI.Utility;
+using DuckMind.Framework.Utility;
 using Nez;
 using Sor.Components.Things;
 using XNez.GUtils.Misc;
