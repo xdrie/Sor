@@ -4,9 +4,6 @@
 [submodule "lib/Glint"]
 	path = lib/Glint
 	url = https://git.rie.icu/xdrie/Glint.git
-[submodule "lib/LunchSimulator"]
-	path = lib/LunchSimulator
-	url = https://git.rie.icu/xdrie/LunchSimulator.git
 [submodule "lib/DuckMind"]
 	path = lib/DuckMind
 	url = https://git.rie.icu/xdrie/DuckMind.git
