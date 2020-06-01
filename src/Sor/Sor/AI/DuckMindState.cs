@@ -18,10 +18,6 @@ namespace Sor.AI {
     public class DuckMindState : MindState {
         public Wing me;
         public LogicInputController controller;
-
-        public DuckMindState() {
-            // TODO: figure out how to set the wing
-        }
         
         public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
