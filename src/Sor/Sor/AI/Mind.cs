@@ -38,12 +38,7 @@ namespace Sor.AI {
         public Mind() : this(null, true) { }
 
         public Mind(AvianSoul soul, bool control) {
-            if (soul == null) {
-                // generate a new soul
-                this.soul = new AvianSoul(this);
-                this.soul.ply.generateRandom(); // randomize its personality
-                Global.log.trace($"generated soul with personality {this.soul.ply}");
-            }
+            GAssert.Ensure(soul != null);
 
             this.soul = soul;
             this.soul.mind = this;

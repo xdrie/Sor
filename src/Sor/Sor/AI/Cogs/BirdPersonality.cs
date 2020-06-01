@@ -5,23 +5,30 @@ namespace Sor.AI.Cogs {
         public float A; // anxiety
         public float S; // sociability
         public float E; // emotionality
-        
+
         public override float[] vec => new[] {A, S, E};
 
-        // full names
-        public float anxiety => A;
-        public float social => S;
-        public float emotionality => E;
+        public BirdPersonality() { }
 
-        public override void generateRandom() {
-            // generate personalities along a normal distribution
-            S = normalRand(0.1f, 0.4f);
-            A = normalRand(0.1f, 0.6f);
-            E = normalRand(-0.2f, 0.4f);
+        public BirdPersonality(float a, float s, float e) {
+            A = a;
+            S = s;
+            E = e;
         }
 
         public override string ToString() {
             return $"[A:{A:n2},S:{S:n2},E:{E:n2}]";
+        }
+
+        public static BirdPersonality makeRandom() {
+            // generate personalities along a normal distribution
+            return new BirdPersonality(a: normalRand(0.1f, 0.6f), s: normalRand(0.1f, 0.4f),
+                e: normalRand(-0.2f, 0.4f));
+        }
+
+        public static BirdPersonality makeNeutral() {
+            // generate personalities along a normal distribution
+            return new BirdPersonality(a: 0, s: 0, e: 0);
         }
     }
 }

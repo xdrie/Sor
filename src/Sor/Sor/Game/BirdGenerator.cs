@@ -46,7 +46,7 @@ namespace Sor.Game {
                     // generate spawn attributes
                     var spawnPos = state.mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
                     var spawnPly = new BirdPersonality();
-                    spawnPly.generateRandom();
+                    spawnPly = BirdPersonality.makeRandom();
 
                     var bordClass = birdClassDist.next();
                     var className = bordClass.ToString().ToLower().First();

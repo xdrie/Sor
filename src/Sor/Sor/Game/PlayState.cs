@@ -58,7 +58,7 @@ namespace Sor.Game {
         /// <returns></returns>
         public Wing createPlayer(Vector2 pos) {
             var playerSoul = new AvianSoul();
-            playerSoul.ply.generateNeutral();
+            playerSoul.ply = BirdPersonality.makeNeutral();
             var mind = new Mind(playerSoul, false);
             player = createWing(Constants.Game.PLAYER_NAME, pos, mind);
             player.AddComponent(new PlayerInputController(0));
@@ -153,7 +153,7 @@ namespace Sor.Game {
             // if spawning is enabled, create additional birds
             if (NGame.context.config.spawnBirds) {
                 var unoPly = new BirdPersonality();
-                unoPly.generateNeutral();
+                unoPly = BirdPersonality.makeNeutral();
                 var uno = createNpcWing("uno", spawn + new Vector2(-140, 920), unoPly);
                 uno.changeClass(Wing.WingClass.Predator);
 
