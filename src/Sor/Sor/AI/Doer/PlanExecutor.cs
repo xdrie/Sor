@@ -1,5 +1,5 @@
 using System;
-using Ducia.Layer3;
+using Ducia;
 using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;

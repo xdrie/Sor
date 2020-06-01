@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading;
-using Ducia.Layer1;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.Components.Things;

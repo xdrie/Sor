@@ -1,4 +1,3 @@
-using Ducia.Layer3;
 using Microsoft.Xna.Framework;
 using Nez;
 

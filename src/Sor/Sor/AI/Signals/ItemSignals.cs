@@ -1,4 +1,4 @@
-using Ducia.Layer1;
+using Ducia;
 using Sor.Components.Things;
 
 namespace Sor.AI.Signals {

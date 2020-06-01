@@ -1,4 +1,4 @@
-using Ducia.Layer1;
+using Ducia;
 using Sor.AI.Cogs;
 using Sor.AI.Doer;
 using Sor.AI.Systems;

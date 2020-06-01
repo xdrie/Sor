@@ -1,11 +1,10 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Ducia;
 using Glint;
 using Glint.Util;
 using Ducia.Framework.Utility.Considerations;
-using Ducia.Layer1;
-using Ducia.Layer3;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;

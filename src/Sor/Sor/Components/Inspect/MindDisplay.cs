@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Ducia.Layer3;
+using Ducia;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;

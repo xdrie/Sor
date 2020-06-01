@@ -1,5 +1,5 @@
 using System.Threading;
-using Ducia.Layer1;
+using Ducia;
 
 namespace Sor.AI.Systems {
     public abstract class DuckMindSystem : MindSystem<DuckMind, DuckMindState> {

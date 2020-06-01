@@ -1,5 +1,5 @@
 using Activ.GOAP;
-using Ducia.Layer2;
+using Ducia;
 
 namespace Sor.AI.Model {
     public class SocializingBird : ActionPlanningModel<SocializingBird> {
