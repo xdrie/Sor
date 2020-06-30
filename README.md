@@ -14,7 +14,7 @@ the game supports running on both .net core and mono. after using build scripts,
 - [.NET Core 3.1](https://dotnet.microsoft.com/download)
 - [Mono](https://www.mono-project.com/download/stable/) (only for Mono build)
 - XNG (XNez + Glint) (git)
-- Lunch Simulator (git)
+- DuckMind (git)
 
 pull the source submodules first
 ```sh
