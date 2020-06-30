@@ -38,13 +38,13 @@ namespace Sor.Game {
                 (0.7f, BirdEquipment.Bare),
                 (0.3f, BirdEquipment.Equip1)
             });
-            foreach (var room in playSetup.mapLoader.mapRepr.roomGraph.rooms) {
+            foreach (var room in playSetup.state.map.roomGraph.rooms) {
                 var roomBirdProb = 0.2f;
                 if (Random.Chance(roomBirdProb)) {
                     spawnedBirds++;
 
                     // generate spawn attributes
-                    var spawnPos = playSetup.mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                    var spawnPos = playSetup.state.map.tmxMap.TileToWorldPosition(room.center.ToVector2());
                     var spawnPly = new BirdPersonality();
                     spawnPly = BirdPersonality.makeRandom();
 

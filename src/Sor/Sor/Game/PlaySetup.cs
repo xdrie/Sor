@@ -22,7 +22,6 @@ namespace Sor.Game {
         public Entity mapNt;
 
         public bool rehydrated = false;
-        public MapLoader mapLoader;
 
         /// <summary>
         /// the target state to be populated
@@ -125,10 +124,13 @@ namespace Sor.Game {
             var mapRenderer = mapNt.AddComponent(new TiledMapRenderer(mapAsset, null, false));
             mapRenderer.SetLayersToRender(MapLoader.LAYER_STRUCTURE, MapLoader.LAYER_FEATURES,
                 MapLoader.LAYER_BACKDROP);
-            mapLoader = new MapLoader(this, mapNt);
+            var mapLoader = new MapLoader(this, mapNt);
 
             // load map
             mapLoader.load(mapAsset, createObjects: !rehydrated);
+            
+            // save map
+            state.map = mapLoader.mapRepr;
         }
 
         /// <summary>
@@ -137,8 +139,8 @@ namespace Sor.Game {
         private void createEcosystem() {
             var spawn = new Vector2(200, 200);
             if (NGame.config.generateMap) {
-                var mapBounds = mapLoader.mapRepr.tmxMap.TileToWorldPosition(new Vector2(mapLoader.mapRepr.tmxMap.Width,
-                    mapLoader.mapRepr.tmxMap.Height));
+                var mapBounds = state.map.tmxMap.TileToWorldPosition(new Vector2(state.map.tmxMap.Width,
+                    state.map.tmxMap.Height));
                 spawn = new Vector2(Random.NextFloat() * mapBounds.X, Random.NextFloat() * mapBounds.Y);
             }
 
