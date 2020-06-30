@@ -36,6 +36,8 @@ namespace Sor.Game {
         public PlaySetup(PlayState state) {
             this.state = state;
         }
+        
+        #region Wing and Thing spawning
 
         /// <summary>
         /// create a wing and add it to the list
@@ -84,6 +86,8 @@ namespace Sor.Game {
         public void addThing(Thing thing) {
             things.Add(thing);
         }
+        
+        #endregion
 
         #region Loading and Scene setup
 
