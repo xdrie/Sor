@@ -20,14 +20,14 @@ namespace Sor.AI {
 
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
-            
+
             // load components
             state.me = Entity.GetComponent<Wing>();
             state.controller = Entity.GetComponent<LogicInputController>();
 
             // set up plan executor
             planExecutor = new PlanExecutor(this);
-            
+
             // set up systems
             sensorySystems.Add(new VisionSystem(this, 0.4f, cancelToken.Token));
             cognitiveSystems.Add(new ThinkSystem(this, 0.4f, cancelToken.Token));
@@ -43,10 +43,8 @@ namespace Sor.AI {
         }
 
         protected override void act() {
-            if (control) {
-                base.act();
-            }
-
+            if (!control) return;
+            base.act();
             planExecutor.process();
         }
     }
