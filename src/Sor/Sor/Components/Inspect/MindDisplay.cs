@@ -146,8 +146,13 @@ namespace Sor.Components.Inspect {
                                 if (target is EntityTarget ets && ets.nt.HasComponent<Wing>()) {
                                     planSb.Append($" {ets.nt.Name}");
                                     var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind.state.me);
-                                    var (_, disp) = PipsSystem.calculatePips(opinion);
-                                    targetColor = disp;
+                                    var (_, displayColor) = PipsSystem.calculatePips(opinion);
+                                    targetColor = displayColor;
+                                }
+                                
+                                // annotation for approach type
+                                if (target.approachRange > 0) {
+                                    planSb.Append($" [{target.approachRange}]");
                                 }
 
                                 planSb.AppendLine();
