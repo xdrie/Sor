@@ -146,7 +146,7 @@ namespace Sor.Game.Save {
                     case Capsule cap:
                         // load wing ref
                         if (load.interactorUid > 0) {
-                            cap.interactor = per.state.wings.Single(x => x.uid == load.interactorUid);
+                            cap.interactor = per.setup.wings.Single(x => x.uid == load.interactorUid);
                         }
 
                         // load tree ref

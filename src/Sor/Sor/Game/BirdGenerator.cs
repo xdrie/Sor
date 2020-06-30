@@ -10,7 +10,7 @@ using Sor.Util;
 
 namespace Sor.Game {
     public class BirdGenerator {
-        private readonly PlayState state;
+        private readonly PlaySetup playSetup;
 
         public enum BirdEquipment {
             Bare,
@@ -19,8 +19,8 @@ namespace Sor.Game {
             Equip3,
         }
 
-        public BirdGenerator(PlayState state) {
-            this.state = state;
+        public BirdGenerator(PlaySetup playSetup) {
+            this.playSetup = playSetup;
         }
 
         /// <summary>
@@ -38,13 +38,13 @@ namespace Sor.Game {
                 (0.7f, BirdEquipment.Bare),
                 (0.3f, BirdEquipment.Equip1)
             });
-            foreach (var room in state.mapLoader.mapRepr.roomGraph.rooms) {
+            foreach (var room in playSetup.state.map.roomGraph.rooms) {
                 var roomBirdProb = 0.2f;
                 if (Random.Chance(roomBirdProb)) {
                     spawnedBirds++;
 
                     // generate spawn attributes
-                    var spawnPos = state.mapLoader.mapRepr.tmxMap.TileToWorldPosition(room.center.ToVector2());
+                    var spawnPos = playSetup.state.map.tmxMap.TileToWorldPosition(room.center.ToVector2());
                     var spawnPly = new BirdPersonality();
                     spawnPly = BirdPersonality.makeRandom();
 
@@ -53,7 +53,7 @@ namespace Sor.Game {
                     var nick = NameGenerator.next().ToLowerInvariant();
 
                     // create the wing
-                    var bord = state.createNpcWing($"{nick} {className}", spawnPos, spawnPly);
+                    var bord = playSetup.createNpcWing($"{nick} {className}", spawnPos, spawnPly);
                     bord.changeClass(bordClass, true);
 
                     // equip the wing

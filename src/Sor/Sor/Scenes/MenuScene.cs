@@ -100,14 +100,14 @@ namespace Sor.Scenes {
                             var wait = addWait();
                             wait.Play("load");
                             fadeUiSprite(bordWhRen);
-                            var playContext = new PlayState(); // empty play context
+                            var playSetup = new PlaySetup(); // empty play context
                             // run load game on a worker thread
                             await Task.Run(() => {
-                                GameLoader.loadSave(playContext); // load from save
-                                playContext.load();
+                                GameLoader.loadSave(playSetup); // load from save
+                                playSetup.load();
                             });
                             fadeUiSprite(wait);
-                            var play = new PlayScene(playContext);
+                            var play = new PlayScene(playSetup);
                             TransitionScene(play, 0.5f);
                         });
                     }),
