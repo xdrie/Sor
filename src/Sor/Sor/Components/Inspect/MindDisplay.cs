@@ -152,7 +152,7 @@ namespace Sor.Components.Inspect {
                                 
                                 // annotation for approach type
                                 if (target.approachRange > 0) {
-                                    planSb.Append($" [{target.approachRange}]");
+                                    planSb.Append($" [r={target.approachRange}]");
                                 }
 
                                 planSb.AppendLine();
