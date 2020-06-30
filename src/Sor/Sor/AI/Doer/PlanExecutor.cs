@@ -64,6 +64,11 @@ namespace Sor.AI.Doer {
                     pilotToAngle(navTargetSource.getTargetAngle());
                 }
             }
+            else {
+                // zero out movement
+                mind.state.controller.moveThrustLogical.LogicValue = 0f;
+                mind.state.controller.moveTurnLogical.LogicValue = 0f;
+            }
         }
 
         private void processInteraction(PlanInteraction<DuckMind> inter) {
