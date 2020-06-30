@@ -88,8 +88,6 @@ namespace Sor.Game.Save {
             foreach (var thing in resolvedThings) {
                 // add to context
                 state.addThing(thing);
-                // tag entity as thing
-                thing.Entity.SetTag(Constants.Tags.THING);
             }
         }
 

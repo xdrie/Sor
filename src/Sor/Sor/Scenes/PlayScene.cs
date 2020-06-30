@@ -63,7 +63,7 @@ namespace Sor.Scenes {
 
             // attach all wings
             foreach (var wing in state.wings) {
-                AddEntity(wing.Entity);
+                AddEntity(wing.Entity).SetTag(Constants.Tags.WING);
                 wing.animator.RenderLayer = renderlayer_above;
             }
 
@@ -71,7 +71,7 @@ namespace Sor.Scenes {
 
             foreach (var thing in state.things) {
                 // attach all things
-                AddEntity(thing.Entity);
+                AddEntity(thing.Entity).SetTag(Constants.Tags.THING);
             }
 
             state.things.Clear();
@@ -103,7 +103,7 @@ namespace Sor.Scenes {
             var pipsSystem = AddEntityProcessor(new PipsSystem(state.player));
 
             // add component to make Camera follow the player
-            
+
             // var cameraLockMode = LockedCamera.LockMode.Position;
             // if (NGame.config.cameraLockedRotation) {
             //     cameraLockMode |= LockedCamera.LockMode.Rotation;
