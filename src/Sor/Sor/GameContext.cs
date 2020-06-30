@@ -9,7 +9,6 @@ using Sor.Util;
 namespace Sor {
     public class GameContext : ContextBase<Config> {
         public Assets assets { get; } = new Assets();
-        public MapRepr map;
 
         public class Assets {
             public BitmapFont font;

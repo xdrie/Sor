@@ -61,7 +61,7 @@ namespace Sor.Game {
             var wingPly = new BirdPersonality {A = a, S = s};
             // wingPly.generateRandom();
             var spawnOffset = Vector2Ext.Rotate(new Vector2(0, -120f), Random.NextFloat() * Mathf.PI * 2f);
-            var wing = play.state.createNpcWing(name,
+            var wing = play.setup.createNpcWing(name,
                 play.state.player.Entity.Position + spawnOffset, wingPly);
             play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");

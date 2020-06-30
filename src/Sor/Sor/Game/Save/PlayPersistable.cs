@@ -11,13 +11,13 @@ using Sor.Util;
 
 namespace Sor.Game.Save {
     public class PlayPersistable : IPersistable {
-        public PlayState state;
+        public PlaySetup setup;
 
         public const int version = 5;
         public const float SAVE_TIME_ADVANCE = 30f; // time to advance when loading
 
-        public PlayPersistable(PlayState state) {
-            this.state = state;
+        public PlayPersistable(PlaySetup setup) {
+            this.setup = setup;
         }
 
         public void Recover(IPersistableReader rd) {
@@ -29,18 +29,18 @@ namespace Sor.Game.Save {
                 Global.log.err($"save file version mismatch (got {readVersion}, expected {version})");
             }
 
-            state.rehydrated = true; // indicate that this play context is rehydrated
+            setup.rehydrated = true; // indicate that this play context is rehydrated
             // load game time
             Time.TotalTime = rd.ReadFloat() + SAVE_TIME_ADVANCE;
 
             // load map seed
-            state.mapgenSeed = rd.ReadInt();
-            Global.log.trace($"loaded mapgen seed: {state.mapgenSeed}");
+            setup.state.mapgenSeed = rd.ReadInt();
+            Global.log.trace($"loaded mapgen seed: {setup.state.mapgenSeed}");
 
             // read player
             var playerWd = rd.readWing();
             var playerBodyData = rd.readBody();
-            var player = state.createPlayer(Vector2.Zero);
+            var player = setup.createPlayer(Vector2.Zero);
             player.uid = playerWd.uid;
             player.core.energy = playerWd.energy;
             player.mind.soul.ply = playerWd.ply;
@@ -54,7 +54,7 @@ namespace Sor.Game.Save {
             var wingCount = rd.ReadInt();
             for (var i = 0; i < wingCount; i++) {
                 var wd = rd.readWing();
-                var wing = state.createNpcWing(wd.name, Vector2.Zero, wd.ply);
+                var wing = setup.createNpcWing(wd.name, Vector2.Zero, wd.ply);
                 wing.uid = wd.uid;
                 if (wd.armed) {
                     wing.AddComponent<Shooter>();
@@ -87,7 +87,7 @@ namespace Sor.Game.Save {
             var resolvedThings = thingHelper.resolveThings(loadedThings);
             foreach (var thing in resolvedThings) {
                 // add to context
-                state.addThing(thing);
+                setup.addThing(thing);
             }
         }
 
@@ -99,15 +99,15 @@ namespace Sor.Game.Save {
             wr.Write(Time.TotalTime);
 
             // save map seed
-            wr.Write(state.mapgenSeed);
+            wr.Write(setup.state.mapgenSeed);
 
             // save player
-            wr.writeWing(state.player);
-            wr.writeBody(state.player.body);
+            wr.writeWing(setup.state.player);
+            wr.writeBody(setup.state.player.body);
 
             // save all other wings
-            var wingsToSave = state.scene.FindEntitiesWithTag(Constants.Tags.WING)
-                .Where(x => x != state.player.Entity)
+            var wingsToSave = setup.state.scene.FindEntitiesWithTag(Constants.Tags.WING)
+                .Where(x => x != setup.state.player.Entity)
                 .ToList();
             wr.Write(wingsToSave.Count);
             foreach (var wingNt in wingsToSave) {
@@ -118,7 +118,7 @@ namespace Sor.Game.Save {
             }
 
             // save world things
-            var thingsToSave = state.scene.FindEntitiesWithTag(Constants.Tags.THING).ToList();
+            var thingsToSave = setup.state.scene.FindEntitiesWithTag(Constants.Tags.THING).ToList();
             wr.Write(thingsToSave.Count);
             // sort so trees are before capsules
             var treeList = new List<Thing>();
