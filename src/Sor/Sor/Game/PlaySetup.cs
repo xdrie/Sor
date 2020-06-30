@@ -36,7 +36,7 @@ namespace Sor.Game {
         public PlaySetup(PlayState state) {
             this.state = state;
         }
-        
+
         #region Wing and Thing spawning
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Sor.Game {
         public void addThing(Thing thing) {
             things.Add(thing);
         }
-        
+
         #endregion
 
         #region Loading and Scene setup
@@ -132,7 +132,7 @@ namespace Sor.Game {
 
             // load map
             mapLoader.load(mapAsset, createObjects: !rehydrated);
-            
+
             // save map
             state.map = mapLoader.mapRepr;
         }

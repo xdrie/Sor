@@ -15,6 +15,7 @@ namespace Sor.AI {
         public DuckMind(AvianSoul soul, bool control) : base(new DuckMindState()) {
             this.control = control;
             this.soul = soul;
+            useThreadPool = NGame.config.threadPoolAi;
         }
 
         public override void OnAddedToEntity() {
