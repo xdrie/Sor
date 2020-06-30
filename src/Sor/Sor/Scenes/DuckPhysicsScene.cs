@@ -46,7 +46,8 @@ namespace Sor.Scenes {
             duckWing.mind.state.addOpinion(playerWing, Constants.DuckMind.OPINION_FRIEND);
 
             // set the player as the target
-            duckWing.mind.state.plan.Enqueue(new EntityTarget(duckWing.mind, playerWing.Entity, Approach.Precise, TargetSource.RANGE_MED));
+            duckWing.mind.state.plan.Enqueue(new EntityTarget(duckWing.mind, playerWing.Entity, Approach.Within,
+                TargetSource.RANGE_MED));
 
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
 
@@ -65,10 +66,10 @@ namespace Sor.Scenes {
             }
 
             var wing = physicistDuck.GetComponent<Wing>();
-            if (Input.LeftMouseButtonDown) {
+            if (Input.LeftMouseButtonPressed) {
                 // set duck target to mouse pos
                 var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                wing.mind.state.plan.Enqueue(new FixedTarget(wing.mind, mouseWp));
+                wing.mind.state.plan.Enqueue(new FixedTarget(wing.mind, mouseWp, Approach.Within, TargetSource.RANGE_CLOSE));
             }
         }
     }
