@@ -10,7 +10,13 @@ namespace Sor.AI.Plans {
     }
 
     public enum Approach {
+        /// <summary>
+        /// directly to target
+        /// </summary>
         Precise,
+        /// <summary>
+        /// within a given range
+        /// </summary>
         Within,
     }
 
@@ -22,10 +28,25 @@ namespace Sor.AI.Plans {
         public const float AT_POSITION_SQ = 2f * 2f;
         public const float NEAR_POSITION_SQ = 60f * 60f;
 
+        /// <summary>
+        /// directly at the target
+        /// </summary>
         public const float RANGE_DIRECT = 0f;
+        /// <summary>
+        /// right next to the target
+        /// </summary>
         public const float RANGE_CLOSE = 40f;
+        /// <summary>
+        /// within a short range of the target
+        /// </summary>
         public const float RANGE_SHORT = 80f;
+        /// <summary>
+        /// within medium range of the target
+        /// </summary>
         public const float RANGE_MED = 150f;
+        /// <summary>
+        /// within a long range of the target
+        /// </summary>
         public const float RANGE_LONG = 400f;
 
         public TargetSource(DuckMind mind, Approach approach, float approachRange, float reachBefore) : base(mind,
