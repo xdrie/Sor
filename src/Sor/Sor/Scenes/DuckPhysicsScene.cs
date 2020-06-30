@@ -36,16 +36,17 @@ namespace Sor.Scenes {
             var playerWing = playerNt.AddComponent(new Wing(new DuckMind(playerSoul, false)));
             playerNt.AddComponent(new PlayerInputController(0));
 
-            // set up scene things
+            // add our physicist
             physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.WING);
             var physicistSoul = new AvianSoul {ply = new BirdPersonality {A = 0.8f, S = -0.4f}};
             var duckWing = physicistDuck.AddComponent(new Wing(new DuckMind(physicistSoul, true)));
             physicistDuck.AddComponent<LogicInputController>();
             physicistDuck.AddComponent(new MindDisplay(playerWing, true));
             duckWing.core.energy = 1000f;
+            duckWing.mind.state.addOpinion(playerWing, Constants.DuckMind.OPINION_FRIEND);
 
-            // set pos to current pos
-            duckWing.mind.state.plan.Enqueue(new EntityTarget(duckWing.mind, playerWing.Entity));
+            // set the player as the target
+            duckWing.mind.state.plan.Enqueue(new EntityTarget(duckWing.mind, playerWing.Entity, Approach.Precise, TargetSource.RANGE_MED));
 
             var wingInteractions = AddEntityProcessor(new WingUpdateSystem());
 
