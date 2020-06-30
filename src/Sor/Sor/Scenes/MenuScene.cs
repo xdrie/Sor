@@ -136,10 +136,6 @@ namespace Sor.Scenes {
                     // duck physics
                     TransitionScene<DuckPhysicsScene>();
                 }
-                if (Input.IsKeyPressed(Keys.D2)) {
-                    // test nav 2
-                    TransitionScene<TestNavScene>();
-                }
 #endif
 
                 if (Input.IsKeyPressed(Keys.Escape)) {
