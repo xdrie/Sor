@@ -6,14 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Iri.XGOAP" Version="1.0.1" />
         <PackageReference Include="MonoGame.Framework.DesktopGL.Core" Version="3.8.0.2" />
         <PackageReference Include="morelinq" Version="3.3.2" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\lib\DuckMind\src\DuckMind\Ducia\Ducia.csproj" />
       <ProjectReference Include="..\..\..\lib\Glint\src\Glint\Glint.csproj" />
-      <ProjectReference Include="..\..\..\lib\LunchSimulator\src\Lunchtime\LunchLib\LunchLib.csproj" />
       <ProjectReference Include="..\..\..\lib\XNez\Nez.Portable\XNez.csproj" />
     </ItemGroup>
 

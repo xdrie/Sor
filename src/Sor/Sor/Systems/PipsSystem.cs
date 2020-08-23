@@ -8,7 +8,7 @@ namespace Sor.Systems {
     public class PipsSystem : EntityProcessingSystem {
         private Wing player;
 
-        public PipsSystem(Wing player) : base(new Matcher().All(typeof(Mind))) {
+        public PipsSystem(Wing player) : base(new Matcher().All(typeof(DuckMind))) {
             this.player = player;
         }
 
@@ -23,7 +23,7 @@ namespace Sor.Systems {
                     wing.pips.enable();
                     // get opinion of player
                     if (wing.mind != null) {
-                        var playerOpinion = wing.mind.state.getOpinion(player.mind);
+                        var playerOpinion = wing.mind.state.getOpinion(player.mind.state.me);
                         (var pipCount, var pipColor) = calculatePips(playerOpinion);
                         if (pipCount > 5) pipCount = 5;
                         wing.pips.setPips(pipCount, pipColor);
@@ -37,20 +37,20 @@ namespace Sor.Systems {
         public static (int number, Color color) calculatePips(int opinion) {
             var blocks = 0;
             var col = Color.Black;
-            if (opinion < MindConstants.OPINION_HATE) {
-                blocks = MindConstants.OPINION_HATE - opinion;
+            if (opinion < Constants.DuckMind.OPINION_HATE) {
+                blocks = Constants.DuckMind.OPINION_HATE - opinion;
                 col = Pips.red;
-            } else if (opinion <= MindConstants.OPINION_WARY) {
-                blocks = MindConstants.OPINION_WARY - opinion;
+            } else if (opinion <= Constants.DuckMind.OPINION_WARY) {
+                blocks = Constants.DuckMind.OPINION_WARY - opinion;
                 col = Pips.orange;
-            } else if (opinion <= MindConstants.OPINION_ALLY) {
-                blocks = opinion + MindConstants.OPINION_ALLY;
+            } else if (opinion <= Constants.DuckMind.OPINION_ALLY) {
+                blocks = opinion + Constants.DuckMind.OPINION_ALLY;
                 col = Pips.yellow;
-            } else if (opinion <= MindConstants.OPINION_FRIEND) {
-                blocks = opinion - MindConstants.OPINION_ALLY;
+            } else if (opinion <= Constants.DuckMind.OPINION_FRIEND) {
+                blocks = opinion - Constants.DuckMind.OPINION_ALLY;
                 col = Pips.blue;
             } else {
-                blocks = opinion - MindConstants.OPINION_FRIEND;
+                blocks = opinion - Constants.DuckMind.OPINION_FRIEND;
                 col = Pips.green;
             }
 

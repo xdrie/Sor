@@ -43,7 +43,7 @@ namespace Sor.Game {
             var nearbyWings = play.state.findAllWings().Where(x =>
                     x != play.state.player &&
                     ((x.body.pos - play.state.player.body.pos).LengthSquared() <
-                     MindConstants.SENSE_RANGE * MindConstants.SENSE_RANGE))
+                     Constants.DuckMind.SENSE_RANGE * Constants.DuckMind.SENSE_RANGE))
                 .ToList();
             debugLog(
                 $"{wings.Count} wings ({nearbyWings.Count} nearby): {string.Join(",", wings.Select(x => x.name))}");
@@ -61,7 +61,7 @@ namespace Sor.Game {
             var wingPly = new BirdPersonality {A = a, S = s};
             // wingPly.generateRandom();
             var spawnOffset = Vector2Ext.Rotate(new Vector2(0, -120f), Random.NextFloat() * Mathf.PI * 2f);
-            var wing = play.state.createNpcWing(name,
+            var wing = play.setup.createNpcWing(name,
                 play.state.player.Entity.Position + spawnOffset, wingPly);
             play.AddEntity(wing.Entity);
             debugLog($"spawned 1 entity named {wing.Entity.Name}");

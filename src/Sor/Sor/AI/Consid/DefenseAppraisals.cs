@@ -1,6 +1,6 @@
 using System.Linq;
-using LunchLib.AI.Utility;
-using LunchLib.Calc;
+using Ducia.Framework.Utility;
+using Ducia.Calc;
 using Microsoft.Xna.Framework;
 using MoreLinq;
 using Nez;
@@ -10,22 +10,22 @@ using XNez.GUtils.Misc;
 
 namespace Sor.AI.Consid {
     public static class DefenseAppraisals {
-        public class NearbyThreat : Appraisal<Mind> {
-            public NearbyThreat(Mind context) : base(context) { }
+        public class NearbyThreat : Appraisal<DuckMind> {
+            public NearbyThreat(DuckMind context) : base(context) { }
 
-            public static int threatThreshold(Mind mind) {
+            public static int threatThreshold(DuckMind mind) {
                 // threat threshold (min opinion to be threat) depends on personality
                 // threshold range: [-100, 70]
                 return (int) TraitCalc.transform(mind.soul.traits.aggression,
                     -120, 70, -100, 70);
             }
 
-            public static Wing greatestThreat(Mind mind) {
+            public static Wing greatestThreat(DuckMind mind) {
                 // find the nearby duck with the lowest opinion
                 // TODO: allow tracking multiple threats
                 var wings = mind.state.seenWings
-                    .Where(x => mind.state.getOpinion(x.mind) < threatThreshold(mind)) // below thresh
-                    .MinBy(x => mind.state.getOpinion(x.mind)); // lowest opinion
+                    .Where(x => mind.state.getOpinion(x.mind.state.me) < threatThreshold(mind)) // below thresh
+                    .MinBy(x => mind.state.getOpinion(x.mind.state.me)); // lowest opinion
 
                 return wings.FirstOrDefault();
             }
@@ -43,14 +43,14 @@ namespace Sor.AI.Consid {
             public override float score() {
                 var threatWing = greatestThreat(context);
                 if (threatWing == null) return 0;
-                var threatOpinion = context.state.getOpinion(threatWing.mind);
+                var threatOpinion = context.state.getOpinion(threatWing.mind.state.me);
                 var threatValue = threateningNess(threatOpinion - threatThreshold(context));
                 return threatValue;
             }
         }
 
-        public class ThreatFightable : Appraisal<Mind> {
-            public ThreatFightable(Mind context) : base(context) { }
+        public class ThreatFightable : Appraisal<DuckMind> {
+            public ThreatFightable(DuckMind context) : base(context) { }
 
             private int scoreRatio(float ratio, int weight) {
                 var score = LCurves.ratioAdvantage(ratio, 1.2f);
@@ -76,28 +76,28 @@ namespace Sor.AI.Consid {
 
                 // TODO: use better functions to map ratios to score
                 // 1. compare core sizes (ratio) -> transform [-40, 40]
-                var coreSizeRatio = betterRatio(threat.mind.me.core.designMax, context.me.core.designMax);
+                var coreSizeRatio = betterRatio(threat.mind.state.me.core.designMax, context.state.me.core.designMax);
                 var coreSizeScore = scoreRatio(coreSizeRatio, 20);
 
                 // 2. compare maneuverability (ratio) -> transform [-20, 20]
                 // if we're more maneuverable, it might not be worth fighting
-                var maneuverabilityRatio = betterRatio(context.me.body.turnPower , threat.mind.me.body.turnPower);
+                var maneuverabilityRatio = betterRatio(context.state.me.body.turnPower , threat.mind.state.me.body.turnPower);
                 var maneuScore = scoreRatio(maneuverabilityRatio, 20);
 
                 // 3. compare speed (ratio) -> transform [-40, 40]
                 // if we're faster, we want to fight less
-                var speedRatio = betterRatio(context.me.body.thrustPower, threat.mind.me.body.thrustPower);
+                var speedRatio = betterRatio(context.state.me.body.thrustPower, threat.mind.state.me.body.thrustPower);
                 var speedScore = scoreRatio(speedRatio, 30);
 
                 // 3. compare energy (ratio) -> transform [-40, 40]
                 // if we're faster, we want to fight less
-                var energyRatio = betterRatio(threat.mind.me.core.energy, context.me.core.energy);
+                var energyRatio = betterRatio(threat.mind.state.me.core.energy, context.state.me.core.energy);
                 var energyScore = scoreRatio(energyRatio, 30);
 
                 // 4. compare armed state
                 var threatWeaponMaxscore = 40;
                 var threatWeapon = threat.mind.GetComponent<Shooter>();
-                var myWeapon = context.me.GetComponent<Shooter>();
+                var myWeapon = context.state.me.GetComponent<Shooter>();
                 // if they're armed, set negative score
                 var armoryScore = threatWeapon == null ? 0 : -threatWeaponMaxscore;
                 // TODO: compare weapons
@@ -111,7 +111,7 @@ namespace Sor.AI.Consid {
                 var score = coreSizeScore + maneuScore + speedScore + energyScore + armoryScore;
 
                 context.state.setBoard("judged threat",
-                    new MindState.BoardItem($"E:{energyScore}, C:{coreSizeScore}, M:{maneuScore}, S:{speedScore}",
+                    new DuckMindState.BoardItem($"E:{energyScore}, C:{coreSizeScore}, M:{maneuScore}, S:{speedScore}",
                         "interaction",
                         Color.Orange, Time.TotalTime + 1f));
 

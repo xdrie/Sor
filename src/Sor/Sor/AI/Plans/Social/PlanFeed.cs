@@ -1,7 +1,8 @@
+using Ducia;
 using Nez;
 
 namespace Sor.AI.Plans {
-    public class PlanFeed : SingleInteraction {
-        public PlanFeed(Mind mind, Entity feedTarget, float before = 0) : base(mind, feedTarget, before) { }
+    public class PlanFeed : SingleInteraction<DuckMind> {
+        public PlanFeed(DuckMind mind, Entity feedTarget, float before = 0) : base(mind, feedTarget, before) { }
     }
 }

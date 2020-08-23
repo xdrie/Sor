@@ -1,13 +1,9 @@
-using LunchLib.Cogs;
+using Ducia.Cogs;
 
 namespace Sor.AI.Cogs {
     public class AvianSoul : Sentient<BirdPersonality, BirdTraits, BirdEmotions> {
-        public Mind mind;
+        public DuckMind mind { get; set; }
 
         public AvianSoul() { }
-
-        public AvianSoul(Mind mind) {
-            this.mind = mind;
-        }
     }
 }

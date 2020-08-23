@@ -23,11 +23,14 @@ namespace Sor.Scenes {
         public const float showHelpTime = 4f;
 
         public PlayState state;
+        public PlaySetup setup;
 
-        public PlayScene(PlayState state) {
-            this.state = state;
-            Core.Services.AddService(state);
+        public PlayScene(PlaySetup setup) {
+            this.setup = setup;
+            // copy state from setup
+            state = setup.state;
             state.scene = this;
+            Core.Services.AddService(state);
         }
 
         public override void Initialize() {
@@ -56,27 +59,26 @@ namespace Sor.Scenes {
 
             // - scene setup
             // set up map
-            AddEntity(state.mapNt);
-            gameContext.map = state.mapLoader.mapRepr; // copy map representation
+            AddEntity(setup.mapNt);
             var mapRenderer = FindEntity("map").GetComponent<TiledMapRenderer>();
             mapRenderer.RenderLayer = renderlayer_map;
 
             // attach all wings
-            foreach (var wing in state.wings) {
-                AddEntity(wing.Entity);
+            foreach (var wing in setup.wings) {
+                AddEntity(wing.Entity).SetTag(Constants.Tags.WING);
                 wing.animator.RenderLayer = renderlayer_above;
             }
 
-            state.wings.Clear();
+            setup.wings.Clear();
 
-            foreach (var thing in state.things) {
+            foreach (var thing in setup.things) {
                 // attach all things
-                AddEntity(thing.Entity);
+                AddEntity(thing.Entity).SetTag(Constants.Tags.THING);
             }
 
-            state.things.Clear();
+            setup.things.Clear();
 
-            var status = state.rehydrated ? "rehydrated" : "freshly created";
+            var status = setup.rehydrated ? "rehydrated" : "freshly created";
             Global.log.info($"play scene {status}");
 
             // - hud
@@ -103,11 +105,11 @@ namespace Sor.Scenes {
             var pipsSystem = AddEntityProcessor(new PipsSystem(state.player));
 
             // add component to make Camera follow the player
-            var cameraLockMode = LockedCamera.LockMode.Position;
-            if (NGame.config.cameraLockedRotation) {
-                cameraLockMode |= LockedCamera.LockMode.Rotation;
-            }
 
+            // var cameraLockMode = LockedCamera.LockMode.Position;
+            // if (NGame.config.cameraLockedRotation) {
+            //     cameraLockMode |= LockedCamera.LockMode.Rotation;
+            // }
             var followCamera =
                 // Camera.Entity.AddComponent(new LockedCamera(player.Entity, Camera, cameraLockMode));
                 Camera.Entity.AddComponent(
@@ -207,7 +209,7 @@ namespace Sor.Scenes {
 
             // unload play context
             Core.Services.RemoveService(typeof(PlayState));
-
+            state.scene = null;
 #if DEBUG
             SorDebug.play = null;
 #endif
@@ -217,7 +219,7 @@ namespace Sor.Scenes {
             var store = gameContext.data.getStore();
             if (gameContext.config.persist) {
                 // save the play context
-                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(state));
+                store.Save(Constants.Game.GAME_SLOT_0, new PlayPersistable(new PlaySetup(state)));
                 // TODO: save the experience, etc. data in another persistable
             }
         }

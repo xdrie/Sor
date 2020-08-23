@@ -1,36 +1,36 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using Ducia;
 using Glint;
 using Glint.Util;
-using LunchLib.AI.Utility.Considerations;
+using Ducia.Framework.Utility.Considerations;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
 using Sor.AI.Signals;
+using Sor.Components.Input;
 using Sor.Components.Things;
 using Sor.Components.Units;
 using Sor.Game.Map;
 
 namespace Sor.AI {
-    public class MindState {
-        public Mind mind;
-        public int ticks = 0;
-
-        public MindState(Mind mind) {
-            this.mind = mind;
-        }
-
+    public class DuckMindState : MindState {
+        public Wing me;
+        public LogicInputController controller;
+        
         public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
-        public ConcurrentQueue<MindSignal> signalQueue = new ConcurrentQueue<MindSignal>(); // signals to be processed
-        public ConcurrentDictionary<Mind, int> opinion = new ConcurrentDictionary<Mind, int>(); // opinions of others
-        public ConcurrentQueue<PlanTask> plan = new ConcurrentQueue<PlanTask>();
+
+        public ConcurrentDictionary<Wing, int>
+            opinion = new ConcurrentDictionary<Wing, int>(); // opinions of others
+
+        public ConcurrentQueue<PlanTask<DuckMind>> plan = new ConcurrentQueue<PlanTask<DuckMind>>();
         public List<StructuralNavigationGraph.Node> navPath = new List<StructuralNavigationGraph.Node>();
         public ConcurrentDictionary<string, BoardItem> board = new ConcurrentDictionary<string, BoardItem>();
 
-        public ConcurrentDictionary<Consideration<Mind>, float> lastPlanLog =
-            new ConcurrentDictionary<Consideration<Mind>, float>();
+        public ConcurrentDictionary<Consideration<DuckMind>, float> lastPlanLog =
+            new ConcurrentDictionary<Consideration<DuckMind>, float>();
 
         public struct BoardItem {
             public string value;
@@ -50,21 +50,21 @@ namespace Sor.AI {
             public static implicit operator BoardItem(string v) => new BoardItem(v, "misc");
         }
 
-        public int getOpinion(Mind mind) {
-            if (opinion.TryGetValue(mind, out var val)) {
+        public int getOpinion(Wing wing) {
+            if (opinion.TryGetValue(wing, out var val)) {
                 return val;
             }
 
             return 0;
         }
 
-        public int addOpinion(Mind they, int val) {
+        public int addOpinion(Wing they, int val) {
             var opi = getOpinion(they);
             var res = opi + val;
             opinion[they] = res;
-            if (mind.inspected && NGame.context.config.logInteractions) {
-                Global.log.trace($"({mind.me.name}) added {val} opinion for {they.me.name} (total {res})");
-            }
+            // if (mind.inspected && NGame.context.config.logInteractions) {
+            //     Global.log.trace($"({mind.state.me.name}) added {val} opinion for {they.me.name} (total {res})");
+            // }
 
             return res;
         }
@@ -75,7 +75,7 @@ namespace Sor.AI {
         /// copy new plan to task plan
         /// </summary>
         /// <param name="tasks">new task list</param>
-        public void setPlan(IEnumerable<PlanTask> tasks) {
+        public void setPlan(IEnumerable<PlanTask<DuckMind>> tasks) {
             clearPlan();
 
             foreach (var task in tasks) {
@@ -132,7 +132,7 @@ namespace Sor.AI {
             }
         }
 
-        public void updatePlanLog(Dictionary<Consideration<Mind>, float> resultTable) {
+        public void updatePlanLog(Dictionary<Consideration<DuckMind>, float> resultTable) {
             lastPlanLog.Clear();
             foreach (var item in resultTable) {
                 lastPlanLog.TryAdd(item.Key, item.Value);

@@ -1,5 +1,6 @@
 using System;
 using Activ.GOAP;
+using Ducia;
 
 namespace Sor.AI.Model {
     /// <summary>

@@ -1,6 +1,6 @@
 using System;
-using LunchLib.Calc;
-using LunchLib.Cogs;
+using Ducia.Calc;
+using Ducia.Cogs;
 using Sor.AI.Signals;
 using XNez.GUtils.Misc;
 
@@ -24,11 +24,11 @@ namespace Sor.AI.Cogs.Interactions {
             this.sig = sig;
         }
 
-        public override void run(params AvianSoul[] participants) {
+        public override void run(params DuckMind[] participants) {
             if (participants.Length != 2)
                 throw new ArgumentException("only two participants", nameof(participants));
             var me = participants[0]; // this should be "me"
-            var myTraits = new Traits(me);
+            var myTraits = new Traits(me.soul);
             var giver = participants[1]; // the one who gave me stuff
 
             // food value [0, 40]
@@ -37,14 +37,14 @@ namespace Sor.AI.Cogs.Interactions {
 
             // calculate opinion delta
             var opinionDelta = 0;
-            var currentOpinion = me.mind.state.getOpinion(giver.mind);
+            var currentOpinion = me.state.getOpinion(giver.state.me);
 
             // calculate receptiveness to food
             // receptive (innate) [0, 1]
             var innateFoodReceiptiveness = TraitCalc.transform(myTraits.receptiveness,
                 -0.4f, 1f, 0f, 1f);
             // receptive (happy) [0, 0.5]
-            var happyFoodReceptiveness = TraitCalc.transform(me.emotions.happy,
+            var happyFoodReceptiveness = TraitCalc.transform(me.soul.emotions.happy,
                 -1.5f, 1f, 0f, 0.5f);
 
             // receptive [0, 2]
@@ -58,10 +58,10 @@ namespace Sor.AI.Cogs.Interactions {
             opinionDelta += (int) (foodReceptiveness * foodValue * foodOpinionWeight);
 
             // food makes me happy!
-            me.emotions.spikeHappy(GMathf.clamp(foodReceptiveness, 0, 0.8f));
+            me.soul.emotions.spikeHappy(GMathf.clamp(foodReceptiveness, 0, 0.8f));
 
             // add opinion to the one that fed me
-            me.mind.state.addOpinion(giver.mind, opinionDelta);
+            me.state.addOpinion(giver.state.me, opinionDelta);
         }
     }
 }

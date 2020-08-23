@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Ducia;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
@@ -14,7 +15,7 @@ using Sor.Util;
 namespace Sor.Components.Inspect {
     public class MindDisplay : RenderableComponent, IUpdatable {
         private Wing player;
-        private Mind mind;
+        private DuckMind mind;
         private Wing wing;
         private Color textCol = Core.Services.GetService<GameContext>().assets.fgColor;
         private bool draw;
@@ -27,9 +28,9 @@ namespace Sor.Components.Inspect {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            mind = Entity.GetComponent<Mind>();
+            mind = Entity.GetComponent<DuckMind>();
             mind.inspected = true; // enable trace debug
-            wing = mind.me;
+            wing = mind.state.me;
         }
 
         public override void OnRemovedFromEntity() {
@@ -52,7 +53,7 @@ namespace Sor.Components.Inspect {
             if (draw) {
                 // draw mind info representation
                 // highlight the inspected wing
-                drawIndicator(batcher, mind.me.body.pos, Color.White, 8f);
+                drawIndicator(batcher, mind.state.me.body.pos, Color.White, 8f);
 
                 // text container for all display text
                 var ind = new ColoredTextBuilder(Color.White);
@@ -62,7 +63,7 @@ namespace Sor.Components.Inspect {
                 ind.appendLine($"energy: {wing.core.ratio:n2}");
                 ind.appendLine($"vision: {mind.state.seenWings.Count} | {mind.state.seenThings.Count}");
                 if (player != null) {
-                    var plOpinion = mind.state.getOpinion(player.mind);
+                    var plOpinion = mind.state.getOpinion(player.mind.state.me);
                     ind.appendLine($"opinion: {plOpinion} | {opinionTag(plOpinion)}");
                 }
 
@@ -72,7 +73,7 @@ namespace Sor.Components.Inspect {
                 var netOpi = 0;
                 foreach (var op in opinionTable) {
                     var opVal = op.Value;
-                    var pos = opVal > MindConstants.OPINION_NEUTRAL;
+                    var pos = opVal > Constants.DuckMind.OPINION_NEUTRAL;
                     netOpi += opVal;
                     if (pos) {
                         positive++;
@@ -144,9 +145,14 @@ namespace Sor.Components.Inspect {
                                 // add extra annotation if target is wing
                                 if (target is EntityTarget ets && ets.nt.HasComponent<Wing>()) {
                                     planSb.Append($" {ets.nt.Name}");
-                                    var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind);
-                                    var (_, disp) = PipsSystem.calculatePips(opinion);
-                                    targetColor = disp;
+                                    var opinion = mind.state.getOpinion(ets.nt.GetComponent<Wing>().mind.state.me);
+                                    var (_, displayColor) = PipsSystem.calculatePips(opinion);
+                                    targetColor = displayColor;
+                                }
+                                
+                                // annotation for approach type
+                                if (target.approachRange > 0) {
+                                    planSb.Append($" [r={target.approachRange}]");
                                 }
 
                                 planSb.AppendLine();
@@ -155,7 +161,7 @@ namespace Sor.Components.Inspect {
                                 drawIndicator(batcher, approachPos, Color.LightBlue, 4f);
                                 break;
                             }
-                            case SingleInteraction inter:
+                            case SingleInteraction<DuckMind> inter:
                                 planSb.AppendLine($" {inter.GetType().Name} {inter.target.Name}");
                                 break;
                         }
@@ -171,10 +177,10 @@ namespace Sor.Components.Inspect {
                 var orderedBoardItems =
                     boardItems.OrderBy(x => x.Value.tag)
                         .ToArray();
-                var taggedItems = new Dictionary<string, List<(string, MindState.BoardItem)>>();
+                var taggedItems = new Dictionary<string, List<(string, DuckMindState.BoardItem)>>();
                 foreach (var groupedBoardItem in orderedBoardItems) {
                     if (!taggedItems.ContainsKey(groupedBoardItem.Value.tag)) {
-                        taggedItems[groupedBoardItem.Value.tag] = new List<(string, MindState.BoardItem)>();
+                        taggedItems[groupedBoardItem.Value.tag] = new List<(string, DuckMindState.BoardItem)>();
                     }
 
                     taggedItems[groupedBoardItem.Value.tag]
@@ -195,22 +201,22 @@ namespace Sor.Components.Inspect {
         }
 
         private string opinionTag(int opinion) {
-            if (opinion <= MindConstants.OPINION_DESPISE) {
+            if (opinion <= Constants.DuckMind.OPINION_DESPISE) {
                 return "despise";
             }
-            else if (opinion <= MindConstants.OPINION_HATE && opinion > MindConstants.OPINION_DESPISE) {
+            else if (opinion <= Constants.DuckMind.OPINION_HATE && opinion > Constants.DuckMind.OPINION_DESPISE) {
                 return "hate";
             }
-            else if (opinion > MindConstants.OPINION_HATE && opinion < MindConstants.OPINION_ALLY) {
+            else if (opinion > Constants.DuckMind.OPINION_HATE && opinion < Constants.DuckMind.OPINION_ALLY) {
                 return "wary"; // in the middle: wary
             }
-            else if (opinion >= MindConstants.OPINION_ALLY && opinion < MindConstants.OPINION_FRIEND) {
+            else if (opinion >= Constants.DuckMind.OPINION_ALLY && opinion < Constants.DuckMind.OPINION_FRIEND) {
                 return "ally";
             }
-            else if (opinion >= MindConstants.OPINION_FRIEND && opinion < MindConstants.OPINION_KIN) {
+            else if (opinion >= Constants.DuckMind.OPINION_FRIEND && opinion < Constants.DuckMind.OPINION_KIN) {
                 return "friend";
             }
-            else if (opinion >= MindConstants.OPINION_KIN) {
+            else if (opinion >= Constants.DuckMind.OPINION_KIN) {
                 return "kin";
             }
             else {
@@ -221,9 +227,9 @@ namespace Sor.Components.Inspect {
         public override void DebugRender(Batcher batcher) {
             base.DebugRender(batcher);
 
-            // sensor rect
-            batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
-                mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
+            // // sensor rect
+            // batcher.DrawHollowRect(new Rectangle(mind.visionSystem.sensorRec.Location.ToPoint(),
+            //     mind.visionSystem.sensorRec.Size.ToPoint()), Color.Green);
         }
 
         public void Update() {
