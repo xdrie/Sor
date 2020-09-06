@@ -24,7 +24,7 @@ namespace Sor.AI.Model {
 
         public override HungryBird Clone(HungryBird b) {
             b.cost = cost;
-            
+
             b.nearbyBeans = nearbyBeans;
             b.nearbyTrees = nearbyTrees;
             b.satiety = satiety;
@@ -34,7 +34,8 @@ namespace Sor.AI.Model {
         public override bool Equals(object other) {
             if (other is HungryBird that) {
                 return Math.Abs(this.satiety - that.satiety) < float.Epsilon;
-            } else return false;
+            }
+            else return false;
         }
 
         public override int GetHashCode() => satiety.GetHashCode();
@@ -42,27 +43,21 @@ namespace Sor.AI.Model {
         #endregion
 
         public Cost eatBean() {
+            if (nearbyBeans <= 0) return false;
             cost += BEAN_COST;
-            if (nearbyBeans > 0) {
-                nearbyBeans--;
-                satiety += BEAN_ENERGY;
-                return true;
-            }
-
-            return false;
+            nearbyBeans--;
+            satiety += BEAN_ENERGY;
+            return true;
         }
 
         public Cost visitTree() {
+            if (nearbyTrees <= 0) return false;
             // TODO: make costs depend on actual distance data
             cost += TREE_VISIT_COST;
-            if (nearbyTrees > 0) {
-                nearbyTrees--;
-                satiety += BEAN_ENERGY * BEANS_PER_TREE;
-                // TODO: use actual energy values of beans for satiety increases
-                return true;
-            }
-
-            return false;
+            nearbyTrees--;
+            satiety += BEAN_ENERGY * BEANS_PER_TREE;
+            // TODO: use actual energy values of beans for satiety increases
+            return true;
         }
     }
 }
