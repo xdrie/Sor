@@ -6,4 +6,4 @@
 	url = https://git.rie.icu/xdrie/Glint.git
 [submodule "lib/DuckMind"]
 	path = lib/DuckMind
-	url = https://git.rie.icu/xdrie/DuckMind.git
+	url = https://github.com/xdrie/DuckMind.git
