@@ -18,7 +18,7 @@ namespace Sor.AI {
     public class DuckMindState : MindState {
         public Wing me;
         public LogicInputController controller;
-        
+
         public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
 
@@ -115,8 +115,8 @@ namespace Sor.AI {
             }
         }
 
-        public void tick() {
-            ticks++;
+        public override void tick(float elapsed) {
+            base.tick(elapsed);
             if (ticks % 10 == 0) {
                 tickBoard();
             }
