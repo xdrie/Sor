@@ -1,5 +1,6 @@
 using System;
 using Ducia;
+using Ducia.Game;
 using Glint;
 using Glint.Util;
 using Microsoft.Xna.Framework;

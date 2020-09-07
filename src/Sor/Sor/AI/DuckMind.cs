@@ -31,7 +31,7 @@ namespace Sor.AI {
         public void attach(Wing wing) {
             var nt = wing.Entity;
 
-            nt.AddComponent(new MindComponent<DuckMindState>(this));
+            nt.AddComponent(new MindComponent(this));
 
             // load components
             state.me = nt.GetComponent<Wing>();

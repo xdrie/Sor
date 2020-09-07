@@ -5,6 +5,7 @@ using Ducia;
 using Glint;
 using Glint.Util;
 using Ducia.Framework.Utility.Considerations;
+using Ducia.Game;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;

@@ -1,5 +1,6 @@
 using System;
 using Ducia;
+using Ducia.Game;
 using Microsoft.Xna.Framework;
 using Nez;
 

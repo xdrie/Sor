@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ducia;
+using Ducia.Game;
 using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
