@@ -9,6 +9,7 @@ namespace Sor.AI {
     public class DuckMind : Mind<DuckMindState> {
         public bool control;
         public readonly AvianSoul soul;
+        public bool inspected = false;
 
         private PlanExecutor planExecutor;
 
