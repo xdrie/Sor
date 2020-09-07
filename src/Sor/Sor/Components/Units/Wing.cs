@@ -28,7 +28,7 @@ namespace Sor.Components.Units {
             // set up ship sprite
             spriteRenderer.Color = NGame.context.assets.paletteWhite;
 
-            Entity.AddComponent(mind); // add mind component
+            mind.attach(this); // attach mind
             body = Entity.AddComponent(new WingBody());
             hitbox = Entity.AddComponent(new BoxCollider(-6, -10, 12, 18) {Tag = Constants.Colliders.SHIP});
             Flags.SetFlagExclusive(ref hitbox.PhysicsLayer, Constants.Physics.LAYER_DEFAULT);

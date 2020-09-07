@@ -103,7 +103,7 @@ namespace Sor.AI.Systems {
         protected override void processSenses() {
             // look at wings and their distances to me
             foreach (var wing in state.seenWings) {
-                var toWing = entity.Position - wing.Entity.Position;
+                var toWing = mind.entity.Position - wing.Entity.Position;
                 // subtract diag hitbox
                 var hitboxRadSq = wing.hitbox.Width * wing.hitbox.Width + wing.hitbox.Height * wing.hitbox.Height;
                 var toWingDist = Mathf.Sqrt(toWing.LengthSquared() + hitboxRadSq);

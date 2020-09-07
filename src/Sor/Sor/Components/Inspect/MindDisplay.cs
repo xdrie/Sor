@@ -28,9 +28,9 @@ namespace Sor.Components.Inspect {
         public override void OnAddedToEntity() {
             base.OnAddedToEntity();
 
-            mind = Entity.GetComponent<DuckMind>();
+            wing = Entity.GetComponent<Wing>();
+            mind = wing.mind;
             mind.inspected = true; // enable trace debug
-            wing = mind.state.me;
         }
 
         public override void OnRemovedFromEntity() {

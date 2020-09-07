@@ -1,4 +1,6 @@
 using Ducia;
+using Ducia.Game.Mind;
+using Nez;
 using Sor.AI.Cogs;
 using Sor.AI.Doer;
 using Sor.AI.Systems;
@@ -13,19 +15,30 @@ namespace Sor.AI {
 
         private PlanExecutor planExecutor;
 
+        public Wing me => state.me;
+        public Entity entity => me.Entity;
+
         public DuckMind(AvianSoul soul, bool control) : base(new DuckMindState()) {
             this.control = control;
             this.soul = soul;
             useThreadPool = NGame.config.threadPoolAi;
         }
 
-        public override void OnAddedToEntity() {
-            base.OnAddedToEntity();
+        /// <summary>
+        /// attach this mind to a wing's entity
+        /// </summary>
+        /// <param name="wing"></param>
+        public void attach(Wing wing) {
+            var nt = wing.Entity;
+
+            nt.AddComponent(new MindComponent<DuckMindState>(this));
 
             // load components
-            state.me = Entity.GetComponent<Wing>();
-            state.controller = Entity.GetComponent<LogicInputController>();
+            state.me = nt.GetComponent<Wing>();
+            state.controller = nt.GetComponent<LogicInputController>();
+        }
 
+        public override void initialize() {
             // set up plan executor
             planExecutor = new PlanExecutor(this);
 
