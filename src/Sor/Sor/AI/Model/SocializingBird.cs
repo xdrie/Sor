@@ -2,49 +2,35 @@ using Activ.GOAP;
 using Ducia;
 
 namespace Sor.AI.Model {
-    public class SocializingBird : ActionPlanningModel<SocializingBird> {
-        public float energyBudget = 0;
-        public int brownies = 0; // how much rapport we're hoping to gain
-        public bool withinDist = false;
+    public class SocializingBird : SmartActionPlanningModel<SocializingBird> {
+        // - state
+        public float energyBudget { get; set; } = 0;
+        public int brownies { get; set; } = 0; // how much rapport we're hoping to gain
+        public bool withinDist { get; set; } = false;
 
+        // - const
         public const int CHASE_COST = 2;
         public const int FEED_COST = 6;
 
-        public override Option[] ActionOptions => new Option[] {chase, feed};
-
-        public override SocializingBird Clone(SocializingBird b) {
-            b.cost = cost;
-
-            b.energyBudget = energyBudget;
-            b.brownies = brownies;
-            b.withinDist = withinDist;
-
-            return b;
-        }
+        protected override Option[] ActionOptions => new Option[] {chase, feed};
 
         public Cost chase() {
             // chase down/approach the target
             // only valid if target is far away
-            if (!withinDist) {
-                withinDist = true;
-                cost += CHASE_COST;
-                brownies += 2;
-                return true;
-            }
+            if (withinDist) return false;
 
-            return false;
+            withinDist = true;
+            brownies += 2;
+            return CHASE_COST;
         }
 
         public Cost feed() {
             // feed bean to target
             // only valid if we are close enough and have energy budget
-            if (withinDist && energyBudget > 0) {
-                cost += FEED_COST;
-                brownies += 10;
-                return true;
-            }
+            if (!withinDist || !(energyBudget > 0)) return false;
 
-            return false;
+            brownies += 10;
+            return FEED_COST;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Sor.AI.Systems {
         private void createReasoner() {
             // create utility planner
             reasoner = new Reasoner<DuckMind>();
+            Reasoner<DuckMind>.trace = true; // enable tracing
             reasoner.scoreType = Reasoner<DuckMind>.ScoreType.Normalized;
 
             var eatConsideration = new ThresholdConsideration<DuckMind>(eatAction, 0.3f, "eat");
