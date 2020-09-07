@@ -35,7 +35,6 @@ namespace Sor.AI {
 
             // load components
             state.me = nt.GetComponent<Wing>();
-            state.controller = nt.GetComponent<LogicInputController>();
         }
 
         public override void initialize() {

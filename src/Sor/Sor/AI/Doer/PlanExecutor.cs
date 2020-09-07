@@ -6,10 +6,23 @@ using Glint.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
+using Sor.Components.Input;
 
 namespace Sor.AI.Doer {
     public class PlanExecutor {
         private readonly DuckMind mind;
+
+        private LogicInputController _controller;
+
+        private LogicInputController controller {
+            get {
+                if (_controller == null) {
+                    _controller = mind.entity.GetComponent<LogicInputController>();
+                }
+
+                return _controller;
+            }
+        }
 
         public PlanExecutor(DuckMind mind) {
             this.mind = mind;
@@ -67,8 +80,8 @@ namespace Sor.AI.Doer {
             }
             else {
                 // zero out movement
-                mind.state.controller.moveThrustLogical.LogicValue = 0f;
-                mind.state.controller.moveTurnLogical.LogicValue = 0f;
+                controller.moveThrustLogical.LogicValue = 0f;
+                controller.moveTurnLogical.LogicValue = 0f;
             }
         }
 
@@ -77,14 +90,14 @@ namespace Sor.AI.Doer {
                 case PlanFeed interFeed: {
                     // feed a target
                     // TODO: add capability for [HOLD 2s] etc.
-                    mind.state.controller.tetherLogical.LogicPressed = true;
+                    controller.tetherLogical.LogicPressed = true;
                     interFeed.markDone();
 
                     break;
                 }
                 case PlanAttack interAtk: {
                     // attack a target
-                    mind.state.controller.fireLogical.LogicPressed = true;
+                    controller.fireLogical.LogicPressed = true;
                     interAtk.markDone();
                     break;
                 }
@@ -151,7 +164,7 @@ namespace Sor.AI.Doer {
                 }
             }
 
-            mind.state.controller.moveThrustLogical.LogicValue = thrustInput;
+            controller.moveThrustLogical.LogicValue = thrustInput;
 
             return toTarget;
         }
@@ -169,7 +182,7 @@ namespace Sor.AI.Doer {
                     turnInput = 1;
                 }
 
-                mind.state.controller.moveTurnLogical.LogicValue = turnInput;
+                controller.moveTurnLogical.LogicValue = turnInput;
             }
             else {
                 // cheat and snap angle

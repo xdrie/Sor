@@ -18,7 +18,6 @@ using Sor.Game.Map;
 namespace Sor.AI {
     public class DuckMindState : MindState {
         public Wing me;
-        public LogicInputController controller;
 
         public ConcurrentBag<Wing> seenWings = new ConcurrentBag<Wing>(); // visible wings
         public ConcurrentBag<Thing> seenThings = new ConcurrentBag<Thing>(); // visible things
