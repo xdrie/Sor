@@ -96,7 +96,7 @@ namespace Sor.AI.Consid {
 
                 // 4. compare armed state
                 var threatWeaponMaxscore = 40;
-                var threatWeapon = threat.mind.GetComponent<Shooter>();
+                var threatWeapon = threat.mind.entity.GetComponent<Shooter>();
                 var myWeapon = context.state.me.GetComponent<Shooter>();
                 // if they're armed, set negative score
                 var armoryScore = threatWeapon == null ? 0 : -threatWeaponMaxscore;

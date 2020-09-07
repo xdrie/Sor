@@ -9,7 +9,7 @@ using Sor.Game;
 namespace Sor.AI.Systems {
     public class VisionSystem : DuckMindSystem {
         private Vector2 senseVec => new Vector2(Constants.DuckMind.SENSE_RANGE);
-        public RectangleF sensorRec => new RectangleF(entity.Position - senseVec / 2, senseVec);
+        public RectangleF sensorRec => new RectangleF(mind.entity.Position - senseVec / 2, senseVec);
 
         public VisionSystem(DuckMind mind, float refresh, CancellationToken cancelToken) :
             base(mind, refresh, cancelToken) { }
@@ -23,7 +23,8 @@ namespace Sor.AI.Systems {
             foreach (var sensorResult in sensorCollResults) {
                 if (sensorResult.Entity == null) continue;
                 var sensed = sensorResult.Entity;
-                if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != entity) {
+                // ensure sensor collider is of a SHIP, and sensed entity isn't ME
+                if (sensorResult.Tag == Constants.Colliders.SHIP && sensed != mind.entity) {
                     if (NGame.context.config.invisible) {
                         if (sensed.Name == playContext.player.name) {
                             continue; // make player invisible

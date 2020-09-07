@@ -13,7 +13,7 @@ namespace Sor.AI.Consid {
                 // hunger score is based on the necessity of more energy.
                 // let E be energy percentage (energy / max energy), clamp01
                 // y = (1 - E)^2
-                var energyCore = context.Entity.GetComponent<EnergyCore>();
+                var energyCore = context.entity.GetComponent<EnergyCore>();
                 var satiation = 2f; // 200% food
                 var ratioSatiation = energyCore.energy / (energyCore.designMax * satiation);
                 var invEnergyPerc = 1 - Mathf.Clamp01(ratioSatiation);
