@@ -27,8 +27,10 @@ namespace Sor.AI.Model {
         public Cost feed() {
             // feed bean to target
             // only valid if we are close enough and have energy budget
-            if (!withinDist || !(energyBudget > 0)) return false;
+            if (!withinDist || energyBudget <= 0) return false;
 
+            // TODO: use a proper value for approximate energy cost of feeding (typically upper bound, so we're stingy)
+            energyBudget -= 0.1f;
             brownies += 10;
             return FEED_COST;
         }
