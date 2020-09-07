@@ -39,6 +39,8 @@ namespace Sor.AI {
         }
 
         public override void initialize() {
+            base.initialize();
+            
             // set up plan executor
             planExecutor = new PlanExecutor(this);
 
