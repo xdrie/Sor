@@ -16,8 +16,6 @@ namespace Sor.AI.Cogs {
         public float inquisitive;
         public float spontaneity;
 
-        public override float[] vec => new[] {loyalty, aggression, sociability, wary, inquisitive};
-
         public override void calculate(BirdPersonality ply) {
             loyalty = VectorTrait.value(vec_loyalty, ply);
             aggression = VectorTrait.value(vec_aggression, ply);
