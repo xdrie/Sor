@@ -44,7 +44,7 @@ namespace Sor.AI.Consid {
 
             public override float score() {
                 // scale [0,1] sociability on sqrt curve
-                return Mathf.Sqrt(PerMath.map11to01(context.soul.traits.sociability));
+                return Mathf.Sqrt(PerMath.map01(context.soul.traits.sociability));
             }
         }
 

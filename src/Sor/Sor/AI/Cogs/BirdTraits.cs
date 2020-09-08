@@ -17,12 +17,12 @@ namespace Sor.AI.Cogs {
         public float spontaneity;
 
         public override void calculate(BirdPersonality ply) {
-            loyalty = VectorTrait.value(vec_loyalty, ply);
-            aggression = VectorTrait.value(vec_aggression, ply);
-            wary = VectorTrait.value(vec_wary, ply);
-            sociability = VectorTrait.value(vec_sociability, ply);
-            inquisitive = VectorTrait.value(vec_inquisitive, ply);
-            spontaneity = VectorTrait.value(vec_spontaneity, ply);
+            loyalty = VectorTrait.normalizedValue(vec_loyalty, ply);
+            aggression = VectorTrait.normalizedValue(vec_aggression, ply);
+            wary = VectorTrait.normalizedValue(vec_wary, ply);
+            sociability = VectorTrait.normalizedValue(vec_sociability, ply);
+            inquisitive = VectorTrait.normalizedValue(vec_inquisitive, ply);
+            spontaneity = VectorTrait.normalizedValue(vec_spontaneity, ply);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Sor.AI.Consid {
             public ExplorationTendency(DuckMind context) : base(context) { }
 
             public override float score() {
-                return PerMath.map11to01(context.soul.traits.wary);
+                return PerMath.map01(context.soul.traits.wary);
             }
         }
 
