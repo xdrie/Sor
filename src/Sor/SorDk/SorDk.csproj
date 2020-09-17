@@ -6,29 +6,39 @@
         <MonoGamePlatform>DesktopGL</MonoGamePlatform>
     </PropertyGroup>
 
+    <!-- enable NCBeauty: https://github.com/nulastudio/NetCoreBeauty#how-to-use -->
+    <PropertyGroup>
+        <BeautyLibsDir>libs</BeautyLibsDir>
+        <DisableBeauty>False</DisableBeauty>
+        <ForceBeauty>False</ForceBeauty>
+        <DisablePatch>False</DisablePatch>
+        <BeautyLogLevel>Info</BeautyLogLevel>
+    </PropertyGroup>
+
     <ItemGroup>
-        <ProjectReference Include="..\Sor\Sor.csproj"/>
+        <ProjectReference Include="..\Sor\Sor.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0" />
+        <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest"/>
-        <EmbeddedResource Include="Res/**/*"/>
+        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
+        <EmbeddedResource Include="Res/**/*" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Icon.ico"/>
-        <EmbeddedResource Include="Icon.bmp"/>
-        <EmbeddedResource Include="Icon.png"/>
+        <EmbeddedResource Include="Icon.ico" />
+        <EmbeddedResource Include="Icon.bmp" />
+        <EmbeddedResource Include="Icon.png" />
     </ItemGroup>
 
     <!-- Native Compilation Modes -->
 
     <ItemGroup Condition="'$(CoreRTMode)' != ''">
-        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*"/>
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(CoreRTMode)' != ''">
@@ -53,7 +63,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <RdXmlFile Include="rd.xml"/>
+        <RdXmlFile Include="rd.xml" />
     </ItemGroup>
 
 </Project>
