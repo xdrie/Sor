@@ -16,54 +16,41 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Sor\Sor.csproj" />
+        <ProjectReference Include="..\Sor\Sor.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0" />
-        <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0"/>
+        <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest" />
-        <EmbeddedResource Include="Res/**/*" />
+        <Content Include="Data/**/*" CopyToOutputDirectory="PreserveNewest"/>
+        <EmbeddedResource Include="Res/**/*"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Icon.ico" />
-        <EmbeddedResource Include="Icon.bmp" />
-        <EmbeddedResource Include="Icon.png" />
+        <EmbeddedResource Include="Icon.ico"/>
+        <EmbeddedResource Include="Icon.bmp"/>
+        <EmbeddedResource Include="Icon.png"/>
     </ItemGroup>
 
-    <!-- Native Compilation Modes -->
+    <!-- CoreRT Support -->
 
-    <ItemGroup Condition="'$(CoreRTMode)' != ''">
-        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*" />
+    <ItemGroup Condition="'$(UseCoreRT)' != ''">
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*"/>
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(CoreRTMode)' != ''">
+    <PropertyGroup Condition="'$(UseCoreRT)' != ''">
         <DefineConstants>$(DefineConstants);CORERT</DefineConstants>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(CoreRTMode)' == 'Moderate' or '$(CoreRTMode)' == 'High'">
         <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
         <IlcOptimizationPreference>Size</IlcOptimizationPreference>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(CoreRTMode)' == 'High'">
-        <RootAllApplicationAssemblies>false</RootAllApplicationAssemblies>
-        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
         <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
         <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(CoreRTMode)' == 'High'">
-        <IlcArg Include="--removefeature:EventSource" />
-        <IlcArg Include="--removefeature:FrameworkStrings" />
-    </ItemGroup>
-
     <ItemGroup>
-        <RdXmlFile Include="rd.xml" />
+        <RdXmlFile Include="rd.xml"/>
     </ItemGroup>
 
 </Project>
