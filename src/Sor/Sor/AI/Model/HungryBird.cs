@@ -8,9 +8,8 @@ namespace Sor.AI.Model {
     /// </summary>
     public class HungryBird : SmartActionPlanningModel<HungryBird> {
         public float satiety { get; set; } = 0;
-
-        public int nearbyBeans = 0;
-        public int nearbyTrees = 0;
+        public int nearbyBeans { get; set; } = 0;
+        public int nearbyTrees { get; set; } = 0;
 
         public const int BEAN_COST = 2;
         public const int TREE_VISIT_COST = 12;
