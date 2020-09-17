@@ -63,7 +63,7 @@ echo ""
 # set up build args
 PROPS=""
 if [[ $USE_CORERT -eq 1 ]]; then
-    PROPS="/p:CoreRTMode=Default"
+    PROPS="/p:UseCoreRT=1"
 fi
 
 BUILD_OPTS=""
