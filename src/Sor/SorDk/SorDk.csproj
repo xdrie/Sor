@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -48,8 +48,8 @@
     </PropertyGroup>
 
     <ItemGroup Condition="'$(CoreRTMode)' == 'High'">
-        <IlcArg Include="--removefeature:EventSource" />
-        <IlcArg Include="--removefeature:FrameworkStrings" />
+        <IlcArg Include="--removefeature:EventSource"/>
+        <IlcArg Include="--removefeature:FrameworkStrings"/>
     </ItemGroup>
 
     <ItemGroup>
