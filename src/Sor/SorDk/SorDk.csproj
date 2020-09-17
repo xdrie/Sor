@@ -9,9 +9,9 @@
     <!-- enable NCBeauty: https://github.com/nulastudio/NetCoreBeauty#how-to-use -->
     <PropertyGroup>
         <BeautyLibsDir>libs</BeautyLibsDir>
-        <DisableBeauty>False</DisableBeauty>
-        <ForceBeauty>False</ForceBeauty>
-        <DisablePatch>False</DisablePatch>
+        <DisableBeauty>false</DisableBeauty>
+        <ForceBeauty>false</ForceBeauty>
+        <DisablePatch>false</DisablePatch>
         <BeautyLogLevel>Info</BeautyLogLevel>
     </PropertyGroup>
 
@@ -47,6 +47,7 @@
         <IlcOptimizationPreference>Size</IlcOptimizationPreference>
         <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
         <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
+        <DisableBeauty>true</DisableBeauty>
     </PropertyGroup>
 
     <ItemGroup>
