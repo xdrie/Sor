@@ -9,7 +9,7 @@ export CppCompilerAndLinker=clang
 
 # arguments
 TARGET=$1 # target platform
-FRAMEWORK=${FRAMEWORK:-netcoreapp3.1} # target framework
+FRAMEWORK=${FRAMEWORK:-net5.0} # target framework
 RID=${RID:-1} # pass the RID to build
 
 if [[ -z $TARGET ]]; then
