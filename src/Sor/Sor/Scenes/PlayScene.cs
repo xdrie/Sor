@@ -161,8 +161,7 @@ namespace Sor.Scenes {
                     removeInspectors();
                 }
 
-                // attach inspector
-                if (Input.LeftMouseButtonPressed) {
+                void attachInspectorToNearest(Vector2 target) {
                     removeInspectors(); // remove any existing inspector
                     // find the nearest non-player bird and inspect
                     var nearest = default(Wing);
@@ -172,8 +171,7 @@ namespace Sor.Scenes {
                         if (birdNt.HasComponent<PlayerInputController>())
                             continue;
 
-                        var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                        var distSq = (wing.body.pos - mouseWp).LengthSquared();
+                        var distSq = (wing.body.pos - target).LengthSquared();
                         if (distSq < nearestDist) {
                             nearest = wing;
                             nearestDist = distSq;
@@ -184,6 +182,15 @@ namespace Sor.Scenes {
                         Global.log.info($"selected mind_inspect on {nearest.name}");
                         nearest?.AddComponent(new MindDisplay(state.player, true));
                     }
+                }
+
+                // attach inspector hotkeys
+                if (Input.LeftMouseButtonPressed) {
+                    attachInspectorToNearest(Camera.ScreenToWorldPoint(Input.MousePosition));
+                }
+
+                if (Input.GamePads.Length > 0 && Input.GamePads[0].IsButtonPressed(Buttons.LeftStick)) {
+                    attachInspectorToNearest(Camera.ScreenToWorldPoint(DesignResolution.ToVector2() / 2));
                 }
 
                 // camera zoom
