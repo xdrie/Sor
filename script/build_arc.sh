@@ -64,6 +64,8 @@ echo ""
 PROPS=""
 if [[ $USE_CORERT -eq 1 ]]; then
     PROPS="/p:UseCoreRT=1"
+else
+    PROPS="/p:PublishSingleFile=true"
 fi
 
 BUILD_OPTS=""

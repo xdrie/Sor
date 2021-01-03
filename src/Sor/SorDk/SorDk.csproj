@@ -2,26 +2,12 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>net5.0;net4.8</TargetFrameworks>
+        <TargetFramework>net5.0</TargetFramework>
         <MonoGamePlatform>DesktopGL</MonoGamePlatform>
-    </PropertyGroup>
-
-    <!-- enable NCBeauty: https://github.com/nulastudio/NetCoreBeauty#how-to-use -->
-    <PropertyGroup>
-        <BeautyLibsDir>libs</BeautyLibsDir>
-        <DisableBeauty>false</DisableBeauty>
-        <ForceBeauty>false</ForceBeauty>
-        <DisablePatch>false</DisablePatch>
-        <BeautyLogLevel>Info</BeautyLogLevel>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Sor\Sor.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" Version="1.0.0"/>
-        <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -38,16 +24,19 @@
     <!-- CoreRT Support -->
 
     <ItemGroup Condition="'$(UseCoreRT)' != ''">
-        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="1.0.0-alpha-*"/>
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="6.0.0-*" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(UseCoreRT)' != ''">
         <DefineConstants>$(DefineConstants);CORERT</DefineConstants>
         <IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
-        <IlcOptimizationPreference>Size</IlcOptimizationPreference>
-        <IlcInvariantGlobalization>true</IlcInvariantGlobalization>
-        <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
-        <DisableBeauty>true</DisableBeauty>
+        <!--        <IlcOptimizationPreference>Size</IlcOptimizationPreference>-->
+        <!--        <IlcInvariantGlobalization>true</IlcInvariantGlobalization>-->
+        <!--        <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>-->
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(UseCoreRT)' == ''">
+        <PublishTrimmed>true</PublishTrimmed>
+        <TrimMode>Link</TrimMode>
     </PropertyGroup>
 
     <ItemGroup>
