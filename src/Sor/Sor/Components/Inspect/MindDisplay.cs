@@ -41,9 +41,8 @@ namespace Sor.Components.Inspect {
             mind.inspected = false; // disable trace debug
         }
 
-        public override RectangleF Bounds {
-            get { return Entity.Scene.Camera.Bounds; }
-        }
+        public override RectangleF Bounds =>
+            new RectangleF(0, 0, Entity.Scene.DesignResolution.X, Entity.Scene.DesignResolution.Y);
 
         void drawIndicator(Batcher batcher, Vector2 pos, Color col, float size = 4f, float thickness = 1f) {
             batcher.DrawHollowRect(
@@ -95,7 +94,7 @@ namespace Sor.Components.Inspect {
                 var optionScores = mind.state.lastPlanLog.ToList()
                     .OrderByDescending(x => x.Value)
                     .ToList();
-                
+
                 ind.appendLine("reasoner");
                 foreach (var consid in optionScores) {
                     var considSb = new StringBuilder();
@@ -151,7 +150,7 @@ namespace Sor.Components.Inspect {
                                     var (_, displayColor) = PipsSystem.calculatePips(opinion);
                                     targetColor = displayColor;
                                 }
-                                
+
                                 // annotation for approach type
                                 if (target.approachRange > 0) {
                                     planSb.Append($" [r={target.approachRange}]");
@@ -197,8 +196,7 @@ namespace Sor.Components.Inspect {
                     }
                 }
 
-                ind.drawTo(batcher, Graphics.Instance.BitmapFont,
-                    camera.ScreenToWorldPoint(new Vector2(20, 20)));
+                ind.drawTo(batcher, Graphics.Instance.BitmapFont, new Vector2(20, 20));
             }
         }
 

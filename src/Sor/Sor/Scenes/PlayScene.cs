@@ -180,7 +180,8 @@ namespace Sor.Scenes {
 
                     if (nearest != null) {
                         Global.log.info($"selected mind_inspect on {nearest.name}");
-                        nearest?.AddComponent(new MindDisplay(state.player, true));
+                        var md = nearest.AddComponent(new MindDisplay(state.player, true));
+                        md.RenderLayer = renderlayer_overlay;
                     }
                 }
 
