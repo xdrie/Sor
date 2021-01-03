@@ -10,7 +10,7 @@ using Sor.Util;
 namespace Sor.Game.Save {
     public class ThingLoader {
         private PlayPersistable per;
-        
+
         public enum ThingKind {
             Unknown,
             Capsule,
@@ -24,7 +24,7 @@ namespace Sor.Game.Save {
             /// the one that last interacted with the thing
             /// </summary>
             public long interactorUid;
-            
+
             /// <summary>
             /// the one that created the thing
             /// </summary>
@@ -129,13 +129,15 @@ namespace Sor.Game.Save {
 
             if (res != null) {
                 Global.log.trace($"rehydrated entity {res.GetType().Name}, pos{res.Entity.Position.RoundToPoint()}");
+
+                var loadedThing = new LoadedThing(res) {
+                    interactorUid = senderUid,
+                    creatorUid = creatorUid
+                };
+                return loadedThing; // yee
             }
 
-            var loadedThing = new LoadedThing(res) {
-                interactorUid = senderUid,
-                creatorUid = creatorUid
-            };
-            return loadedThing; // yee
+            return null;
         }
 
         public List<Thing> resolveThings(IEnumerable<LoadedThing> loads) {
@@ -157,6 +159,8 @@ namespace Sor.Game.Save {
 
                         break;
                 }
+
+                GAssert.Ensure(load.instance != null, "the instance of a load was null");
                 // now add it to the finished list
                 things.Add(load.instance);
             }

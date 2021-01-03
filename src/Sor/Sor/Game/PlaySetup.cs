@@ -84,6 +84,9 @@ namespace Sor.Game {
         }
 
         public void addThing(Thing thing) {
+            if (thing == null) {
+                Global.log.err("attempted to add null thing to things list.");
+            }
             things.Add(thing);
         }
 
