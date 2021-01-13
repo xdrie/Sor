@@ -31,4 +31,4 @@ run `./SorDk` (Unix) or `SorDk.exe` (Win). native builds are specific to the tar
 
 ## license
 
-copyright &copy; 2019-2020 xdrie. all rights reserved.
+copyright &copy; 2019-2021 xdrie. all rights reserved.
