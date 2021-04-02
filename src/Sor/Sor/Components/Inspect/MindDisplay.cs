@@ -92,7 +92,7 @@ namespace Sor.Components.Inspect {
 
                 // draw plan table
                 var first = false;
-                var optionScores = mind.state.lastPlanLog.ToList()
+                var optionScores = mind.state.lastPlanLog.ToArray()
                     .OrderByDescending(x => x.Value)
                     .ToList();
 
