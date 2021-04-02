@@ -59,6 +59,10 @@ namespace Sor.Components.Things {
                 velocity = Random.Range(new Vector2(-randomLinearFloat), new Vector2(randomLinearFloat));
             }
 
+            public override void Update() {
+                base.Update();
+            }
+
             protected override void applyMotion(Vector2 posDelta) {
                 // mov.ApplyMovement(posDelta);
                 // update position directly, without updating triggers
