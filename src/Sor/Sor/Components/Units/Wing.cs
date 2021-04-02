@@ -154,6 +154,7 @@ namespace Sor.Components.Units {
             // check if out of energy
             if (core.energy <= 0f) {
                 Global.log.info($"wing died (what 0 energy does to a mf): {this}");
+                Entity.Destroy();
             }
         }
 
