@@ -1,5 +1,6 @@
 using Glint.Sprites;
 using Ducia.Calc;
+using Glint;
 using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI;
@@ -148,6 +149,11 @@ namespace Sor.Components.Units {
             else {
                 // reset sprite color
                 spriteRenderer.Color = NGame.context.assets.paletteWhite;
+            }
+            
+            // check if out of energy
+            if (core.energy <= 0f) {
+                Global.log.info($"wing died (what 0 energy does to a mf): {this}");
             }
         }
 
