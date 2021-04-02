@@ -117,31 +117,37 @@ namespace Sor.AI.Doer {
             // figure out how to move to target
             var toTarget = goal - mind.state.me.body.pos;
             var targetAngle = toTarget.ScreenSpaceAngle();
+
+            // try to turn to face the right direction
             var remainingTurn = pilotToAngle(targetAngle);
 
             var thrustInput = 0;
 
             if (Math.Abs(remainingTurn) < TargetSource.AT_ANGLE) {
                 // we are facing the right way
+                // now we can move forward
 
                 mind.state.me.body.angularVelocity *= 0.9f; // cheat to help with angle
                 // mind.state.me.body.angle = -targetAngle + (GMathf.PI / 2);
 
-                var sinPi4 = 0.707106781187; // sin(pi/4)
-                // we are facing, now move toward them
-                var dGiv = toTarget.Length();
-                var v0 = mind.state.me.body.velocity.Length();
-                var vT = mind.state.me.body.topSpeed / sinPi4;
-                var vTBs = mind.state.me.body.boostTopSpeed / sinPi4;
-                var aTh = mind.state.me.body.thrustPower / sinPi4;
-                var aBs = (mind.state.me.body.thrustPower / sinPi4) * mind.state.me.body.boostFactor;
-                var aD = mind.state.me.body.baseDrag / sinPi4;
-                var aF = mind.state.me.body.brakeDrag / sinPi4;
-                // d-star
+                var sinPi4 = 0.707106781187; // sin(pi/4), AKA 1/sqrt(2)
+                var dGiv = toTarget.Length(); // distance to target
+                var v0 = mind.state.me.body.velocity.Length(); // my velocity
+                var vT = mind.state.me.body.topSpeed / sinPi4; // my top overall speed
+                var vTBs = mind.state.me.body.boostTopSpeed / sinPi4; // my top boost speed
+                var aTh = mind.state.me.body.thrustPower / sinPi4; // my thrust acceleration
+                var aBs = (mind.state.me.body.thrustPower / sinPi4) * mind.state.me.body.boostFactor; // my boost acceleration
+                var aD = mind.state.me.body.baseDrag / sinPi4; // my linear drag
+                var aF = mind.state.me.body.brakeDrag / sinPi4; // my linear drag when applying brakes
+                // calculate d-star
+                // we accelerate until this distance
+                // TODO: document this calculation
                 var dCrit =
                     +(v0 * v0) / (aD + aF)
                     + 0.5 * ((v0 * v0) / (-(aD - aF)));
 
+                // d-star for boost
+                // we boost until this distance
                 // var dCritBs = v0 * ((vTBs - v0) / (aBs - aD))
                 //             + (((vTBs - v0) * (vTBs - v0)) / (2 * (aBs - aD)))
                 //             + (vTBs * vTBs) / (aD + aF)
@@ -150,17 +156,19 @@ namespace Sor.AI.Doer {
                 var dCritBs = dCrit * 1.1f;
 
                 // update board
-                mind.state.setBoard(nameof(dGiv), new DuckMindState.BoardItem($"{dGiv:n2}", "mov"));
-                mind.state.setBoard(nameof(dCrit), new DuckMindState.BoardItem($"{dCrit:n2}", "mov"));
+                mind.state.setBoard("d_giv", new DuckMindState.BoardItem($"{dGiv:n2}", "mov"));
+                mind.state.setBoard("d_crit", new DuckMindState.BoardItem($"{dCrit:n2}", "mov"));
 
                 if (dGiv > dCrit) {
-                    thrustInput = -1;
+                    thrustInput = -1; // UP on thrust, accelerate
+
+                    // boosting
                     // if (dGiv > dCritBs) {
                     //     controller.boostLogical.logicPressed = true;
                     // }
                 }
                 else {
-                    thrustInput = 1;
+                    thrustInput = 1; // decelerate
                 }
             }
 
