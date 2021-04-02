@@ -45,8 +45,9 @@ namespace Sor.Components.Inspect {
             new RectangleF(0, 0, Entity.Scene.DesignResolution.X, Entity.Scene.DesignResolution.Y);
 
         void drawIndicator(Batcher batcher, Vector2 pos, Color col, float size = 4f, float thickness = 1f) {
+            var drawPos = Entity.Scene.Camera.WorldToScreenPoint(pos);
             batcher.DrawHollowRect(
-                new RectangleF(pos.X - size, pos.Y - size, size * 2, size * 2),
+                new RectangleF(drawPos.X - size, drawPos.Y - size, size * 2, size * 2),
                 col, thickness);
         }
 
