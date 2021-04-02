@@ -45,6 +45,9 @@ namespace Sor.Components.Units {
         public float metabolicRate; // energy burn per-second
         private float boostDrainKg = 100; // boost drain per kg
 
+        // - debug properties
+        public bool intangible = false;
+
         public override void Initialize() {
             base.Initialize();
 
@@ -71,6 +74,8 @@ namespace Sor.Components.Units {
         public override void Update() {
             base.Update();
 
+            me.hitbox.Enabled = !intangible;
+
             // metabolism
             if (me.core.energy > 0) {
                 me.core.energy -= metabolicRate * Time.DeltaTime;
@@ -87,6 +92,7 @@ namespace Sor.Components.Units {
                 // increase shoot charge
                 shootCharge += Time.DeltaTime;
             }
+
             if (shootCharge > 0 && controller.tetherInput.IsReleased) {
                 // clamp shoot charge
                 shootCharge = Mathf.Clamp(shootCharge, 0f, 2f);
@@ -125,6 +131,11 @@ namespace Sor.Components.Units {
 
         protected override void applyMotion(Vector2 posDelta) {
             var motion = posDelta;
+            if (intangible) {
+                mov.ApplyMovement(motion);
+                return;
+            }
+
             var moveCollisions = new List<CollisionResult>();
             var calcMotion = motion; // a dummy motion
             mov.AdvancedCalculateMovement(ref calcMotion, moveCollisions);
@@ -144,9 +155,12 @@ namespace Sor.Components.Units {
                     var totalMass = mass + hitShip.mass;
                     var vf = netMomentum / totalMass;
                     velocity = vf;
-                    hitShip.velocity = vf;
+                    if (!hitShip.intangible) {
+                        hitShip.velocity = vf;
+                    }
+
                     motion -= result.MinimumTranslationVector;
-                    
+
                     // send signal to mind
                     if (me.mind.control) {
                         me.mind.signal(new PhysicalSignals.BumpSignal(hitShip.me, impactMomentum));
@@ -179,6 +193,7 @@ namespace Sor.Components.Units {
                 if (me.core.overloadedNess() > 0) { // boost bonus when overloaded
                     maxVelocity *= Mathf.Sqrt(1 + me.core.overloadedNess());
                 }
+
                 if (gameContext.config.maxVfx) {
                     Entity.Scene.Camera.GetComponent<CameraShake>().Shake(10f, 0.85f);
                 }

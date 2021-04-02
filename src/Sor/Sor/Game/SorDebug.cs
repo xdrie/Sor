@@ -37,6 +37,13 @@ namespace Sor.Game {
             debugLog($"changed player class to {val}");
         }
 
+        [Command("g_intangible", "toggles player intagbility [DEBUG/CHEAT]")]
+        public static void Intangible() {
+            var val = !play.state.player.body.intangible;
+            play.state.player.body.intangible = val;
+            debugLog($"set player intangibility to {val}");
+        }
+
         [Command("g_list", "lists all wings")]
         public static void List() {
             var wings = play.state.findAllWings().ToList();
