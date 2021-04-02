@@ -139,9 +139,11 @@ namespace Sor.Components.Inspect {
                     if (planTask.status() == PlanTask.Status.Ongoing) {
                         switch (planTask) {
                             case TargetSource target: {
+                                var targetType = target.GetType().Name;
                                 var targetPos = target.getPosition();
                                 var approachPos = target.approachPosition();
-                                planSb.Append($" Target: ({targetPos.X:n1}, {targetPos.Y:n1})");
+                                var secondaryPos = target.getSecondaryPosition();
+                                planSb.Append($" [T]{targetType}: ({targetPos.X:n1}, {targetPos.Y:n1})");
                                 var targetColor = Color.Yellow; // color of target indicator
 
                                 // add extra annotation if target is wing
@@ -161,6 +163,8 @@ namespace Sor.Components.Inspect {
 
                                 drawIndicator(batcher, targetPos, targetColor, 4f);
                                 drawIndicator(batcher, approachPos, Color.LightBlue, 4f);
+                                if (secondaryPos != null)
+                                    drawIndicator(batcher, secondaryPos.Value, Color.LightYellow, 4f);
                                 break;
                             }
                             case SingleInteraction<DuckMind> inter:

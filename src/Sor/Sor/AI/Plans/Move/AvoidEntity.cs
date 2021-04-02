@@ -15,5 +15,7 @@ namespace Sor.AI.Plans {
             var targetAway = approachRange * -dirToMe;
             return targetAway;
         }
+
+        public override Vector2? getSecondaryPosition() => nt.Position;
     }
 }

@@ -112,6 +112,7 @@ namespace Sor.AI.Plans {
         }
 
         public abstract Vector2 getPosition();
+        public virtual Vector2? getSecondaryPosition() => null;
 
         public Approach approach { get; }
     }
