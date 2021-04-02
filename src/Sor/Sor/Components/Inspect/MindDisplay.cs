@@ -130,6 +130,7 @@ namespace Sor.Components.Inspect {
                     ind.appendLine(considSb.ToString());
                 }
 
+                // attempt to illustrate the plans
                 var planItems = mind.state.plan.ToList();
                 var planSb = new StringBuilder();
                 var planAhead = NGame.config.mindDisplayAhead;
@@ -139,6 +140,8 @@ namespace Sor.Components.Inspect {
                     if (planTask.status() == PlanTask.Status.Ongoing) {
                         switch (planTask) {
                             case TargetSource target: {
+                                // illustrate the target and objective
+                                
                                 var targetType = target.GetType().Name;
                                 var targetPos = target.getPosition();
                                 var approachPos = target.approachPosition();
@@ -164,7 +167,7 @@ namespace Sor.Components.Inspect {
                                 drawIndicator(batcher, targetPos, targetColor, 4f);
                                 drawIndicator(batcher, approachPos, Color.LightBlue, 4f);
                                 if (secondaryPos != null)
-                                    drawIndicator(batcher, secondaryPos.Value, Color.LightYellow, 4f);
+                                    drawIndicator(batcher, secondaryPos.Value, Color.Cyan, 4f);
                                 break;
                             }
                             case SingleInteraction<DuckMind> inter:
