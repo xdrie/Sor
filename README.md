@@ -11,8 +11,7 @@ the game supports running on both .net core and mono. after using build scripts,
 
 ### dependencies
 
-- [.NET Core 3.1](https://dotnet.microsoft.com/download)
-- [Mono](https://www.mono-project.com/download/stable/) (only for Mono build)
+- [.NET Core 5.0](https://dotnet.microsoft.com/download)
 - XNG (XNez + Glint) (git)
 - DuckMind (git)
 
