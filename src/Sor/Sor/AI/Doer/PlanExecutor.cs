@@ -7,10 +7,12 @@ using Microsoft.Xna.Framework;
 using Nez;
 using Sor.AI.Plans;
 using Sor.Components.Input;
+using Sor.Components.Units;
 
 namespace Sor.AI.Doer {
     public class PlanExecutor {
         private readonly DuckMind mind;
+        private Wing me => mind.state.me;
 
         private LogicInputController _controller;
 
@@ -29,6 +31,10 @@ namespace Sor.AI.Doer {
         }
 
         public void process() {
+            // zero out buttons
+            controller.zeroButtons();
+
+            // vars for tracking target/goal
             var navTargetSource = default(TargetSource);
             var immediateGoal = false; // whether we've obtained an immediate goal
             while (mind.state.plan.Count > 0 && !immediateGoal) {
@@ -72,13 +78,20 @@ namespace Sor.AI.Doer {
 
             // constant movement
             if (navTargetSource != null) {
-                // move to position
-                pilotToPosition(navTargetSource.approachPosition());
-                if (navTargetSource.align && navTargetSource.closeEnoughPosition()) {
-                    pilotToAngle(navTargetSource.getTargetAngle());
+                if (navTargetSource.closeEnoughPosition()) {
+                    if (navTargetSource.align) {
+                        me.body.angularVelocity = 0f;
+                        me.body.stdAngle = navTargetSource.getTargetAngle();
+                        // var remaining = pilotToAngle(navTargetSource.getTargetAngle());
+                        // if (Math.Abs(remaining) <= TargetSource.AT_ANGLE) {
+                        //     // cheat and snap
+                        //     me.body.angularVelocity *= 0.8f;
+                        // }
+                    }
+                } else {
+                    pilotToPosition(navTargetSource.approachPosition()); // move to position
                 }
-            }
-            else {
+            } else {
                 // zero out movement
                 controller.moveThrustLogical.LogicValue = 0f;
                 controller.moveTurnLogical.LogicValue = 0f;
@@ -115,7 +128,7 @@ namespace Sor.AI.Doer {
         /// <returns>vector to target</returns>
         private Vector2 pilotToPosition(Vector2 goal) {
             // figure out how to move to target
-            var toTarget = goal - mind.state.me.body.pos;
+            var toTarget = goal - me.body.pos;
             var targetAngle = toTarget.ScreenSpaceAngle();
 
             // try to turn to face the right direction
@@ -127,18 +140,18 @@ namespace Sor.AI.Doer {
                 // we are facing the right way
                 // now we can move forward
 
-                mind.state.me.body.angularVelocity *= 0.9f; // cheat to help with angle
-                // mind.state.me.body.angle = -targetAngle + (GMathf.PI / 2);
+                me.body.angularVelocity *= 0.9f; // cheat to help with angle
+                // me.body.angle = -targetAngle + (GMathf.PI / 2);
 
                 var sinPi4 = 0.707106781187; // sin(pi/4), AKA 1/sqrt(2)
                 var dGiv = toTarget.Length(); // distance to target
-                var v0 = mind.state.me.body.velocity.Length(); // my velocity
-                var vT = mind.state.me.body.topSpeed / sinPi4; // my top overall speed
-                var vTBs = mind.state.me.body.boostTopSpeed / sinPi4; // my top boost speed
-                var aTh = mind.state.me.body.thrustPower / sinPi4; // my thrust acceleration
-                var aBs = (mind.state.me.body.thrustPower / sinPi4) * mind.state.me.body.boostFactor; // my boost acceleration
-                var aD = mind.state.me.body.baseDrag / sinPi4; // my linear drag
-                var aF = mind.state.me.body.brakeDrag / sinPi4; // my linear drag when applying brakes
+                var v0 = me.body.velocity.Length(); // my velocity
+                var vT = me.body.topSpeed / sinPi4; // my top overall speed
+                var vTBs = me.body.boostTopSpeed / sinPi4; // my top boost speed
+                var aTh = me.body.thrustPower / sinPi4; // my thrust acceleration
+                var aBs = (me.body.thrustPower / sinPi4) * me.body.boostFactor; // my boost acceleration
+                var aD = me.body.baseDrag / sinPi4; // my linear drag
+                var aF = me.body.brakeDrag / sinPi4; // my linear drag when applying brakes
                 // calculate d-star
                 // we accelerate until this distance
                 // TODO: document this calculation
@@ -166,8 +179,7 @@ namespace Sor.AI.Doer {
                     // if (dGiv > dCritBs) {
                     //     controller.boostLogical.logicPressed = true;
                     // }
-                }
-                else {
+                } else {
                     thrustInput = 1; // decelerate
                 }
             }
@@ -177,24 +189,29 @@ namespace Sor.AI.Doer {
             return toTarget;
         }
 
+        /// <summary>
+        /// tries to pilot to the target angle
+        /// </summary>
+        /// <param name="targetAngle"></param>
+        /// <returns>the remaining angle</returns>
         private float pilotToAngle(float targetAngle) {
             // delta between current angle to target
-            var remainingAngle = Mathf.DeltaAngleRadians(mind.state.me.body.stdAngle, targetAngle);
+            var remainingAngle = Mathf.DeltaAngleRadians(me.body.stdAngle, targetAngle);
+            Global.log.trace($"rem: {remainingAngle}, tgt: {targetAngle}, cur: {me.body.stdAngle}");
             if (Math.Abs(remainingAngle) > TargetSource.AT_ANGLE) {
-                var turnInput = 0;
+                var turnInput = 0f;
+                var turnPower = 1f;
 
                 if (remainingAngle > 0) {
-                    turnInput = -1;
-                }
-                else if (remainingAngle < 0) {
-                    turnInput = 1;
+                    turnInput = -1 * turnPower;
+                } else if (remainingAngle < 0) {
+                    turnInput = 1 * turnPower;
                 }
 
                 controller.moveTurnLogical.LogicValue = turnInput;
-            }
-            else {
+            } else {
                 // cheat and snap angle
-                mind.state.me.body.stdAngle = targetAngle;
+                me.body.stdAngle = targetAngle;
             }
 
             return remainingAngle;
