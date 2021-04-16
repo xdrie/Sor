@@ -69,7 +69,7 @@ namespace Sor.AI.Plans {
         }
 
         public float getTargetAngle() {
-            var dirToTarget = Vector2Ext.Normalize(getPosition() - mind.state.me.body.pos);
+            var dirToTarget = getPosition() - mind.state.me.body.pos;
             return dirToTarget.ScreenSpaceAngle();
         }
 
