@@ -38,7 +38,7 @@ namespace Sor.Scenes {
 
             // add our physicist
             physicistDuck = CreateEntity("physical", new Vector2(300f, 200f)).SetTag(Constants.Tags.WING);
-            var physicistSoul = new AvianSoul {ply = new BirdPersonality {A = 0.8f, S = -0.4f}};
+            var physicistSoul = new AvianSoul {ply = new BirdPersonality {A = -0.4f, S = 0.7f}};
             var duckWing = physicistDuck.AddComponent(new Wing(new DuckMind(physicistSoul, true)));
             physicistDuck.AddComponent<LogicInputController>();
             var md = physicistDuck.AddComponent(new MindDisplay(playerWing, true));
