@@ -46,8 +46,7 @@ namespace Sor.Scenes {
             duckWing.mind.state.addOpinion(playerWing, Constants.DuckMind.OPINION_FRIEND);
             
             // give both of them plenty of energy
-            playerWing.core.energy = 10000f;
-            duckWing.core.energy = 10000f;
+            playerWing.core.energy = duckWing.core.energy = 40000f;
 
             // set the player as the target
             duckWing.mind.state.plan.Enqueue(new EntityTarget(duckWing.mind, playerWing.Entity, Approach.Within,
