@@ -44,7 +44,7 @@ namespace Sor.Scenes {
             var md = physicistDuck.AddComponent(new MindDisplay(playerWing, true));
             md.RenderLayer = renderlayer_overlay;
             duckWing.mind.state.addOpinion(playerWing, Constants.DuckMind.OPINION_FRIEND);
-            
+
             // give both of them plenty of energy
             playerWing.core.energy = duckWing.core.energy = 40000f;
 
@@ -69,11 +69,24 @@ namespace Sor.Scenes {
             }
 
             var wing = physicistDuck.GetComponent<Wing>();
-            if (Input.LeftMouseButtonPressed || (Input.GamePads.Length > 0 && Input.GamePads[0].IsButtonPressed(Buttons.LeftStick))) {
+            var wingPlan = wing.mind.state.plan;
+            if (Input.LeftMouseButtonPressed ||
+                (Input.GamePads.Length > 0 && Input.GamePads[0].IsButtonPressed(Buttons.LeftStick))) {
                 // set duck target to mouse pos
                 var mouseWp = Camera.ScreenToWorldPoint(Input.MousePosition);
-                wing.mind.state.plan.Enqueue(new FixedTarget(wing.mind, mouseWp, Approach.Within,
+                wingPlan.Enqueue(new FixedTarget(wing.mind, mouseWp, Approach.Within,
                     TargetSource.RANGE_CLOSE));
+            }
+
+            if (Input.IsKeyPressed(Keys.OemPeriod) ||
+                (Input.GamePads.Length > 0 && Input.GamePads[0].IsButtonPressed(Buttons.DPadDown))) {
+                wing.mind.state.clearPlan(); // clear plan
+            }
+
+            if (Input.RightMouseButtonPressed ||
+                (Input.GamePads.Length > 0 && Input.GamePads[0].IsButtonPressed(Buttons.RightStick))) {
+                // set duck target to follow me
+                wingPlan.Enqueue(new EntityTarget(wing.mind, playerNt, Approach.Within, TargetSource.RANGE_CLOSE));
             }
         }
     }
