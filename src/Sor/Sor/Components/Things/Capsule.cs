@@ -60,6 +60,9 @@ namespace Sor.Components.Things {
             }
 
             public override void Update() {
+                var onCamera = Entity.Scene.Camera.Bounds.Contains(Entity.Position);
+                enableAngular = onCamera; // disable phys angular when off camera
+                
                 base.Update();
             }
 
