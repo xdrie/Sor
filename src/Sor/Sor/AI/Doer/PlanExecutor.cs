@@ -80,6 +80,7 @@ namespace Sor.AI.Doer {
             if (navTargetSource != null) {
                 if (navTargetSource.closeEnoughPosition()) {
                     if (navTargetSource.align) {
+                        // TODO: this is an awful cheating hack that skips angle navigation and locks angle instead
                         me.body.angularVelocity = 0f;
                         me.body.stdAngle = navTargetSource.getTargetAngle();
                         // var remaining = pilotToAngle(navTargetSource.getTargetAngle());
