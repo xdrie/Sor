@@ -13,7 +13,7 @@ the game supports running on both .net core and mono. after using build scripts,
 
 - [.NET Core 5.0](https://dotnet.microsoft.com/download)
 - XNG (XNez + Glint) (git)
-- DuckMind (git)
+- [DuckMind](https://github.com/xdrie/DuckMind) (git)
 
 pull the source submodules first
 ```sh
