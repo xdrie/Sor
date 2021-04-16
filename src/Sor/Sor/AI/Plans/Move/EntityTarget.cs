@@ -3,6 +3,9 @@ using Nez;
 
 namespace Sor.AI.Plans {
     public class EntityTarget : TargetSource {
+        /// <summary>
+        /// the target entity
+        /// </summary>
         public readonly Entity nt;
 
         public EntityTarget(DuckMind mind, Entity nt, Approach approach = Approach.Precise, float approachRange = RANGE_DIRECT,
@@ -17,6 +20,10 @@ namespace Sor.AI.Plans {
             return Status.Ongoing;
         }
 
+        /// <summary>
+        /// position of the target entity
+        /// </summary>
+        /// <returns></returns>
         public override Vector2 getPosition() => nt.Position;
     }
 }
