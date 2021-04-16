@@ -198,7 +198,7 @@ namespace Sor.AI.Doer {
         private float pilotToAngle(float targetAngle) {
             // delta between current angle to target
             var remainingAngle = Mathf.DeltaAngleRadians(me.body.stdAngle, targetAngle);
-            Global.log.trace($"rem: {remainingAngle}, tgt: {targetAngle}, cur: {me.body.stdAngle}");
+            // Global.log.trace($"rem: {remainingAngle}, tgt: {targetAngle}, cur: {me.body.stdAngle}");
             if (Math.Abs(remainingAngle) > TargetSource.AT_ANGLE) {
                 var turnInput = 0f;
                 var turnPower = 1f;
