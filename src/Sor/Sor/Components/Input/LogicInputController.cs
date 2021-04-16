@@ -25,6 +25,10 @@ namespace Sor.Components.Input {
         public void zero() {
             moveTurnLogical.LogicValue = 0;
             moveThrustLogical.LogicValue = 0;
+            zeroButtons();
+        }
+
+        public void zeroButtons() {
             interactLogical.LogicPressed = false;
             tetherLogical.LogicPressed = false;
             boostLogical.LogicPressed = false;
